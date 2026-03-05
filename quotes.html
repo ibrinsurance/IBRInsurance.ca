@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Get a Quote | Insurance by Rattan</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+<style>
+:root{--ink:#0d1a12;--forest:#1c3d2c;--leaf:#2e6648;--sage:#5a8f72;--mist:#e8f2ec;--gold:#c97b38;--gold-lt:#e8973f;--gold-dk:#9e5e28;--cream:#f7f4ef;--paper:#fdfcfa;--white:#fff;--mid:#5c7066;--border:#dde8e1}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;font-size:20px}
+a{text-decoration:none;color:inherit}
+.topbar{background:var(--forest);padding:8px 56px;display:flex;align-items:center;justify-content:space-between;font-size:.72rem;color:rgba(255,255,255,.7)}
+.topbar a{color:rgba(255,255,255,.75);font-weight:500;transition:color .2s;display:flex;align-items:center;gap:5px}
+.topbar a:hover{color:var(--gold-lt)}.tb-l,.tb-r{display:flex;gap:20px;align-items:center}
+nav{position:sticky;top:0;z-index:200;background:var(--paper);border-bottom:1px solid var(--border);box-shadow:0 2px 20px rgba(13,26,18,.05)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:0 56px;height:70px}
+.logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--forest);display:flex;flex-direction:column;line-height:1.2}
+.logo em{color:var(--gold);font-style:normal}
+.logo-sub{font-family:'DM Sans',sans-serif;font-size:.57rem;font-weight:500;color:var(--mid);letter-spacing:.1em;text-transform:uppercase}
+.nav-menu{display:flex;gap:2px;list-style:none;align-items:center}
+.nav-menu>li>a{font-size:.8rem;font-weight:500;color:var(--mid);padding:8px 13px;border-radius:6px;transition:all .2s;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.nav-menu>li>a:hover{color:var(--forest);background:var(--mist)}
+.nav-menu>li{position:relative}.arr{font-size:.6rem;transition:transform .2s;display:inline-block}
+.nav-menu>li:hover .arr{transform:rotate(180deg)}
+.dropdown{display:none;position:absolute;top:calc(100% + 6px);left:0;background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:8px;min-width:230px;box-shadow:0 8px 32px rgba(13,26,18,.12);z-index:400}
+.nav-menu>li:hover .dropdown{display:block}
+.dropdown a{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:6px;font-size:.79rem;color:var(--mid);transition:all .2s;white-space:nowrap}
+.dropdown a:hover{background:var(--mist);color:var(--forest)}
+.dd-sec{font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--sage);padding:10px 12px 4px;margin-top:2px}
+.dropdown hr{border:none;border-top:1px solid var(--border);margin:5px 0}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.nav-phone{font-size:.82rem;font-weight:600;color:var(--forest)}
+.nav-cta{background:var(--gold);color:var(--white);padding:9px 20px;border-radius:6px;font-size:.78rem;font-weight:600;transition:background .2s,transform .15s}
+.nav-cta:hover{background:var(--gold-lt);transform:translateY(-1px)}
+.page-hero{background:linear-gradient(135deg,var(--forest) 0%,var(--ink) 100%);padding:64px 56px 52px;position:relative;overflow:hidden;text-align:center}
+.page-hero::before{content:'';position:absolute;top:-80px;right:-80px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(201,123,56,.18) 0%,transparent 65%);pointer-events:none}
+.page-hero h1{font-family:'DM Serif Display',serif;font-size:clamp(2rem,4vw,3rem);color:var(--white);margin-bottom:12px}
+.page-hero p{font-size:.93rem;color:rgba(255,255,255,.6);font-weight:300;max-width:520px;margin:0 auto}
+.quotes-grid{max-width:1100px;margin:0 auto;padding:56px 56px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+h2.qs-title{grid-column:1/-1;font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--forest);margin-bottom:8px}
+p.qs-sub{grid-column:1/-1;font-size:.88rem;color:var(--mid);margin-bottom:20px;font-weight:300}
+.qs-section-label{grid-column:1/-1;font-size:.63rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px;margin-top:20px}
+.qs-section-label::after{content:'';display:block;width:30px;height:2px;background:var(--gold);border-radius:2px}
+.qcard{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:28px 24px;display:flex;flex-direction:column;gap:10px;transition:box-shadow .3s,transform .2s;position:relative;overflow:hidden}
+.qcard::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.qcard:hover{box-shadow:0 12px 32px rgba(13,26,18,.1);transform:translateY(-2px)}
+.qcard:hover::after{transform:scaleX(1)}
+.qcard-icon{font-size:1.9rem}
+.qcard h3{font-family:'DM Serif Display',serif;font-size:1.12rem;color:var(--forest)}
+.qcard p{font-size:.81rem;line-height:1.7;color:var(--mid);font-weight:300;flex:1}
+.qcard-note{font-size:.72rem;color:var(--sage);font-style:italic}
+.qcard .qbtn{background:var(--gold);color:var(--white);padding:10px 18px;border-radius:6px;font-size:.78rem;font-weight:600;transition:background .2s;display:inline-flex;align-items:center;gap:6px;margin-top:4px;width:fit-content}
+.qcard .qbtn:hover{background:var(--gold-lt)}
+.qcard .qbtn-info{border:1.5px solid var(--border);color:var(--mid);padding:10px 18px;border-radius:6px;font-size:.78rem;font-weight:500;transition:all .2s;display:inline-flex;align-items:center;gap:6px;margin-top:4px;width:fit-content}
+.qcard .qbtn-info:hover{border-color:var(--sage);color:var(--forest)}
+.contact-strip{background:var(--forest);padding:40px 56px;text-align:center}
+.contact-strip h3{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--white);margin-bottom:8px}
+.contact-strip p{font-size:.88rem;color:rgba(255,255,255,.55);margin-bottom:22px;font-weight:300}
+.cs-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.cs-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:var(--white);padding:12px 22px;border-radius:6px;font-size:.82rem;font-weight:600;transition:all .2s;display:inline-flex;align-items:center;gap:7px}
+.cs-btn:hover{background:rgba(201,123,56,.3);border-color:rgba(201,123,56,.6)}
+footer{background:var(--ink);padding:52px 56px 26px}
+.fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:44px;margin-bottom:38px}
+.fl{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--white);display:block;margin-bottom:10px}
+.fl em{color:var(--gold);font-style:normal}
+.fb p{font-size:.77rem;line-height:1.85;color:rgba(255,255,255,.3);max-width:220px}
+.fc h5{font-size:.61rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:13px}
+.fc ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.fc a{font-size:.77rem;color:rgba(255,255,255,.34);transition:color .2s}
+.fc a:hover{color:var(--gold-lt)}
+.fbot{border-top:1px solid rgba(255,255,255,.07);padding-top:20px;display:flex;justify-content:space-between;font-size:.67rem;color:rgba(255,255,255,.2);flex-wrap:wrap;gap:8px}
+@media(max-width:900px){.topbar,.nav-inner,.page-hero,.quotes-grid,.contact-strip,footer{padding-left:16px;padding-right:16px}.nav-menu{display:none}.quotes-grid{grid-template-columns:1fr}.fg{grid-template-columns:1fr 1fr;gap:26px}.fbot{flex-direction:column;text-align:center}}
+</style>
+</head><body>
+
+<div class="topbar"><div class="tb-l"><span>🇨🇦 Windsor, ON · Independent Life Insurance Advisor</span><span>Licensed: ON · BC · AB · MB · SK · NS · PEI · NB</span></div><div class="tb-r"><a href="tel:6477456850">📞 647-745-6850</a><a href="/cdn-cgi/l/email-protection#8ae3e4f9fff8ebe4e9efe8f3f8ebfefeebe4caede7ebe3e6a4e9e5e7">✉️ <span class="__cf_email__" data-cfemail="aec7c0dddbdccfc0cdcbccd7dccfdadacfc0eec9c3cfc7c280cdc1c3">[email&#160;protected]</span></a></div></div>
+
+<nav><div class="nav-inner">
+  <a href="index.html" class="logo">Insurance <em>by Rattan</em><span class="logo-sub">Life Insurance Advisor · Windsor, ON</span></a>
+  <ul class="nav-menu">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="#">Insurance <span class="arr">▾</span></a>
+      <div class="dropdown">
+        <div class="dd-sec">Visitor &amp; Travel</div>
+        <a href="super-visa.html">🛂 Super Visa Insurance</a>
+        <a href="visitors.html">✈️ Visitors to Canada</a>
+        <a href="travel-insurance.html">🌍 Travel Insurance</a>
+        <a href="student-insurance.html">🎓 International Student Insurance</a>
+        <hr/><div class="dd-sec">Life Insurance</div>
+        <a href="term-life.html">🛡️ Term Life Insurance</a>
+        <a href="whole-life.html">🌱 Whole Life Insurance</a>
+        <a href="universal-life.html">⚙️ Universal Life Insurance</a>
+        <a href="mortgage-insurance.html">🏠 Mortgage Insurance</a>
+        <hr/><div class="dd-sec">Living Benefits</div>
+        <a href="critical-illness.html">❤️‍🩹 Critical Illness Insurance</a>
+        <a href="disability.html">🦺 Disability Insurance</a>
+        <a href="drug-dental.html">💊 Drug &amp; Dental Insurance</a>
+        <hr/><div class="dd-sec">Business</div>
+        <a href="business-insurance.html">💼 Business Insurance</a>
+      </div>
+    </li>
+    <li><a href="#">Investments <span class="arr">▾</span></a>
+      <div class="dropdown">
+        <a href="rrsp.html">📈 RRSP</a>
+        <a href="tfsa.html">💰 TFSA</a>
+        <a href="resp.html">🎓 RESP</a>
+        <a href="rdsp.html">♿ RDSP</a>
+        <a href="fhsa.html">🏡 FHSA</a>
+        <a href="non-registered.html">📊 Non-Registered Accounts</a>
+      </div>
+    </li>
+    <li><a href="quotes.html" style="color:var(--forest);font-weight:600">Get Quotes</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="tel:6477456850" class="nav-phone">📞 647-745-6850</a>
+    <a href="quotes.html" class="nav-cta">Get a Quote</a>
+  </div>
+</div></nav>
+
+<div class="page-hero">
+  <h1>Get a Quote</h1>
+  <p>Click any product below to get an instant online quote, or call me directly for personalized advice.</p>
+</div>
+
+<div class="quotes-grid">
+  <h2 class="qs-title">Online Instant Quotes</h2>
+  <p class="qs-sub">These products link directly to my online quote portal at insurancebyrattan.ca — compare rates from 25+ Canadian carriers instantly.</p>
+
+  <div class="qs-section-label">Visitor &amp; Travel Insurance</div>
+
+  <div class="qcard">
+    <div class="qcard-icon">🛂</div>
+    <h3>Super Visa Insurance</h3>
+    <p>Mandatory coverage for parents &amp; grandparents on a Super Visa. IRCC-compliant plans from all major Canadian providers.</p>
+    <a href="https://www.insurancebyrattan.ca/super-visa-insurance/" target="_blank" class="qbtn">⚡ Get Instant Quote</a>
+    <a href="super-visa.html" class="qbtn-info">Learn More →</a>
+  </div>
+  <div class="qcard">
+    <div class="qcard-icon">✈️</div>
+    <h3>Visitors to Canada</h3>
+    <p>Emergency medical coverage for tourists, visiting family, and new immigrants. Fast approval, flexible deductible options.</p>
+    <a href="https://www.insurancebyrattan.ca/visitors-insurance/" target="_blank" class="qbtn">⚡ Get Instant Quote</a>
+    <a href="visitors.html" class="qbtn-info">Learn More →</a>
+  </div>
+  <div class="qcard">
+    <div class="qcard-icon">🌍</div>
+    <h3>Travel Insurance</h3>
+    <p>Coverage for Canadians travelling abroad — emergency medical, trip cancellation, and baggage protection.</p>
+    <a href="https://www.insurancebyrattan.ca/" target="_blank" class="qbtn">⚡ Get Instant Quote</a>
+    <a href="travel-insurance.html" class="qbtn-info">Learn More →</a>
+  </div>
+  <div class="qcard">
+    <div class="qcard-icon">🎓</div>
+    <h3>International Student Insurance</h3>
+    <p>Health coverage for international students studying in Canada — from day of arrival.</p>
+    <a href="https://www.insurancebyrattan.ca/" target="_blank" class="qbtn">⚡ Get Instant Quote</a>
+    <a href="student-insurance.html" class="qbtn-info">Learn More →</a>
+  </div>
+
+  <div class="qs-section-label">Life Insurance</div>
+
+  <div class="qcard">
+    <div class="qcard-icon">🛡️</div>
+    <h3>Term Life Insurance</h3>
+    <p>Compare term life rates from all major Canadian carriers. Coverage from $100K–$10M+ for 10, 20, or 30 years.</p>
+    <a href="https://www.insurancebyrattan.ca/term-life-insurance/" target="_blank" class="qbtn">⚡ Get Instant Quote</a>
+    <a href="term-life.html" class="qbtn-info">Learn More →</a>
+  </div>
+  <div class="qcard">
+    <div class="qcard-icon">❤️‍🩹</div>
+    <h3>Critical Illness Insurance</h3>
+    <p>Compare critical illness plans covering cancer, heart attack, stroke, and more. Lump-sum tax-free payout.</p>
+    <a href="https://www.insurancebyrattan.ca/critical-illness-insurance/" target="_blank" class="qbtn">⚡ Get Instant Quote</a>
+    <a href="critical-illness.html" class="qbtn-info">Learn More →</a>
+  </div>
+  <div class="qcard">
+    <div class="qcard-icon">🌱</div>
+    <h3>Whole Life Insurance</h3>
+    <p>Permanent, lifelong coverage with guaranteed cash value growth. Best for estate planning and legacy goals.</p>
+    <div class="qcard-note">* Quote requires a consultation</div>
+    <a href="tel:6477456850" class="qbtn">📞 Call for Quote</a>
+    <a href="whole-life.html" class="qbtn-info">Learn More →</a>
+  </div>
+  <div class="qcard">
+    <div class="qcard-icon">⚙️</div>
+    <h3>Universal Life Insurance</h3>
+    <p>Flexible permanent coverage with a tax-sheltered investment component. Ideal for business owners and professionals.</p>
+    <div class="qcard-note">* Quote requires a consultation</div>
+    <a href="tel:6477456850" class="qbtn">📞 Call for Quote</a>
+    <a href="universal-life.html" class="qbtn-info">Learn More →</a>
+  </div>
+  <div class="qcard">
+    <div class="qcard-icon">🏠</div>
+    <h3>Mortgage Insurance</h3>
+    <p>Ensure your family keeps the home if you pass away. Often better value than bank-provided mortgage insurance.</p>
+    <div class="qcard-note">* Quote requires a consultation</div>
+    <a href="tel:6477456850" class="qbtn">📞 Call for Quote</a>
+    <a href="mortgage-insurance.html" class="qbtn-info">Learn More →</a>
+  </div>
+
+  <div class="qs-section-label">Living Benefits &amp; Business</div>
+
+  <div class="qcard">
+    <div class="qcard-icon">🦺</div>
+    <h3>Disability Insurance</h3>
+    <p>Replaces up to 85% of your income if illness or injury prevents you from working.</p>
+    <div class="qcard-note">* Quote requires a consultation</div>
+    <a href="tel:6477456850" class="qbtn">📞 Call for Quote</a>
+    <a href="disability.html" class="qbtn-info">Learn More →</a>
+  </div>
+  <div class="qcard">
+    <div class="qcard-icon">💊</div>
+    <h3>Drug &amp; Dental Insurance</h3>
+    <p>Individual and family coverage for prescriptions, dental care, vision, and extended health benefits.</p>
+    <div class="qcard-note">* Quote requires a consultation</div>
+    <a href="tel:6477456850" class="qbtn">📞 Call for Quote</a>
+    <a href="drug-dental.html" class="qbtn-info">Learn More →</a>
+  </div>
+  <div class="qcard">
+    <div class="qcard-icon">💼</div>
+    <h3>Business Insurance</h3>
+    <p>Key person, buy-sell agreements, group benefits, and corporate life insurance strategies.</p>
+    <div class="qcard-note">* Quote requires a consultation</div>
+    <a href="tel:6477456850" class="qbtn">📞 Call for Quote</a>
+    <a href="business-insurance.html" class="qbtn-info">Learn More →</a>
+  </div>
+
+  <div class="qs-section-label">Investments — Information &amp; Consultation</div>
+
+  <div class="qcard">
+    <div class="qcard-icon">📈</div>
+    <h3>RRSP</h3>
+    <p>Registered Retirement Savings Plan — tax-deductible contributions, tax-free growth, powerful retirement tool.</p>
+    <a href="rrsp.html" class="qbtn-info">Learn More →</a>
+    <a href="tel:6477456850" class="qbtn">📞 Schedule Consultation</a>
+  </div>
+  <div class="qcard">
+    <div class="qcard-icon">💰</div>
+    <h3>TFSA</h3>
+    <p>Tax-Free Savings Account — tax-free growth and withdrawals, anytime, for any reason.</p>
+    <a href="tfsa.html" class="qbtn-info">Learn More →</a>
+    <a href="tel:6477456850" class="qbtn">📞 Schedule Consultation</a>
+  </div>
+  <div class="qcard">
+    <div class="qcard-icon">🎓</div>
+    <h3>RESP</h3>
+    <p>Registered Education Savings Plan — earn up to $500/year in free government grants for your child's education.</p>
+    <a href="resp.html" class="qbtn-info">Learn More →</a>
+    <a href="tel:6477456850" class="qbtn">📞 Schedule Consultation</a>
+  </div>
+  <div class="qcard">
+    <div class="qcard-icon">♿</div>
+    <h3>RDSP</h3>
+    <p>Registered Disability Savings Plan — up to $70,000 in government grants for eligible Canadians with disabilities.</p>
+    <a href="rdsp.html" class="qbtn-info">Learn More →</a>
+    <a href="tel:6477456850" class="qbtn">📞 Schedule Consultation</a>
+  </div>
+</div>
+
+<div class="contact-strip">
+  <h3>Not sure what you need?</h3>
+  <p>Call or email — I'll ask the right questions and point you in the right direction. No pressure, no obligation.</p>
+  <div class="cs-row">
+    <a href="tel:6477456850" class="cs-btn">📞 647-745-6850</a>
+    <a href="/cdn-cgi/l/email-protection#e68f8895939487888583849f948792928788a6818b878f8ac885898b" class="cs-btn">✉️ <span class="__cf_email__" data-cfemail="31585f424443505f5254534843504545505f71565c50585d1f525e5c">[email&#160;protected]</span></a>
+  </div>
+</div>
+
+<footer><div class="fg">
+  <div class="fb"><a href="index.html" class="fl">Insurance <em>by Rattan</em></a><p>Rattan Amol Taggar · Life Insurance Advisor · B.Eng · Licensed in ON, BC, AB, MB, SK, NS, PEI, NB · Windsor, ON · Independent — not affiliated with any single carrier.</p></div>
+  <div class="fc"><h5>Insurance</h5><ul><li><a href="super-visa.html">Super Visa Insurance</a></li><li><a href="visitors.html">Visitors to Canada</a></li><li><a href="term-life.html">Term Life Insurance</a></li><li><a href="critical-illness.html">Critical Illness</a></li><li><a href="disability.html">Disability Insurance</a></li><li><a href="mortgage-insurance.html">Mortgage Insurance</a></li></ul></div>
+  <div class="fc"><h5>Investments</h5><ul><li><a href="rrsp.html">RRSP</a></li><li><a href="tfsa.html">TFSA</a></li><li><a href="resp.html">RESP</a></li><li><a href="rdsp.html">RDSP</a></li><li><a href="business-insurance.html">Business Insurance</a></li></ul></div>
+  <div class="fc"><h5>Connect</h5><ul><li><a href="tel:6477456850">647-745-6850</a></li><li><a href="/cdn-cgi/l/email-protection#92fbfce1e7e0f3fcf1f7f0ebe0f3e6e6f3fcd2f5fff3fbfebcf1fdff">Email Rattan</a></li><li><a href="https://www.facebook.com/punjabifinance" target="_blank"></li>
+    <li><a href="https://www.instagram.com/punjabifinance" target="_blank">Instagram</a></li>
+    <li><a href="https://www.tiktok.com/@punjabifinance" target="_blank">TikTok</a></li>
+    <li><a href="https://www.youtube.com/@punjabifinance" target="_blank">YouTube</a></li>
+  </ul></div>
+</div><div class="fbot">
+  <span>&copy; 2026 Insurance by Rattan &middot; Rattan Amol Taggar &middot; All rights reserved.</span>
+  <span>Independent Advisor &middot; Not affiliated with any single carrier</span>
+</div></footer>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.qa-header').forEach(function(header) {
+    header.addEventListener('click', function() {
+      var wasOpen = header.classList.contains('open');
+      document.querySelectorAll('.qa-header').forEach(function(h2) {
+        h2.classList.remove('open');
+        if (h2.nextElementSibling) h2.nextElementSibling.classList.remove('open');
+      });
+      if (!wasOpen) {
+        header.classList.add('open');
+        if (header.nextElementSibling) header.nextElementSibling.classList.add('open');
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>

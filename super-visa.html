@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Super Visa Insurance | Insurance by Rattan</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet"/><style>
+:root{
+  --ink:#0d1a12;--forest:#1a3828;--leaf:#2a5c40;--sage:#4e8268;
+  --mist:#eaf3ee;--gold:#b86e2a;--gold-lt:#d4893a;--gold-dk:#8f521e;
+  --cream:#f5f2ed;--paper:#fdfcfa;--white:#fff;--mid:#4d5e52;--border:#d8e5dc;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:20px}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;line-height:1.6}
+a{text-decoration:none;color:inherit}
+.topbar{background:var(--forest);padding:9px 56px;display:flex;align-items:center;justify-content:space-between;font-size:.78rem;color:rgba(255,255,255,.72)}
+.tb-l,.tb-r{display:flex;gap:22px;align-items:center}
+.topbar a{color:rgba(255,255,255,.77);font-weight:500;transition:color .2s;display:flex;align-items:center;gap:5px}
+.topbar a:hover{color:var(--gold-lt)}
+nav{position:sticky;top:0;z-index:200;background:var(--paper);border-bottom:1px solid var(--border);box-shadow:0 2px 18px rgba(13,26,18,.06)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:0 56px;height:74px}
+.logo{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--forest);display:flex;flex-direction:column;line-height:1.2}
+.logo em{color:var(--gold);font-style:normal}
+.logo-sub{font-family:'DM Sans',sans-serif;font-size:.6rem;font-weight:500;color:var(--mid);letter-spacing:.1em;text-transform:uppercase}
+.nav-menu{display:flex;gap:2px;list-style:none;align-items:center}
+.nav-menu>li{position:relative}
+.nav-menu>li>a{font-size:.84rem;font-weight:500;color:var(--mid);padding:9px 14px;border-radius:6px;transition:all .2s;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.nav-menu>li>a:hover{color:var(--forest);background:var(--mist)}
+.arr{font-size:.62rem;transition:transform .2s;display:inline-block;margin-top:1px}
+.nav-menu>li:hover .arr{transform:rotate(180deg)}
+.dropdown{display:none;position:absolute;top:calc(100% + 6px);left:0;background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:8px;min-width:244px;box-shadow:0 8px 36px rgba(13,26,18,.13);z-index:400}
+.nav-menu>li:hover .dropdown{display:block}
+.dropdown a{display:flex;align-items:center;gap:9px;padding:10px 14px;border-radius:6px;font-size:.83rem;color:var(--mid);transition:all .2s;white-space:nowrap}
+.dropdown a:hover{background:var(--mist);color:var(--forest)}
+.dd-sec{font-size:.62rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--sage);padding:10px 14px 4px;margin-top:2px}
+.dropdown hr{border:none;border-top:1px solid var(--border);margin:5px 0}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.nav-phone{font-size:.86rem;font-weight:600;color:var(--forest)}
+.nav-cta{background:var(--gold);color:var(--white);padding:10px 22px;border-radius:6px;font-size:.82rem;font-weight:600;transition:background .2s,transform .15s;letter-spacing:.02em}
+.nav-cta:hover{background:var(--gold-lt);transform:translateY(-1px)}
+.breadcrumb{background:var(--white);padding:13px 56px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--mid)}
+.breadcrumb a{color:var(--sage);transition:color .2s}
+.breadcrumb a:hover{color:var(--forest)}
+.page-hero{background:linear-gradient(135deg,var(--forest) 0%,var(--ink) 100%);padding:68px 56px 56px;position:relative;overflow:hidden}
+.page-hero::before{content:'';position:absolute;top:-100px;right:-100px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(212,137,58,.18) 0%,transparent 65%);pointer-events:none}
+.ph-tag{font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-lt);margin-bottom:13px;display:flex;align-items:center;gap:8px}
+.ph-tag::after{content:'';display:block;width:20px;height:2px;background:var(--gold-lt);border-radius:2px}
+.page-hero h1{font-family:'DM Serif Display',serif;font-size:clamp(2.1rem,4vw,3.2rem);color:var(--white);line-height:1.14;margin-bottom:15px}
+.page-hero p{font-size:1.02rem;line-height:1.82;color:rgba(255,255,255,.6);max-width:620px;font-weight:300}
+.ph-btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.pc-wrap{max-width:980px;margin:0 auto;padding:64px 56px}
+.sec-tag{font-size:.67rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.sec-tag::after{content:'';display:block;width:20px;height:2px;background:var(--gold);border-radius:2px}
+h2.sh{font-family:'DM Serif Display',serif;font-size:clamp(1.8rem,2.7vw,2.4rem);color:var(--forest);line-height:1.18;margin-bottom:14px}
+h3.subh{font-family:'DM Serif Display',serif;font-size:1.35rem;color:var(--forest);margin:36px 0 11px}
+p.bt{font-size:.98rem;line-height:1.92;color:var(--mid);font-weight:300;margin-bottom:15px}
+ul.cl{list-style:none;display:flex;flex-direction:column;gap:9px;margin:16px 0}
+ul.cl li{display:flex;align-items:flex-start;gap:11px;font-size:.96rem;color:var(--mid);font-weight:300;line-height:1.65}
+ul.cl li::before{content:'✓';color:var(--gold);font-weight:700;flex-shrink:0;margin-top:2px}
+.icard{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:28px 32px;margin:26px 0;border-left:4px solid var(--gold)}
+.icard h4{font-family:'DM Serif Display',serif;font-size:1.12rem;color:var(--forest);margin-bottom:9px}
+.icard p{font-size:.96rem;line-height:1.82;color:var(--mid);font-weight:300}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:22px 0}
+.page-contact{background:var(--forest);padding:56px;text-align:center}
+.page-contact h3{font-family:'DM Serif Display',serif;font-size:1.9rem;color:var(--white);margin-bottom:11px}
+.page-contact>p{font-size:.96rem;color:rgba(255,255,255,.58);margin-bottom:30px;font-weight:300;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.7}
+.cms{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.cm{display:flex;align-items:center;gap:13px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:18px 24px}
+.cm-ico{font-size:1.2rem}
+.cm h5{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.44);margin-bottom:3px}
+.cm a,.cm p{font-size:.94rem;font-weight:600;color:var(--white);transition:color .2s}
+.cm a:hover{color:var(--gold-lt)}
+.btn-gold{background:var(--gold);color:var(--white);padding:14px 28px;border-radius:7px;font-size:.86rem;font-weight:600;display:inline-flex;align-items:center;gap:8px;transition:background .2s,transform .2s;border:none;cursor:pointer;letter-spacing:.02em}
+.btn-gold:hover{background:var(--gold-lt);transform:translateY(-2px)}
+.btn-outline-w{border:1.5px solid rgba(255,255,255,.38);color:var(--white);padding:14px 28px;border-radius:7px;font-size:.86rem;font-weight:600;display:inline-flex;align-items:center;gap:8px;transition:all .2s}
+.btn-outline-w:hover{border-color:var(--gold-lt);background:rgba(212,137,58,.15)}
+footer{background:var(--ink);padding:56px 56px 28px}
+.fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:44px;margin-bottom:40px}
+.fl{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--white);display:block;margin-bottom:11px}
+.fl em{color:var(--gold);font-style:normal}
+.fb p{font-size:.82rem;line-height:1.88;color:rgba(255,255,255,.3);max-width:224px}
+.fc h5{font-size:.63rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.fc ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.fc a{font-size:.82rem;color:rgba(255,255,255,.36);transition:color .2s}
+.fc a:hover{color:var(--gold-lt)}
+.fbot{border-top:1px solid rgba(255,255,255,.07);padding-top:20px;display:flex;justify-content:space-between;font-size:.7rem;color:rgba(255,255,255,.22);flex-wrap:wrap;gap:8px}
+@media(max-width:960px){
+  .topbar,.breadcrumb,.nav-inner,.page-hero,.pc-wrap,.page-contact,footer{padding-left:18px;padding-right:18px}
+  .nav-menu{display:none}
+  .page-hero{padding-top:48px;padding-bottom:40px}
+  .two-col{grid-template-columns:1fr}
+  .fg{grid-template-columns:1fr 1fr;gap:28px}
+  .fbot{flex-direction:column;text-align:center}
+  .cms{flex-direction:column;align-items:center}
+}
+</style>
+</head><body>
+<div class="topbar"><div class="tb-l"><span>🇨🇦 Windsor, ON · Independent Life Insurance Advisor</span><span>Licensed: ON · BC · AB · MB · SK · NS · PEI · NB</span></div><div class="tb-r"><a href="tel:6477456850">📞 647-745-6850</a><a href="https://wa.me/16477456850" target="_blank">💬 WhatsApp</a><a href="/cdn-cgi/l/email-protection#b9d0d7cacccbd8d7dadcdbc0cbd8cdcdd8d7f9ded4d8d0d597dad6d4">✉️ Email</a></div></div><nav><div class="nav-inner">
+  <a href="index.html" class="logo">Insurance <em>by Rattan</em><span class="logo-sub">Life Insurance Advisor · Windsor, ON</span></a>
+  <ul class="nav-menu">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="#">Insurance <span class="arr">▾</span></a>
+      <div class="dropdown">
+        <div class="dd-sec">Visitor &amp; Travel</div>
+        <a href="super-visa.html">🛂 Super Visa Insurance</a>
+        <a href="visitors.html">✈️ Visitors to Canada</a>
+        <a href="travel-insurance.html">🌍 Travel Insurance</a>
+        <a href="student-insurance.html">🎓 International Student Insurance</a>
+        <hr/><div class="dd-sec">Life Insurance</div>
+        <a href="term-life.html">🛡️ Term Life Insurance</a>
+        <a href="whole-life.html">🌱 Whole Life Insurance</a>
+        <a href="universal-life.html">⚙️ Universal Life Insurance</a>
+        <a href="mortgage-insurance.html">🏠 Mortgage Insurance</a>
+        <hr/><div class="dd-sec">Living Benefits</div>
+        <a href="critical-illness.html">❤️‍🩹 Critical Illness Insurance</a>
+        <a href="disability.html">🦺 Disability Insurance</a>
+        <a href="drug-dental.html">💊 Drug &amp; Dental Insurance</a>
+        <hr/><div class="dd-sec">Business</div>
+        <a href="business-insurance.html">💼 Business Insurance</a>
+      </div>
+    </li>
+    <li><a href="#">Investments <span class="arr">▾</span></a>
+      <div class="dropdown">
+        <a href="rrsp.html">📈 RRSP</a>
+        <a href="tfsa.html">💰 TFSA</a>
+        <a href="resp.html">🎓 RESP</a>
+        <a href="rdsp.html">♿ RDSP</a>
+        <a href="fhsa.html">🏡 FHSA</a>
+        <a href="non-registered.html">📊 Non-Registered Accounts</a>
+      </div>
+    </li>
+    <li><a href="quotes.html">Get Quotes</a></li>
+    <li><a href="awards.html">Awards</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="tel:6477456850" class="nav-phone">📞 647-745-6850</a>
+    <a href="quotes.html" class="nav-cta">Get a Quote</a>
+  </div>
+</div></nav><div class="breadcrumb"><a href="index.html">Home</a><span style="color:var(--border)">›</span><a href="#">Insurance</a><span style="color:var(--border)">›</span><span style="color:var(--ink);font-weight:500">Super Visa Insurance</span></div>
+<div class="page-hero">
+  <div class="ph-tag">🛂 Visitor & Travel Insurance</div>
+  <h1>Super Visa Insurance for Parents & Grandparents</h1><p>Super Visa Insurance is mandatory for parents and grandparents applying for a Canadian Super Visa. I compare all major Canadian providers to find the most affordable IRCC-compliant plan — quickly.</p>
+  <div class="ph-btns"><a href="https://www.insurancebyrattan.ca/super-visa-insurance/" target="_blank" class="btn-gold">⚡ Get Instant Quote</a><a href="tel:6477456850" class="btn-outline-w">📞 647-745-6850</a></div>
+</div>
+<div class="pc-wrap">
+  <ul class="cl"><li>Mandatory for Super Visa applications — must meet IRCC minimum requirements</li><li>Coverage from $100,000 minimum (we recommend $150,000–$300,000)</li><li>Plans available for pre-existing medical conditions</li><li>Monthly payment options available</li><li>Fast approval — often same day</li><li>Covers emergency hospitalization, medical care, and repatriation</li></ul>
+  <h3 class="subh">What is Super Visa Insurance?</h3><p class="bt">A Super Visa allows parents and grandparents of Canadian citizens and permanent residents to stay in Canada for up to 5 years at a time. To qualify, the applicant must show proof of Canadian medical insurance valid for at least one year, from a Canadian insurance company, with a minimum of $100,000 coverage.</p><h3 class="subh">What Does It Cover?</h3><ul class="cl"><li>Emergency hospitalization</li><li>Physician services</li><li>Diagnostic tests and lab fees</li><li>Prescription medication (related to emergency)</li><li>Ambulance transportation</li><li>Repatriation of remains</li></ul><h3 class="subh">Pre-Existing Conditions</h3><p class="bt">Many of my clients need coverage for parents with diabetes, heart conditions, or other pre-existing conditions. I specialize in finding plans that include stable pre-existing conditions at competitive rates.</p><h3 class="subh">Monthly Payment Plans</h3><p class="bt">Unlike annual lump-sum plans, many carriers now offer monthly Super Visa insurance — which can significantly reduce upfront costs. I compare both options so you get the best fit for your budget.</p><div class="icard"><h4>Get the Best Rate</h4><p>Rates vary significantly between carriers. I compare Manulife, Sun Life, Blue Cross, Destination Travel, Travelance, Tugo, and more to find the best price for your parents' specific health profile.</p></div>
+</div>
+<div class="page-contact">
+  <h3>Ready to get started?</h3>
+  <p>Call, email, or WhatsApp to schedule a free consultation. No pressure, no obligation — I respond the same day.</p>
+  <div class="cms">
+    <div class="cm"><div class="cm-ico">📞</div><div><h5>Phone</h5><a href="tel:6477456850">647-745-6850</a></div></div>
+    <div class="cm"><div class="cm-ico">💬</div><div><h5>WhatsApp</h5><a href="https://wa.me/16477456850" target="_blank">Message Rattan</a></div></div>
+    <div class="cm"><div class="cm-ico">✉️</div><div><h5>Email</h5><a href="/cdn-cgi/l/email-protection#066f6875737467686563647f74677272676846616b676f6a2865696b"><span class="__cf_email__" data-cfemail="bdd4d3cec8cfdcd3ded8dfc4cfdcc9c9dcd3fddad0dcd4d193ded2d0">[email&#160;protected]</span></a></div></div>
+    <div class="cm"><div class="cm-ico">⚡</div><div><h5>Online Quote</h5><a href="https://www.insurancebyrattan.ca/super-visa-insurance/" target="_blank">Get Instant Quote</a></div></div>
+  </div>
+</div><footer><div class="fg">
+  <div class="fb"><a href="index.html" class="fl">Insurance <em>by Rattan</em></a><p>Rattan Amol Taggar · Life Insurance Advisor · B.Eng · Licensed in ON, BC, AB, MB, SK, NS, PEI, NB · Windsor, ON · Independent — not affiliated with any single carrier.</p></div>
+  <div class="fc"><h5>Insurance</h5><ul>
+    <li><a href="super-visa.html">Super Visa Insurance</a></li>
+    <li><a href="visitors.html">Visitors to Canada</a></li>
+    <li><a href="term-life.html">Term Life Insurance</a></li>
+    <li><a href="critical-illness.html">Critical Illness</a></li>
+    <li><a href="disability.html">Disability Insurance</a></li>
+    <li><a href="mortgage-insurance.html">Mortgage Insurance</a></li>
+    <li><a href="drug-dental.html">Drug &amp; Dental</a></li>
+  </ul></div>
+  <div class="fc"><h5>Investments</h5><ul>
+    <li><a href="rrsp.html">RRSP</a></li>
+    <li><a href="tfsa.html">TFSA</a></li>
+    <li><a href="resp.html">RESP</a></li>
+    <li><a href="rdsp.html">RDSP</a></li>
+    <li><a href="fhsa.html">FHSA</a></li>
+    <li><a href="non-registered.html">Non-Registered Accounts</a></li>
+    <li><a href="business-insurance.html">Business Insurance</a></li>
+  </ul></div>
+  <div class="fc"><h5>Connect</h5><ul>
+    <li><a href="tel:6477456850">📞 647-745-6850</a></li>
+    <li><a href="https://wa.me/16477456850" target="_blank">💬 WhatsApp</a></li>
+    <li><a href="/cdn-cgi/l/email-protection#472e2934323526292422253e35263333262907202a262e2b6924282a">✉️ Email Rattan</a></li>
+    <li><a href="awards.html">🏆 Awards</a></li>
+    <li><a href="https://www.facebook.com/punjabifinance" target="_blank">Facebook</a></li>
+    <li><a href="https://www.instagram.com/punjabifinance" target="_blank">Instagram</a></li>
+    <li><a href="https://www.TikTok</a></li>
+    <li><a href="https://www.youtube.com/@punjabifinance" target="_blank">YouTube</a></li>
+  </ul></div>
+</div><div class="fbot">
+  <span>&copy; 2026 Insurance by Rattan &middot; Rattan Amol Taggar &middot; All rights reserved.</span>
+  <span>Independent Advisor &middot; Not affiliated with any single carrier</span>
+</div></footer>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.qa-header').forEach(function(header) {
+    header.addEventListener('click', function() {
+      var wasOpen = header.classList.contains('open');
+      document.querySelectorAll('.qa-header').forEach(function(h2) {
+        h2.classList.remove('open');
+        if (h2.nextElementSibling) h2.nextElementSibling.classList.remove('open');
+      });
+      if (!wasOpen) {
+        header.classList.add('open');
+        if (header.nextElementSibling) header.nextElementSibling.classList.add('open');
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>About Rattan — Our Story, Vision &amp; Mission | Insurance by Rattan</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet"/><style>
+:root{
+  --ink:#0d1a12;--forest:#1a3828;--leaf:#2a5c40;--sage:#4e8268;
+  --mist:#eaf3ee;--gold:#b86e2a;--gold-lt:#d4893a;--gold-dk:#8f521e;
+  --cream:#f5f2ed;--paper:#fdfcfa;--white:#fff;--mid:#4e5e53;--border:#d8e5dc;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;font-size:20px;line-height:1.7}
+a{text-decoration:none;color:inherit}
+.topbar{background:var(--forest);padding:9px 56px;display:flex;align-items:center;justify-content:space-between;font-size:.78rem;color:rgba(255,255,255,.72)}
+.tb-l,.tb-r{display:flex;gap:22px;align-items:center}
+.topbar a{color:rgba(255,255,255,.78);font-weight:500;transition:color .2s;display:flex;align-items:center;gap:5px}
+.topbar a:hover{color:var(--gold-lt)}
+nav{position:sticky;top:0;z-index:200;background:var(--paper);border-bottom:1px solid var(--border);box-shadow:0 2px 18px rgba(13,26,18,.06)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:0 56px;height:74px}
+.logo{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--forest);display:flex;flex-direction:column;line-height:1.2}
+.logo em{color:var(--gold);font-style:normal}
+.logo-sub{font-family:'DM Sans',sans-serif;font-size:.62rem;font-weight:500;color:var(--mid);letter-spacing:.1em;text-transform:uppercase}
+.nav-menu{display:flex;gap:2px;list-style:none;align-items:center}
+.nav-menu>li{position:relative}
+.nav-menu>li>a{font-size:.86rem;font-weight:500;color:var(--mid);padding:8px 13px;border-radius:6px;transition:all .2s;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.nav-menu>li>a:hover{color:var(--forest);background:var(--mist)}
+.arr{font-size:.6rem;transition:transform .2s;display:inline-block;margin-top:1px}
+.nav-menu>li:hover .arr{transform:rotate(180deg)}
+.dropdown{display:none;position:absolute;top:calc(100% + 6px);left:0;background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:8px;min-width:240px;box-shadow:0 8px 36px rgba(13,26,18,.13);z-index:400}
+.nav-menu>li:hover .dropdown{display:block}
+.dropdown a{display:flex;align-items:center;gap:9px;padding:9px 13px;border-radius:6px;font-size:.84rem;color:var(--mid);transition:all .2s;white-space:nowrap}
+.dropdown a:hover{background:var(--mist);color:var(--forest)}
+.dd-sec{font-size:.62rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--sage);padding:10px 13px 4px;margin-top:2px}
+.dropdown hr{border:none;border-top:1px solid var(--border);margin:5px 0}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.nav-phone{font-size:.86rem;font-weight:600;color:var(--forest)}
+.nav-cta{background:var(--gold);color:var(--white);padding:9px 22px;border-radius:6px;font-size:.82rem;font-weight:600;transition:background .2s,transform .15s}
+.nav-cta:hover{background:var(--gold-lt);transform:translateY(-1px)}
+.breadcrumb{background:var(--white);padding:13px 56px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--mid)}
+.breadcrumb a{color:var(--sage);transition:color .2s}
+.breadcrumb a:hover{color:var(--forest)}
+.page-hero{background:linear-gradient(135deg,var(--forest) 0%,var(--ink) 100%);padding:72px 56px 60px;position:relative;overflow:hidden}
+.page-hero::before{content:'';position:absolute;top:-80px;right:-80px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(180,110,42,.18) 0%,transparent 65%);pointer-events:none}
+.ph-tag{font-size:.7rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-lt);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.ph-tag::after{content:'';display:block;width:20px;height:2px;background:var(--gold-lt);border-radius:2px}
+.page-hero h1{font-family:'DM Serif Display',serif;font-size:clamp(2.2rem,4vw,3.4rem);color:var(--white);line-height:1.12;margin-bottom:16px}
+.page-hero p{font-size:1.05rem;line-height:1.82;color:rgba(255,255,255,.62);max-width:640px;font-weight:300}
+.ph-btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.pc-wrap{max-width:980px;margin:0 auto;padding:68px 56px}
+.sec-tag{font-size:.68rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:11px}
+.sec-tag::after{content:'';display:block;width:20px;height:2px;background:var(--gold);border-radius:2px}
+h2.sh{font-family:'DM Serif Display',serif;font-size:clamp(1.9rem,2.8vw,2.6rem);color:var(--forest);line-height:1.15;margin-bottom:16px}
+h3.subh{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--forest);margin:36px 0 12px}
+p.bt{font-size:1rem;line-height:1.92;color:var(--mid);font-weight:300;margin-bottom:16px}
+ul.cl{list-style:none;display:flex;flex-direction:column;gap:10px;margin:16px 0}
+ul.cl li{display:flex;align-items:flex-start;gap:12px;font-size:.97rem;color:var(--mid);font-weight:300;line-height:1.65}
+ul.cl li::before{content:'&#10003;';color:var(--gold);font-weight:700;flex-shrink:0;margin-top:2px}
+.icard{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:28px 34px;margin:26px 0;border-left:4px solid var(--gold)}
+.icard h4{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--forest);margin-bottom:10px}
+.icard p{font-size:.97rem;line-height:1.82;color:var(--mid);font-weight:300}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:22px 0}
+.page-contact{background:var(--forest);padding:60px 56px;text-align:center}
+.page-contact h3{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--white);margin-bottom:12px}
+.page-contact>p{font-size:.97rem;color:rgba(255,255,255,.58);margin-bottom:32px;font-weight:300;max-width:480px;margin-left:auto;margin-right:auto}
+.cms{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.cm{display:flex;align-items:center;gap:13px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:18px 26px}
+.cm-ico{font-size:1.25rem}
+.cm h5{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:3px}
+.cm a{font-size:.97rem;font-weight:600;color:var(--white);transition:color .2s}
+.cm a:hover{color:var(--gold-lt)}
+.btn-gold{background:var(--gold);color:var(--white);padding:15px 30px;border-radius:7px;font-size:.9rem;font-weight:600;display:inline-flex;align-items:center;gap:8px;transition:background .2s,transform .2s,box-shadow .2s;border:none;cursor:pointer}
+.btn-gold:hover{background:var(--gold-lt);transform:translateY(-2px);box-shadow:0 10px 28px rgba(180,110,42,.38)}
+.btn-outline-w{border:1.5px solid rgba(255,255,255,.38);color:var(--white);padding:15px 30px;border-radius:7px;font-size:.9rem;font-weight:500;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.btn-outline-w:hover{border-color:var(--gold-lt);background:rgba(180,110,42,.15)}
+footer{background:var(--ink);padding:56px 56px 28px}
+.fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:44px;margin-bottom:40px}
+.fl{font-family:'DM Serif Display',serif;font-size:1.18rem;color:var(--white);display:block;margin-bottom:11px}
+.fl em{color:var(--gold);font-style:normal}
+.fb p{font-size:.82rem;line-height:1.9;color:rgba(255,255,255,.32);max-width:230px}
+.fc h5{font-size:.64rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.fc ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.fc a{font-size:.82rem;color:rgba(255,255,255,.36);transition:color .2s}
+.fc a:hover{color:var(--gold-lt)}
+.fbot{border-top:1px solid rgba(255,255,255,.07);padding-top:20px;display:flex;justify-content:space-between;font-size:.72rem;color:rgba(255,255,255,.22);flex-wrap:wrap;gap:8px}
+@media(max-width:960px){
+  .topbar,.breadcrumb,.nav-inner{padding-left:16px;padding-right:16px}
+  .nav-menu{display:none}
+  .page-hero{padding:52px 16px 42px}
+  .pc-wrap{padding:48px 16px}
+  .page-contact{padding:52px 16px}
+  .two-col{grid-template-columns:1fr}
+  footer{padding:44px 16px 22px}
+  .fg{grid-template-columns:1fr 1fr;gap:28px}
+  .fbot{flex-direction:column;text-align:center}
+  .cms{flex-direction:column;align-items:center}
+}
+</style>
+</head><body>
+<div class="topbar"><div class="tb-l"><span>&#127464;&#127462; Windsor, ON &middot; Independent Life Insurance Advisor</span><span>Licensed: ON &middot; BC &middot; AB &middot; MB &middot; SK &middot; NS &middot; PEI &middot; NB</span></div><div class="tb-r"><a href="tel:6477456850">&#128222; 647-745-6850</a><a href="/cdn-cgi/l/email-protection#e28b8c919790838c8187809b90839696838ca2858f838b8ecc818d8f">&#9993;&#65039; <span class="__cf_email__" data-cfemail="3950574a4c4b58575a5c5b404b584d4d5857795e54585055175a5654">[email&#160;protected]</span></a></div></div><nav><div class="nav-inner">
+  <a href="index.html" class="logo">Insurance <em>by Rattan</em><span class="logo-sub">Life Insurance Advisor &middot; Windsor, ON</span></a>
+  <ul class="nav-menu">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="#">Insurance <span class="arr">&#9662;</span></a>
+      <div class="dropdown">
+        <div class="dd-sec">Visitor &amp; Travel</div>
+        <a href="super-visa.html">&#128706; Super Visa Insurance</a>
+        <a href="visitors.html">&#9992;&#65039; Visitors to Canada</a>
+        <a href="travel-insurance.html">&#127757; Travel Insurance</a>
+        <a href="student-insurance.html">&#127891; International Student Insurance</a>
+        <hr/><div class="dd-sec">Life Insurance</div>
+        <a href="term-life.html">&#128737;&#65039; Term Life Insurance</a>
+        <a href="whole-life.html">&#127807; Whole Life Insurance</a>
+        <a href="universal-life.html">&#9881;&#65039; Universal Life Insurance</a>
+        <a href="mortgage-insurance.html">&#127968; Mortgage Insurance</a>
+        <hr/><div class="dd-sec">Living Benefits</div>
+        <a href="critical-illness.html">&#10084;&#65039; Critical Illness Insurance</a>
+        <a href="disability.html">&#129466; Disability Insurance</a>
+        <a href="drug-dental.html">&#128138; Drug &amp; Dental Insurance</a>
+        <hr/><div class="dd-sec">Business</div>
+        <a href="business-insurance.html">&#128188; Business Insurance</a>
+        <a href="estate-planning.html">&#127981; Estate Planning</a>
+      </div>
+    </li>
+    <li><a href="#">Investments <span class="arr">&#9662;</span></a>
+      <div class="dropdown">
+        <a href="rrsp.html">&#128200; RRSP</a>
+        <a href="tfsa.html">&#128176; TFSA</a>
+        <a href="resp.html">&#127891; RESP</a>
+        <a href="rdsp.html">&#9855; RDSP</a>
+        <a href="fhsa.html">&#127969; FHSA</a>
+        <a href="non-registered.html">&#128202; Non-Registered Accounts</a>
+        <a href="retirement-planning.html">&#127774; Retirement Planning</a>
+      </div>
+    </li>
+    <li><a href="quotes.html">Get Quotes</a></li>
+    <li><a href="awards.html">Awards</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="tel:6477456850" class="nav-phone">&#128222; 647-745-6850</a>
+    <a href="quotes.html" class="nav-cta">Get a Quote</a>
+  </div>
+</div></nav><div class="breadcrumb"><a href="index.html">Home</a><span style="color:var(--border)">&rsaquo;</span><span style="color:var(--ink);font-weight:500">About</span></div>
+<div class="page-hero" style="display:grid;grid-template-columns:1fr 340px;gap:56px;align-items:center">
+  <div>
+    <div class="ph-tag">&#127981; Our Story</div>
+    <h1>From the factory floor<br>to your family's future.</h1>
+    <p>Rattan Amol Taggar built a career on precision, trust, and impact &mdash; first as an engineer at Ford Motor Company, now as one of Canada's most trusted independent life insurance advisors.</p>
+  </div>
+  <div style="position:relative;border-radius:12px;overflow:hidden;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)">
+    <img src="rattan-photo.png" alt="Rattan Amol Taggar" style="width:100%;display:block"/>
+  </div>
+</div>
+
+<div class="pc-wrap">
+
+  <!-- Story -->
+  <div class="sec-tag">My Story</div>
+  <h2 class="sh">A path built on purpose,<br>not coincidence.</h2>
+  <p class="bt">I grew up watching family members navigate a financial system that wasn't built for them &mdash; complicated paperwork, confusing policies, advisors who were more salespeople than advocates. I knew there had to be a better way.</p>
+  <p class="bt">After earning my engineering degree, I joined <strong style="color:var(--forest)">Ford Motor Company</strong>, where I spent years solving complex problems under pressure &mdash; analyzing systems, identifying risks, and finding the most efficient path forward. It was rigorous, detail-oriented work, and I loved it.</p>
+  <p class="bt">But I kept coming back to a different problem: the families around me &mdash; hardworking Canadians, newcomers, young parents, small business owners &mdash; were either underinsured, over-paying, or simply had no plan at all. I realized my engineering mindset could be applied somewhere far more personal: protecting people's financial lives.</p>
+  <p class="bt">In 2021, I became a licensed life insurance advisor. Within the first year, I earned the <strong style="color:var(--forest)">iA CBP designation</strong> &mdash; and have earned it every single year since. By 2025 I had reached the <strong style="color:var(--forest)">IA Premier Excellence level</strong>, and in 2026 I achieved <strong style="color:var(--forest)">IA Premier Expert</strong> &mdash; the top tier of recognition within iA Financial Group.</p>
+  <p class="bt">Today I serve 500+ families across 8 provinces. I also founded <strong style="color:var(--forest)">PunjabiFinance</strong>, a community of 175,000+ Canadians &mdash; especially millennials and new immigrants &mdash; learning to navigate personal finance, insurance, and investments. When you call 647-745-6850, you reach me directly. Not a call centre. Not an assistant. Me.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:48px 0">
+
+    <!-- Vision -->
+    <div style="background:linear-gradient(135deg,var(--forest) 0%,var(--ink) 100%);border-radius:12px;padding:36px 32px;position:relative;overflow:hidden">
+      <div style="position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(180,110,42,.15);pointer-events:none"></div>
+      <div style="font-size:2rem;margin-bottom:14px">&#127748;</div>
+      <div style="font-size:.68rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-lt);margin-bottom:10px">Our Vision</div>
+      <h3 style="font-family:'DM Serif Display',serif;font-size:1.35rem;color:var(--white);line-height:1.25;margin-bottom:14px">A Canada where every family has a plan &mdash; and the confidence to trust it.</h3>
+      <p style="font-size:.95rem;line-height:1.82;color:rgba(255,255,255,.55);font-weight:300">I envision a future where financial protection is not a privilege for the few, but a foundation for every household &mdash; regardless of background, language, or where you're starting from. Every Canadian family deserves an advisor who speaks plainly, shops independently, and actually shows up.</p>
+    </div>
+
+    <!-- Mission -->
+    <div style="background:linear-gradient(135deg,#7a4a18 0%,#3a1e08 100%);border-radius:12px;padding:36px 32px;position:relative;overflow:hidden">
+      <div style="position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.06);pointer-events:none"></div>
+      <div style="font-size:2rem;margin-bottom:14px">&#127919;</div>
+      <div style="font-size:.68rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,220,150,.75);margin-bottom:10px">Our Mission</div>
+      <h3 style="font-family:'DM Serif Display',serif;font-size:1.35rem;color:var(--white);line-height:1.25;margin-bottom:14px">To deliver independent, expert advice that puts your family first &mdash; every single time.</h3>
+      <p style="font-size:.95rem;line-height:1.82;color:rgba(255,255,255,.55);font-weight:300">My mission is to combine the analytical rigour of an engineer with the empathy of a trusted advisor &mdash; comparing 25+ carriers, reading every clause, and explaining everything in plain language so you can make the best decision for your family with complete confidence.</p>
+    </div>
+  </div>
+
+  <!-- Values -->
+  <div class="sec-tag" style="margin-top:16px">Core Values</div>
+  <h2 class="sh">What I stand for.</h2>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px">
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:28px 24px">
+      <div style="font-size:1.8rem;margin-bottom:12px">&#128270;</div>
+      <h4 style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--forest);margin-bottom:8px">Total Transparency</h4>
+      <p style="font-size:.93rem;line-height:1.78;color:var(--mid);font-weight:300">I explain every policy, every exclusion, and every trade-off in plain language. You will never be surprised by your coverage.</p>
+    </div>
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:28px 24px">
+      <div style="font-size:1.8rem;margin-bottom:12px">&#9878;&#65039;</div>
+      <h4 style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--forest);margin-bottom:8px">True Independence</h4>
+      <p style="font-size:.93rem;line-height:1.78;color:var(--mid);font-weight:300">I am not employed by any insurer. I work for you &mdash; period. My only incentive is to find the best plan at the best price.</p>
+    </div>
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:28px 24px">
+      <div style="font-size:1.8rem;margin-bottom:12px">&#129309;</div>
+      <h4 style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--forest);margin-bottom:8px">Long-Term Relationships</h4>
+      <p style="font-size:.93rem;line-height:1.78;color:var(--mid);font-weight:300">Most of my clients come back &mdash; and bring their families. That's not an accident. It's the result of doing right by people, every time.</p>
+    </div>
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:28px 24px">
+      <div style="font-size:1.8rem;margin-bottom:12px">&#128202;</div>
+      <h4 style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--forest);margin-bottom:8px">Engineering Rigour</h4>
+      <p style="font-size:.93rem;line-height:1.78;color:var(--mid);font-weight:300">I approach every client file the way I approached every engineering problem: with data, diligence, and zero tolerance for shortcuts.</p>
+    </div>
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:28px 24px">
+      <div style="font-size:1.8rem;margin-bottom:12px">&#127760;</div>
+      <h4 style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--forest);margin-bottom:8px">Community First</h4>
+      <p style="font-size:.93rem;line-height:1.78;color:var(--mid);font-weight:300">PunjabiFinance exists because financial literacy shouldn't come with a language barrier. I give back by educating 175,000+ Canadians for free.</p>
+    </div>
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:28px 24px">
+      <div style="font-size:1.8rem;margin-bottom:12px">&#9889;</div>
+      <h4 style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--forest);margin-bottom:8px">Speed &amp; Reliability</h4>
+      <p style="font-size:.93rem;line-height:1.78;color:var(--mid);font-weight:300">I respond the same day. I handle all paperwork. Many clients are approved within 24 hours. Reliability isn't a feature &mdash; it's the baseline.</p>
+    </div>
+  </div>
+
+  <!-- Awards snapshot -->
+  <div class="icard" style="margin-top:48px">
+    <h4>&#127885; Awards &amp; Recognition</h4>
+    <p>iA Financial Group CBP Award: 2021 &middot; 2022 &middot; 2023 &middot; 2024 &middot; 2025 &nbsp;&nbsp;|&nbsp;&nbsp; IA Premier Excellence Level: 2025 &nbsp;&nbsp;|&nbsp;&nbsp; IA Premier Expert Level: 2026 &nbsp;&nbsp;|&nbsp;&nbsp; 400+ Five-Star Google Reviews</p>
+    <p style="margin-top:10px"><a href="awards.html" style="color:var(--gold);font-weight:600;font-size:.9rem">See full awards page &rarr;</a></p>
+  </div>
+
+</div>
+<div class="page-contact">
+  <h3>Ready to get started?</h3>
+  <p>Call or email to schedule a free, no-obligation consultation. I respond the same day.</p>
+  <div class="cms">
+    <div class="cm"><div class="cm-ico">&#128222;</div><div><h5>Phone</h5><a href="tel:6477456850">647-745-6850</a></div></div>
+    <div class="cm"><div class="cm-ico">&#9993;&#65039;</div><div><h5>Email</h5><a href="/cdn-cgi/l/email-protection#2b4245585e594a45484e4952594a5f5f4a456b4c464a424705484446"><span class="__cf_email__" data-cfemail="721b1c010700131c1117100b00130606131c32151f131b1e5c111d1f">[email&#160;protected]</span></a></div></div>
+    
+  </div>
+</div><footer><div class="fg">
+  <div class="fb"><a href="index.html" class="fl">Insurance <em>by Rattan</em></a><p>Rattan Amol Taggar &middot; Life Insurance Advisor &middot; B.Eng &middot; Ford Motor Company Alumni &middot; Licensed in ON, BC, AB, MB, SK, NS, PEI, NB &middot; Independent &mdash; not affiliated with any single carrier.</p></div>
+  <div class="fc"><h5>Insurance</h5><ul>
+    <li><a href="super-visa.html">Super Visa Insurance</a></li>
+    <li><a href="visitors.html">Visitors to Canada</a></li>
+    <li><a href="term-life.html">Term Life Insurance</a></li>
+    <li><a href="critical-illness.html">Critical Illness</a></li>
+    <li><a href="disability.html">Disability Insurance</a></li>
+    <li><a href="mortgage-insurance.html">Mortgage Insurance</a></li>
+    <li><a href="estate-planning.html">Estate Planning</a></li>
+  </ul></div>
+  <div class="fc"><h5>Investments</h5><ul>
+    <li><a href="rrsp.html">RRSP</a></li>
+    <li><a href="tfsa.html">TFSA</a></li>
+    <li><a href="resp.html">RESP</a></li>
+    <li><a href="rdsp.html">RDSP</a></li>
+    <li><a href="fhsa.html">FHSA</a></li>
+    <li><a href="non-registered.html">Non-Registered</a></li>
+    <li><a href="retirement-planning.html">Retirement Planning</a></li>
+  </ul></div>
+  <div class="fc"><h5>Connect</h5><ul>
+    <li><a href="tel:6477456850">647-745-6850</a></li>
+    <li><a href="/cdn-cgi/l/email-protection#8fe6e1fcfafdeee1eceaedf6fdeefbfbeee1cfe8e2eee6e3a1ece0e2">Email Rattan</a></li>
+    <li><a href="quotes.html">Get Instant Quotes</a></li>
+    <li><a href="awards.html">Awards &amp; Recognition</a></li>
+    <li><a href="about.html">About / Our Story</a></li>
+    <li><a href="https://www.facebook.com/punjabifinance" target="_blank"></li>
+    <li><a href="https://www.instagram.com/punjabifinance" target="_blank">Instagram</a></li>
+    <li><a href="https://www.tiktok.com/@punjabifinance" target="_blank">TikTok</a></li>
+    <li><a href="https://www.youtube.com/@punjabifinance" target="_blank">YouTube</a></li>
+  </ul></div>
+</div><div class="fbot">
+  <span>&copy; 2026 Insurance by Rattan &middot; Rattan Amol Taggar &middot; All rights reserved.</span>
+  <span>Independent Advisor &middot; Not affiliated with any single carrier</span>
+</div></footer>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.qa-header').forEach(function(header) {
+    header.addEventListener('click', function() {
+      var wasOpen = header.classList.contains('open');
+      document.querySelectorAll('.qa-header').forEach(function(h2) {
+        h2.classList.remove('open');
+        if (h2.nextElementSibling) h2.nextElementSibling.classList.remove('open');
+      });
+      if (!wasOpen) {
+        header.classList.add('open');
+        if (header.nextElementSibling) header.nextElementSibling.classList.add('open');
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>
