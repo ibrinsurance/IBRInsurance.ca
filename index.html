@@ -4,366 +4,356 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Insurance by Rattan | Life Insurance Advisor | Windsor, ON</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
 <style>
-:root{--ink:#0d1a12;--forest:#1a3828;--leaf:#2a5c40;--sage:#4e8268;--mist:#eaf3ee;--gold:#b86e2a;--gold-lt:#d4893a;--gold-dk:#8f521e;--cream:#f5f2ed;--paper:#fdfcfa;--white:#fff;--mid:#4e5e53;--border:#d8e5dc;}
+:root{
+  --black:#0a0a0a;
+  --dark:#111827;
+  --card:#1a1f2e;
+  --forest:#0f3d2e;
+  --green:#16a34a;
+  --green-lt:#22c55e;
+  --green-dim:#dcfce7;
+  --amber:#d97706;
+  --amber-lt:#f59e0b;
+  --amber-dim:#fef3c7;
+  --white:#ffffff;
+  --off:#f8fafc;
+  --muted:#6b7280;
+  --border:#e5e7eb;
+  --dark-border:#2d3748;
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;font-size:20px;line-height:1.72}
+body{font-family:'Inter',sans-serif;background:var(--white);color:var(--black);overflow-x:hidden;font-size:18px;line-height:1.6}
 a{text-decoration:none;color:inherit}
-.topbar{background:var(--forest);padding:9px 56px;display:flex;align-items:center;justify-content:space-between;font-size:.76rem;color:rgba(255,255,255,.72)}
-.tb-l,.tb-r{display:flex;gap:22px;align-items:center}
-.topbar a{color:rgba(255,255,255,.78);font-weight:500;transition:color .2s;display:flex;align-items:center;gap:5px}
-.topbar a:hover{color:var(--gold-lt)}
-nav{position:sticky;top:0;z-index:200;background:var(--paper);border-bottom:1px solid var(--border);box-shadow:0 2px 18px rgba(13,26,18,.06)}
-.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:0 56px;height:74px}
-.logo{font-family:'DM Serif Display',serif;font-size:1.35rem;color:var(--forest);display:flex;flex-direction:column;line-height:1.2}
-.logo em{color:var(--gold);font-style:normal}
-.logo-sub{font-family:'DM Sans',sans-serif;font-size:.58rem;font-weight:500;color:var(--mid);letter-spacing:.1em;text-transform:uppercase}
-.nav-menu{display:flex;gap:2px;list-style:none;align-items:center}
+img{max-width:100%;display:block}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--black);padding:10px 60px;display:flex;align-items:center;justify-content:space-between;font-size:.75rem;color:rgba(255,255,255,.6)}
+.tb-r{display:flex;gap:20px;align-items:center}
+.topbar a{color:rgba(255,255,255,.7);transition:color .2s}
+.topbar a:hover{color:var(--amber-lt)}
+.tb-badge{background:var(--green);color:var(--white);padding:3px 10px;border-radius:20px;font-size:.65rem;font-weight:700;letter-spacing:.05em}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:200;background:var(--white);border-bottom:1px solid var(--border);box-shadow:0 1px 12px rgba(0,0,0,.06)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:0 60px;height:72px}
+.logo{display:flex;flex-direction:column;line-height:1.15}
+.logo-main{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--black);font-weight:400}
+.logo-main em{color:var(--green);font-style:normal}
+.logo-sub{font-size:.58rem;font-weight:600;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+.nav-menu{display:flex;gap:4px;list-style:none;align-items:center}
 .nav-menu>li{position:relative}
-.nav-menu>li>a{font-size:.82rem;font-weight:500;color:var(--mid);padding:8px 12px;border-radius:6px;transition:all .2s;display:flex;align-items:center;gap:4px;white-space:nowrap}
-.nav-menu>li>a:hover{color:var(--forest);background:var(--mist)}
-.arr{font-size:.58rem;transition:transform .2s;display:inline-block}
+.nav-menu>li>a{font-size:.84rem;font-weight:500;color:#374151;padding:8px 13px;border-radius:6px;transition:all .2s;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.nav-menu>li>a:hover{color:var(--black);background:var(--off)}
+.arr{font-size:.55rem;transition:transform .25s}
 .nav-menu>li:hover .arr{transform:rotate(180deg)}
-.dropdown{display:none;position:absolute;top:calc(100% + 6px);left:0;background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:8px;min-width:250px;box-shadow:0 8px 36px rgba(13,26,18,.13);z-index:400}
+.dropdown{display:none;position:absolute;top:calc(100%+8px);left:0;background:var(--white);border:1px solid var(--border);border-radius:12px;padding:8px;min-width:260px;box-shadow:0 12px 40px rgba(0,0,0,.12);z-index:400}
 .nav-menu>li:hover .dropdown{display:block}
-.dropdown a{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:6px;font-size:.8rem;color:var(--mid);transition:all .2s;white-space:nowrap}
-.dropdown a:hover{background:var(--mist);color:var(--forest)}
-.dd-sec{font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--sage);padding:10px 12px 4px}
+.dropdown a{display:flex;align-items:center;gap:10px;padding:10px 13px;border-radius:8px;font-size:.83rem;color:#374151;transition:all .2s;white-space:nowrap}
+.dropdown a:hover{background:var(--off);color:var(--black)}
+.dd-sec{font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding:10px 13px 4px}
 .dropdown hr{border:none;border-top:1px solid var(--border);margin:5px 0}
 .nav-actions{display:flex;align-items:center;gap:10px}
-.nav-phone{font-size:.83rem;font-weight:600;color:var(--forest)}
-.nav-cta{background:var(--gold);color:var(--white);padding:9px 20px;border-radius:6px;font-size:.79rem;font-weight:600;transition:background .2s,transform .15s}
-.nav-cta:hover{background:var(--gold-lt);transform:translateY(-1px)}
-.hero{background:var(--forest);min-height:calc(100vh - 114px);display:grid;grid-template-columns:1fr 480px;position:relative;overflow:hidden}
-.hero-bg{position:absolute;inset:0;pointer-events:none}
-.hero-bg svg{position:absolute;inset:0;width:100%;height:100%}
-.hero-glow{position:absolute;top:-10%;right:480px;width:580px;height:580px;border-radius:50%;background:radial-gradient(circle,rgba(180,110,42,.22) 0%,transparent 65%);pointer-events:none}
-.hero-left{position:relative;z-index:2;padding:80px 56px;display:flex;flex-direction:column;justify-content:center}
-.eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:30px}
-.e-pill{background:rgba(180,110,42,.2);border:1px solid rgba(180,110,42,.38);border-radius:4px;padding:5px 15px;font-size:.65rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-lt)}
-.e-line{width:28px;height:1px;background:rgba(180,110,42,.4)}
-.e-txt{font-size:.72rem;color:rgba(255,255,255,.4);letter-spacing:.05em}
-.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(3rem,5.2vw,5.2rem);line-height:1.04;color:var(--white);letter-spacing:-.01em;margin-bottom:8px}
-.hero h1 .italic{display:block;font-style:italic;color:var(--gold-lt)}
-.hero-desc{font-size:1rem;line-height:1.84;color:rgba(255,255,255,.62);font-weight:300;max-width:490px;margin:22px 0 36px}
-.hero-desc strong{color:rgba(255,255,255,.92);font-weight:600}
-.hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:46px}
-.btn-gold{background:var(--gold);color:var(--white);padding:14px 28px;border-radius:7px;font-size:.86rem;font-weight:600;display:inline-flex;align-items:center;gap:8px;transition:background .2s,transform .2s,box-shadow .2s;border:none;cursor:pointer}
-.btn-gold:hover{background:var(--gold-lt);transform:translateY(-2px);box-shadow:0 10px 28px rgba(180,110,42,.38)}
-.btn-ghost{border:1.5px solid rgba(255,255,255,.28);color:rgba(255,255,255,.92);padding:14px 28px;border-radius:7px;font-size:.86rem;font-weight:500;display:inline-flex;align-items:center;gap:8px;transition:all .2s}
-.btn-ghost:hover{border-color:var(--gold-lt);background:rgba(180,110,42,.14)}
-.ql-lbl{font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:10px}
-.ql-row{display:flex;gap:8px;flex-wrap:wrap}
-.ql-pill{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:100px;padding:8px 17px;font-size:.8rem;font-weight:500;color:rgba(255,255,255,.72);transition:all .2s}
-.ql-pill:hover{background:rgba(180,110,42,.22);border-color:rgba(180,110,42,.55);color:var(--white)}
-.hero-right{background:var(--paper);position:relative;z-index:2;display:flex;flex-direction:column;padding:48px 42px;border-left:4px solid var(--gold);overflow-y:auto}
-.qpanel-badge{display:inline-flex;align-items:center;gap:8px;background:var(--mist);border-radius:6px;padding:7px 14px;margin-bottom:18px;width:fit-content;font-size:.72rem;font-weight:600;color:var(--forest)}
-.badge-dot{width:7px;height:7px;background:#3ab76a;border-radius:50%;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.qpanel-title{font-family:'DM Serif Display',serif;font-size:1.75rem;color:var(--forest);margin-bottom:4px;line-height:1.2}
-.qpanel-sub{font-size:.8rem;color:var(--mid);margin-bottom:22px}
-.qa-section{margin-bottom:7px}
-.qa-header{display:flex;align-items:center;justify-content:space-between;background:var(--mist);border:1px solid var(--border);border-radius:8px;padding:13px 16px;cursor:pointer;transition:background .2s;user-select:none}
-.qa-header:hover{background:#dceee4;border-color:var(--sage)}
-.qa-header.open{background:var(--forest);border-color:var(--forest);border-radius:8px 8px 0 0}
-.qa-label{font-size:.85rem;font-weight:600;color:var(--forest)}
-.qa-header.open .qa-label{color:var(--white)}
-.qa-arrow{font-size:.68rem;color:var(--sage);transition:transform .3s}
-.qa-header.open .qa-arrow{transform:rotate(180deg);color:rgba(255,255,255,.7)}
-.qa-body{display:none;background:var(--white);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;overflow:hidden}
-.qa-body.open{display:block}
-.qa-link{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;font-size:.82rem;color:var(--mid);border-bottom:1px solid var(--mist);transition:background .15s}
-.qa-link:last-child{border-bottom:none}
-.qa-link:hover{background:var(--mist);color:var(--forest)}
-.qa-link span{font-size:.7rem;color:var(--gold);font-weight:600}
-.qpanel-note{font-size:.68rem;color:var(--mid);margin-top:12px;line-height:1.6;padding:10px 13px;background:var(--mist);border-radius:6px}
-.trust{background:var(--ink);padding:15px 56px;display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap}
-.ti{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.76);font-size:.74rem;font-weight:500}
-.ti-sep{width:1px;height:16px;background:rgba(255,255,255,.14)}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);background:var(--white);border-bottom:2px solid var(--border)}
-.stat{padding:38px 24px;text-align:center;border-right:1px solid var(--border)}
-.stat:last-child{border-right:none}
-.stat.vis{opacity:1;transform:translateY(0)}
-.stat-n{font-family:'Bebas Neue',sans-serif;font-size:3.4rem;line-height:1;color:var(--forest)}
-.stat-n em{color:var(--gold);font-style:normal;font-size:1.9rem}
-.stat-stars{color:#f5a623;font-size:.9rem;letter-spacing:3px;margin:4px 0}
-.stat-l{font-size:.8rem;color:var(--mid);line-height:1.5;margin-top:4px}
-.carriers{background:var(--mist);padding:26px 0;border-bottom:1px solid var(--border);overflow:hidden;position:relative}
-.carriers-lbl{text-align:center;font-size:.63rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--sage);margin-bottom:18px}
-.c-fade-l{position:absolute;left:0;top:36px;bottom:0;width:80px;background:linear-gradient(to right,var(--mist),transparent);z-index:2;pointer-events:none}
-.c-fade-r{position:absolute;right:0;top:36px;bottom:0;width:80px;background:linear-gradient(to left,var(--mist),transparent);z-index:2;pointer-events:none}
-.c-track{display:flex;animation:cScroll 28s linear infinite;width:max-content}
-@keyframes cScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.c-item{padding:0 28px;height:44px;display:flex;align-items:center;border-right:1px solid rgba(74,130,104,.18);flex-shrink:0}
-.c-item span{font-size:.8rem;font-weight:600;color:var(--sage);white-space:nowrap}
-.services{background:var(--cream);padding:90px 56px}
-.sec-hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:46px;flex-wrap:wrap;gap:16px}
-.sec-tag{font-size:.64rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.sec-tag::after{content:'';display:block;width:20px;height:2px;background:var(--gold);border-radius:2px}
-h2.sh{font-family:'DM Serif Display',serif;font-size:clamp(1.85rem,2.7vw,2.55rem);color:var(--forest);line-height:1.15}
-.svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.svc-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:30px 24px 24px;display:block;position:relative;overflow:hidden;transition:box-shadow .3s;color:inherit}
-.svc-card.vis{opacity:1;transform:translateY(0)}
-.svc-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .3s}
-.svc-card:hover{box-shadow:0 14px 40px rgba(13,26,18,.1);transform:translateY(-3px)}
-.svc-card:hover::after{transform:scaleX(1)}
-.svc-icon{font-size:2rem;margin-bottom:14px;display:block}
-.svc-title{font-family:'DM Serif Display',serif;font-size:1.08rem;color:var(--forest);margin-bottom:8px}
-.svc-body{font-size:.82rem;line-height:1.72;color:var(--mid);margin-bottom:14px;font-weight:300}
-.svc-link{font-size:.72rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--gold)}
-.fp-banner{background:linear-gradient(120deg,var(--forest) 0%,#0f2419 100%);padding:72px 56px;position:relative;overflow:hidden}
-.fp-banner::before{content:'';position:absolute;right:-100px;top:-100px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(180,110,42,.15) 0%,transparent 65%);pointer-events:none}
-.fp-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;position:relative;z-index:1}
-.fp-left .sec-tag{color:var(--gold-lt)}
-.fp-left .sec-tag::after{background:var(--gold-lt)}
-.fp-left h2.sh{color:var(--white);margin-bottom:18px}
-.fp-left p{font-size:.96rem;line-height:1.86;color:rgba(255,255,255,.56);font-weight:300;margin-bottom:28px}
-.fp-items{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.fp-item{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:8px;padding:18px 20px}
-.fp-item-icon{font-size:1.2rem;margin-bottom:7px}
-.fp-item h4{font-size:.86rem;font-weight:600;color:var(--white);margin-bottom:4px}
-.fp-item p{font-size:.79rem;line-height:1.66;color:rgba(255,255,255,.44);font-weight:300}
-.about{background:var(--white);padding:90px 56px}
-.about-grid{display:grid;grid-template-columns:400px 1fr;gap:68px;align-items:center}
-.about-visual{position:relative;background:linear-gradient(150deg,var(--forest) 0%,var(--ink) 100%);border-radius:14px;overflow:hidden;min-height:540px;display:flex;align-items:flex-end;justify-content:center}
-.about-badge{position:absolute;top:24px;left:24px;z-index:3;background:var(--gold);border-radius:8px;padding:14px 18px;text-align:center}
-.ab-n{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--white);line-height:1}
-.ab-s{color:rgba(255,255,255,.9);font-size:.72rem;letter-spacing:2px}
-.ab-l{font-size:.62rem;color:rgba(255,255,255,.8);font-weight:600;margin-top:2px}
-.about-photo{width:100%;max-width:340px;display:block;position:relative;z-index:2}
-.about-creds{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 20px}
-.cred{background:var(--mist);border:1px solid rgba(74,130,104,.22);border-radius:100px;padding:5px 14px;font-size:.72rem;font-weight:600;color:var(--leaf)}
-.abt-p{font-size:.95rem;line-height:1.92;color:var(--mid);font-weight:300;margin-bottom:14px}
-.prov-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
-.prov{background:var(--forest);color:var(--white);border-radius:5px;padding:5px 12px;font-size:.72rem;font-weight:600}
-.soc-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
-.soc{display:inline-flex;align-items:center;gap:6px;background:var(--forest);color:var(--white);padding:8px 15px;border-radius:6px;font-size:.72rem;font-weight:600;transition:background .2s}
-.soc:hover{background:var(--leaf)}
-.why{background:var(--forest);padding:90px 56px}
-.why .sec-tag{color:var(--gold-lt)}
-.why .sec-tag::after{background:var(--gold-lt)}
-.why h2.sh{color:var(--white)}
-.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:68px;align-items:start}
-.why-lead{font-size:.98rem;line-height:1.86;color:rgba(255,255,255,.58);font-weight:300;max-width:440px;margin-top:14px;margin-bottom:34px}
-.wf{display:flex;gap:16px;align-items:flex-start;padding:22px 0;border-bottom:1px solid rgba(255,255,255,.08)}
-.wf.vis{opacity:1;transform:translateX(0)}
-.wf:last-child{border-bottom:none}
-.wf-icon{width:44px;height:44px;border-radius:8px;background:rgba(180,110,42,.18);border:1px solid rgba(180,110,42,.28);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
-.wf h4{font-size:.92rem;font-weight:600;color:var(--white);margin-bottom:4px}
-.wf p{font-size:.84rem;line-height:1.74;color:rgba(255,255,255,.46);font-weight:300}
-.why-stats{display:flex;flex-direction:column;gap:12px;padding-top:74px}
-.ws{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:26px 30px}
-.ws.vis{opacity:1;transform:translateX(0)}
-.ws:first-child{border-left:3px solid var(--gold)}
-.ws-n{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;line-height:1;color:var(--white)}
-.ws-n em{font-size:1.4rem;color:var(--gold);font-style:normal}
-.ws-l{font-size:.82rem;color:rgba(255,255,255,.44);margin-top:5px}
-.process{background:var(--cream);padding:90px 56px}
-.proc-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:44px;background:var(--border);border-radius:12px;overflow:hidden}
-.ps{background:var(--paper);padding:36px 26px}
-.ps.vis{opacity:1;transform:translateY(0)}
-.ps-n{font-family:'Bebas Neue',sans-serif;font-size:3rem;color:rgba(180,110,42,.2);line-height:1;margin-bottom:12px}
-.ps h4{font-size:.9rem;font-weight:600;color:var(--forest);margin-bottom:8px}
-.ps p{font-size:.84rem;line-height:1.78;color:var(--mid);font-weight:300}
-.testimonials{background:var(--white);padding:90px 56px}
-.testi-hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:42px;flex-wrap:wrap;gap:12px}
-.testi-hd a{font-size:.78rem;font-weight:600;color:var(--gold)}
-.testi-wrap{overflow:hidden;position:relative}
-.testi-wrap::before,.testi-wrap::after{content:'';position:absolute;top:0;bottom:0;width:70px;z-index:2;pointer-events:none}
-.testi-wrap::before{left:0;background:linear-gradient(to right,var(--white),transparent)}
-.testi-wrap::after{right:0;background:linear-gradient(to left,var(--white),transparent)}
-.testi-track{display:flex;gap:16px;animation:tScroll 44s linear infinite;width:max-content}
-@keyframes tScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.tc{background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:26px 22px;width:310px;flex-shrink:0}
-.tc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.tc-stars{color:#f5a623;font-size:.84rem;letter-spacing:2px}
-.tc-g{font-size:.64rem;background:#4285f4;color:var(--white);border-radius:3px;padding:2px 7px;font-weight:700}
-.tc-quote{font-family:'DM Serif Display',serif;font-size:.9rem;line-height:1.72;color:var(--forest);font-style:italic;margin-bottom:16px}
-.tc-author{display:flex;align-items:center;gap:10px}
-.tc-av{width:36px;height:36px;border-radius:50%;background:var(--forest);display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:.84rem;color:var(--gold-lt);flex-shrink:0;font-weight:700}
-.tc-name{font-size:.82rem;font-weight:600;color:var(--forest)}
-.tc-loc{font-size:.7rem;color:var(--mid);margin-top:1px}
-.cta-split{display:grid;grid-template-columns:1fr 1fr;min-height:280px}
-.cta-l{background:linear-gradient(130deg,var(--gold) 0%,var(--gold-dk) 100%);padding:64px 56px;display:flex;flex-direction:column;justify-content:center}
-.cta-l h2{font-family:'DM Serif Display',serif;font-size:clamp(1.75rem,2.5vw,2.4rem);color:var(--white);line-height:1.2;margin-bottom:8px}
-.cta-l h2 em{font-style:italic;opacity:.88}
-.cta-sub{font-size:.92rem;color:rgba(255,255,255,.75);margin-bottom:24px;font-weight:300;line-height:1.72}
-.cta-btns{display:flex;gap:12px;flex-wrap:wrap}
-.btn-w{background:var(--white);color:var(--gold);padding:13px 26px;border-radius:6px;font-size:.82rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;transition:transform .2s;display:inline-block}
-.btn-w:hover{transform:translateY(-2px)}
-.btn-gw{border:2px solid rgba(255,255,255,.42);color:var(--white);padding:13px 26px;border-radius:6px;font-size:.82rem;font-weight:600;letter-spacing:.03em;text-transform:uppercase;transition:all .2s;display:inline-block}
-.btn-gw:hover{border-color:rgba(255,255,255,.9);background:rgba(255,255,255,.12)}
-.cta-r{background:var(--ink);padding:64px 56px;display:flex;flex-direction:column;justify-content:center;gap:20px}
-.cr{display:flex;align-items:center;gap:14px}
-.cr-ico{width:42px;height:42px;background:rgba(180,110,42,.2);border:1px solid rgba(180,110,42,.3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
-.cr-lbl{font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.38);margin-bottom:2px}
-.cr-val{font-size:.93rem;font-weight:600}
-.cr-val a{color:var(--white);transition:color .2s}
-.cr-val a:hover{color:var(--gold-lt)}
-footer{background:var(--ink);padding:52px 56px 26px}
-.fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:44px;margin-bottom:38px}
-.fl{font-family:'DM Serif Display',serif;font-size:1.12rem;color:var(--white);display:block;margin-bottom:10px}
-.fl em{color:var(--gold);font-style:normal}
-.fb p{font-size:.78rem;line-height:1.9;color:rgba(255,255,255,.3);max-width:230px}
-.fc h5{font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
-.fc ul{list-style:none;display:flex;flex-direction:column;gap:7px}
-.fc a{font-size:.78rem;color:rgba(255,255,255,.34);transition:color .2s}
-.fc a:hover{color:var(--gold-lt)}
-.fbot{border-top:1px solid rgba(255,255,255,.07);padding-top:20px;display:flex;justify-content:space-between;font-size:.68rem;color:rgba(255,255,255,.2);flex-wrap:wrap;gap:8px}
-@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.btn-call{background:var(--black);color:var(--white);padding:10px 20px;border-radius:8px;font-size:.83rem;font-weight:600;display:flex;align-items:center;gap:7px;transition:all .2s}
+.btn-call:hover{background:var(--green);transform:translateY(-1px)}
+.btn-quote{background:var(--amber);color:var(--white);padding:10px 20px;border-radius:8px;font-size:.83rem;font-weight:600;transition:all .2s}
+.btn-quote:hover{background:var(--amber-lt);transform:translateY(-1px)}
 .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;background:none;border:none}
-.hamburger span{display:block;width:24px;height:2px;background:var(--forest);border-radius:2px;transition:all .3s}
+.hamburger span{display:block;width:24px;height:2px;background:var(--black);border-radius:2px;transition:all .3s}
 .hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
 .hamburger.open span:nth-child(2){opacity:0}
 .hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
-.mobile-nav{display:none;position:fixed;top:74px;left:0;right:0;bottom:0;background:var(--paper);z-index:300;overflow-y:auto;padding:20px 0 40px}
+.mobile-nav{display:none;position:fixed;top:72px;left:0;right:0;bottom:0;background:var(--white);z-index:300;overflow-y:auto;padding:0 0 100px}
 .mobile-nav.open{display:block}
-.mn-item{display:block;padding:14px 24px;font-size:1rem;font-weight:500;color:var(--forest);border-bottom:1px solid var(--border)}
-.mn-item:hover{background:var(--mist)}
-.mn-sub{background:var(--mist)}
-.mn-sub a{display:block;padding:11px 36px;font-size:.9rem;color:var(--mid);border-bottom:1px solid var(--border)}
-.mn-sub a:hover{color:var(--forest)}
-.mn-sec{padding:8px 24px 4px;font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--sage)}
-.mn-cta{margin:20px 16px 0;display:block;background:var(--gold);color:var(--white);padding:15px;border-radius:8px;text-align:center;font-size:.95rem;font-weight:600}
-@media(max-width:860px){
+.mn-item{display:block;padding:15px 24px;font-size:.97rem;font-weight:500;color:var(--black);border-bottom:1px solid var(--border)}
+.mn-sub{background:var(--off)}
+.mn-sub a{display:block;padding:12px 36px;font-size:.88rem;color:#374151;border-bottom:1px solid var(--border)}
+.mn-sec{padding:9px 24px 3px;font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.mn-ctas{display:flex;gap:10px;padding:20px 16px;flex-direction:column}
+.mn-cta-call{display:block;background:var(--black);color:var(--white);padding:15px;border-radius:8px;text-align:center;font-size:.95rem;font-weight:700}
+.mn-cta-quote{display:block;background:var(--amber);color:var(--white);padding:15px;border-radius:8px;text-align:center;font-size:.95rem;font-weight:700}
+
+/* ── HERO ── */
+.hero{background:var(--black);padding:100px 60px 90px;position:relative;overflow:hidden;display:grid;grid-template-columns:1fr 460px;gap:60px;align-items:center}
+.hero-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.hero-bg::before{content:'';position:absolute;top:-200px;right:-200px;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(22,163,74,.12) 0%,transparent 65%)}
+.hero-bg::after{content:'';position:absolute;bottom:-150px;left:-100px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(217,119,6,.08) 0%,transparent 65%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:60px 60px}
+.hero-left{position:relative;z-index:2}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(22,163,74,.15);border:1px solid rgba(22,163,74,.3);border-radius:6px;padding:6px 14px;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green-lt);margin-bottom:28px}
+.hero-dot{width:6px;height:6px;background:var(--green-lt);border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(3rem,5vw,5rem);line-height:1.05;color:var(--white);letter-spacing:-.02em;margin-bottom:10px}
+.hero h1 .gold{color:var(--amber-lt);display:block;font-style:italic}
+.hero-sub{font-size:1.1rem;line-height:1.8;color:rgba(255,255,255,.55);font-weight:300;max-width:500px;margin:22px 0 40px}
+.hero-sub strong{color:rgba(255,255,255,.9);font-weight:600}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:52px}
+.hb-primary{background:var(--green);color:var(--white);padding:16px 32px;border-radius:8px;font-size:.95rem;font-weight:700;display:inline-flex;align-items:center;gap:9px;transition:all .2s}
+.hb-primary:hover{background:var(--green-lt);transform:translateY(-2px);box-shadow:0 12px 30px rgba(22,163,74,.35)}
+.hb-call{background:var(--white);color:var(--black);padding:16px 32px;border-radius:8px;font-size:.95rem;font-weight:700;display:inline-flex;align-items:center;gap:9px;transition:all .2s}
+.hb-call:hover{background:var(--off);transform:translateY(-2px)}
+.hb-wa{background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.3);color:#25d366;padding:16px 24px;border-radius:8px;font-size:.95rem;font-weight:700;display:inline-flex;align-items:center;gap:8px;transition:all .2s}
+.hb-wa:hover{background:rgba(37,211,102,.2);transform:translateY(-2px)}
+.hero-trust{display:flex;gap:20px;flex-wrap:wrap}
+.ht{display:flex;align-items:center;gap:7px;color:rgba(255,255,255,.45);font-size:.78rem;font-weight:500}
+.ht-dot{width:4px;height:4px;background:var(--green-lt);border-radius:50%}
+
+/* HERO RIGHT - quote panel */
+.hero-right{position:relative;z-index:2;background:var(--white);border-radius:14px;padding:32px 28px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.qp-live{display:inline-flex;align-items:center;gap:7px;background:var(--green-dim);border-radius:6px;padding:6px 12px;font-size:.72rem;font-weight:700;color:var(--green);margin-bottom:18px}
+.qp-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:blink 2s infinite}
+.qp-title{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--black);margin-bottom:4px}
+.qp-sub{font-size:.82rem;color:var(--muted);margin-bottom:20px}
+.qa-section{margin-bottom:6px}
+.qa-header{display:flex;align-items:center;justify-content:space-between;background:var(--off);border:1.5px solid var(--border);border-radius:8px;padding:13px 15px;cursor:pointer;transition:all .2s;user-select:none}
+.qa-header:hover{border-color:#9ca3af;background:#f1f5f9}
+.qa-header.open{background:var(--black);border-color:var(--black);border-radius:8px 8px 0 0}
+.qa-label{font-size:.87rem;font-weight:600;color:var(--black)}
+.qa-header.open .qa-label{color:var(--white)}
+.qa-arrow{font-size:.65rem;color:var(--muted);transition:transform .3s}
+.qa-header.open .qa-arrow{transform:rotate(180deg);color:rgba(255,255,255,.6)}
+.qa-body{display:none;background:var(--white);border:1.5px solid var(--border);border-top:none;border-radius:0 0 8px 8px;overflow:hidden}
+.qa-body.open{display:block}
+.qa-link{display:flex;align-items:center;justify-content:space-between;padding:11px 15px;font-size:.83rem;color:#374151;border-bottom:1px solid var(--off);transition:background .15s}
+.qa-link:last-child{border-bottom:none}
+.qa-link:hover{background:var(--off);color:var(--black)}
+.qa-link span{font-size:.7rem;color:var(--green);font-weight:700}
+.qp-note{font-size:.68rem;color:var(--muted);margin-top:12px;line-height:1.6;padding:10px 12px;background:var(--off);border-radius:6px}
+
+/* ── STATS ── */
+.statsbar{background:var(--off);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.stats-inner{display:grid;grid-template-columns:repeat(4,1fr);max-width:1200px;margin:0 auto}
+.stat{padding:36px 24px;text-align:center;border-right:1px solid var(--border)}
+.stat:last-child{border-right:none}
+.stat-n{font-size:2.8rem;font-weight:900;color:var(--black);line-height:1;letter-spacing:-.03em}
+.stat-n em{color:var(--green);font-style:normal}
+.stat-stars{color:#f59e0b;font-size:.9rem;letter-spacing:3px;margin:3px 0}
+.stat-l{font-size:.8rem;color:var(--muted);margin-top:5px;font-weight:500}
+
+/* ── CARRIERS ── */
+.carriers{background:var(--black);padding:22px 0;overflow:hidden;position:relative}
+.c-lbl{text-align:center;font-size:.63rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:16px}
+.c-fade-l{position:absolute;left:0;top:36px;bottom:0;width:100px;background:linear-gradient(to right,var(--black),transparent);z-index:2;pointer-events:none}
+.c-fade-r{position:absolute;right:0;top:36px;bottom:0;width:100px;background:linear-gradient(to left,var(--black),transparent);z-index:2;pointer-events:none}
+.c-track{display:flex;animation:cScroll 30s linear infinite;width:max-content}
+@keyframes cScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.c-item{padding:0 28px;height:40px;display:flex;align-items:center;border-right:1px solid rgba(255,255,255,.08);flex-shrink:0}
+.c-item span{font-size:.8rem;font-weight:600;color:rgba(255,255,255,.4);white-space:nowrap;transition:color .2s}
+.c-item:hover span{color:rgba(255,255,255,.8)}
+
+/* ── SERVICES ── */
+.services{background:var(--white);padding:96px 60px}
+.section-eyebrow{font-size:.7rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.section-eyebrow::after{content:'';display:block;width:24px;height:2px;background:var(--green);border-radius:2px}
+.section-title{font-family:'DM Serif Display',serif;font-size:clamp(2rem,3vw,2.8rem);color:var(--black);line-height:1.15;margin-bottom:16px}
+.section-sub{font-size:1rem;color:var(--muted);max-width:540px;line-height:1.75;margin-bottom:48px}
+.svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.svc-card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:28px 22px;display:block;color:inherit;transition:all .25s;position:relative;overflow:hidden}
+.svc-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--green);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.svc-card:hover{border-color:var(--green);box-shadow:0 8px 30px rgba(22,163,74,.12);transform:translateY(-3px)}
+.svc-card:hover::before{transform:scaleX(1)}
+.svc-icon{font-size:2rem;margin-bottom:14px;display:block}
+.svc-title{font-weight:700;font-size:1rem;color:var(--black);margin-bottom:8px}
+.svc-body{font-size:.83rem;line-height:1.7;color:var(--muted);margin-bottom:14px}
+.svc-link{font-size:.75rem;font-weight:700;color:var(--green);display:flex;align-items:center;gap:5px;transition:gap .2s}
+.svc-card:hover .svc-link{gap:9px}
+
+/* ── WHY ── */
+.why{background:var(--black);padding:96px 60px}
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.why-left .section-eyebrow{color:var(--amber-lt)}
+.why-left .section-eyebrow::after{background:var(--amber-lt)}
+.why-left .section-title{color:var(--white)}
+.why-left p{font-size:.97rem;line-height:1.82;color:rgba(255,255,255,.5);font-weight:300;margin-bottom:32px}
+.wf{display:flex;gap:16px;padding:22px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.wf:last-child{border-bottom:none}
+.wf-icon{width:44px;height:44px;background:rgba(22,163,74,.15);border:1px solid rgba(22,163,74,.25);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;margin-top:2px}
+.wf h4{font-size:.95rem;font-weight:700;color:var(--white);margin-bottom:5px}
+.wf p{font-size:.85rem;line-height:1.72;color:rgba(255,255,255,.42);font-weight:300}
+.why-stats{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ws{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:28px 24px;transition:background .2s}
+.ws:hover{background:rgba(255,255,255,.07)}
+.ws:first-child{grid-column:span 2;background:rgba(22,163,74,.08);border-color:rgba(22,163,74,.2)}
+.ws-n{font-size:2.6rem;font-weight:900;color:var(--white);line-height:1;letter-spacing:-.03em}
+.ws-n em{color:var(--green-lt);font-style:normal}
+.ws-l{font-size:.82rem;color:rgba(255,255,255,.4);margin-top:6px;font-weight:400}
+
+/* ── ABOUT ── */
+.about{background:var(--off);padding:96px 60px}
+.about-grid{display:grid;grid-template-columns:420px 1fr;gap:72px;align-items:center}
+.about-img{position:relative;border-radius:14px;overflow:hidden;background:var(--black);min-height:520px;display:flex;align-items:flex-end;justify-content:center}
+.about-img-badge{position:absolute;top:20px;left:20px;background:var(--amber);border-radius:10px;padding:14px 18px;text-align:center;z-index:2}
+.aib-n{font-size:1.9rem;font-weight:900;color:var(--white);line-height:1;letter-spacing:-.02em}
+.aib-s{color:rgba(255,255,255,.9);font-size:.68rem;letter-spacing:2px;font-weight:600}
+.about-photo{width:100%;max-width:320px;position:relative;z-index:1}
+.about-content .section-title{margin-bottom:12px}
+.cred-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+.cred{background:var(--white);border:1.5px solid var(--border);border-radius:100px;padding:5px 14px;font-size:.73rem;font-weight:600;color:#374151;transition:all .2s}
+.cred.gold{background:var(--amber-dim);border-color:var(--amber);color:#92400e}
+.abt-p{font-size:.95rem;line-height:1.88;color:#4b5563;margin-bottom:14px}
+.prov-row{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 20px}
+.prov{background:var(--black);color:var(--white);border-radius:5px;padding:4px 12px;font-size:.72rem;font-weight:700;letter-spacing:.04em}
+.about-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.ab-btn{background:var(--black);color:var(--white);padding:12px 22px;border-radius:7px;font-size:.83rem;font-weight:700;transition:all .2s}
+.ab-btn:hover{background:var(--green);transform:translateY(-1px)}
+.ab-btn.outline{background:transparent;border:1.5px solid var(--border);color:var(--black)}
+.ab-btn.outline:hover{border-color:var(--green);color:var(--green);background:var(--green-dim)}
+.soc-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.soc{background:var(--white);border:1.5px solid var(--border);color:#374151;padding:8px 14px;border-radius:7px;font-size:.73rem;font-weight:600;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.soc:hover{border-color:var(--green);color:var(--green);background:var(--green-dim)}
+
+/* ── PROCESS ── */
+.process{background:var(--white);padding:96px 60px}
+.proc-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:52px;position:relative}
+.proc-steps::before{content:'';position:absolute;top:28px;left:15%;right:15%;height:2px;background:var(--border);z-index:0}
+.ps{padding:0 20px;text-align:center;position:relative;z-index:1}
+.ps-num{width:56px;height:56px;background:var(--black);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:900;color:var(--white);margin:0 auto 18px;border:3px solid var(--white);box-shadow:0 0 0 2px var(--border)}
+.ps:first-child .ps-num{background:var(--green)}
+.ps h4{font-size:.93rem;font-weight:700;color:var(--black);margin-bottom:8px}
+.ps p{font-size:.83rem;line-height:1.72;color:var(--muted)}
+
+/* ── TESTIMONIALS ── */
+.testimonials{background:var(--off);padding:96px 60px}
+.testi-wrap{overflow:hidden;position:relative;margin-top:44px}
+.testi-wrap::before,.testi-wrap::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none}
+.testi-wrap::before{left:0;background:linear-gradient(to right,var(--off),transparent)}
+.testi-wrap::after{right:0;background:linear-gradient(to left,var(--off),transparent)}
+.testi-track{display:flex;gap:18px;animation:tScroll 48s linear infinite;width:max-content}
+@keyframes tScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.tc{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:26px 22px;width:320px;flex-shrink:0;transition:box-shadow .2s}
+.tc:hover{box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.tc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}
+.tc-stars{color:#f59e0b;font-size:.88rem;letter-spacing:2px}
+.tc-g{font-size:.63rem;background:#4285f4;color:var(--white);border-radius:4px;padding:2px 7px;font-weight:700}
+.tc-quote{font-size:.9rem;line-height:1.72;color:#374151;font-style:italic;margin-bottom:16px}
+.tc-author{display:flex;align-items:center;gap:10px}
+.tc-av{width:36px;height:36px;border-radius:50%;background:var(--black);display:flex;align-items:center;justify-content:center;font-size:.84rem;color:var(--amber-lt);font-weight:800;flex-shrink:0}
+.tc-name{font-size:.84rem;font-weight:700;color:var(--black)}
+.tc-loc{font-size:.71rem;color:var(--muted);margin-top:1px}
+
+/* ── CTA ── */
+.cta{background:var(--green);padding:80px 60px;text-align:center;position:relative;overflow:hidden}
+.cta::before{content:'';position:absolute;top:-100px;right:-100px;width:400px;height:400px;border-radius:50%;background:rgba(255,255,255,.06)}
+.cta::after{content:'';position:absolute;bottom:-80px;left:-80px;width:300px;height:300px;border-radius:50%;background:rgba(0,0,0,.08)}
+.cta-inner{position:relative;z-index:1;max-width:700px;margin:0 auto}
+.cta h2{font-family:'DM Serif Display',serif;font-size:clamp(2rem,3.5vw,3rem);color:var(--white);margin-bottom:14px;line-height:1.15}
+.cta p{font-size:1rem;color:rgba(255,255,255,.8);margin-bottom:36px;line-height:1.72}
+.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.cta-btn-w{background:var(--white);color:var(--green);padding:16px 32px;border-radius:8px;font-size:.93rem;font-weight:800;display:inline-flex;align-items:center;gap:8px;transition:all .2s}
+.cta-btn-w:hover{background:var(--off);transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,.2)}
+.cta-btn-dark{background:rgba(0,0,0,.2);border:2px solid rgba(255,255,255,.3);color:var(--white);padding:16px 32px;border-radius:8px;font-size:.93rem;font-weight:700;display:inline-flex;align-items:center;gap:8px;transition:all .2s}
+.cta-btn-dark:hover{background:rgba(0,0,0,.35);border-color:rgba(255,255,255,.6)}
+
+/* ── CONTACT ROW ── */
+.contact-row{background:var(--black);padding:52px 60px;display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.cr{padding:0 32px;display:flex;align-items:center;gap:16px;border-right:1px solid var(--dark-border)}
+.cr:last-child{border-right:none}
+.cr-ico{width:44px;height:44px;background:rgba(22,163,74,.15);border:1px solid rgba(22,163,74,.25);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.cr-lbl{font-size:.67rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:3px}
+.cr-val{font-size:.97rem;font-weight:700}
+.cr-val a{color:var(--white);transition:color .2s}
+.cr-val a:hover{color:var(--green-lt)}
+
+/* ── FOOTER ── */
+footer{background:#050505;padding:56px 60px 28px}
+.fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:44px;margin-bottom:40px}
+.fl{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--white);display:block;margin-bottom:10px}
+.fl em{color:var(--green);font-style:normal}
+.fb p{font-size:.79rem;line-height:1.9;color:rgba(255,255,255,.28);max-width:230px}
+.fc h5{font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:13px}
+.fc ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.fc a{font-size:.8rem;color:rgba(255,255,255,.32);transition:color .2s}
+.fc a:hover{color:var(--green-lt)}
+.fbot{border-top:1px solid rgba(255,255,255,.07);padding-top:20px;display:flex;justify-content:space-between;font-size:.7rem;color:rgba(255,255,255,.2);flex-wrap:wrap;gap:8px}
+
+/* ── STICKY CALL BUTTON (mobile) ── */
+.sticky-call{display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;background:var(--black);padding:12px 16px;border-top:1px solid rgba(255,255,255,.1)}
+.sticky-call-inner{display:flex;gap:10px}
+.sc-call{flex:1;background:var(--green);color:var(--white);padding:14px;border-radius:8px;text-align:center;font-size:.9rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:7px}
+.sc-wa{flex:1;background:rgba(37,211,102,.12);border:1.5px solid rgba(37,211,102,.4);color:#25d366;padding:14px;border-radius:8px;text-align:center;font-size:.9rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:7px}
+
+/* ── MOBILE ── */
+@media(max-width:900px){
   .topbar{display:none}
   .nav-inner{padding:0 16px}
   .nav-menu{display:none}
   .nav-phone{display:none}
+  .btn-call,.btn-quote{display:none}
   .hamburger{display:flex}
-  .hero{grid-template-columns:1fr;min-height:auto}
-  .hero-left{padding:40px 16px 32px}
-  .hero h1{font-size:2.4rem;line-height:1.08}
-  .hero-desc{font-size:.92rem;margin:18px 0 28px}
-  .hero-btns{flex-direction:column;gap:10px}
-  .btn-gold,.btn-ghost{width:100%;justify-content:center;padding:15px}
-  .ql-row{gap:7px}
-  .ql-pill{font-size:.76rem;padding:7px 13px}
-  .hero-right{border-left:none;border-top:4px solid var(--gold);padding:32px 16px}
-  .qpanel-title{font-size:1.45rem}
-  .trust{padding:12px 16px;gap:10px;justify-content:flex-start;flex-direction:column;align-items:flex-start}
-  .ti{font-size:.72rem}
-  .ti-sep{display:none}
-  .stats{grid-template-columns:1fr 1fr}
-  .stat{border-bottom:1px solid var(--border);padding:26px 14px}
-  .stat-n{font-size:2.6rem}
-  .stat-l{font-size:.75rem}
-  .services{padding:48px 16px}
-  .sec-hd{flex-direction:column;align-items:flex-start;gap:14px}
-  .svc-grid{grid-template-columns:1fr}
-  .svc-card{padding:22px 18px}
-  .fp-banner{padding:44px 16px}
-  .fp-grid{grid-template-columns:1fr;gap:28px}
-  .fp-items{grid-template-columns:1fr 1fr;gap:10px}
-  .fp-item{padding:14px 14px}
-  .fp-item h4{font-size:.82rem}
-  .fp-item p{font-size:.76rem}
-  .about{padding:44px 16px}
-  .about-grid{grid-template-columns:1fr;gap:28px}
-  .about-visual{min-height:320px}
-  .about-photo{max-width:240px}
-  .why{padding:44px 16px}
-  .why-grid{grid-template-columns:1fr;gap:28px}
-  .why-stats{padding-top:16px;gap:10px}
-  .ws{padding:18px 20px}
-  .ws-n{font-size:2rem}
-  .ws-l{font-size:.78rem}
-  .process{padding:44px 16px}
-  .proc-steps{grid-template-columns:1fr 1fr}
-  .ps{padding:22px 16px}
-  .ps-n{font-size:2.2rem}
-  .testimonials{padding:44px 16px}
-  .tc{width:272px}
-  .cta-split{grid-template-columns:1fr}
-  .cta-l{padding:44px 16px}
-  .cta-l h2{font-size:1.8rem}
-  .cta-btns{flex-direction:column;gap:10px}
-  .btn-w,.btn-gw{text-align:center;padding:13px;display:block}
-  .cta-r{padding:36px 16px;gap:16px}
-  footer{padding:36px 16px 18px}
-  .fg{grid-template-columns:1fr 1fr;gap:18px}
-  .fbot{flex-direction:column;text-align:center;gap:5px;font-size:.64rem}
-  .carriers-lbl{font-size:.6rem}
-}
-@media(max-width:480px){
-  .fp-items{grid-template-columns:1fr}
-  .proc-steps{grid-template-columns:1fr}
-  .stats{grid-template-columns:1fr 1fr}
-  .fg{grid-template-columns:1fr}
-  .hero h1{font-size:2rem}
-}
-@media(max-width:480px){
-  .fg{grid-template-columns:1fr}
-  .page-hero h1{font-size:1.65rem}
-  h2.sh{font-size:1.45rem}
-}
-  .nav-inner{padding:0 16px}
-  .nav-menu{display:none}
-  .nav-phone{display:none}
-  .hamburger{display:flex}
-  .hero{grid-template-columns:1fr;min-height:auto}
-  .hero-left{padding:40px 16px 32px}
+  .sticky-call{display:block}
+  body{padding-bottom:76px}
+  .hero{grid-template-columns:1fr;padding:52px 16px 44px;gap:40px}
   .hero h1{font-size:2.6rem}
-  .hero-desc{font-size:.95rem}
-  .hero-btns{flex-direction:column}
-  .btn-gold,.btn-ghost{width:100%;justify-content:center;padding:16px}
-  .ql-row{gap:7px}
-  .ql-pill{font-size:.78rem;padding:7px 14px}
-  .hero-right{border-left:none;border-top:4px solid var(--gold);padding:32px 16px}
-  .qpanel-title{font-size:1.5rem}
-  .trust{padding:12px 16px;gap:10px;justify-content:flex-start}
-  .ti{font-size:.7rem}
-  .ti-sep{display:none}
-  .stats{grid-template-columns:1fr 1fr}
-  .stat{border-bottom:1px solid var(--border);padding:28px 16px}
-  .stat-n{font-size:2.8rem}
-  .services{padding:48px 16px}
-  .sec-hd{flex-direction:column;align-items:flex-start;gap:16px}
-  .svc-grid{grid-template-columns:1fr}
-  .svc-card{padding:24px 20px}
-  .fp-banner{padding:48px 16px}
-  .fp-grid{grid-template-columns:1fr;gap:32px}
-  .fp-items{grid-template-columns:1fr 1fr;gap:10px}
-  .fp-item{padding:14px 16px}
-  .about{padding:48px 16px}
+  .hero-sub{font-size:.95rem;margin:16px 0 30px}
+  .hero-btns{flex-direction:column;gap:10px}
+  .hb-primary,.hb-call,.hb-wa{width:100%;justify-content:center;padding:15px}
+  .hero-trust{gap:14px}
+  .ht{font-size:.73rem}
+  .hero-right{padding:24px 20px}
+  .statsbar .stats-inner{grid-template-columns:1fr 1fr}
+  .stat{border-bottom:1px solid var(--border);padding:26px 16px}
+  .stat:nth-child(2){border-right:none}
+  .stat-n{font-size:2.4rem}
+  .services{padding:56px 16px}
+  .svc-grid{grid-template-columns:1fr 1fr;gap:14px}
+  .svc-card{padding:22px 16px}
+  .why{padding:56px 16px}
+  .why-grid{grid-template-columns:1fr;gap:44px}
+  .why-stats{grid-template-columns:1fr 1fr}
+  .ws:first-child{grid-column:span 2}
+  .ws{padding:20px 18px}
+  .ws-n{font-size:2rem}
+  .about{padding:56px 16px}
   .about-grid{grid-template-columns:1fr;gap:32px}
-  .about-visual{min-height:380px}
-  .about-photo{max-width:260px}
-  .why{padding:48px 16px}
-  .why-grid{grid-template-columns:1fr;gap:32px}
-  .why-stats{padding-top:16px;gap:10px}
-  .ws{padding:20px 22px}
-  .ws-n{font-size:2.2rem}
-  .process{padding:48px 16px}
-  .proc-steps{grid-template-columns:1fr 1fr}
-  .ps{padding:26px 18px}
-  .testimonials{padding:48px 16px}
+  .about-img{min-height:320px}
+  .about-photo{max-width:240px}
+  .process{padding:56px 16px}
+  .proc-steps{grid-template-columns:1fr 1fr;gap:24px}
+  .proc-steps::before{display:none}
+  .ps{text-align:left;padding:0}
+  .ps-num{margin:0 0 14px}
+  .testimonials{padding:56px 16px}
   .tc{width:280px}
-  .cta-split{grid-template-columns:1fr}
-  .cta-l{padding:48px 16px}
-  .cta-l h2{font-size:1.9rem}
-  .cta-btns{flex-direction:column}
-  .btn-w,.btn-gw{text-align:center;padding:14px}
-  .cta-r{padding:40px 16px;gap:18px}
-  footer{padding:40px 16px 20px}
+  .cta{padding:56px 16px}
+  .cta-btns{flex-direction:column;align-items:center}
+  .cta-btn-w,.cta-btn-dark{width:100%;max-width:320px;justify-content:center}
+  .contact-row{grid-template-columns:1fr;gap:0;padding:40px 16px}
+  .cr{border-right:none;border-bottom:1px solid var(--dark-border);padding:20px 0;gap:14px}
+  .cr:last-child{border-bottom:none}
+  footer{padding:44px 16px 24px}
   .fg{grid-template-columns:1fr 1fr;gap:24px}
-  .fbot{flex-direction:column;text-align:center;gap:6px}
-  .carriers-lbl{font-size:.6rem}
+  .fbot{flex-direction:column;text-align:center;font-size:.66rem}
 }
-@media(max-width:480px){
-  .fp-items{grid-template-columns:1fr}
+@media(max-width:520px){
+  .hero h1{font-size:2.1rem}
+  .svc-grid{grid-template-columns:1fr}
+  .why-stats{grid-template-columns:1fr}
+  .ws:first-child{grid-column:span 1}
   .proc-steps{grid-template-columns:1fr}
-  .stats{grid-template-columns:1fr 1fr}
   .fg{grid-template-columns:1fr}
+  .stats-inner{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
 <body>
-<div class="topbar"><div class="tb-l"><span>&#127464;&#127462; Windsor, ON &middot; Independent Life Insurance Advisor</span><span>Licensed: ON &middot; BC &middot; AB &middot; MB &middot; SK &middot; NS &middot; PEI &middot; NB</span></div><div class="tb-r"><a href="tel:6477456850">&#128222; 647-745-6850</a></div></div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <span>&#127464;&#127462; Windsor, ON &middot; Licensed in ON &middot; BC &middot; AB &middot; MB &middot; SK &middot; NS &middot; PEI &middot; NB</span>
+  <div class="tb-r">
+    <span class="tb-badge">&#11088; 400+ Reviews</span>
+    <a href="tel:6477456850">&#128222; 647-745-6850</a>
+  </div>
+</div>
+
+<!-- NAV -->
 <nav><div class="nav-inner">
-  <a href="index.html" class="logo">Insurance <em>by Rattan</em><span class="logo-sub">Life Insurance Advisor &middot; Windsor, ON</span></a>
+  <a href="index.html" class="logo">
+    <span class="logo-main">Insurance <em>by Rattan</em></span>
+    <span class="logo-sub">Life Insurance Advisor &middot; Windsor, ON</span>
+  </a>
   <ul class="nav-menu">
     <li><a href="index.html">Home</a></li>
     <li><a href="about.html">About</a></li>
@@ -374,16 +364,19 @@ footer{background:var(--ink);padding:52px 56px 26px}
         <a href="visitors.html">&#9992;&#65039; Visitors to Canada</a>
         <a href="travel-insurance.html">&#127757; Travel Insurance</a>
         <a href="student-insurance.html">&#127891; International Student</a>
-        <hr/><div class="dd-sec">Life Insurance</div>
+        <hr/>
+        <div class="dd-sec">Life Insurance</div>
         <a href="term-life.html">&#128737;&#65039; Term Life Insurance</a>
         <a href="whole-life.html">&#127807; Whole Life Insurance</a>
         <a href="universal-life.html">&#9881;&#65039; Universal Life Insurance</a>
         <a href="mortgage-insurance.html">&#127968; Mortgage Insurance</a>
-        <hr/><div class="dd-sec">Living Benefits</div>
+        <hr/>
+        <div class="dd-sec">Living Benefits</div>
         <a href="critical-illness.html">&#10084;&#65039; Critical Illness</a>
         <a href="disability.html">&#129466; Disability Insurance</a>
         <a href="drug-dental.html">&#128138; Drug &amp; Dental</a>
-        <hr/><div class="dd-sec">Advanced Planning</div>
+        <hr/>
+        <div class="dd-sec">Advanced Planning</div>
         <a href="estate-planning.html">&#127981; Estate Planning</a>
         <a href="business-insurance.html">&#128188; Business Insurance</a>
       </div>
@@ -404,11 +397,9 @@ footer{background:var(--ink);padding:52px 56px 26px}
     <li><a href="#contact">Contact</a></li>
   </ul>
   <div class="nav-actions">
-    <a href="tel:6477456850" class="nav-phone">&#128222; 647-745-6850</a>
-    <a href="quotes.html" class="nav-cta">Get a Quote</a>
-    <button class="hamburger" id="hamburger" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
+    <a href="tel:6477456850" class="btn-call">&#128222; Call Now</a>
+    <a href="quotes.html" class="btn-quote">Get a Quote</a>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
 </div></nav>
 
@@ -416,7 +407,7 @@ footer{background:var(--ink);padding:52px 56px 26px}
 <div class="mobile-nav" id="mobileNav">
   <a href="index.html" class="mn-item">Home</a>
   <a href="about.html" class="mn-item">About</a>
-  <div class="mn-item" style="font-weight:600;color:var(--forest);border-bottom:none;padding-bottom:4px">Insurance</div>
+  <div class="mn-item" style="font-weight:700;border-bottom:none;padding-bottom:4px">Insurance</div>
   <div class="mn-sub">
     <div class="mn-sec">Visitor &amp; Travel</div>
     <a href="super-visa.html">&#128706; Super Visa Insurance</a>
@@ -424,19 +415,19 @@ footer{background:var(--ink);padding:52px 56px 26px}
     <a href="travel-insurance.html">&#127757; Travel Insurance</a>
     <a href="student-insurance.html">&#127891; International Student</a>
     <div class="mn-sec">Life Insurance</div>
-    <a href="term-life.html">&#128737;&#65039; Term Life Insurance</a>
-    <a href="whole-life.html">&#127807; Whole Life Insurance</a>
-    <a href="universal-life.html">&#9881;&#65039; Universal Life Insurance</a>
+    <a href="term-life.html">&#128737;&#65039; Term Life</a>
+    <a href="whole-life.html">&#127807; Whole Life</a>
+    <a href="universal-life.html">&#9881;&#65039; Universal Life</a>
     <a href="mortgage-insurance.html">&#127968; Mortgage Insurance</a>
     <div class="mn-sec">Living Benefits</div>
     <a href="critical-illness.html">&#10084;&#65039; Critical Illness</a>
-    <a href="disability.html">&#129466; Disability Insurance</a>
+    <a href="disability.html">&#129466; Disability</a>
     <a href="drug-dental.html">&#128138; Drug &amp; Dental</a>
     <div class="mn-sec">Advanced Planning</div>
     <a href="estate-planning.html">&#127981; Estate Planning</a>
     <a href="business-insurance.html">&#128188; Business Insurance</a>
   </div>
-  <div class="mn-item" style="font-weight:600;color:var(--forest);border-bottom:none;padding-bottom:4px">Investments</div>
+  <div class="mn-item" style="font-weight:700;border-bottom:none;padding-bottom:4px">Investments</div>
   <div class="mn-sub">
     <a href="rrsp.html">&#128200; RRSP</a>
     <a href="tfsa.html">&#128176; TFSA</a>
@@ -449,185 +440,303 @@ footer{background:var(--ink);padding:52px 56px 26px}
   <a href="quotes.html" class="mn-item">Get Quotes</a>
   <a href="awards.html" class="mn-item">Awards</a>
   <a href="#contact" class="mn-item">Contact</a>
-  <a href="quotes.html" class="mn-cta">&#9889; Get an Instant Quote</a>
+  <div class="mn-ctas">
+    <a href="tel:6477456850" class="mn-cta-call">&#128222; Call Now &mdash; 647-745-6850</a>
+    <a href="quotes.html" class="mn-cta-quote">&#9889; Get Instant Quote</a>
+  </div>
 </div>
+
+<!-- HERO -->
 <div class="hero">
-  <div class="hero-bg"><svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="g" width="60" height="60" patternUnits="userSpaceOnUse"><path d="M60 0L0 0 0 60" fill="none" stroke="rgba(255,255,255,.03)" stroke-width="1"/></pattern></defs><rect width="1400" height="900" fill="url(#g)"/><line x1="0" y1="900" x2="560" y2="0" stroke="rgba(180,110,42,.07)" stroke-width="1.5"/><circle cx="200" cy="400" r="320" fill="none" stroke="rgba(180,110,42,.06)" stroke-width="1"/></svg><div class="hero-glow"></div></div>
+  <div class="hero-bg"><div class="hero-grid"></div></div>
   <div class="hero-left">
-    <div class="eyebrow"><div class="e-pill">Windsor, ON</div><div class="e-line" style="width:28px;height:1px;background:rgba(180,110,42,.4)"></div><div class="e-txt">Independent &middot; Full-Time &middot; 8 Provinces</div></div>
-    <h1>Life insurance<br><span class="italic">done right,</span><span style="display:block;color:var(--white)">for your family.</span></h1>
-    <p class="hero-desc"><strong>400+ five-star Google reviews.</strong> 500+ families protected across Canada. I compare 25+ carriers so you always get the best coverage at the lowest rate &mdash; with zero pressure.</p>
-    <div class="hero-btns"><a href="quotes.html" class="btn-gold">&#9889; Get Instant Quotes</a><a href="tel:6477456850" class="btn-ghost">&#128222; 647-745-6850</a>
-      <a href="https://wa.me/16477456850" class="btn-ghost" style="background:rgba(37,211,102,.15);border-color:rgba(37,211,102,.5);color:#25d366">&#128172; WhatsApp</a></div>
-    <div class="ql-lbl">Quick access</div>
-    <div class="ql-row">
-      <a href="super-visa.html" class="ql-pill">&#128706; Super Visa</a>
-      <a href="visitors.html" class="ql-pill">&#9992;&#65039; Visitors</a>
-      <a href="term-life.html" class="ql-pill">&#128737;&#65039; Term Life</a>
-      <a href="critical-illness.html" class="ql-pill">&#10084;&#65039; Critical Illness</a>
-      <a href="estate-planning.html" class="ql-pill">&#127981; Estate Planning</a>
-      <a href="retirement-planning.html" class="ql-pill">&#127774; Retirement</a>
+    <div class="hero-eyebrow"><div class="hero-dot"></div> Windsor, ON &middot; 8 Provinces &middot; Independent</div>
+    <h1>Life insurance<br><span class="gold">done right,</span>for your family.</h1>
+    <p class="hero-sub"><strong>400+ five-star Google reviews.</strong> 500+ families protected across Canada. I compare 25+ carriers so you always get the best coverage at the lowest rate &mdash; with zero pressure.</p>
+    <div class="hero-btns">
+      <a href="quotes.html" class="hb-primary">&#9889; Get Instant Quotes</a>
+      <a href="tel:6477456850" class="hb-call">&#128222; Call Now</a>
+      <a href="https://wa.me/16477456850" target="_blank" class="hb-wa">&#128172; WhatsApp</a>
+    </div>
+    <div class="hero-trust">
+      <div class="ht"><div class="ht-dot"></div> Full-Time Advisor</div>
+      <div class="ht"><div class="ht-dot"></div> iA CBP 2021&ndash;2025</div>
+      <div class="ht"><div class="ht-dot"></div> IA Premier Expert 2026</div>
+      <div class="ht"><div class="ht-dot"></div> Ford Motor Company Alumni</div>
     </div>
   </div>
   <div class="hero-right">
-    <div class="qpanel-badge"><div class="badge-dot"></div> Instant quotes available</div>
-    <div class="qpanel-title">Get a Quote</div>
-    <div class="qpanel-sub">Select a product &mdash; opens the instant quote tool.</div>
-    <div class="qa-section"><div class="qa-header"><div class="qa-label">&#9992;&#65039; Visitor &amp; Travel</div><span class="qa-arrow">&#9662;</span></div><div class="qa-body"><a href="https://www.insurancebyrattan.ca/super-visa-insurance/" target="_blank" class="qa-link">&#128706; Super Visa Insurance <span>Quote &#8594;</span></a><a href="https://www.insurancebyrattan.ca/visitors-insurance/" target="_blank" class="qa-link">&#9992;&#65039; Visitors to Canada <span>Quote &#8594;</span></a><a href="https://www.insurancebyrattan.ca/" target="_blank" class="qa-link">&#127757; Travel Insurance <span>Quote &#8594;</span></a><a href="https://www.insurancebyrattan.ca/" target="_blank" class="qa-link">&#127891; International Student <span>Quote &#8594;</span></a></div></div>
-    <div class="qa-section"><div class="qa-header"><div class="qa-label">&#128737;&#65039; Life Insurance</div><span class="qa-arrow">&#9662;</span></div><div class="qa-body"><a href="https://www.insurancebyrattan.ca/term-life-insurance/" target="_blank" class="qa-link">&#128737;&#65039; Term Life Insurance <span>Quote &#8594;</span></a><a href="whole-life.html" class="qa-link">&#127807; Whole Life Insurance <span>Call &#8594;</span></a><a href="universal-life.html" class="qa-link">&#9881;&#65039; Universal Life <span>Call &#8594;</span></a><a href="mortgage-insurance.html" class="qa-link">&#127968; Mortgage Insurance <span>Call &#8594;</span></a></div></div>
-    <div class="qa-section"><div class="qa-header"><div class="qa-label">&#10084;&#65039; Living Benefits</div><span class="qa-arrow">&#9662;</span></div><div class="qa-body"><a href="https://www.insurancebyrattan.ca/critical-illness-insurance/" target="_blank" class="qa-link">&#10084;&#65039; Critical Illness <span>Quote &#8594;</span></a><a href="tel:6477456850" class="qa-link">&#129466; Disability Insurance <span>Call &#8594;</span></a><a href="tel:6477456850" class="qa-link">&#128138; Drug &amp; Dental <span>Call &#8594;</span></a></div></div>
-    <div class="qa-section"><div class="qa-header"><div class="qa-label">&#127981; Estate &amp; Retirement</div><span class="qa-arrow">&#9662;</span></div><div class="qa-body"><a href="estate-planning.html" class="qa-link">&#127981; Estate Planning <span>Learn &#8594;</span></a><a href="retirement-planning.html" class="qa-link">&#127774; Retirement Planning <span>Learn &#8594;</span></a><a href="business-insurance.html" class="qa-link">&#128188; Business Insurance <span>Call &#8594;</span></a></div></div>
-    <div class="qa-section"><div class="qa-header"><div class="qa-label">&#128200; Investments</div><span class="qa-arrow">&#9662;</span></div><div class="qa-body"><a href="rrsp.html" class="qa-link">&#128200; RRSP <span>Learn &#8594;</span></a><a href="tfsa.html" class="qa-link">&#128176; TFSA <span>Learn &#8594;</span></a><a href="fhsa.html" class="qa-link">&#127969; FHSA <span>Learn &#8594;</span></a><a href="resp.html" class="qa-link">&#127891; RESP <span>Learn &#8594;</span></a><a href="rdsp.html" class="qa-link">&#9855; RDSP <span>Learn &#8594;</span></a><a href="non-registered.html" class="qa-link">&#128202; Non-Registered <span>Learn &#8594;</span></a></div></div>
-    <div class="qpanel-note">&#128274; Provincially licensed &middot; Independent &middot; Not tied to any single carrier</div>
-  </div>
-</div>
-<div class="trust"><div class="ti">&#11088; 400+ Five-Star Google Reviews</div><div class="ti-sep"></div><div class="ti">&#128101; 500+ Clients Served</div><div class="ti-sep"></div><div class="ti">&#9989; 99%+ Satisfaction Rate</div><div class="ti-sep"></div><div class="ti">&#128220; Licensed in 8 Provinces</div><div class="ti-sep"></div><div class="ti">&#128188; Full-Time Independent Advisor</div></div>
-<div class="stats">
-  <div class="stat"><div class="stat-n">400<em>+</em></div><div class="stat-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="stat-l">Google Reviews<br>Windsor, ON</div></div>
-  <div class="stat"><div class="stat-n">500<em>+</em></div><div class="stat-l">Canadian families<br>protected</div></div>
-  <div class="stat"><div class="stat-n">99<em>%+</em></div><div class="stat-l">Client satisfaction<br>rate</div></div>
-  <div class="stat"><div class="stat-n">25<em>+</em></div><div class="stat-l">Carriers compared<br>for every client</div></div>
-</div>
-<div class="carriers"><div class="carriers-lbl">Insurance companies I work with</div><div style="position:relative"><div class="c-fade-l"></div><div class="c-fade-r"></div><div class="c-track"><div class="c-item"><span>iA Financial</span></div><div class="c-item"><span>Sun Life</span></div><div class="c-item"><span>Manulife</span></div><div class="c-item"><span>RBC Insurance</span></div><div class="c-item"><span>Beneva</span></div><div class="c-item"><span>Canada Life</span></div><div class="c-item"><span>Desjardins</span></div><div class="c-item"><span>Equitable Life</span></div><div class="c-item"><span>Assumption Life</span></div><div class="c-item"><span>Foresters</span></div><div class="c-item"><span>Empire Life</span></div><div class="c-item"><span>Blue Cross</span></div><div class="c-item"><span>Travelance</span></div><div class="c-item"><span>GMS</span></div><div class="c-item"><span>Tugo</span></div><div class="c-item"><span>BMO Insurance</span></div><div class="c-item"><span>Serenia Life</span></div><div class="c-item"><span>21st Century</span></div><div class="c-item"><span>UV Insurance</span></div><div class="c-item"><span>Truststone</span></div><div class="c-item"><span>iA Financial</span></div><div class="c-item"><span>Sun Life</span></div><div class="c-item"><span>Manulife</span></div><div class="c-item"><span>RBC Insurance</span></div><div class="c-item"><span>Beneva</span></div><div class="c-item"><span>Canada Life</span></div><div class="c-item"><span>Desjardins</span></div><div class="c-item"><span>Equitable Life</span></div><div class="c-item"><span>Assumption Life</span></div><div class="c-item"><span>Foresters</span></div><div class="c-item"><span>Empire Life</span></div><div class="c-item"><span>Blue Cross</span></div><div class="c-item"><span>Travelance</span></div><div class="c-item"><span>GMS</span></div><div class="c-item"><span>Tugo</span></div><div class="c-item"><span>BMO Insurance</span></div><div class="c-item"><span>Serenia Life</span></div><div class="c-item"><span>21st Century</span></div><div class="c-item"><span>UV Insurance</span></div><div class="c-item"><span>Truststone</span></div></div></div></div>
-<section class="services" id="services">
-  <div class="sec-hd"><div><div class="sec-tag">What I Offer</div><h2 class="sh">Comprehensive coverage &amp;<br>insurance solutions for every stage of life.</h2></div><a href="quotes.html" class="btn-gold">&#9889; See All &amp; Get Quotes</a></div>
-  <div class="svc-grid">
-    <a href="super-visa.html" class="svc-card"><span class="svc-icon">&#128706;</span><div class="svc-title">Super Visa Insurance</div><p class="svc-body">Mandatory IRCC-compliant coverage for parents &amp; grandparents on a Super Visa. Fast approval, all major providers.</p><div class="svc-link">Learn More &#8594;</div></a>
-    <a href="term-life.html" class="svc-card"><span class="svc-icon">&#128737;&#65039;</span><div class="svc-title">Term Life Insurance</div><p class="svc-body">Affordable coverage for 10&ndash;30 years. Protect your family's income, mortgage, and future at the lowest cost.</p><div class="svc-link">Learn More &#8594;</div></a>
-    <a href="critical-illness.html" class="svc-card"><span class="svc-icon">&#10084;&#65039;</span><div class="svc-title">Critical Illness Insurance</div><p class="svc-body">Tax-free lump sum on diagnosis of cancer, heart attack, or stroke. Focus on recovery, not finances.</p><div class="svc-link">Learn More &#8594;</div></a>
-    <a href="disability.html" class="svc-card"><span class="svc-icon">&#129466;</span><div class="svc-title">Disability Insurance</div><p class="svc-body">Replaces up to 85% of income if illness or injury stops you from working. Protect your most valuable asset.</p><div class="svc-link">Learn More &#8594;</div></a>
-    <a href="estate-planning.html" class="svc-card"><span class="svc-icon">&#127981;</span><div class="svc-title">Estate Planning</div><p class="svc-body">Transfer wealth tax-efficiently, bypass probate, and protect your heirs. Life insurance is the cornerstone of every estate plan.</p><div class="svc-link">Learn More &#8594;</div></a>
-    <a href="retirement-planning.html" class="svc-card"><span class="svc-icon">&#127774;</span><div class="svc-title">Retirement Planning</div><p class="svc-body">RRSP, TFSA, RRIF, annuities, and seg funds coordinated into a tax-efficient income strategy for life.</p><div class="svc-link">Learn More &#8594;</div></a>
-    <a href="visitors.html" class="svc-card"><span class="svc-icon">&#9992;&#65039;</span><div class="svc-title">Visitors to Canada</div><p class="svc-body">Emergency medical coverage for family visiting from abroad. Competitive rates, all major providers, fast approval.</p><div class="svc-link">Learn More &#8594;</div></a>
-    <a href="business-insurance.html" class="svc-card"><span class="svc-icon">&#128188;</span><div class="svc-title">Business Insurance</div><p class="svc-body">Key person, buy-sell agreements, group benefits, and corporate-owned life insurance. Protect your business and partners.</p><div class="svc-link">Learn More &#8594;</div></a>
-  </div>
-</section>
-<div class="fp-banner">
-  <div class="fp-grid">
-    <div class="fp-left">
-      <div class="sec-tag">Comprehensive Coverage</div>
-      <h2 class="sh">More than insurance.<br>A complete insurance plan.</h2>
-      <p>Insurance is the foundation, but a truly secure protected future requires all the pieces working together &mdash; protection, savings, tax efficiency, and a clear strategy for passing wealth to the next generation.</p>
-      <a href="about.html" class="btn-gold">Learn About My Approach &#8594;</a>
-    </div>
-    <div class="fp-items">
-      <div class="fp-item"><div class="fp-item-icon">&#128200;</div><h4>Wealth Growth</h4><p>RRSP, TFSA, FHSA, seg funds &mdash; grow assets in the most tax-efficient structure for your situation.</p></div>
-      <div class="fp-item"><div class="fp-item-icon">&#127981;</div><h4>Estate Transfer</h4><p>Tax-free death benefits, bypass probate, protect heirs &mdash; pass your wealth on without unnecessary loss.</p></div>
-      <div class="fp-item"><div class="fp-item-icon">&#127974;</div><h4>Tax Efficiency</h4><p>Coordinate registered accounts, corporate insurance, and investment income to minimize lifetime tax.</p></div>
-      <div class="fp-item"><div class="fp-item-icon">&#127774;</div><h4>Retirement Security</h4><p>Guaranteed income through annuities, seg fund GWBs, CPP optimization, and RRIF strategy.</p></div>
-      <div class="fp-item"><div class="fp-item-icon">&#128188;</div><h4>Business Strategy</h4><p>Corporate-owned insurance, buy-sell funding, key person protection built into your overall plan.</p></div>
-      <div class="fp-item"><div class="fp-item-icon">&#128101;</div><h4>Family Protection</h4><p>Life, disability, critical illness, and drug &amp; dental layered so your family is never exposed.</p></div>
-    </div>
-  </div>
-</div>
-<section class="about" id="about">
-  <div class="about-grid">
-    <div class="about-visual">
-      <div class="about-badge"><div class="ab-n">400+</div><div class="ab-s">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="ab-l">Google Reviews</div></div>
-      <img class="about-photo" src="rattan-photo.png" alt="Rattan Amol Taggar - Life Insurance Advisor"/>
-    </div>
-    <div>
-      <div class="sec-tag">About Me</div>
-      <h2 class="sh">An engineer's precision.<br>Built around you.</h2>
-      <div class="about-creds">
-        <span class="cred">Life Insurance Advisor</span><span class="cred">B.Eng</span><span class="cred">Ford Motor Company Alumni</span><span class="cred">Full-Time Agent</span><span class="cred">PunjabiFinance</span>
-        <span class="cred" style="background:linear-gradient(120deg,#b86e2a22,#b86e2a11);border-color:var(--gold)">&#127885; IA CBP 2021&ndash;2025</span>
-        <span class="cred" style="background:linear-gradient(120deg,#b86e2a22,#b86e2a11);border-color:var(--gold)">&#11088; IA Premier Expert 2026</span>
-      </div>
-      <p class="abt-p">Before becoming a full-time insurance advisor, I spent years as an engineer at <strong style="color:var(--forest)">Ford Motor Company</strong>. That engineering background shapes everything about how I work &mdash; I analyze every policy carefully, compare every option methodically, and explain the details in plain language.</p>
-      <p class="abt-p">As a fully independent advisor, I'm not tied to any single carrier. I compare 25+ Canadian insurers to find what genuinely fits your family and budget. I also founded <strong style="color:var(--forest)">PunjabiFinance</strong> &mdash; a community of 175,000+ helping Canadians, especially millennials and new immigrants, understand personal finance and insurance.</p>
-      <p class="abt-p">When you call 647-745-6850, you reach <em>me</em> directly. Not a call centre.</p>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;margin-bottom:16px">
-        <a href="about.html" class="btn-gold" style="font-size:.82rem;padding:11px 20px">Our Story &amp; Mission &#8594;</a>
-        <a href="awards.html" class="btn-gold" style="font-size:.82rem;padding:11px 20px;background:var(--forest)">&#127885; Awards &#8594;</a>
-      </div>
-      <p style="font-weight:600;color:var(--forest);font-size:.85rem;margin-top:8px">Licensed in:</p>
-      <div class="prov-row"><span class="prov">ON</span><span class="prov">BC</span><span class="prov">AB</span><span class="prov">MB</span><span class="prov">SK</span><span class="prov">NS</span><span class="prov">PEI</span><span class="prov">NB</span></div>
-      <div class="soc-row">
-        <a href="https://www.facebook.com/punjabifinance" target="_blank" class="soc">&#128088; Facebook</a>
-        <a href="https://www.instagram.com/punjabifinance" target="_blank" class="soc">&#128247; Instagram</a>
-        <a href="https://www.tiktok.com/@punjabifinance" target="_blank" class="soc">&#127925; TikTok</a>
-        <a href="https://www.youtube.com/@punjabifinance" target="_blank" class="soc">&#9654;&#65039; YouTube</a>
+    <div class="qp-live"><div class="qp-dot"></div> Instant quotes available</div>
+    <div class="qp-title">Get a Quote</div>
+    <div class="qp-sub">Select a product below</div>
+    <div class="qa-section">
+      <div class="qa-header"><div class="qa-label">&#9992;&#65039; Visitor &amp; Travel</div><span class="qa-arrow">&#9662;</span></div>
+      <div class="qa-body">
+        <a href="https://www.insurancebyrattan.ca/super-visa-insurance/" target="_blank" class="qa-link">&#128706; Super Visa Insurance <span>Quote &#8594;</span></a>
+        <a href="https://www.insurancebyrattan.ca/visitors-insurance/" target="_blank" class="qa-link">&#9992;&#65039; Visitors to Canada <span>Quote &#8594;</span></a>
+        <a href="https://www.insurancebyrattan.ca/" target="_blank" class="qa-link">&#127757; Travel Insurance <span>Quote &#8594;</span></a>
+        <a href="https://www.insurancebyrattan.ca/" target="_blank" class="qa-link">&#127891; International Student <span>Quote &#8594;</span></a>
       </div>
     </div>
+    <div class="qa-section">
+      <div class="qa-header"><div class="qa-label">&#128737;&#65039; Life Insurance</div><span class="qa-arrow">&#9662;</span></div>
+      <div class="qa-body">
+        <a href="https://www.insurancebyrattan.ca/term-life-insurance/" target="_blank" class="qa-link">&#128737;&#65039; Term Life Insurance <span>Quote &#8594;</span></a>
+        <a href="whole-life.html" class="qa-link">&#127807; Whole Life Insurance <span>Call &#8594;</span></a>
+        <a href="universal-life.html" class="qa-link">&#9881;&#65039; Universal Life <span>Call &#8594;</span></a>
+        <a href="mortgage-insurance.html" class="qa-link">&#127968; Mortgage Insurance <span>Call &#8594;</span></a>
+      </div>
+    </div>
+    <div class="qa-section">
+      <div class="qa-header"><div class="qa-label">&#10084;&#65039; Living Benefits</div><span class="qa-arrow">&#9662;</span></div>
+      <div class="qa-body">
+        <a href="https://www.insurancebyrattan.ca/critical-illness-insurance/" target="_blank" class="qa-link">&#10084;&#65039; Critical Illness <span>Quote &#8594;</span></a>
+        <a href="tel:6477456850" class="qa-link">&#129466; Disability Insurance <span>Call &#8594;</span></a>
+        <a href="tel:6477456850" class="qa-link">&#128138; Drug &amp; Dental <span>Call &#8594;</span></a>
+      </div>
+    </div>
+    <div class="qa-section">
+      <div class="qa-header"><div class="qa-label">&#127981; Estate &amp; Retirement</div><span class="qa-arrow">&#9662;</span></div>
+      <div class="qa-body">
+        <a href="estate-planning.html" class="qa-link">&#127981; Estate Planning <span>Learn &#8594;</span></a>
+        <a href="retirement-planning.html" class="qa-link">&#127774; Retirement Planning <span>Learn &#8594;</span></a>
+        <a href="business-insurance.html" class="qa-link">&#128188; Business Insurance <span>Call &#8594;</span></a>
+      </div>
+    </div>
+    <div class="qa-section">
+      <div class="qa-header"><div class="qa-label">&#128200; Investments</div><span class="qa-arrow">&#9662;</span></div>
+      <div class="qa-body">
+        <a href="rrsp.html" class="qa-link">&#128200; RRSP <span>Learn &#8594;</span></a>
+        <a href="tfsa.html" class="qa-link">&#128176; TFSA <span>Learn &#8594;</span></a>
+        <a href="fhsa.html" class="qa-link">&#127969; FHSA <span>Learn &#8594;</span></a>
+        <a href="resp.html" class="qa-link">&#127891; RESP <span>Learn &#8594;</span></a>
+        <a href="rdsp.html" class="qa-link">&#9855; RDSP <span>Learn &#8594;</span></a>
+        <a href="non-registered.html" class="qa-link">&#128202; Non-Registered <span>Learn &#8594;</span></a>
+      </div>
+    </div>
+    <div class="qp-note">&#128274; Independent &middot; 25+ carriers compared &middot; Licensed in 8 provinces</div>
   </div>
-</section>
-<section class="why">
-  <div class="why-grid">
-    <div>
-      <div class="sec-tag">Why Choose Me</div>
-      <h2 class="sh">400+ five-star reviews<br>don't happen by accident.</h2>
-      <p class="why-lead">They happen because I answer my phone, explain things clearly, and always put your family first &mdash; whether you're in Windsor or anywhere across Canada.</p>
+</div>
+
+<!-- STATS -->
+<div class="statsbar">
+  <div class="stats-inner">
+    <div class="stat"><div class="stat-n">400<em>+</em></div><div class="stat-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="stat-l">Google Reviews</div></div>
+    <div class="stat"><div class="stat-n">500<em>+</em></div><div class="stat-l">Families Protected</div></div>
+    <div class="stat"><div class="stat-n">25<em>+</em></div><div class="stat-l">Carriers Compared</div></div>
+    <div class="stat"><div class="stat-n">8</div><div class="stat-l">Provinces Licensed</div></div>
+  </div>
+</div>
+
+<!-- CARRIERS -->
+<div class="carriers">
+  <div class="c-lbl">Insurance companies I work with</div>
+  <div style="position:relative">
+    <div class="c-fade-l"></div><div class="c-fade-r"></div>
+    <div class="c-track">
+      <div class="c-item"><span>iA Financial</span></div><div class="c-item"><span>Sun Life</span></div><div class="c-item"><span>Manulife</span></div><div class="c-item"><span>RBC Insurance</span></div><div class="c-item"><span>Beneva</span></div><div class="c-item"><span>Canada Life</span></div><div class="c-item"><span>Desjardins</span></div><div class="c-item"><span>Equitable Life</span></div><div class="c-item"><span>Assumption Life</span></div><div class="c-item"><span>Foresters</span></div><div class="c-item"><span>Empire Life</span></div><div class="c-item"><span>Blue Cross</span></div><div class="c-item"><span>Travelance</span></div><div class="c-item"><span>GMS</span></div><div class="c-item"><span>Tugo</span></div><div class="c-item"><span>BMO Insurance</span></div><div class="c-item"><span>Serenia Life</span></div><div class="c-item"><span>UV Insurance</span></div><div class="c-item"><span>Truststone</span></div><div class="c-item"><span>SecureTravel</span></div>
+      <div class="c-item"><span>iA Financial</span></div><div class="c-item"><span>Sun Life</span></div><div class="c-item"><span>Manulife</span></div><div class="c-item"><span>RBC Insurance</span></div><div class="c-item"><span>Beneva</span></div><div class="c-item"><span>Canada Life</span></div><div class="c-item"><span>Desjardins</span></div><div class="c-item"><span>Equitable Life</span></div><div class="c-item"><span>Assumption Life</span></div><div class="c-item"><span>Foresters</span></div><div class="c-item"><span>Empire Life</span></div><div class="c-item"><span>Blue Cross</span></div><div class="c-item"><span>Travelance</span></div><div class="c-item"><span>GMS</span></div><div class="c-item"><span>Tugo</span></div><div class="c-item"><span>BMO Insurance</span></div><div class="c-item"><span>Serenia Life</span></div><div class="c-item"><span>UV Insurance</span></div><div class="c-item"><span>Truststone</span></div><div class="c-item"><span>SecureTravel</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services">
+  <div style="max-width:1100px;margin:0 auto">
+    <div class="section-eyebrow">What I Offer</div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-bottom:48px">
       <div>
-        <div class="wf"><div class="wf-icon">&#127981;</div><div><h4>Ford Engineer Turned Advisor</h4><p>Years at Ford Motor Company taught me to analyze every detail and never cut corners. I bring that same rigour to every recommendation.</p></div></div>
-        <div class="wf"><div class="wf-icon">&#129309;</div><div><h4>Truly Independent</h4><p>Not employed by any insurer. I compare 25+ carriers to find what's genuinely best for you &mdash; not what pays the best commission.</p></div></div>
-        <div class="wf"><div class="wf-icon">&#128222;</div><div><h4>Always Reachable</h4><p>Call 647-745-6850 and you reach me directly &mdash; same day, every time. Not a call centre, not an assistant.</p></div></div>
-        <div class="wf"><div class="wf-icon">&#9889;</div><div><h4>Fast Approvals</h4><p>From first contact to approved policy, I handle all paperwork. Many clients are covered within 24 hours.</p></div></div>
+        <h2 class="section-title">Insurance solutions<br>for every stage of life.</h2>
+        <p class="section-sub" style="margin-bottom:0">From protecting your family today to building wealth for tomorrow &mdash; I compare 25+ carriers to find the right fit for you.</p>
+      </div>
+      <a href="quotes.html" style="background:var(--black);color:var(--white);padding:13px 24px;border-radius:8px;font-size:.84rem;font-weight:700;white-space:nowrap;transition:background .2s" onmouseover="this.style.background='var(--green)'" onmouseout="this.style.background='var(--black)'">&#9889; See All &amp; Quote</a>
+    </div>
+    <div class="svc-grid">
+      <a href="super-visa.html" class="svc-card"><span class="svc-icon">&#128706;</span><div class="svc-title">Super Visa Insurance</div><p class="svc-body">IRCC-compliant coverage for parents &amp; grandparents. Fast approval, all major providers compared.</p><div class="svc-link">Learn More &#8594;</div></a>
+      <a href="term-life.html" class="svc-card"><span class="svc-icon">&#128737;&#65039;</span><div class="svc-title">Term Life Insurance</div><p class="svc-body">Affordable 10&ndash;30 year coverage. Protect your family's income and mortgage at the lowest rate.</p><div class="svc-link">Learn More &#8594;</div></a>
+      <a href="critical-illness.html" class="svc-card"><span class="svc-icon">&#10084;&#65039;</span><div class="svc-title">Critical Illness</div><p class="svc-body">Tax-free lump sum on diagnosis of cancer, heart attack, or stroke. Focus on recovery, not finances.</p><div class="svc-link">Learn More &#8594;</div></a>
+      <a href="disability.html" class="svc-card"><span class="svc-icon">&#129466;</span><div class="svc-title">Disability Insurance</div><p class="svc-body">Replaces up to 85% of income if you can't work. Your income is your most valuable asset.</p><div class="svc-link">Learn More &#8594;</div></a>
+      <a href="estate-planning.html" class="svc-card"><span class="svc-icon">&#127981;</span><div class="svc-title">Estate Planning</div><p class="svc-body">Transfer wealth tax-efficiently, bypass probate, and ensure your heirs receive what you intended.</p><div class="svc-link">Learn More &#8594;</div></a>
+      <a href="retirement-planning.html" class="svc-card"><span class="svc-icon">&#127774;</span><div class="svc-title">Retirement Planning</div><p class="svc-body">RRSP, TFSA, RRIF, annuities, and seg funds coordinated into a tax-efficient income strategy.</p><div class="svc-link">Learn More &#8594;</div></a>
+      <a href="visitors.html" class="svc-card"><span class="svc-icon">&#9992;&#65039;</span><div class="svc-title">Visitors to Canada</div><p class="svc-body">Emergency medical coverage for visiting family. Competitive rates, all major providers, fast approval.</p><div class="svc-link">Learn More &#8594;</div></a>
+      <a href="business-insurance.html" class="svc-card"><span class="svc-icon">&#128188;</span><div class="svc-title">Business Insurance</div><p class="svc-body">Key person protection, buy-sell agreements, and corporate-owned life insurance for business owners.</p><div class="svc-link">Learn More &#8594;</div></a>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="why">
+  <div style="max-width:1100px;margin:0 auto">
+    <div class="why-grid">
+      <div class="why-left">
+        <div class="section-eyebrow">Why Choose Me</div>
+        <h2 class="section-title">400+ five-star reviews don't happen by accident.</h2>
+        <p>They happen because I answer my phone, explain things clearly, and always put your family first &mdash; whether you're in Windsor or anywhere across Canada.</p>
+        <div>
+          <div class="wf"><div class="wf-icon">&#9881;&#65039;</div><div><h4>Ford Engineer Turned Advisor</h4><p>Years at Ford Motor Company taught me to analyze every detail and never cut corners. I bring that same rigour to every recommendation I make.</p></div></div>
+          <div class="wf"><div class="wf-icon">&#129309;</div><div><h4>Truly Independent</h4><p>I'm not employed by any insurer. I compare 25+ carriers to find what's genuinely best for you &mdash; not what pays the highest commission.</p></div></div>
+          <div class="wf"><div class="wf-icon">&#128222;</div><div><h4>Always Reachable</h4><p>Call 647-745-6850 and you reach me directly &mdash; same day, every time. Not a call centre, not an assistant. Me.</p></div></div>
+          <div class="wf"><div class="wf-icon">&#9889;</div><div><h4>Fast Approvals</h4><p>I handle all paperwork from start to finish. Many clients are covered within 24 hours of their first call.</p></div></div>
+        </div>
+      </div>
+      <div class="why-stats">
+        <div class="ws" style="grid-column:span 2"><div class="ws-n">400<em>+</em></div><div class="ws-l">Five-star Google reviews &mdash; Windsor&apos;s most reviewed independent insurance advisor</div></div>
+        <div class="ws"><div class="ws-n">500<em>+</em></div><div class="ws-l">Canadian families protected across 8 provinces</div></div>
+        <div class="ws"><div class="ws-n">25<em>+</em></div><div class="ws-l">Insurance carriers compared for every single client</div></div>
+        <div class="ws"><div class="ws-n">99<em>%</em></div><div class="ws-l">Client satisfaction &mdash; referrals are my biggest source of business</div></div>
+        <div class="ws"><div class="ws-n">6<em>yr</em></div><div class="ws-l">In business since 2019 &mdash; iA Premier Expert 2026</div></div>
       </div>
     </div>
-    <div class="why-stats">
-      <div class="ws"><div class="ws-n">400<em>+</em></div><div class="ws-l">Five-star Google reviews &mdash; Windsor's most reviewed independent insurance advisor</div></div>
-      <div class="ws"><div class="ws-n">500<em>+</em></div><div class="ws-l">Canadian families protected across 8 provinces</div></div>
-      <div class="ws"><div class="ws-n">25<em>+</em></div><div class="ws-l">Insurance carriers compared for every single client</div></div>
-      <div class="ws"><div class="ws-n">99<em>%+</em></div><div class="ws-l">Client satisfaction &mdash; referrals are my biggest source of business</div></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div style="max-width:1100px;margin:0 auto">
+    <div class="about-grid">
+      <div class="about-img">
+        <div class="about-img-badge"><div class="aib-n">400+</div><div class="aib-s">&#9733;&#9733;&#9733;&#9733;&#9733;</div></div>
+        <img class="about-photo" src="rattan-photo.png" alt="Rattan Amol Taggar"/>
+      </div>
+      <div class="about-content">
+        <div class="section-eyebrow">About Me</div>
+        <h2 class="section-title">An engineer&apos;s precision.<br>Built around you.</h2>
+        <div class="cred-row">
+          <span class="cred">Life Insurance Advisor</span>
+          <span class="cred">B.Eng</span>
+          <span class="cred">Ford Motor Company Alumni</span>
+          <span class="cred">Full-Time</span>
+          <span class="cred">PunjabiFinance</span>
+          <span class="cred gold">&#127885; iA CBP 2021&ndash;2025</span>
+          <span class="cred gold">&#11088; IA Premier Expert 2026</span>
+        </div>
+        <p class="abt-p">Before becoming a full-time insurance advisor, I spent years as an engineer at <strong>Ford Motor Company</strong>. That engineering background shapes everything about how I work &mdash; I analyze every policy carefully, compare every option methodically, and explain everything in plain language.</p>
+        <p class="abt-p">As a fully independent advisor, I&apos;m not tied to any single carrier. I compare 25+ Canadian insurers to find what genuinely fits your family and budget. I also founded <strong>PunjabiFinance</strong> &mdash; a community of 175,000+ Canadians learning personal finance and insurance.</p>
+        <p class="abt-p">When you call 647-745-6850, you reach <em>me</em> directly. Not a call centre.</p>
+        <p style="font-weight:700;color:var(--black);font-size:.84rem;margin-bottom:8px">Licensed in:</p>
+        <div class="prov-row"><span class="prov">ON</span><span class="prov">BC</span><span class="prov">AB</span><span class="prov">MB</span><span class="prov">SK</span><span class="prov">NS</span><span class="prov">PEI</span><span class="prov">NB</span></div>
+        <div class="about-btns">
+          <a href="about.html" class="ab-btn">Our Story &amp; Mission &#8594;</a>
+          <a href="awards.html" class="ab-btn outline">&#127885; Awards</a>
+        </div>
+        <div class="soc-row">
+          <a href="https://www.facebook.com/punjabifinance" target="_blank" class="soc">&#128088; Facebook</a>
+          <a href="https://www.instagram.com/punjabifinance" target="_blank" class="soc">&#128247; Instagram</a>
+          <a href="https://www.tiktok.com/@punjabifinance" target="_blank" class="soc">&#127925; TikTok</a>
+          <a href="https://www.youtube.com/@punjabifinance" target="_blank" class="soc">&#9654;&#65039; YouTube</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
+
+<!-- PROCESS -->
 <section class="process">
-  <div class="sec-tag">How It Works</div>
-  <h2 class="sh">Four simple steps to coverage.</h2>
-  <div class="proc-steps">
-    <div class="ps"><div class="ps-n">01</div><h4>Reach Out</h4><p>Call, email, or browse quotes online. I respond the same day &mdash; usually within hours.</p></div>
-    <div class="ps"><div class="ps-n">02</div><h4>I Shop for You</h4><p>I compare 25+ Canadian carriers based on your health, age, and goals to find the best plan at the lowest price.</p></div>
-    <div class="ps"><div class="ps-n">03</div><h4>Review Options</h4><p>I walk you through your choices in plain language. No pressure &mdash; you decide with complete confidence.</p></div>
-    <div class="ps"><div class="ps-n">04</div><h4>Get Protected</h4><p>I handle the application and underwriting. Many clients are approved same-day. Your family is covered.</p></div>
+  <div style="max-width:1100px;margin:0 auto">
+    <div class="section-eyebrow">How It Works</div>
+    <h2 class="section-title">Four simple steps to coverage.</h2>
+    <div class="proc-steps">
+      <div class="ps"><div class="ps-num">1</div><h4>Reach Out</h4><p>Call, text, WhatsApp, or browse quotes online. I respond the same day &mdash; usually within hours.</p></div>
+      <div class="ps"><div class="ps-num">2</div><h4>I Shop for You</h4><p>I compare 25+ Canadian carriers based on your health, age, and goals to find the best plan at the lowest price.</p></div>
+      <div class="ps"><div class="ps-num">3</div><h4>Review Options</h4><p>I walk you through your choices in plain language. No pressure &mdash; you decide with complete confidence.</p></div>
+      <div class="ps"><div class="ps-num">4</div><h4>Get Protected</h4><p>I handle the application and underwriting. Many clients are approved same-day. Your family is covered.</p></div>
+    </div>
   </div>
 </section>
+
+<!-- TESTIMONIALS -->
 <section class="testimonials">
-  <div class="testi-hd"><div><div class="sec-tag">Client Reviews</div><h2 class="sh">Real words from real clients.</h2></div><a href="https://share.google/cPVqZl6i5B7tOrQSP" target="_blank">See all 400+ Google reviews &#8594;</a></div>
-  <div class="testi-wrap"><div class="testi-track">
-    <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"Rattan is very professional and the most humble person. Always one text away and always happy to help. Recommended 10/10."</p><div class="tc-author"><div class="tc-av">KD</div><div><div class="tc-name">Karandeep Dhillon</div><div class="tc-loc">Visitors Insurance</div></div></div></div>
-    <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"He always stays on top and helps you get what you need. Amazing personality &mdash; finds the best plan every time."</p><div class="tc-author"><div class="tc-av">JC</div><div><div class="tc-name">Jay Chitroda</div><div class="tc-loc">Insurance &middot; Canada</div></div></div></div>
-    <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"Very easily available and always on time. Used him a couple of times and he provided the best solution every time."</p><div class="tc-author"><div class="tc-av">CR</div><div><div class="tc-name">Chintan Raval</div><div class="tc-loc">Insurance &middot; Canada</div></div></div></div>
-    <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"I was quite happy and impressed with Rattan's quick and thorough service. I will not hesitate to use him again."</p><div class="tc-author"><div class="tc-av">NS</div><div><div class="tc-name">Nicky Schleihauf</div><div class="tc-loc">Insurance &middot; USA</div></div></div></div>
-    <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"Very satisfied &mdash; Rattan helped above and beyond with my mom and my insurance needs. Had friends and relatives referred to him!"</p><div class="tc-author"><div class="tc-av">JA</div><div><div class="tc-name">Jeanette Lynn Alipoyo</div><div class="tc-loc">Insurance &middot; Canada</div></div></div></div>
-    <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"Did a great job explaining different types of insurances, pros and cons. Definitely someone with lots of knowledge."</p><div class="tc-author"><div class="tc-av">NS</div><div><div class="tc-name">Navin Stanly</div><div class="tc-loc">Life Insurance &middot; Canada</div></div></div></div>
-    <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"Rattan is very professional and the most humble person. Always one text away and always happy to help. Recommended 10/10."</p><div class="tc-author"><div class="tc-av">KD</div><div><div class="tc-name">Karandeep Dhillon</div><div class="tc-loc">Visitors Insurance</div></div></div></div>
-    <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"He always stays on top and helps you get what you need. Amazing personality &mdash; finds the best plan every time."</p><div class="tc-author"><div class="tc-av">JC</div><div><div class="tc-name">Jay Chitroda</div><div class="tc-loc">Insurance &middot; Canada</div></div></div></div>
-    <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"Very easily available and always on time. Used him a couple of times and he provided the best solution every time."</p><div class="tc-author"><div class="tc-av">CR</div><div><div class="tc-name">Chintan Raval</div><div class="tc-loc">Insurance &middot; Canada</div></div></div></div>
-    <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"I was quite happy and impressed with Rattan's quick and thorough service. I will not hesitate to use him again."</p><div class="tc-author"><div class="tc-av">NS</div><div><div class="tc-name">Nicky Schleihauf</div><div class="tc-loc">Insurance &middot; USA</div></div></div></div>
-    <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"Very satisfied &mdash; Rattan helped above and beyond with my mom and my insurance needs. Had friends and relatives referred to him!"</p><div class="tc-author"><div class="tc-av">JA</div><div><div class="tc-name">Jeanette Lynn Alipoyo</div><div class="tc-loc">Insurance &middot; Canada</div></div></div></div>
-    <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"Did a great job explaining different types of insurances, pros and cons. Definitely someone with lots of knowledge."</p><div class="tc-author"><div class="tc-av">NS</div><div><div class="tc-name">Navin Stanly</div><div class="tc-loc">Life Insurance &middot; Canada</div></div></div></div>
-  </div></div>
-</section>
-<div class="cta-split" id="contact">
-  <div class="cta-l">
-    <h2>Ready to protect<br>your family?<br><em>Let's talk today.</em></h2>
-    <p class="cta-sub">No pressure. No obligation. Honest, independent advice from a full-time advisor who answers his own phone.</p>
-    <div class="cta-btns"><a href="quotes.html" class="btn-w">&#9889; Get Instant Quote</a><a href="tel:6477456850" class="btn-gw">&#128222; Call Now</a></div>
+  <div style="max-width:1100px;margin:0 auto">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:8px">
+      <div><div class="section-eyebrow">Client Reviews</div><h2 class="section-title">Real words from real clients.</h2></div>
+      <a href="https://share.google/cPVqZl6i5B7tOrQSP" target="_blank" style="font-size:.82rem;font-weight:700;color:var(--green)">See all 400+ reviews &#8594;</a>
+    </div>
   </div>
-  <div class="cta-r">
-    <div class="cr"><div class="cr-ico">&#128222;</div><div><div class="cr-lbl">Phone</div><div class="cr-val"><a href="tel:6477456850">647-745-6850</a></div><div style="font-size:.72rem;color:rgba(255,255,255,.33);margin-top:2px">Mon&ndash;Fri &middot; 8:00am&ndash;4:00pm EST</div></div></div>
-    <div class="cr"><div class="cr-ico">&#9993;&#65039;</div><div><div class="cr-lbl">Email</div><div class="cr-val"></div></div></div>
-    <div class="cr"><div class="cr-ico" style="background:rgba(37,211,102,.15);border-color:rgba(37,211,102,.3)">&#128172;</div><div><div class="cr-lbl">WhatsApp</div><div class="cr-val"><a href="https://wa.me/16477456850" target="_blank" style="color:#25d366">Message on WhatsApp</a></div></div></div>
-    <div class="cr"><div class="cr-ico">&#128205;</div><div><div class="cr-lbl">Address</div><div class="cr-val" style="color:rgba(255,255,255,.72);font-weight:400;font-size:.9rem">1054 Bonadonna Court, Windsor, ON N9E 4Y4</div></div></div>
-    <div class="cr"><div class="cr-ico">&#127760;</div><div><div class="cr-lbl">Online Quotes</div><div class="cr-val"><a href="https://www.insurancebyrattan.ca/" target="_blank">www.insurancebyrattan.ca</a></div></div></div>
+  <div class="testi-wrap">
+    <div class="testi-track">
+      <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"Rattan is very professional and the most humble person. Always one text away and always happy to help. Best suggestions for my sister&apos;s visitor visa insurance. Recommended 10/10."</p><div class="tc-author"><div class="tc-av">KD</div><div><div class="tc-name">Karandeep Dhillon</div><div class="tc-loc">Visitors Insurance</div></div></div></div>
+      <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"He always stays on top and helps you get what you need. Amazing personality &mdash; finds the best plan every time."</p><div class="tc-author"><div class="tc-av">JC</div><div><div class="tc-name">Jay Chitroda</div><div class="tc-loc">Insurance &middot; Canada</div></div></div></div>
+      <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"Very easily available and always on time. Very quick service! Used him a couple of times and he provided the best solution every time."</p><div class="tc-author"><div class="tc-av">CR</div><div><div class="tc-name">Chintan Raval</div><div class="tc-loc">Insurance &middot; Canada</div></div></div></div>
+      <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"I was quite happy and impressed with Rattan&apos;s quick and thorough service. I will not hesitate to use him again and again."</p><div class="tc-author"><div class="tc-av">NS</div><div><div class="tc-name">Nicky Schleihauf</div><div class="tc-loc">Insurance &middot; USA</div></div></div></div>
+      <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"Very satisfied &mdash; Rattan helped above and beyond with my mom and my insurance needs. Had friends and relatives referred to him!"</p><div class="tc-author"><div class="tc-av">JA</div><div><div class="tc-name">Jeanette Lynn Alipoyo</div><div class="tc-loc">Insurance &middot; Canada</div></div></div></div>
+      <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"Did a great job explaining different types of insurances, pros and cons, which narrowed down our choices to the perfect one. Very knowledgeable."</p><div class="tc-author"><div class="tc-av">NS</div><div><div class="tc-name">Navin Stanly</div><div class="tc-loc">Life Insurance &middot; Canada</div></div></div></div>
+      <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"Rattan is very professional and the most humble person. Always one text away and always happy to help. Best suggestions for my sister&apos;s visitor visa insurance. Recommended 10/10."</p><div class="tc-author"><div class="tc-av">KD</div><div><div class="tc-name">Karandeep Dhillon</div><div class="tc-loc">Visitors Insurance</div></div></div></div>
+      <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"He always stays on top and helps you get what you need. Amazing personality &mdash; finds the best plan every time."</p><div class="tc-author"><div class="tc-av">JC</div><div><div class="tc-name">Jay Chitroda</div><div class="tc-loc">Insurance &middot; Canada</div></div></div></div>
+      <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"Very easily available and always on time. Very quick service! Used him a couple of times and he provided the best solution every time."</p><div class="tc-author"><div class="tc-av">CR</div><div><div class="tc-name">Chintan Raval</div><div class="tc-loc">Insurance &middot; Canada</div></div></div></div>
+      <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"I was quite happy and impressed with Rattan&apos;s quick and thorough service. I will not hesitate to use him again and again."</p><div class="tc-author"><div class="tc-av">NS</div><div><div class="tc-name">Nicky Schleihauf</div><div class="tc-loc">Insurance &middot; USA</div></div></div></div>
+      <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"Very satisfied &mdash; Rattan helped above and beyond with my mom and my insurance needs. Had friends and relatives referred to him!"</p><div class="tc-author"><div class="tc-av">JA</div><div><div class="tc-name">Jeanette Lynn Alipoyo</div><div class="tc-loc">Insurance &middot; Canada</div></div></div></div>
+      <div class="tc"><div class="tc-top"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-g">Google</div></div><p class="tc-quote">"Did a great job explaining different types of insurances, pros and cons, which narrowed down our choices to the perfect one. Very knowledgeable."</p><div class="tc-author"><div class="tc-av">NS</div><div><div class="tc-name">Navin Stanly</div><div class="tc-loc">Life Insurance &middot; Canada</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="cta-inner">
+    <h2>Ready to protect your family?<br><em>Let&apos;s talk today.</em></h2>
+    <p>No pressure. No obligation. Honest, independent advice from a full-time advisor who answers his own phone.</p>
+    <div class="cta-btns">
+      <a href="quotes.html" class="cta-btn-w">&#9889; Get Instant Quote</a>
+      <a href="tel:6477456850" class="cta-btn-dark">&#128222; Call Now &mdash; 647-745-6850</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT ROW -->
+<div class="contact-row" id="contact">
+  <div class="cr"><div class="cr-ico">&#128222;</div><div><div class="cr-lbl">Phone</div><div class="cr-val"><a href="tel:6477456850">647-745-6850</a></div><div style="font-size:.72rem;color:rgba(255,255,255,.3);margin-top:2px">Mon&ndash;Fri 8am&ndash;4pm EST</div></div></div>
+  <div class="cr"><div class="cr-ico">&#128172;</div><div><div class="cr-lbl">WhatsApp</div><div class="cr-val"><a href="https://wa.me/16477456850" target="_blank" style="color:#25d366">Message on WhatsApp</a></div></div></div>
+  <div class="cr"><div class="cr-ico">&#127760;</div><div><div class="cr-lbl">Online Quotes</div><div class="cr-val"><a href="https://www.insurancebyrattan.ca" target="_blank">insurancebyrattan.ca</a></div></div></div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fg">
+    <div class="fb"><a href="index.html" class="fl">Insurance <em>by Rattan</em></a><p>Rattan Amol Taggar &middot; Life Insurance Advisor &middot; B.Eng &middot; Ford Motor Company Alumni &middot; Licensed in ON, BC, AB, MB, SK, NS, PEI, NB &middot; Independent &mdash; not affiliated with any single carrier.</p></div>
+    <div class="fc"><h5>Insurance</h5><ul>
+      <li><a href="super-visa.html">Super Visa Insurance</a></li>
+      <li><a href="visitors.html">Visitors to Canada</a></li>
+      <li><a href="term-life.html">Term Life Insurance</a></li>
+      <li><a href="critical-illness.html">Critical Illness</a></li>
+      <li><a href="disability.html">Disability Insurance</a></li>
+      <li><a href="estate-planning.html">Estate Planning</a></li>
+      <li><a href="drug-dental.html">Drug &amp; Dental</a></li>
+    </ul></div>
+    <div class="fc"><h5>Investments</h5><ul>
+      <li><a href="rrsp.html">RRSP</a></li>
+      <li><a href="tfsa.html">TFSA</a></li>
+      <li><a href="fhsa.html">FHSA</a></li>
+      <li><a href="resp.html">RESP</a></li>
+      <li><a href="rdsp.html">RDSP</a></li>
+      <li><a href="non-registered.html">Non-Registered</a></li>
+      <li><a href="retirement-planning.html">Retirement Planning</a></li>
+    </ul></div>
+    <div class="fc"><h5>Connect</h5><ul>
+      <li><a href="tel:6477456850">647-745-6850</a></li>
+      <li><a href="https://wa.me/16477456850" target="_blank">WhatsApp</a></li>
+      <li><a href="quotes.html">Get Instant Quotes</a></li>
+      <li><a href="about.html">About &amp; Our Story</a></li>
+      <li><a href="awards.html">Awards &amp; Recognition</a></li>
+      <li><a href="https://www.facebook.com/punjabifinance" target="_blank">Facebook</a></li>
+      <li><a href="https://www.tiktok.com/@punjabifinance" target="_blank">TikTok</a></li>
+    </ul></div>
+  </div>
+  <div class="fbot">
+    <span>&copy; 2026 Insurance by Rattan &middot; Rattan Amol Taggar &middot; All rights reserved.</span>
+    <span>Independent Advisor &middot; Not affiliated with any single carrier</span>
+  </div>
+</footer>
+
+<!-- STICKY CALL (mobile only) -->
+<div class="sticky-call">
+  <div class="sticky-call-inner">
+    <a href="tel:6477456850" class="sc-call">&#128222; Call Now</a>
+    <a href="https://wa.me/16477456850" target="_blank" class="sc-wa">&#128172; WhatsApp</a>
   </div>
 </div>
-<footer><div class="fg">
-  <div class="fb"><a href="index.html" class="fl">Insurance <em>by Rattan</em></a><p>Rattan Amol Taggar &middot; Life Insurance Advisor &middot; B.Eng &middot; Ford Motor Company Alumni &middot; Licensed in ON, BC, AB, MB, SK, NS, PEI, NB &middot; Independent &mdash; not affiliated with any single carrier.</p></div>
-  <div class="fc"><h5>Insurance</h5><ul><li><a href="super-visa.html">Super Visa Insurance</a></li><li><a href="visitors.html">Visitors to Canada</a></li><li><a href="term-life.html">Term Life Insurance</a></li><li><a href="critical-illness.html">Critical Illness</a></li><li><a href="disability.html">Disability Insurance</a></li><li><a href="estate-planning.html">Estate Planning</a></li><li><a href="drug-dental.html">Drug &amp; Dental</a></li></ul></div>
-  <div class="fc"><h5>Investments</h5><ul><li><a href="rrsp.html">RRSP</a></li><li><a href="tfsa.html">TFSA</a></li><li><a href="fhsa.html">FHSA</a></li><li><a href="resp.html">RESP</a></li><li><a href="rdsp.html">RDSP</a></li><li><a href="non-registered.html">Non-Registered</a></li><li><a href="retirement-planning.html">Retirement Planning</a></li></ul></div>
-  <div class="fc"><h5>Connect</h5><ul><li><a href="tel:6477456850">647-745-6850</a></li><li></li><li><a href="quotes.html">Get Instant Quotes</a></li><li><a href="about.html">About &amp; Our Story</a></li><li><a href="awards.html">Awards &amp; Recognition</a></li><li><a href="https://www.facebook.com/punjabifinance" target="_blank">Facebook</a></li><li><a href="https://www.TikTok</a></li>
-    <li><a href="https://www.youtube.com/@punjabifinance" target="_blank">YouTube</a></li>
-  </ul></div>
-</div><div class="fbot">
-  <span>&copy; 2026 Insurance by Rattan &middot; Rattan Amol Taggar &middot; All rights reserved.</span>
-  <span>Independent Advisor &middot; Not affiliated with any single carrier</span>
-</div></footer>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Hamburger menu
   var hamburger = document.getElementById('hamburger');
   var mobileNav = document.getElementById('mobileNav');
   if (hamburger && mobileNav) {
@@ -642,7 +751,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   }
-  // Quote panel dropdowns
   document.querySelectorAll('.qa-header').forEach(function(header) {
     header.addEventListener('click', function() {
       var wasOpen = header.classList.contains('open');
