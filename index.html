@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Insurance by Rattan | Life Insurance Advisor Windsor ON</title>
+<title>Rattan Amol Taggar | Life Insurance Advisor Windsor ON</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,700;1,9..144,900&display=swap" rel="stylesheet"/>
 <style>
@@ -123,22 +123,26 @@ h1 .italic{font-style:italic;color:var(--green);display:block}
 .titem span{font-size:13px !important;font-weight:600 !important;color:#1a401a !important;white-space:nowrap !important;display:inline !important}
 
 /* SERVICES */
-.services{padding:112px 64px;max-width:1280px;margin:0 auto}
-.ey{font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--green);display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.svc{border-top:2px solid var(--black)}
+.svc-layout{max-width:1280px;margin:0 auto;padding:0 64px;display:grid;grid-template-columns:300px 1fr;gap:72px;align-items:start}
+.svc-sticky{position:sticky;top:90px;padding:96px 0 80px}
+.ey{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--green);display:flex;align-items:center;gap:10px;margin-bottom:16px}
 .ey::after{content:'';display:block;width:28px;height:2px;background:var(--green);border-radius:2px}
-.sh{font-family:'Fraunces',serif;font-size:clamp(2.4rem,4vw,4.2rem);color:var(--black);line-height:1.05;font-weight:900;letter-spacing:-.025em}
-.ssub{font-size:18px;color:var(--mid);line-height:1.75;max-width:520px;margin-top:16px}
-.svchd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:56px;flex-wrap:wrap;gap:20px}
-.svcgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
-.sc{background:#fff;border:2px solid var(--border);border-radius:14px;padding:30px 24px;display:block;color:inherit;transition:all .25s;position:relative;overflow:hidden}
-.sc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--green);transform:scaleX(0);transform-origin:left;transition:transform .3s}
-.sc:hover{border-color:var(--black);box-shadow:5px 5px 0 var(--black);transform:translate(-2px,-2px)}
+.sh{font-family:'Fraunces',serif;font-size:clamp(2rem,3.2vw,3.4rem);color:var(--black);line-height:1.06;font-weight:900;letter-spacing:-.025em}
+.ssub{font-size:15px;color:var(--mid);line-height:1.8;margin-top:14px}
+.svc-cta{margin-top:28px;display:inline-flex;align-items:center;gap:8px;background:var(--black);color:#fff;padding:13px 22px;border-radius:8px;font-size:13px;font-weight:700;transition:all .2s;border:2px solid var(--black)}
+.svc-cta:hover{background:transparent;color:var(--black)}
+.svcgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:0;padding:80px 0;border-left:2px solid var(--border)}
+.sc{background:#fff;border-bottom:2px solid var(--border);border-right:none;padding:32px 28px;display:block;color:inherit;transition:all .2s;position:relative;overflow:hidden}
+.sc:nth-child(odd){border-right:2px solid var(--border)}
+.sc::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:3px;background:var(--green);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.sc:hover{background:var(--off)}
 .sc:hover::after{transform:scaleX(1)}
-.sc-ic{font-size:34px;margin-bottom:16px;display:block}
-.sc-t{font-size:18px;font-weight:800;color:var(--black);margin-bottom:10px}
-.sc-b{font-size:14px;line-height:1.7;color:var(--mid);margin-bottom:16px}
-.sc-l{font-size:13px;font-weight:700;color:var(--green);display:flex;align-items:center;gap:6px;transition:gap .2s}
-.sc:hover .sc-l{gap:11px}
+.sc-ic{font-size:26px;margin-bottom:12px;display:block}
+.sc-t{font-size:15px;font-weight:800;color:var(--black);margin-bottom:7px}
+.sc-b{font-size:13px;line-height:1.7;color:var(--mid);margin-bottom:12px}
+.sc-l{font-size:12px;font-weight:700;color:var(--green);display:flex;align-items:center;gap:5px;transition:gap .2s}
+.sc:hover .sc-l{gap:10px}
 
 /* WHY */
 .why{background:var(--off);padding:112px 64px;border-top:2px solid var(--black)}
@@ -260,6 +264,9 @@ footer{background:#060606;padding:64px 64px 28px;border-top:2px solid rgba(255,2
 
 /* RESPONSIVE */
 @media(max-width:900px){
+  .svc-layout{grid-template-columns:1fr;gap:0;padding:0 32px}
+  .svc-sticky{position:static;padding:64px 0 40px}
+  .svcgrid{border-left:none;padding:0 0 64px}
   .topbar,.n-call,.n-quote,.nl{display:none}
   .nw{padding:0 16px}
   .burger{display:flex}
@@ -308,6 +315,9 @@ footer{background:#060606;padding:64px 64px 28px;border-top:2px solid rgba(255,2
   .fbot{flex-direction:column;text-align:center}
 }
 @media(max-width:520px){
+  .svcgrid{grid-template-columns:1fr}
+  .sc:nth-child(odd){border-right:none}
+  .sc{border-right:none}
   h1{font-size:2.6rem}
   .svcgrid{grid-template-columns:1fr}
   .wstats{grid-template-columns:1fr}
@@ -350,7 +360,7 @@ footer{background:#060606;padding:64px 64px 28px;border-top:2px solid rgba(255,2
 
 <nav>
 <div class="nw">
-  <a href="index.html" class="logo">Insurance <em>by Rattan</em><span class="logo-s">Life Insurance Advisor &middot; Canada</span></a>
+  <a href="index.html" class="logo">Rattan <em>Amol Taggar</em><span class="logo-s">Life Insurance Advisor &middot; Canada</span></a>
   <ul class="nl">
     <li><a href="index.html">Home</a></li>
     <li><a href="about.html">About</a></li>
@@ -519,18 +529,22 @@ footer{background:#060606;padding:64px 64px 28px;border-top:2px solid rgba(255,2
 
 <!-- SERVICES -->
 <section class="svc">
-  <div class="inn">
-    <div class="ey">What I cover</div>
-    <h2 class="sh">One advisor. Every protection need.</h2>
-    <div class="sgrid">
-      <div class="sc"><div class="si">🔒</div><h3>Life Insurance</h3><p>Term, whole life, and universal life — compared across 25+ carriers to get you the best rate.</p></div>
-      <div class="sc"><div class="si">✈️</div><h3>Visitor & Super Visa</h3><p>Fast, affordable coverage for parents and visitors. Same-day approval in most cases.</p></div>
-      <div class="sc"><div class="si">❤️</div><h3>Critical Illness</h3><p>A lump-sum payout if you're diagnosed with cancer, heart attack, stroke, or 25+ conditions.</p></div>
-      <div class="sc"><div class="si">🛡️</div><h3>Disability Insurance</h3><p>Replace your income if illness or injury stops you from working. Protect your most valuable asset.</p></div>
-      <div class="sc"><div class="si">💊</div><h3>Drug & Dental</h3><p>Affordable health benefits for self-employed Canadians and families without group coverage.</p></div>
-      <div class="sc"><div class="si">📈</div><h3>Investments & RESP</h3><p>TFSA, RRSP, FHSA, RESP, RDSP — grow your wealth and save for your family's future.</p></div>
-      <div class="sc"><div class="si">🏠</div><h3>Estate Planning</h3><p>Wills, powers of attorney, and life insurance structured to protect your family's legacy.</p></div>
-      <div class="sc"><div class="si">🤝</div><h3>Business Insurance</h3><p>Key person insurance, buy-sell agreements, and group benefits for business owners.</p></div>
+  <div class="svc-layout">
+    <div class="svc-sticky">
+      <div class="ey">What I cover</div>
+      <h2 class="sh">One advisor.<br>Every protection need.</h2>
+      <p class="ssub">From life insurance to investments — I compare 25+ carriers so you get the best coverage at the best price.</p>
+      <a href="quotes.html" class="svc-cta">Get a free quote &rarr;</a>
+    </div>
+    <div class="svcgrid">
+      <a href="term-life.html" class="sc"><span class="sc-ic">🔒</span><div class="sc-t">Life Insurance</div><div class="sc-b">Term, whole life, and universal life — compared across 25+ carriers to get you the best rate.</div><span class="sc-l">Learn more →</span></a>
+      <a href="visitors.html" class="sc"><span class="sc-ic">✈️</span><div class="sc-t">Visitor &amp; Super Visa</div><div class="sc-b">Fast, affordable coverage for parents and visitors. Same-day approval in most cases.</div><span class="sc-l">Learn more →</span></a>
+      <a href="critical-illness.html" class="sc"><span class="sc-ic">❤️</span><div class="sc-t">Critical Illness</div><div class="sc-b">A lump-sum payout if you're diagnosed with cancer, heart attack, stroke, or 25+ conditions.</div><span class="sc-l">Learn more →</span></a>
+      <a href="disability.html" class="sc"><span class="sc-ic">🛡️</span><div class="sc-t">Disability Insurance</div><div class="sc-b">Replace your income if illness or injury stops you from working. Protect your most valuable asset.</div><span class="sc-l">Learn more →</span></a>
+      <a href="drug-dental.html" class="sc"><span class="sc-ic">💊</span><div class="sc-t">Drug &amp; Dental</div><div class="sc-b">Affordable health benefits for self-employed Canadians and families without group coverage.</div><span class="sc-l">Learn more →</span></a>
+      <a href="resp.html" class="sc"><span class="sc-ic">📈</span><div class="sc-t">Investments &amp; RESP</div><div class="sc-b">TFSA, RRSP, FHSA, RESP, RDSP — grow your wealth and save for your family's future.</div><span class="sc-l">Learn more →</span></a>
+      <a href="estate-planning.html" class="sc"><span class="sc-ic">🏠</span><div class="sc-t">Estate Planning</div><div class="sc-b">Wills, powers of attorney, and life insurance structured to protect your family's legacy.</div><span class="sc-l">Learn more →</span></a>
+      <a href="business-insurance.html" class="sc"><span class="sc-ic">🤝</span><div class="sc-t">Business Insurance</div><div class="sc-b">Key person insurance, buy-sell agreements, and group benefits for business owners.</div><span class="sc-l">Learn more →</span></a>
     </div>
   </div>
 </section>
