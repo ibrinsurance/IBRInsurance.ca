@@ -116,6 +116,18 @@ footer{background:#050505;padding:56px 60px 28px}
 .sc-call{flex:1;background:var(--green);color:var(--white);padding:13px;border-radius:8px;text-align:center;font-size:.88rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:7px}
 .sc-wa{flex:1;background:rgba(37,211,102,.1);border:1.5px solid rgba(37,211,102,.35);color:#25d366;padding:13px;border-radius:8px;text-align:center;font-size:.88rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:7px}
 @media(max-width:900px){
+
+  /* About page mobile fixes */
+  .ph-tag{white-space:nowrap;flex-wrap:nowrap}
+  .about-hero{display:flex !important;flex-direction:column;gap:28px;padding:36px 16px 32px}
+  .about-hero>div:last-child{border-radius:10px;overflow:hidden;max-height:280px}
+  .about-hero>div:last-child img{width:100%;object-fit:cover;object-position:top}
+  .vm-grid{grid-template-columns:1fr !important;gap:16px}
+  .vals-grid{grid-template-columns:1fr 1fr !important;gap:12px}
+  .vals-grid>div{padding:20px 16px !important}
+  .vals-grid>div h4{font-size:.95rem !important}
+  .vals-grid>div p{font-size:.83rem !important}
+
   .topbar{display:none}
   .nav-inner{padding:0 16px}
   .nav-menu{display:none}
@@ -148,6 +160,9 @@ footer{background:#050505;padding:56px 60px 28px}
   .fbot{flex-direction:column;text-align:center;font-size:.65rem}
 }
 @media(max-width:480px){
+  .vm-grid>div{padding:28px 22px !important}
+  .vals-grid{grid-template-columns:1fr !important}
+
   .fg{grid-template-columns:1fr}
   .page-hero h1{font-size:1.6rem}
   h2.sh{font-size:1.45rem}
@@ -254,7 +269,7 @@ footer{background:#050505;padding:56px 60px 28px}
   </div>
 </div>
 <div class="breadcrumb"><a href="index.html">Home</a><span style="color:var(--border)">&rsaquo;</span><span style="color:var(--ink);font-weight:500">About</span></div>
-<div class="page-hero" style="display:grid;grid-template-columns:1fr 340px;gap:56px;align-items:center">
+<div class="page-hero about-hero">
   <div>
     <div class="ph-tag">&#127981; Our Story</div>
     <h1>From engineering precision<br>to protecting your family's future.</h1>
@@ -276,7 +291,7 @@ footer{background:#050505;padding:56px 60px 28px}
   <p class="bt">In 2019, I became a licensed life insurance advisor. By 2021, I had earned the <strong style="color:var(--forest)">iA CBP designation</strong> &mdash; and have earned it every single year since. By 2025 I had reached the <strong style="color:var(--forest)">IA Premier Excellence level</strong>, and in 2026 I achieved <strong style="color:var(--forest)">IA Premier Expert</strong> &mdash; the top tier of recognition within iA Financial Group.</p>
   <p class="bt">Today I serve 500+ families across 8 provinces. I also founded <strong style="color:var(--forest)">PunjabiFinance</strong>, a community of 175,000+ Canadians &mdash; especially millennials and new immigrants &mdash; learning to navigate personal finance, insurance, and investments. When you call 647-745-6850, you reach me directly. Not a call centre. Not an assistant. Me.</p>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:48px 0">
+  <div class="vm-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:48px 0">
 
     <!-- Vision -->
     <div style="background:linear-gradient(135deg,var(--forest) 0%,var(--ink) 100%);border-radius:12px;padding:36px 32px;position:relative;overflow:hidden">
@@ -300,7 +315,7 @@ footer{background:#050505;padding:56px 60px 28px}
   <!-- Values -->
   <div class="sec-tag" style="margin-top:16px">Core Values</div>
   <h2 class="sh">What I stand for.</h2>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px">
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px" class="vals-grid">
     <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:28px 24px">
       <div style="font-size:1.8rem;margin-bottom:12px">&#128270;</div>
       <h4 style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--forest);margin-bottom:8px">Total Transparency</h4>
