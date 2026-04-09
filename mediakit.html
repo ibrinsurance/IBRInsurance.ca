@@ -126,6 +126,8 @@ body{font-family:'DM Sans',sans-serif;background:#f4f2ee;color:#1a1a1a;line-heig
 .cta-box{background:rgba(212,165,52,0.08);border:1px solid rgba(212,165,52,0.2);border-radius:14px;padding:28px 28px}
 .cta-headline{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:10px;line-height:1.3}
 .cta-sub-text{font-size:0.83rem;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:22px}
+.cta-btn{display:inline-flex;align-items:center;gap:8px;background:#d4a534;color:#0a0800;font-size:0.89rem;font-weight:700;padding:13px 28px;border-radius:10px;text-decoration:none;transition:background .15s;font-family:'DM Sans',sans-serif}
+.cta-btn:hover{background:#b8862a}
 
 .page-footer{background:#111009;padding:20px 40px;text-align:center;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.2);border-top:1px solid rgba(212,165,52,0.08)}
 .page-footer a{color:rgba(212,165,52,0.5);text-decoration:none}
@@ -392,4 +394,15 @@ function toggleMenu(){
   document.getElementById('ham-btn').classList.toggle('open');
   document.getElementById('nav-dropdown').classList.toggle('open');
 }
-document.addEventListener('click',function(e){var btn=document.getElementById('ham-btn');var drop=document.getElementById('nav-dropdown');if(!btn||
+document.addEventListener('click',function(e){
+  var btn=document.getElementById('ham-btn');
+  var drop=document.getElementById('nav-dropdown');
+  if(!btn||!drop)return;
+  if(!btn.contains(e.target)&&!drop.contains(e.target)){
+    btn.classList.remove('open');
+    drop.classList.remove('open');
+  }
+});
+</script>
+</body>
+</html>
