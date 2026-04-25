@@ -270,7 +270,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby1UKLPytyenfDgqDFuuxMI41OawugSL_rwgxBQNkz9uGYoPuqtTyg0kP2exWJI8MBD/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3Nj4LfwmxJ8dL90v9cPUYmGvxmZCP8BUpruI9jienymrTRmR6X577e3NYKeir8TXw/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -303,7 +303,7 @@ function logout(){google.accounts.id.disableAutoSelect();document.getElementById
 async function loadData(){
   document.getElementById('syncStatus').textContent='Loading…';
   document.getElementById('list').innerHTML='<div class="loading"><div class="spinner"></div><span>Loading your clients…</span></div>';
-  if(APPS_SCRIPT_URL==='https://script.google.com/macros/s/AKfycby1UKLPytyenfDgqDFuuxMI41OawugSL_rwgxBQNkz9uGYoPuqtTyg0kP2exWJI8MBD/exec'){loadDemo();return;}
+  if(APPS_SCRIPT_URL==='https://script.google.com/macros/s/AKfycbz3Nj4LfwmxJ8dL90v9cPUYmGvxmZCP8BUpruI9jienymrTRmR6X577e3NYKeir8TXw/exec'){loadDemo();return;}
   try{
     const r=await fetch(APPS_SCRIPT_URL+'?action=getData');
     const d=await r.json();
@@ -322,7 +322,7 @@ async function loadData(){
 }
 
 async function sheetWrite(action, data){
-  if(!sheetConnected||APPS_SCRIPT_URL==='https://script.google.com/macros/s/AKfycby1UKLPytyenfDgqDFuuxMI41OawugSL_rwgxBQNkz9uGYoPuqtTyg0kP2exWJI8MBD/exec')return;
+  if(!sheetConnected||APPS_SCRIPT_URL==='https://script.google.com/macros/s/AKfycbz3Nj4LfwmxJ8dL90v9cPUYmGvxmZCP8BUpruI9jienymrTRmR6X577e3NYKeir8TXw/exec')return;
   try{
     await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify({action,...data}),headers:{'Content-Type':'text/plain'}});
   }catch(e){console.warn('Write error:',e);}
