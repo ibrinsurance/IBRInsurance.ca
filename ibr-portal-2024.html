@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IBR Insurance — Advisor Portal</title>
+<meta name="robots" content="noindex, nofollow">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #F7F6F3;
+    --surface: #FFFFFF;
+    --border: #E5E2DC;
+    --border2: #D0CCC4;
+    --text: #1A1814;
+    --text2: #6B6760;
+    --text3: #9E9B96;
+    --accent: #1B4332;
+    --accent-light: #D8EDDF;
+    --red: #C0392B;
+    --red-light: #FDECEA;
+    --amber: #B7791F;
+    --amber-light: #FEF3C7;
+    --blue: #1E40AF;
+    --blue-light: #DBEAFE;
+    --purple: #5B21B6;
+    --purple-light: #EDE9FE;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── LOGIN SCREEN ── */
+  #loginScreen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+  }
+  .login-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 48px 40px;
+    width: 380px;
+    text-align: center;
+  }
+  .login-logo {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .login-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .login-sub {
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 32px;
+  }
+  #loginError {
+    display: none;
+    background: var(--red-light);
+    color: var(--red);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 12px;
+    margin-top: 16px;
+  }
+
+  /* ── APP SHELL ── */
+  #appShell { display: none; }
+
+  .topnav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    height: 52px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .nav-brand {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .nav-divider { width: 1px; height: 20px; background: var(--border); }
+  .mode-toggle {
+    display: flex;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .mode-btn {
+    padding: 5px 12px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--text2);
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .mode-btn.active { background: var(--text); color: #fff; }
+  .search-wrap { position: relative; flex: 1; max-width: 320px; }
+  .search-wrap input {
+    width: 100%;
+    padding: 6px 10px 6px 30px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    outline: none;
+  }
+  .search-wrap input:focus { border-color: var(--border2); }
+  .search-icon {
+    position: absolute; left: 9px; top: 50%;
+    transform: translateY(-50%);
+    width: 12px; height: 12px; opacity: 0.4; pointer-events: none;
+  }
+  .nav-spacer { flex: 1; }
+  .user-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px 4px 4px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--text2);
+  }
+  .user-avatar {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600;
+  }
+  .owner-badge {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 20px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .btn-logout {
+    padding: 5px 10px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: none;
+    cursor: pointer;
+    color: var(--text2);
+  }
+  .btn-logout:hover { background: var(--bg); }
+  .btn-new {
+    padding: 5px 12px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  /* ── MAIN CONTENT ── */
+  .main { padding: 20px 24px; max-width: 960px; margin: 0 auto; }
+
+  /* ── UNDO BAR ── */
+  .undo-bar {
+    display: none;
+    background: var(--amber-light);
+    border: 1px solid #F6D860;
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+    margin-bottom: 12px;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--amber);
+  }
+  .undo-bar button {
+    padding: 3px 10px;
+    font-size: 11px;
+    font-family: 'DM Sans', sans-serif;
+    border: 1px solid #F6D860;
+    border-radius: 4px;
+    background: #fff;
+    color: var(--amber);
+    cursor: pointer;
+  }
+
+  /* ── FILTER BAR ── */
+  .filter-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-label { font-size: 11px; color: var(--text3); white-space: nowrap; }
+  select.preset {
+    padding: 5px 9px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: var(--text);
+    cursor: pointer;
+    flex: 1;
+    min-width: 160px;
+    outline: none;
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab {
+    padding: 6px 12px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--text2);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+  }
+  .tab.active { color: var(--text); border-bottom-color: var(--accent); font-weight: 500; }
+  .bdg {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 500;
+  }
+  .br { background: var(--red-light); color: var(--red); }
+  .ba { background: var(--amber-light); color: var(--amber); }
+  .bg { background: var(--accent-light); color: var(--accent); }
+  .bgr { background: var(--bg); color: var(--text3); }
+  .bpu { background: var(--purple-light); color: var(--purple); }
+
+  .mar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .mar button {
+    font-size: 11px;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: none;
+    cursor: pointer;
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .rc { font-size: 11px; color: var(--text3); }
+
+  /* ── CLIENT CARDS ── */
+  .list { display: flex; flex-direction: column; gap: 6px; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 11px 14px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .card:hover { border-color: var(--border2); }
+  .card.sel { border-color: var(--accent); }
+  .card.done { opacity: 0.45; }
+  .ct { display: flex; align-items: flex-start; gap: 10px; }
+  .av {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600;
+    flex-shrink: 0;
+  }
+  .av-gr { background: var(--accent-light); color: var(--accent); }
+  .av-bl { background: var(--blue-light); color: var(--blue); }
+  .av-am { background: var(--amber-light); color: var(--amber); }
+  .av-pu { background: var(--purple-light); color: var(--purple); }
+  .av-rd { background: var(--red-light); color: var(--red); }
+  .ci { flex: 1; min-width: 0; }
+  .cn {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .ci-ins { font-size: 10px; font-weight: 400; color: var(--text3); }
+  .hh-badge {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 20px;
+    background: var(--purple-light);
+    color: var(--purple);
+    border: 1px solid #C4B5FD;
+  }
+  .claim-badge {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 20px;
+    background: var(--red-light);
+    color: var(--red);
+    border: 1px solid #FECACA;
+  }
+  .cm { font-size: 11px; color: var(--text3); margin-top: 2px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .cr { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; flex-shrink: 0; }
+  .sp { font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+  .sp-ov { background: var(--red-light); color: var(--red); }
+  .sp-tw { background: var(--amber-light); color: var(--amber); }
+  .sp-up { background: var(--accent-light); color: var(--accent); }
+  .sp-no { background: var(--bg); color: var(--text3); }
+  .sp-dn { background: var(--accent-light); color: var(--accent); }
+  .pt {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 20px;
+    background: var(--bg);
+    color: var(--text3);
+    border: 1px solid var(--border);
+  }
+  .fd { font-size: 10px; color: var(--text3); }
+  .chk {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 1px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0;
+    background: var(--surface);
+    margin-top: 2px;
+    transition: all 0.15s;
+  }
+  .chk.on { background: var(--accent-light); border-color: var(--accent); }
+
+  /* ── DETAIL PANEL ── */
+  .dp {
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    margin-top: 10px;
+    border: 1px solid var(--border);
+  }
+  .dh { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .da { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; flex-shrink: 0; }
+  .dn { font-size: 14px; font-weight: 500; color: var(--text); }
+  .ds { font-size: 11px; color: var(--text2); margin-top: 2px; }
+  .fg {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .fi label { font-size: 10px; color: var(--text3); display: block; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .fi span { font-size: 12px; color: var(--text); font-family: 'DM Mono', monospace; }
+  .fi span.normal { font-family: 'DM Sans', sans-serif; }
+  .locked { filter: blur(4px); user-select: none; cursor: not-allowed; }
+  .sl { font-size: 10px; font-weight: 600; color: var(--text3); margin-bottom: 7px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .fu-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+  }
+  .fu-row label { font-size: 12px; color: var(--text2); flex: 1; }
+  .fu-row input[type=date] {
+    font-size: 12px;
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+  }
+
+  /* ── CLAIMS SECTION ── */
+  .claims-section {
+    margin-bottom: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .claims-header {
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .claims-title { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; flex: 1; }
+  .claim-open-btn {
+    font-size: 11px;
+    padding: 3px 8px;
+    border: 1px solid var(--red);
+    border-radius: 4px;
+    background: none;
+    cursor: pointer;
+    color: var(--red);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .claim-close-btn {
+    font-size: 11px;
+    padding: 3px 8px;
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    background: none;
+    cursor: pointer;
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .claim-body { padding: 10px 12px; }
+  .claim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+  .claim-field label { font-size: 10px; color: var(--text3); display: block; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .claim-field select, .claim-field input {
+    width: 100%;
+    font-size: 12px;
+    padding: 5px 8px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+  }
+  .claim-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+  .cs-submitted { background: var(--blue-light); color: var(--blue); }
+  .cs-review { background: var(--amber-light); color: var(--amber); }
+  .cs-approved { background: var(--accent-light); color: var(--accent); }
+  .cs-paid { background: var(--accent-light); color: var(--accent); }
+  .cs-denied { background: var(--red-light); color: var(--red); }
+  .claim-note-row { display: flex; gap: 6px; }
+  .claim-note-row input {
+    flex: 1;
+    font-size: 12px;
+    padding: 5px 8px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+  }
+  .btn-sm {
+    padding: 5px 10px;
+    font-size: 11px;
+    font-family: 'DM Sans', sans-serif;
+    border: none;
+    border-radius: 4px;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  /* ── HOUSEHOLD SECTION ── */
+  .hhs {
+    margin-bottom: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .hhh { padding: 7px 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); background: var(--bg); }
+  .hhht { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; flex: 1; }
+  .hha {
+    font-size: 11px;
+    padding: 3px 8px;
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    background: none;
+    cursor: pointer;
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .hhm { padding: 7px 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .hhm:last-child { border-bottom: none; }
+  .hhm-n { flex: 1; color: var(--text); }
+  .hhm-p { color: var(--text3); font-size: 11px; }
+  .hhm-r { font-size: 11px; color: var(--text3); cursor: pointer; padding: 2px 5px; border-radius: 4px; }
+  .hhm-r:hover { background: var(--bg); }
+  .lkp { padding: 8px 12px; background: var(--bg); border-top: 1px solid var(--border); }
+  .lkp-l { font-size: 11px; color: var(--text3); margin-bottom: 5px; }
+  .lkp-list { display: flex; flex-direction: column; gap: 3px; max-height: 120px; overflow-y: auto; }
+  .lkp-opt { display: flex; align-items: center; gap: 8px; padding: 5px 7px; border-radius: 4px; cursor: pointer; font-size: 12px; color: var(--text); }
+  .lkp-opt:hover { background: var(--surface); }
+
+  /* ── NOTES ── */
+  .nh { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; max-height: 120px; overflow-y: auto; }
+  .ne { background: var(--surface); border-radius: 4px; padding: 7px 10px; border: 1px solid var(--border); }
+  .nt { font-size: 12px; color: var(--text); }
+  .nd { font-size: 10px; color: var(--text3); margin-top: 2px; }
+  .nir { display: flex; gap: 6px; }
+  .nir textarea {
+    flex: 1;
+    font-size: 12px;
+    padding: 7px 9px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--text);
+    resize: none;
+    height: 50px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+  }
+  .btn-sv {
+    padding: 7px 12px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    align-self: flex-end;
+    white-space: nowrap;
+  }
+
+  /* ── LOOKUP ── */
+  .lkg { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 8px; }
+  .lkgh { padding: 10px 14px; background: var(--bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  .lkghn { font-size: 13px; font-weight: 500; color: var(--text); }
+  .lkghc { font-size: 11px; color: var(--text3); }
+  .lkghct { font-size: 11px; color: var(--text3); margin-left: auto; white-space: nowrap; }
+  .lkp2 { padding: 9px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 9px; cursor: pointer; }
+  .lkp2:last-child { border-bottom: none; }
+  .lkp2:hover { background: var(--bg); }
+  .lp1 { flex: 1; min-width: 0; }
+  .lp1n { font-size: 12px; font-weight: 500; color: var(--text); }
+  .lp1m { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+  /* ── DATA QUALITY ── */
+  .dqi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 6px; }
+  .dqil { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); margin-bottom: 7px; }
+  .dqtags { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 5px; }
+  .dqt { padding: 2px 8px; border-radius: 20px; font-size: 11px; background: var(--amber-light); color: var(--amber); border: 1px solid #F6D860; }
+  .dqr { font-size: 11px; color: var(--text3); }
+
+  /* ── MODAL ── */
+  .modal-bg {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 16px;
+    z-index: 200;
+    overflow-y: auto;
+  }
+  .modal {
+    background: var(--surface);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    padding: 28px;
+    width: 100%;
+    max-width: 560px;
+  }
+  .modal-title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 20px; }
+  .fgr { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .fg2 { display: flex; flex-direction: column; gap: 5px; }
+  .fg2.full { grid-column: 1 / -1; }
+  .fg2 label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
+  .fg2 input, .fg2 select, .fg2 textarea {
+    font-size: 13px;
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+  }
+  .fg2 input:focus, .fg2 select:focus, .fg2 textarea:focus { border-color: var(--accent); }
+  .fg2 textarea { resize: none; height: 56px; }
+  .dup-warn {
+    display: none;
+    background: var(--amber-light);
+    border: 1px solid #F6D860;
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--amber);
+    margin-bottom: 12px;
+  }
+  .fac { display: flex; gap: 8px; justify-content: flex-end; }
+  .bcn {
+    padding: 7px 16px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: none;
+    cursor: pointer;
+    color: var(--text2);
+  }
+  .bsb {
+    padding: 7px 18px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .empty { text-align: center; padding: 3rem; color: var(--text3); font-size: 13px; }
+  .sync-indicator { font-size: 11px; color: var(--text3); display: flex; align-items: center; gap: 5px; }
+  .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN SCREEN ══ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">Insurance by Rattan</div>
+    <div class="login-title">Advisor Portal</div>
+    <div class="login-sub">Sign in with your Google account to continue</div>
+    <div id="g_id_onload"
+      data-client_id="49708486624-1ct34k1ur759otklcd2cnlgbaa2vggd1.apps.googleusercontent.com"
+      data-callback="handleCredentialResponse"
+      data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin"
+      data-type="standard"
+      data-shape="rectangular"
+      data-theme="outline"
+      data-text="sign_in_with"
+      data-size="large"
+      data-width="300">
+    </div>
+    <div id="loginError">Access denied. This portal is restricted to authorized accounts only.</div>
+  </div>
+</div>
+
+<!-- ══ APP SHELL ══ -->
+<div id="appShell">
+  <nav class="topnav">
+    <span class="nav-brand">IBR Portal</span>
+    <div class="nav-divider"></div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="modeFollowup" onclick="setMode('followup')">Follow-ups</button>
+      <button class="mode-btn" id="modeLookup" onclick="setMode('lookup')">Client lookup</button>
+      <button class="mode-btn" id="modeClaims" onclick="setMode('claims')">Claims</button>
+      <button class="mode-btn" id="modeDq" onclick="setMode('dq')">Data quality</button>
+    </div>
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M10 10L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <input type="text" id="searchInput" placeholder="Search name, phone, email, city…" oninput="render()">
+    </div>
+    <div class="nav-spacer"></div>
+    <div class="sync-indicator"><div class="sync-dot"></div><span id="syncStatus">Connected to Sheet</span></div>
+    <div class="user-pill">
+      <div class="user-avatar" id="userAvatar">R</div>
+      <span id="userName">Rattan</span>
+      <span class="owner-badge" id="roleLabel">Owner</span>
+    </div>
+    <button class="btn-logout" onclick="logout()">Sign out</button>
+    <button class="btn-new" onclick="openModal()">+ New sale</button>
+  </nav>
+
+  <div class="main">
+    <div class="undo-bar" id="undoBar"></div>
+
+    <div id="fctrl">
+      <div class="filter-row">
+        <span class="filter-label">Show:</span>
+        <select class="preset" id="preset" onchange="applyPreset()">
+          <option value="followups">Follow-ups only (default)</option>
+          <option value="all">All products</option>
+          <option value="life">Life insurance (Term, UL, WL)</option>
+          <option value="ci">Critical illness</option>
+          <option value="disability">Disability</option>
+          <option value="investments">Investments (RRSP / RESP / TFSA / FHSA)</option>
+          <option value="group">Group / H&D / Team</option>
+          <option value="travel">Travel / Visitor only</option>
+        </select>
+      </div>
+      <div class="tabs">
+        <button class="tab active" id="t-ov" onclick="setTab('overdue')">Overdue <span class="bdg br" id="b-ov">0</span></button>
+        <button class="tab" id="t-tw" onclick="setTab('thisweek')">This week <span class="bdg ba" id="b-tw">0</span></button>
+        <button class="tab" id="t-up" onclick="setTab('upcoming')">Upcoming <span class="bdg bg" id="b-up">0</span></button>
+        <button class="tab" id="t-al" onclick="setTab('all')">All <span class="bdg bgr" id="b-al">0</span></button>
+      </div>
+      <div class="mar">
+        <span class="rc" id="rc"></span>
+        <button onclick="markAllDone()">Mark all visible as complete</button>
+      </div>
+    </div>
+
+    <div id="list"></div>
+  </div>
+</div>
+
+<div id="modal"></div>
+
+<script>
+// ══ CONFIG ══
+const CONFIG = {
+  CLIENT_ID: '49708486624-1ct34k1ur759otklcd2cnlgbaa2vggd1.apps.googleusercontent.com',
+  SHEET_ID: '1T1Q8o1zFMjg5s0gP494LOk4nH0L0Uk628nklI9Me2AY',
+  SHEET_TAB: 'Sold Policies',
+  OWNER_EMAIL: 'rattan.taggar@gmail.com',
+  ASSISTANT_EMAILS: [],  // Add assistant Gmail(s) here when hired: e.g. 'assistant@gmail.com'
+  PORTAL_URL: 'https://www.ibrinsurance.ca/ibr-portal-2024.html',
+  // Column mapping (1-indexed, matching your sheet)
+  COLS: {
+    clientName: 3,      // C
+    insuredName: 4,     // D
+    dateSold: 5,        // E
+    company: 6,         // F
+    coverage: 7,        // G
+    policyNumber: 8,    // H
+    notes1: 9,          // I
+    notes2: 10,         // J
+    askedReview: 12,    // L
+    phone: 14,          // N
+    email: 15,          // O
+    city: 16,           // P
+    amountPaid: 17,     // Q  ← owner only
+    commission: 18,     // R  ← owner only
+    source: 20,         // T
+    product: 21,        // U
+    followupDate: 22,   // V  ← CRM writes here
+    crmNotes: 23,       // W  ← CRM writes here
+    claimStatus: 24,    // X  ← CRM writes here
+    householdLinks: 25, // Y  ← CRM writes here
+  }
+};
+
+// ══ STATE ══
+let currentUser = null;
+let isOwner = false;
+let accessToken = null;
+let clients = [];
+let nextId = 1000;
+let mode = 'followup';
+let tab = 'overdue';
+let sel = null;
+let preset = 'followups';
+let nnt = {};
+let lkp = null;
+let undoStack = [];
+let sheetLoaded = false;
+
+// ══ PRODUCT CLASSIFICATION ══
+const TRAVEL = new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical','truck - travel','travel - truck']);
+const LIFE = new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
+function cls(p) {
+  const n = (p||'').toLowerCase().trim();
+  if (TRAVEL.has(n)) return 'travel';
+  if (LIFE.has(n)) return 'life';
+  if (n === 'critical illness') return 'ci';
+  if (n === 'disability' || n === 'disability insurance') return 'dis';
+  if (['rrsp','resp','tfsa','fhsa','hisa'].includes(n)) return 'inv';
+  if (['group insurance','team','team insurance','h&d'].includes(n)) return 'grp';
+  return 'other';
+}
+
+const PRODUCTS = ['Term Insurance','Critical Illness','UL Insurance','Whole Life','Disability Insurance','RRSP','RESP','TFSA','FHSA','HISA','Group Insurance','H&D','Team','VTC','Supervisa','Travel Insurance','Truck-Travel','International Student','Student Insurance','Emergency Medical'];
+const CLAIM_TYPES = ['Death Benefit','Critical Illness Payout','Disability Claim','Travel/Medical','Trip Cancellation','Other'];
+const CLAIM_STATUSES = ['Submitted','In Review','Approved','Paid','Denied'];
+const DQG = [
+  {l:'Disability variants', i:['Disability','Disability Insurance']},
+  {l:'Truck-Travel variants', i:['Truck-Travel','Truck - Travel','Truck Travel']},
+  {l:'RRSP typos', i:['RRSP','RRP','SRRP']},
+  {l:'Transfer variants', i:['UL Transfer','WL Transfer','Term Transfer','Transfer']},
+  {l:'Likely wrong column (not a product)', i:['Tiktok','Entity']},
+];
+
+// ══ GOOGLE AUTH ══
+function handleCredentialResponse(response) {
+  const payload = parseJwt(response.credential);
+  const email = payload.email;
+  const allowed = [CONFIG.OWNER_EMAIL, ...CONFIG.ASSISTANT_EMAILS];
+  if (!allowed.includes(email)) {
+    document.getElementById('loginError').style.display = 'block';
+    return;
+  }
+  currentUser = payload;
+  isOwner = (email === CONFIG.OWNER_EMAIL);
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appShell').style.display = 'block';
+  const ini = (payload.name||email).split(' ').filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('');
+  document.getElementById('userAvatar').textContent = ini;
+  document.getElementById('userName').textContent = (payload.name||email).split(' ')[0];
+  document.getElementById('roleLabel').textContent = isOwner ? 'Owner' : 'Assistant';
+  if (!isOwner) document.getElementById('roleLabel').style.background = '#DBEAFE';
+  loadFromSheet(response.credential);
+}
+
+function parseJwt(token) {
+  const base64 = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+  return JSON.parse(atob(base64));
+}
+
+function logout() {
+  google.accounts.id.disableAutoSelect();
+  document.getElementById('appShell').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginError').style.display = 'none';
+  currentUser = null; accessToken = null; clients = []; sel = null;
+}
+
+// ══ GOOGLE SHEETS API ══
+async function loadFromSheet(credential) {
+  document.getElementById('syncStatus').textContent = 'Loading sheet…';
+  try {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SHEET_ID}/values/${encodeURIComponent(CONFIG.SHEET_TAB)}?key=&access_token=`;
+    // Use identity token for read — exchange for access token
+    const tokenResp = await fetch(`https://oauth2.googleapis.com/token`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      body: `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=${credential}`
+    });
+    // For now, use the sheets API with the credential directly via gapi
+    await loadGapi(credential);
+  } catch(e) {
+    console.warn('Sheet load error:', e);
+    loadDemoData();
+    document.getElementById('syncStatus').textContent = 'Demo mode (no sheet)';
+  }
+}
+
+async function loadGapi(credential) {
+  // Use Google Identity Services token exchange
+  const tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CONFIG.CLIENT_ID,
+    scope: 'https://www.googleapis.com/auth/spreadsheets',
+    callback: async (tokenResponse) => {
+      if (tokenResponse.access_token) {
+        accessToken = tokenResponse.access_token;
+        await fetchSheetData();
+      } else {
+        loadDemoData();
+      }
+    },
+  });
+  tokenClient.requestAccessToken({prompt: ''});
+}
+
+async function fetchSheetData() {
+  try {
+    const resp = await fetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SHEET_ID}/values/${encodeURIComponent(CONFIG.SHEET_TAB)}`,
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+    const data = await resp.json();
+    if (data.values) {
+      parseSheetRows(data.values);
+      sheetLoaded = true;
+      document.getElementById('syncStatus').textContent = `${clients.length} clients loaded`;
+    } else {
+      loadDemoData();
+    }
+  } catch(e) {
+    loadDemoData();
+    document.getElementById('syncStatus').textContent = 'Demo mode';
+  }
+}
+
+function parseSheetRows(rows) {
+  const C = CONFIG.COLS;
+  clients = [];
+  rows.slice(1).forEach((row, i) => {
+    const get = (col) => (row[col-1] || '').toString().trim();
+    const cn = get(C.clientName);
+    if (!cn) return;
+    const notesRaw = [get(C.notes1), get(C.notes2)].filter(Boolean).join(' | ');
+    const crmNotesRaw = get(C.crmNotes);
+    let parsedNotes = [];
+    if (crmNotesRaw) {
+      try { parsedNotes = JSON.parse(crmNotesRaw); } catch { parsedNotes = [{t: crmNotesRaw, d: ''}]; }
+    }
+    if (notesRaw) parsedNotes.push({t: notesRaw, d: 'From sheet', sheet: true});
+    let claimData = null;
+    const cs = get(C.claimStatus);
+    if (cs) { try { claimData = JSON.parse(cs); } catch { claimData = null; } }
+    let hhLinks = [];
+    const hhr = get(C.householdLinks);
+    if (hhr) { try { hhLinks = JSON.parse(hhr); } catch { hhLinks = []; } }
+    clients.push({
+      id: nextId++,
+      rowNum: i + 2,
+      cn: cn,
+      ins: get(C.insuredName) || cn,
+      ds: get(C.dateSold),
+      co: get(C.company),
+      cv: get(C.coverage),
+      pn: get(C.policyNumber),
+      ph: get(C.phone),
+      em: get(C.email),
+      cy: get(C.city),
+      ap: get(C.amountPaid),
+      cm: get(C.commission),
+      src: get(C.source),
+      pr: get(C.product),
+      fu: get(C.followupDate) || null,
+      done: false,
+      notes: parsedNotes,
+      hh: hhLinks,
+      claim: claimData,
+    });
+  });
+  render();
+}
+
+async function writeToSheet(rowNum, colIndex, value) {
+  if (!accessToken || !sheetLoaded) return;
+  const colLetter = String.fromCharCode(64 + colIndex);
+  const range = `${CONFIG.SHEET_TAB}!${colLetter}${rowNum}`;
+  await fetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`,
+    {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ values: [[value]] })
+    }
+  );
+}
+
+async function appendToSheet(rowData) {
+  if (!accessToken || !sheetLoaded) return;
+  const range = `${CONFIG.SHEET_TAB}!A:Y`;
+  await fetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SHEET_ID}/values/${encodeURIComponent(range)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,
+    {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ values: [rowData] })
+    }
+  );
+}
+
+// ══ DEMO DATA (fallback) ══
+function loadDemoData() {
+  const tod = new Date(); tod.setHours(0,0,0,0);
+  const aD = (d,n) => { const r=new Date(d); r.setDate(r.getDate()+n); return r.toISOString().split('T')[0]; };
+  const t = tod.toISOString().split('T')[0];
+  clients = [
+    {id:nextId++,rowNum:2,cn:'Harjinder Singh',ins:'Harjinder Singh',ds:'2022-03-15',co:'Canada Life',cv:'$500,000',pn:'CL-2022-4421',ph:'416-555-0191, 416-555-0192',em:'harjinder.s@gmail.com',cy:'Brampton',ap:'$3,200',cm:'$640',src:'Referral',pr:'Critical Illness',fu:aD(t,-10),done:false,notes:[{t:'Interested in disability rider.',d:'2024-11-02'}],hh:[],claim:null},
+    {id:nextId++,rowNum:3,cn:'Priya Mehta',ins:'Raj Mehta',ds:'2023-06-01',co:'Sun Life',cv:'$250,000',pn:'SL-2023-8871',ph:'905-555-0147',em:'priya.mehta@hotmail.com | priya@work.ca',cy:'Mississauga',ap:'$1,800',cm:'$360',src:'Walk-in',pr:'Term Insurance',fu:aD(t,4),done:false,notes:[{t:'Wants to increase coverage at anniversary.',d:'2025-03-20'}],hh:[4],claim:null},
+    {id:nextId++,rowNum:4,cn:'Gurpreet Kaur',ins:'Gurpreet Kaur',ds:'2021-09-20',co:'Manulife',cv:'RRSP',pn:'MF-2021-3310',ph:'647-555-0132',em:'gurpreet.k@yahoo.ca',cy:'Scarborough',ap:'$2,400',cm:'$480',src:'Facebook',pr:'RRSP',fu:aD(t,3),done:false,notes:[],hh:[],claim:null},
+    {id:nextId++,rowNum:5,cn:'Priya Mehta',ins:'Arjun Mehta',ds:'2024-01-15',co:'Manulife',cv:'RESP',pn:'MF-2024-7733',ph:'905-555-0147',em:'priya.mehta@hotmail.com',cy:'Mississauga',ap:'$900',cm:'$180',src:'Walk-in',pr:'RESP',fu:null,done:false,notes:[],hh:[2],claim:null},
+    {id:nextId++,rowNum:6,cn:'Tejinder Sandhu',ins:'Tejinder Sandhu',ds:'2023-03-10',co:'Canada Life',cv:'$150,000',pn:'CL-2023-5521',ph:'905-555-0199',em:'tej.sandhu@bell.net',cy:'Vaughan',ap:'$1,100',cm:'$220',src:'Referral',pr:'Term Insurance',fu:aD(t,14),done:false,notes:[{t:'Considering converting to whole life.',d:'2024-09-01'}],hh:[],claim:{type:'Death Benefit',opened:'2025-01-10',status:'In Review',notes:'Policy CL-2023-5521 — death claim submitted'}},
+    {id:nextId++,rowNum:7,cn:'Amritpal Dhaliwal',ins:'Amritpal Dhaliwal',ds:'2023-01-10',co:'Empire Life',cv:'$1,000,000',pn:'EL-2023-0092',ph:'416-555-0188',em:'amritpal.d@gmail.com',cy:'Toronto',ap:'$5,600',cm:'$1,120',src:'Referral',pr:'UL Insurance',fu:aD(t,30),done:false,notes:[],hh:[],claim:null},
+    {id:nextId++,rowNum:8,cn:'Navneet Brar',ins:'Navneet Brar',ds:'2024-02-14',co:'iA Financial',cv:'$50,000',pn:'IA-2024-5543',ph:'905-555-0173',em:'navneet.b@outlook.com',cy:'Ajax',ap:'$1,200',cm:'$240',src:'Instagram',pr:'FHSA',fu:aD(t,-3),done:false,notes:[],hh:[],claim:null},
+  ];
+  render();
+}
+
+// ══ UNDO ══
+function snap() { return JSON.parse(JSON.stringify(clients)); }
+function pushUndo(lbl) {
+  undoStack.push({lbl, s: snap()});
+  if (undoStack.length > 20) undoStack.shift();
+  const b = document.getElementById('undoBar');
+  b.innerHTML = `<span style="flex:1">Last action: <strong>${lbl}</strong></span><button onclick="doUndo()">Undo</button><button onclick="this.parentElement.style.display='none'" style="margin-left:4px;background:none;border:none;cursor:pointer;color:var(--amber);font-size:14px">×</button>`;
+  b.style.display = 'flex';
+}
+function doUndo() {
+  if (!undoStack.length) return;
+  const u = undoStack.pop();
+  clients = u.s;
+  sel = null;
+  document.getElementById('undoBar').style.display = 'none';
+  render();
+}
+
+// ══ HELPERS ══
+const tod2 = new Date(); tod2.setHours(0,0,0,0);
+function fmtDate(d) { if (!d) return '—'; try { return new Date(d).toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'}); } catch { return d; } }
+function ini(n) { return (n||'?').split(' ').filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join(''); }
+const AVC = ['av-gr','av-bl','av-am','av-pu','av-rd'];
+function avc(n) { let h=0; for (let c of (n||'')) h=(h*31+c.charCodeAt(0))&0xffff; return AVC[h%AVC.length]; }
+function nc(s) { return (s||'').split(/[,|]/).map(x=>x.trim().toLowerCase()).filter(Boolean); }
+
+function gst(c) {
+  if (c.done) return 'done';
+  if (!c.fu) return 'none';
+  const fd = new Date(c.fu); fd.setHours(0,0,0,0);
+  const d = Math.ceil((fd - tod2) / 864e5);
+  if (d < 0) return 'overdue';
+  if (d <= 7) return 'thisweek';
+  return 'upcoming';
+}
+
+function vbp(c) {
+  const cl = cls(c.pr);
+  if (preset === 'followups') return cl !== 'travel';
+  if (preset === 'all') return true;
+  if (preset === 'life') return cl === 'life';
+  if (preset === 'ci') return cl === 'ci';
+  if (preset === 'disability') return cl === 'dis';
+  if (preset === 'investments') return cl === 'inv';
+  if (preset === 'group') return cl === 'grp';
+  if (preset === 'travel') return cl === 'travel';
+  return true;
+}
+
+function getAllLinked(c) {
+  const ap = nc(c.ph), ae = nc(c.em), mh = new Set(c.hh||[]);
+  return clients.filter(o => {
+    if (o.id === c.id) return false;
+    return mh.has(o.id) || nc(o.ph).some(p=>ap.includes(p)) || nc(o.em).some(e=>ae.includes(e));
+  });
+}
+
+function getFiltered() {
+  const q = (document.getElementById('searchInput').value||'').toLowerCase();
+  return clients.filter(c => {
+    if (!vbp(c)) return false;
+    const mq = !q || [c.cn,c.cy,c.pn,c.ins,c.ph,c.em].some(x=>(x||'').toLowerCase().includes(q));
+    if (!mq) return false;
+    const s = gst(c);
+    if (tab === 'overdue') return s === 'overdue';
+    if (tab === 'thisweek') return s === 'thisweek';
+    if (tab === 'upcoming') return s === 'upcoming';
+    return true;
+  });
+}
+
+// ══ CONTROLS ══
+function applyPreset() { preset = document.getElementById('preset').value; sel = null; render(); }
+function setMode(m) {
+  mode = m; sel = null; lkp = null;
+  ['followup','lookup','claims','dq'].forEach(x => document.getElementById('mode'+x.charAt(0).toUpperCase()+x.slice(1)).classList.toggle('active', x===m));
+  document.getElementById('fctrl').style.display = m === 'followup' ? '' : 'none';
+  document.getElementById('searchInput').placeholder = m === 'lookup' ? 'Type phone, email, or name…' : 'Search name, phone, email, city…';
+  render();
+}
+function setTab(t) {
+  tab = t; sel = null;
+  [['ov','overdue'],['tw','thisweek'],['up','upcoming'],['al','all']].forEach(([k,v]) => document.getElementById('t-'+k).classList.toggle('active', v===t));
+  render();
+}
+function markAllDone() { pushUndo('Mark all as complete'); getFiltered().forEach(c => c.done = true); render(); }
+
+function ubdg() {
+  const base = clients.filter(vbp);
+  const q = (document.getElementById('searchInput').value||'').toLowerCase();
+  const qf = q ? base.filter(c=>[c.cn,c.cy,c.pn].some(x=>(x||'').toLowerCase().includes(q))) : base;
+  [['ov','overdue'],['tw','thisweek'],['up','upcoming']].forEach(([k,v]) => document.getElementById('b-'+k).textContent = qf.filter(c=>gst(c)===v).length);
+  document.getElementById('b-al').textContent = qf.length;
+}
+
+// ══ RENDER ══
+function render() {
+  if (mode === 'followup') renderFollowup();
+  else if (mode === 'lookup') renderLookup();
+  else if (mode === 'claims') renderClaims();
+  else renderDQ();
+}
+
+function renderFollowup() {
+  ubdg();
+  const f = getFiltered();
+  document.getElementById('rc').textContent = f.length + ' client' + (f.length===1?'':'s');
+  document.getElementById('list').innerHTML = f.length ? f.map(cardH).join('') : '<div class="empty">No clients in this view</div>';
+}
+
+const SP = {overdue:['sp-ov','Overdue'],thisweek:['sp-tw','Due this week'],upcoming:['sp-up','Upcoming'],none:['sp-no','No follow-up'],done:['sp-dn','Complete']};
+
+function cardH(c) {
+  const s = gst(c);
+  const [sc,sl] = SP[s];
+  const lnk = getAllLinked(c);
+  const isel = sel === c.id;
+  return `<div class="card${isel?' sel':''}${c.done?' done':''}" onclick="selC(${c.id})">
+    <div class="ct">
+      <div class="chk${c.done?' on':''}" onclick="event.stopPropagation();togDone(${c.id})">${c.done?`<svg viewBox="0 0 10 10" fill="none" width="9" height="9"><path d="M2 5l2.5 2.5L8 3" stroke="${'#1B4332'}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div>
+      <div class="av ${avc(c.cn)}">${ini(c.cn)}</div>
+      <div class="ci">
+        <div class="cn">${c.cn}${c.cn!==c.ins?`<span class="ci-ins">insured: ${c.ins}</span>`:''}${lnk.length?`<span class="hh-badge">household ${lnk.length}</span>`:''}${c.claim?`<span class="claim-badge">claim active</span>`:''}</div>
+        <div class="cm"><span>${c.cy}</span><span>${nc(c.ph)[0]||''}</span><span>${c.co}</span></div>
+      </div>
+      <div class="cr">
+        <span class="sp ${sc}">${sl}</span>
+        ${c.fu?`<span class="fd">${fmtDate(c.fu)}</span>`:''}
+        <span class="pt">${c.pr}</span>
+      </div>
+    </div>
+    ${isel ? detH(c) : ''}
+  </div>`;
+}
+
+function detH(c) {
+  const lnk = getAllLinked(c);
+  const linkable = clients.filter(o=>o.id!==c.id&&!lnk.find(l=>l.id===o.id));
+  const isPicker = lkp === c.id;
+  const commVal = isOwner ? c.cm : '<span class="locked">●●●●</span>';
+  const apVal = isOwner ? c.ap : '<span class="locked">●●●●</span>';
+  return `<div class="dp" onclick="event.stopPropagation()">
+    <div class="dh">
+      <div class="da ${avc(c.cn)}">${ini(c.cn)}</div>
+      <div><div class="dn">${c.cn}</div><div class="ds">Insured: ${c.ins} · ${c.pr}</div></div>
+    </div>
+    <div class="fg">
+      <div class="fi"><label>Company</label><span class="normal">${c.co}</span></div>
+      <div class="fi"><label>Policy #</label><span>${c.pn}</span></div>
+      <div class="fi"><label>Coverage</label><span class="normal">${c.cv}</span></div>
+      <div class="fi"><label>Date sold</label><span class="normal">${fmtDate(c.ds)}</span></div>
+      <div class="fi"><label>Phone</label><span class="normal">${c.ph}</span></div>
+      <div class="fi"><label>Email</label><span class="normal">${c.em}</span></div>
+      <div class="fi"><label>Amount paid</label><span>${apVal}</span></div>
+      <div class="fi"><label>Commission</label><span>${commVal}</span></div>
+      <div class="fi"><label>Source</label><span class="normal">${c.src}</span></div>
+      <div class="fi"><label>City</label><span class="normal">${c.cy}</span></div>
+    </div>
+    <div class="fu-row">
+      <label>Next follow-up date</label>
+      <input type="date" value="${c.fu||''}" onchange="updFU(${c.id},this.value)">
+    </div>
+    ${claimH(c)}
+    <div class="hhs">
+      <div class="hhh"><span class="hhht">Household / linked files</span><button class="hha" onclick="lkp=lkp===${c.id}?null:${c.id};render()">+ Link file</button></div>
+      ${lnk.length ? lnk.map(l=>`<div class="hhm"><div class="av ${avc(l.cn)}" style="width:24px;height:24px;font-size:9px;flex-shrink:0">${ini(l.cn)}</div><span class="hhm-n">${l.cn}</span><span class="hhm-p">${l.pr}</span>${(c.hh||[]).includes(l.id)?`<span class="hhm-r" onclick="unlnk(${c.id},${l.id})">remove</span>`:`<span style="font-size:10px;color:var(--text3);padding:2px 5px">auto</span>`}</div>`).join('') : `<div style="padding:8px 12px;font-size:12px;color:var(--text3)">No linked files — phone/email matches link automatically</div>`}
+      ${isPicker&&linkable.length?`<div class="lkp"><div class="lkp-l">Select a file to manually link:</div><div class="lkp-list">${linkable.map(l=>`<div class="lkp-opt" onclick="lnkFile(${c.id},${l.id})"><div class="av ${avc(l.cn)}" style="width:24px;height:24px;font-size:9px">${ini(l.cn)}</div><span style="flex:1">${l.cn}</span><span style="font-size:11px;color:var(--text3)">${l.pr} · ${l.cy}</span></div>`).join('')}</div></div>`:''}
+    </div>
+    <div class="sl">Notes</div>
+    <div class="nh">${c.notes.length?c.notes.map(n=>`<div class="ne"><div class="nt">${n.t}</div><div class="nd">${n.d||''}</div></div>`).join(''):`<div style="font-size:12px;color:var(--text3);padding:2px 0">No notes yet</div>`}</div>
+    <div class="nir">
+      <textarea id="ni-${c.id}" placeholder="Add a note…" oninput="nnt[${c.id}]=this.value">${nnt[c.id]||''}</textarea>
+      <button class="btn-sv" onclick="addNote(${c.id})">Save note</button>
+    </div>
+  </div>`;
+}
+
+function claimH(c) {
+  if (!c.claim) {
+    return `<div class="claims-section">
+      <div class="claims-header">
+        <span class="claims-title">Claim</span>
+        <button class="claim-open-btn" onclick="openClaim(${c.id})">+ Open claim</button>
+      </div>
+      <div style="padding:8px 12px;font-size:12px;color:var(--text3)">No active claim</div>
+    </div>`;
+  }
+  const st = c.claim.status || 'Submitted';
+  const stClass = {Submitted:'cs-submitted','In Review':'cs-review',Approved:'cs-approved',Paid:'cs-paid',Denied:'cs-denied'}[st] || 'cs-submitted';
+  return `<div class="claims-section">
+    <div class="claims-header">
+      <span class="claims-title">Active claim</span>
+      <span class="claim-status-pill ${stClass}">${st}</span>
+      <button class="claim-close-btn" onclick="closeClaim(${c.id})">Close claim</button>
+    </div>
+    <div class="claim-body">
+      <div class="claim-grid">
+        <div class="claim-field"><label>Claim type</label><select onchange="updateClaim(${c.id},'type',this.value)">${CLAIM_TYPES.map(t=>`<option${t===c.claim.type?' selected':''}>${t}</option>`).join('')}</select></div>
+        <div class="claim-field"><label>Status</label><select onchange="updateClaim(${c.id},'status',this.value)">${CLAIM_STATUSES.map(s=>`<option${s===st?' selected':''}>${s}</option>`).join('')}</select></div>
+        <div class="claim-field"><label>Date opened</label><input type="date" value="${c.claim.opened||''}" onchange="updateClaim(${c.id},'opened',this.value)"></div>
+        <div class="claim-field"><label>Follow-up date</label><input type="date" value="${c.claim.followup||''}" onchange="updateClaim(${c.id},'followup',this.value)"></div>
+      </div>
+      <div class="claim-note-row">
+        <input type="text" placeholder="Add claim note…" id="cn-${c.id}" value="${c.claim.notes||''}">
+        <button class="btn-sm" onclick="updateClaim(${c.id},'notes',document.getElementById('cn-${c.id}').value)">Save</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderClaims() {
+  const active = clients.filter(c => c.claim);
+  document.getElementById('list').innerHTML = active.length ?
+    `<div style="margin-bottom:10px;font-size:13px;font-weight:500;color:var(--text)">${active.length} active claim${active.length===1?'':'s'}</div>` + active.map(c => {
+      const st = c.claim.status || 'Submitted';
+      const stClass = {Submitted:'cs-submitted','In Review':'cs-review',Approved:'cs-approved',Paid:'cs-paid',Denied:'cs-denied'}[st] || 'cs-submitted';
+      const daysSince = c.claim.opened ? Math.ceil((tod2 - new Date(c.claim.opened)) / 864e5) : '?';
+      return `<div class="card${sel===c.id?' sel':''}" onclick="selC(${c.id})">
+        <div class="ct">
+          <div class="av ${avc(c.cn)}">${ini(c.cn)}</div>
+          <div class="ci">
+            <div class="cn">${c.cn} <span class="claim-badge">claim active</span></div>
+            <div class="cm"><span>${c.pr}</span><span>${c.co}</span><span>${c.cy}</span></div>
+          </div>
+          <div class="cr">
+            <span class="claim-status-pill ${stClass}" style="font-size:10px;padding:2px 8px">${st}</span>
+            <span class="fd">${c.claim.type||''}</span>
+            <span class="fd">Opened ${fmtDate(c.claim.opened)} · ${daysSince}d</span>
+          </div>
+        </div>
+        ${sel===c.id ? `<div class="dp" onclick="event.stopPropagation()">${claimH(c)}</div>` : ''}
+      </div>`;
+    }).join('') :
+    '<div class="empty">No active claims</div>';
+}
+
+function renderLookup() {
+  const q = (document.getElementById('searchInput').value||'').toLowerCase().trim();
+  const el = document.getElementById('list');
+  if (!q) { el.innerHTML = '<div class="empty">Type a name, phone number, or email to find all their policies</div>'; return; }
+  const rel = clients.filter(c=>[c.cn,c.ins,...nc(c.ph),...nc(c.em)].some(x=>(x||'').toLowerCase().includes(q)));
+  if (!rel.length) { el.innerHTML = '<div class="empty">No matching clients found</div>'; return; }
+  const grps = {};
+  rel.forEach(c => {
+    const k = [c.cn.toLowerCase(),...nc(c.ph)].sort().join('|');
+    if (!grps[k]) grps[k] = {n:c.cn, ph:nc(c.ph), em:nc(c.em), pol:[]};
+    grps[k].pol.push(c);
+  });
+  el.innerHTML = Object.values(grps).map(g => `<div class="lkg">
+    <div class="lkgh">
+      <div class="av ${avc(g.n)}" style="width:30px;height:30px;font-size:10px">${ini(g.n)}</div>
+      <div><div class="lkghn">${g.n}</div><div class="lkghc">${[...g.ph,...g.em].slice(0,3).join(' · ')}</div></div>
+      <div class="lkghct">${g.pol.length} polic${g.pol.length===1?'y':'ies'}</div>
+    </div>
+    ${g.pol.map(p=>`<div class="lkp2" onclick="jumpTo(${p.id})">
+      <div class="lp1">
+        <div class="lp1n">${p.pr} — ${p.pn}${p.claim?` <span class="claim-badge">claim active</span>`:''}</div>
+        <div class="lp1m">${p.co} · ${p.cv} · sold ${fmtDate(p.ds)}</div>
+      </div>
+      <span class="pt">${cls(p.pr)==='travel'?'No follow-up':'Follow-up'}</span>
+    </div>`).join('')}
+  </div>`).join('');
+}
+
+function renderDQ() {
+  const ap = [...new Set(clients.map(c=>(c.pr||'').trim()))].sort();
+  document.getElementById('list').innerHTML = `
+    <div style="margin-bottom:12px">
+      <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px">Data quality report</div>
+      <div style="font-size:12px;color:var(--text2)">Scans your Google Sheet on every load and flags inconsistencies automatically.</div>
+    </div>
+    ${DQG.map(g=>`<div class="dqi"><div class="dqil">${g.l}</div><div class="dqtags">${g.i.map(i=>`<span class="dqt">${i}</span>`).join('')}</div><div class="dqr">Fix: standardize spelling with find-and-replace in your Google Sheet</div></div>`).join('')}
+    <div class="dqi"><div class="dqil">All unique product values detected in your sheet</div><div class="dqtags">${ap.map(p=>`<span class="dqt" style="background:var(--bg);color:var(--text3);border-color:var(--border)">${p}</span>`).join('')}</div></div>`;
+}
+
+// ══ ACTIONS ══
+function selC(id) { sel = sel===id ? null : id; lkp = null; render(); }
+
+function togDone(id) {
+  pushUndo('Mark complete / incomplete');
+  const c = clients.find(x=>x.id===id);
+  if (c) c.done = !c.done;
+  render();
+}
+
+function updFU(id, v) {
+  const c = clients.find(x=>x.id===id);
+  if (!c) return;
+  pushUndo('Follow-up date changed');
+  c.fu = v; c.done = false;
+  writeToSheet(c.rowNum, CONFIG.COLS.followupDate, v);
+  render();
+}
+
+function addNote(id) {
+  const c = clients.find(x=>x.id===id);
+  const t = (nnt[id]||'').trim();
+  if (!c||!t) return;
+  pushUndo('Note added');
+  const d = new Date().toLocaleDateString('en-CA');
+  c.notes.unshift({t, d});
+  nnt[id] = '';
+  const existingNotes = c.notes.filter(n=>!n.sheet);
+  writeToSheet(c.rowNum, CONFIG.COLS.crmNotes, JSON.stringify(existingNotes));
+  render();
+}
+
+function lnkFile(a, b) {
+  const ca = clients.find(x=>x.id===a), cb = clients.find(x=>x.id===b);
+  if (!ca||!cb) return;
+  pushUndo(`Linked ${ca.cn} ↔ ${cb.cn}`);
+  if (!ca.hh.includes(b)) ca.hh.push(b);
+  if (!cb.hh.includes(a)) cb.hh.push(a);
+  lkp = null;
+  writeToSheet(ca.rowNum, CONFIG.COLS.householdLinks, JSON.stringify(ca.hh));
+  writeToSheet(cb.rowNum, CONFIG.COLS.householdLinks, JSON.stringify(cb.hh));
+  render();
+}
+
+function unlnk(a, b) {
+  const ca = clients.find(x=>x.id===a), cb = clients.find(x=>x.id===b);
+  if (!ca||!cb) return;
+  pushUndo(`Unlinked ${ca.cn} ↔ ${cb.cn}`);
+  ca.hh = ca.hh.filter(x=>x!==b);
+  cb.hh = cb.hh.filter(x=>x!==a);
+  writeToSheet(ca.rowNum, CONFIG.COLS.householdLinks, JSON.stringify(ca.hh));
+  writeToSheet(cb.rowNum, CONFIG.COLS.householdLinks, JSON.stringify(cb.hh));
+  render();
+}
+
+function openClaim(id) {
+  const c = clients.find(x=>x.id===id);
+  if (!c) return;
+  pushUndo('Claim opened');
+  c.claim = { type: 'Death Benefit', opened: new Date().toISOString().split('T')[0], status: 'Submitted', notes: '', followup: '' };
+  writeToSheet(c.rowNum, CONFIG.COLS.claimStatus, JSON.stringify(c.claim));
+  render();
+}
+
+function closeClaim(id) {
+  const c = clients.find(x=>x.id===id);
+  if (!c) return;
+  pushUndo('Claim closed');
+  c.claim = null;
+  writeToSheet(c.rowNum, CONFIG.COLS.claimStatus, '');
+  render();
+}
+
+function updateClaim(id, field, val) {
+  const c = clients.find(x=>x.id===id);
+  if (!c||!c.claim) return;
+  c.claim[field] = val;
+  writeToSheet(c.rowNum, CONFIG.COLS.claimStatus, JSON.stringify(c.claim));
+  render();
+}
+
+function jumpTo(id) { sel = id; preset = 'all'; document.getElementById('preset').value = 'all'; setMode('followup'); setTab('all'); }
+
+// ══ ADD NEW SALE MODAL ══
+function openModal() {
+  document.getElementById('modal').innerHTML = `<div class="modal-bg" onclick="if(event.target===this)document.getElementById('modal').innerHTML=''">
+    <div class="modal">
+      <div class="modal-title">New sale</div>
+      <div class="fgr">
+        <div class="fg2"><label>Client name *</label><input id="f-cn" placeholder="Harjinder Singh"></div>
+        <div class="fg2"><label>Insured name</label><input id="f-ins" placeholder="If different from client"></div>
+        <div class="fg2"><label>Date sold</label><input id="f-ds" type="date" value="${new Date().toISOString().split('T')[0]}"></div>
+        <div class="fg2"><label>Company</label><input id="f-co" placeholder="Sun Life, Manulife…"></div>
+        <div class="fg2"><label>Product sold *</label><select id="f-pr"><option value="">Select…</option>${PRODUCTS.map(p=>`<option>${p}</option>`).join('')}</select></div>
+        <div class="fg2"><label>Policy number</label><input id="f-pn" placeholder="SL-2025-XXXX"></div>
+        <div class="fg2"><label>Coverage amount</label><input id="f-cv" placeholder="$500,000"></div>
+        <div class="fg2"><label>Amount paid</label><input id="f-ap" placeholder="$1,200"></div>
+        <div class="fg2"><label>Commission</label><input id="f-cm" placeholder="$240"></div>
+        <div class="fg2"><label>Source</label><input id="f-src" placeholder="Referral, Instagram…"></div>
+        <div class="fg2"><label>Phone</label><input id="f-ph" placeholder="416-555-0000" oninput="chkDup()"></div>
+        <div class="fg2"><label>Email</label><input id="f-em" placeholder="client@email.com" oninput="chkDup()"></div>
+        <div class="fg2"><label>City</label><input id="f-cy" placeholder="Brampton"></div>
+        <div class="fg2"><label>Next follow-up date</label><input id="f-fu" type="date"></div>
+        <div class="fg2 full"><label>Notes</label><textarea id="f-nt" placeholder="Any initial notes…"></textarea></div>
+      </div>
+      <div class="dup-warn" id="dupWarn"></div>
+      <div class="fac">
+        <button class="bcn" onclick="document.getElementById('modal').innerHTML=''">Cancel</button>
+        <button class="bsb" onclick="submitSale()">Add to CRM + Sheet</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function chkDup() {
+  const ph = (document.getElementById('f-ph').value||'').toLowerCase().trim();
+  const em = (document.getElementById('f-em').value||'').toLowerCase().trim();
+  const matches = clients.filter(c => nc(c.ph).some(p=>ph&&p.includes(ph)) || nc(c.em).some(e=>em&&e.includes(em)));
+  const w = document.getElementById('dupWarn');
+  if (matches.length) {
+    w.style.display = 'block';
+    w.textContent = `Existing files found: ${[...new Set(matches.map(m=>m.cn))].join(', ')} — new sale will be auto-linked as household`;
+  } else {
+    w.style.display = 'none';
+  }
+}
+
+async function submitSale() {
+  const g = id => (document.getElementById(id).value||'').trim();
+  const cn = g('f-cn'), pr = g('f-pr');
+  if (!cn||!pr) { alert('Client name and product are required'); return; }
+  const nc2 = {
+    id: nextId++, rowNum: clients.length + 2,
+    cn, ins: g('f-ins')||cn, ds: g('f-ds'), co: g('f-co'), pr,
+    pn: g('f-pn'), cv: g('f-cv'), ap: g('f-ap'), cm: g('f-cm'),
+    src: g('f-src'), ph: g('f-ph'), em: g('f-em'), cy: g('f-cy'),
+    fu: g('f-fu')||null, done: false,
+    notes: g('f-nt') ? [{t:g('f-nt'), d:new Date().toLocaleDateString('en-CA')}] : [],
+    hh: [], claim: null
+  };
+  pushUndo(`Added ${cn}`);
+  clients.unshift(nc2);
+  // Build sheet row (columns A-W)
+  const row = Array(23).fill('');
+  const C = CONFIG.COLS;
+  row[C.clientName-1] = nc2.cn;
+  row[C.insuredName-1] = nc2.ins;
+  row[C.dateSold-1] = nc2.ds;
+  row[C.company-1] = nc2.co;
+  row[C.coverage-1] = nc2.cv;
+  row[C.policyNumber-1] = nc2.pn;
+  row[C.phone-1] = nc2.ph;
+  row[C.email-1] = nc2.em;
+  row[C.city-1] = nc2.cy;
+  row[C.amountPaid-1] = nc2.ap;
+  row[C.commission-1] = nc2.cm;
+  row[C.source-1] = nc2.src;
+  row[C.product-1] = nc2.pr;
+  row[C.followupDate-1] = nc2.fu||'';
+  row[C.crmNotes-1] = nc2.notes.length ? JSON.stringify(nc2.notes) : '';
+  await appendToSheet(row);
+  document.getElementById('modal').innerHTML = '';
+  preset = 'all'; document.getElementById('preset').value = 'all';
+  tab = 'all';
+  [['ov','overdue'],['tw','thisweek'],['up','upcoming'],['al','all']].forEach(([k,v]) => document.getElementById('t-'+k).classList.toggle('active', v==='all'));
+  sel = nc2.id;
+  render();
+}
+</script>
+</body>
+</html>
