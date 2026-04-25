@@ -5,734 +5,241 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IBR Insurance — Advisor Portal</title>
 <meta name="robots" content="noindex, nofollow">
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+:root {
+  --bg:#F7F6F3;--surface:#FFFFFF;--border:#E5E2DC;--border2:#D0CCC4;
+  --text:#1A1814;--text2:#6B6760;--text3:#9E9B96;
+  --accent:#1B4332;--accent-l:#D8EDDF;
+  --red:#C0392B;--red-l:#FDECEA;
+  --amber:#B7791F;--amber-l:#FEF3C7;
+  --blue:#1E40AF;--blue-l:#DBEAFE;
+  --purple:#5B21B6;--purple-l:#EDE9FE;
+  --r:10px;--rs:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh}
 
-  :root {
-    --bg: #F7F6F3;
-    --surface: #FFFFFF;
-    --border: #E5E2DC;
-    --border2: #D0CCC4;
-    --text: #1A1814;
-    --text2: #6B6760;
-    --text3: #9E9B96;
-    --accent: #1B4332;
-    --accent-light: #D8EDDF;
-    --red: #C0392B;
-    --red-light: #FDECEA;
-    --amber: #B7791F;
-    --amber-light: #FEF3C7;
-    --blue: #1E40AF;
-    --blue-light: #DBEAFE;
-    --purple: #5B21B6;
-    --purple-light: #EDE9FE;
-    --radius: 10px;
-    --radius-sm: 6px;
-  }
+/* LOGIN */
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center}
+.lc{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:48px 40px;width:380px;text-align:center}
+.llogo{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.ltitle{font-size:22px;font-weight:600;margin-bottom:6px}
+.lsub{font-size:13px;color:var(--text2);margin-bottom:28px}
+.lmode{display:flex;border:1px solid var(--border);border-radius:var(--rs);overflow:hidden;margin-bottom:24px}
+.lmode-btn{flex:1;padding:7px;font-size:12px;font-family:'DM Sans',sans-serif;border:none;background:none;cursor:pointer;color:var(--text2);transition:all .15s}
+.lmode-btn.active{background:var(--accent);color:#fff}
+.signin-wrap{display:flex;justify-content:center;margin-bottom:12px}
+.lerror{display:none;background:var(--red-l);color:var(--red);border-radius:var(--rs);padding:10px 14px;font-size:12px;margin-top:12px}
+.lpin-wrap{display:none;flex-direction:column;gap:10px}
+.lpin-wrap input{padding:10px;border:1px solid var(--border);border-radius:var(--rs);font-size:18px;text-align:center;letter-spacing:6px;font-family:'DM Mono',monospace;width:100%}
+.lpin-wrap button{padding:10px;background:var(--accent);color:#fff;border:none;border-radius:var(--rs);font-size:14px;font-family:'DM Sans',sans-serif;cursor:pointer}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* TOPNAV */
+#appShell{display:none}
+.topnav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;gap:10px;height:52px;position:sticky;top:0;z-index:50;flex-wrap:wrap}
+.nav-brand{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);white-space:nowrap}
+.ndiv{width:1px;height:20px;background:var(--border)}
+.mode-toggle{display:flex;border:1px solid var(--border);border-radius:var(--rs);overflow:hidden}
+.mode-btn{padding:5px 10px;font-size:12px;font-family:'DM Sans',sans-serif;border:none;background:none;cursor:pointer;color:var(--text2);white-space:nowrap;transition:all .15s}
+.mode-btn.active{background:var(--text);color:#fff}
+.sw{position:relative;flex:1;max-width:280px}
+.sw input{width:100%;padding:6px 9px 6px 28px;border:1px solid var(--border);border-radius:var(--rs);background:var(--bg);font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);outline:none}
+.si{position:absolute;left:8px;top:50%;transform:translateY(-50%);width:11px;height:11px;opacity:.35;pointer-events:none}
+.nsp{flex:1}
+.sync{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:5px}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.sdot.err{background:var(--red)}
+.upill{display:flex;align-items:center;gap:7px;padding:3px 9px 3px 3px;border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--text2)}
+.uav{width:26px;height:26px;border-radius:50%;background:var(--accent-l);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600}
+.obadge{font-size:10px;padding:1px 6px;border-radius:20px;background:var(--accent-l);color:var(--accent);font-weight:500}
+.btn-lo{padding:4px 9px;font-size:12px;font-family:'DM Sans',sans-serif;border:1px solid var(--border);border-radius:var(--rs);background:none;cursor:pointer;color:var(--text2)}
+.btn-new{padding:5px 12px;font-size:12px;font-family:'DM Sans',sans-serif;border:none;border-radius:var(--rs);background:var(--accent);color:#fff;cursor:pointer;white-space:nowrap}
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    font-size: 14px;
-    line-height: 1.5;
-    min-height: 100vh;
-  }
+/* MAIN */
+.main{padding:16px 20px;max-width:960px;margin:0 auto}
+.undo-bar{display:none;background:var(--amber-l);border:1px solid #F6D860;border-radius:var(--rs);padding:7px 12px;margin-bottom:10px;align-items:center;gap:8px;font-size:12px;color:var(--amber)}
+.undo-bar button{padding:3px 9px;font-size:11px;font-family:'DM Sans',sans-serif;border:1px solid #F6D860;border-radius:4px;background:#fff;color:var(--amber);cursor:pointer}
 
-  /* ── LOGIN SCREEN ── */
-  #loginScreen {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg);
-  }
-  .login-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 48px 40px;
-    width: 380px;
-    text-align: center;
-  }
-  .login-logo {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 8px;
-  }
-  .login-title {
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 6px;
-  }
-  .login-sub {
-    font-size: 13px;
-    color: var(--text2);
-    margin-bottom: 32px;
-  }
-  #loginError {
-    display: none;
-    background: var(--red-light);
-    color: var(--red);
-    border-radius: var(--radius-sm);
-    padding: 10px 14px;
-    font-size: 12px;
-    margin-top: 16px;
-  }
+/* FILTER */
+.filter-row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;align-items:center}
+.fl{font-size:11px;color:var(--text3);white-space:nowrap}
+select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(--rs);background:var(--surface);font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);cursor:pointer;flex:1;min-width:150px;outline:none}
 
-  /* ── APP SHELL ── */
-  #appShell { display: none; }
+/* TABS */
+.tabs{display:flex;gap:2px;margin-bottom:8px;border-bottom:1px solid var(--border)}
+.tab{padding:6px 11px;font-size:12px;font-family:'DM Sans',sans-serif;border:none;background:none;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px;display:flex;align-items:center;gap:4px;white-space:nowrap;transition:all .15s}
+.tab.active{color:var(--text);border-bottom-color:var(--accent);font-weight:500}
+.bdg{display:inline-flex;align-items:center;justify-content:center;min-width:15px;height:15px;padding:0 3px;border-radius:8px;font-size:10px;font-weight:500}
+.br{background:var(--red-l);color:var(--red)}.ba{background:var(--amber-l);color:var(--amber)}.bg{background:var(--accent-l);color:var(--accent)}.bgr{background:var(--bg);color:var(--text3)}
+.mar{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.mar button{font-size:11px;padding:3px 9px;border:1px solid var(--border);border-radius:var(--rs);background:none;cursor:pointer;color:var(--text2);font-family:'DM Sans',sans-serif}
+.rc{font-size:11px;color:var(--text3)}
 
-  .topnav {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 24px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    height: 52px;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-  }
-  .nav-brand {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--accent);
-    white-space: nowrap;
-  }
-  .nav-divider { width: 1px; height: 20px; background: var(--border); }
-  .mode-toggle {
-    display: flex;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    overflow: hidden;
-  }
-  .mode-btn {
-    padding: 5px 12px;
-    font-size: 12px;
-    font-family: 'DM Sans', sans-serif;
-    border: none;
-    background: none;
-    cursor: pointer;
-    color: var(--text2);
-    white-space: nowrap;
-    transition: all 0.15s;
-  }
-  .mode-btn.active { background: var(--text); color: #fff; }
-  .search-wrap { position: relative; flex: 1; max-width: 320px; }
-  .search-wrap input {
-    width: 100%;
-    padding: 6px 10px 6px 30px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: var(--bg);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    color: var(--text);
-    outline: none;
-  }
-  .search-wrap input:focus { border-color: var(--border2); }
-  .search-icon {
-    position: absolute; left: 9px; top: 50%;
-    transform: translateY(-50%);
-    width: 12px; height: 12px; opacity: 0.4; pointer-events: none;
-  }
-  .nav-spacer { flex: 1; }
-  .user-pill {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 10px 4px 4px;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    font-size: 12px;
-    color: var(--text2);
-  }
-  .user-avatar {
-    width: 26px; height: 26px;
-    border-radius: 50%;
-    background: var(--accent-light);
-    color: var(--accent);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 10px; font-weight: 600;
-  }
-  .owner-badge {
-    font-size: 10px;
-    padding: 1px 6px;
-    border-radius: 20px;
-    background: var(--accent-light);
-    color: var(--accent);
-    font-weight: 500;
-  }
-  .btn-logout {
-    padding: 5px 10px;
-    font-size: 12px;
-    font-family: 'DM Sans', sans-serif;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: none;
-    cursor: pointer;
-    color: var(--text2);
-  }
-  .btn-logout:hover { background: var(--bg); }
-  .btn-new {
-    padding: 5px 12px;
-    font-size: 12px;
-    font-family: 'DM Sans', sans-serif;
-    border: none;
-    border-radius: var(--radius-sm);
-    background: var(--accent);
-    color: #fff;
-    cursor: pointer;
-    white-space: nowrap;
-  }
+/* CARDS */
+.list{display:flex;flex-direction:column;gap:5px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:10px 13px;cursor:pointer;transition:border-color .15s}
+.card:hover{border-color:var(--border2)}.card.sel{border-color:var(--accent)}.card.done{opacity:.4}
+.ct{display:flex;align-items:flex-start;gap:9px}
+.av{width:33px;height:33px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+.av-gr{background:var(--accent-l);color:var(--accent)}.av-bl{background:var(--blue-l);color:var(--blue)}.av-am{background:var(--amber-l);color:var(--amber)}.av-pu{background:var(--purple-l);color:var(--purple)}.av-rd{background:var(--red-l);color:var(--red)}
+.ci{flex:1;min-width:0}
+.cn{font-size:13px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.ci-ins{font-size:10px;font-weight:400;color:var(--text3)}
+.hh-badge{font-size:10px;padding:1px 6px;border-radius:20px;background:var(--purple-l);color:var(--purple);border:1px solid #C4B5FD}
+.claim-badge{font-size:10px;padding:1px 6px;border-radius:20px;background:var(--red-l);color:var(--red);border:1px solid #FECACA}
+.cm2{font-size:11px;color:var(--text3);margin-top:2px;display:flex;gap:5px;flex-wrap:wrap}
+.cr{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.sp{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500}
+.sp-ov{background:var(--red-l);color:var(--red)}.sp-tw{background:var(--amber-l);color:var(--amber)}.sp-up{background:var(--accent-l);color:var(--accent)}.sp-no{background:var(--bg);color:var(--text3)}.sp-dn{background:var(--accent-l);color:var(--accent)}
+.pt{font-size:10px;padding:2px 5px;border-radius:20px;background:var(--bg);color:var(--text3);border:1px solid var(--border)}
+.fd{font-size:10px;color:var(--text3)}
+.chk{width:15px;height:15px;border-radius:50%;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;background:var(--surface);margin-top:2px;transition:all .15s}
+.chk.on{background:var(--accent-l);border-color:var(--accent)}
 
-  /* ── MAIN CONTENT ── */
-  .main { padding: 20px 24px; max-width: 960px; margin: 0 auto; }
+/* DETAIL */
+.dp{background:var(--bg);border-radius:var(--rs);padding:12px;margin-top:9px;border:1px solid var(--border)}
+.dh{display:flex;align-items:center;gap:9px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.da{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
+.dn{font-size:14px;font-weight:500;color:var(--text)}.ds2{font-size:11px;color:var(--text2);margin-top:2px}
+.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:9px;margin-bottom:10px}
+.fi label{font-size:10px;color:var(--text3);display:block;margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em}
+.fi span{font-size:12px;color:var(--text);font-family:'DM Mono',monospace}
+.fi span.n{font-family:'DM Sans',sans-serif}
+.locked{filter:blur(4px);user-select:none;pointer-events:none}
+.sl{font-size:10px;font-weight:600;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
+.fu-row{display:flex;align-items:center;gap:9px;margin-bottom:10px;padding:7px 11px;background:var(--surface);border-radius:var(--rs);border:1px solid var(--border)}
+.fu-row label{font-size:12px;color:var(--text2);flex:1}
+.fu-row input[type=date]{font-size:12px;padding:4px 7px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;outline:none}
 
-  /* ── UNDO BAR ── */
-  .undo-bar {
-    display: none;
-    background: var(--amber-light);
-    border: 1px solid #F6D860;
-    border-radius: var(--radius-sm);
-    padding: 8px 14px;
-    margin-bottom: 12px;
-    align-items: center;
-    gap: 10px;
-    font-size: 12px;
-    color: var(--amber);
-  }
-  .undo-bar button {
-    padding: 3px 10px;
-    font-size: 11px;
-    font-family: 'DM Sans', sans-serif;
-    border: 1px solid #F6D860;
-    border-radius: 4px;
-    background: #fff;
-    color: var(--amber);
-    cursor: pointer;
-  }
+/* CLAIMS */
+.clm-sec{margin-bottom:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);overflow:hidden}
+.clm-hdr{padding:7px 11px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--border);background:var(--bg)}
+.clm-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;flex:1}
+.clm-open{font-size:11px;padding:3px 8px;border:1px solid var(--red);border-radius:4px;background:none;cursor:pointer;color:var(--red);font-family:'DM Sans',sans-serif}
+.clm-close{font-size:11px;padding:3px 8px;border:1px solid var(--border2);border-radius:4px;background:none;cursor:pointer;color:var(--text2);font-family:'DM Sans',sans-serif}
+.clm-body{padding:10px 11px}
+.clm-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px}
+.cf label{font-size:10px;color:var(--text3);display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em}
+.cf select,.cf input{width:100%;font-size:12px;padding:5px 7px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;outline:none}
+.cs-pill{display:inline-flex;align-items:center;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500}
+.cs-sub{background:var(--blue-l);color:var(--blue)}.cs-rev{background:var(--amber-l);color:var(--amber)}.cs-app{background:var(--accent-l);color:var(--accent)}.cs-paid{background:var(--accent-l);color:var(--accent)}.cs-den{background:var(--red-l);color:var(--red)}
+.clm-nr{display:flex;gap:6px}
+.clm-nr input{flex:1;font-size:12px;padding:5px 7px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;outline:none}
+.btn-sm{padding:5px 9px;font-size:11px;font-family:'DM Sans',sans-serif;border:none;border-radius:4px;background:var(--accent);color:#fff;cursor:pointer;white-space:nowrap}
 
-  /* ── FILTER BAR ── */
-  .filter-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .filter-label { font-size: 11px; color: var(--text3); white-space: nowrap; }
-  select.preset {
-    padding: 5px 9px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: var(--surface);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    color: var(--text);
-    cursor: pointer;
-    flex: 1;
-    min-width: 160px;
-    outline: none;
-  }
+/* HOUSEHOLD */
+.hhs{margin-bottom:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);overflow:hidden}
+.hhh{padding:7px 11px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--border);background:var(--bg)}
+.hhht{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;flex:1}
+.hha{font-size:11px;padding:3px 7px;border:1px solid var(--border2);border-radius:4px;background:none;cursor:pointer;color:var(--text2);font-family:'DM Sans',sans-serif}
+.hhm{padding:6px 11px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--border);font-size:12px}
+.hhm:last-child{border-bottom:none}
+.hhm-n{flex:1;color:var(--text)}.hhm-p{color:var(--text3);font-size:11px}
+.hhm-r{font-size:11px;color:var(--text3);cursor:pointer;padding:2px 5px;border-radius:4px}
+.hhm-r:hover{background:var(--bg)}
+.lkp{padding:8px 11px;background:var(--bg);border-top:1px solid var(--border)}
+.lkp-l{font-size:11px;color:var(--text3);margin-bottom:5px}
+.lkp-list{display:flex;flex-direction:column;gap:3px;max-height:110px;overflow-y:auto}
+.lkp-opt{display:flex;align-items:center;gap:7px;padding:5px 7px;border-radius:4px;cursor:pointer;font-size:12px;color:var(--text)}
+.lkp-opt:hover{background:var(--surface)}
 
-  /* ── TABS ── */
-  .tabs {
-    display: flex;
-    gap: 2px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid var(--border);
-  }
-  .tab {
-    padding: 6px 12px;
-    font-size: 12px;
-    font-family: 'DM Sans', sans-serif;
-    border: none;
-    background: none;
-    cursor: pointer;
-    color: var(--text2);
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    white-space: nowrap;
-  }
-  .tab.active { color: var(--text); border-bottom-color: var(--accent); font-weight: 500; }
-  .bdg {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 16px;
-    height: 16px;
-    padding: 0 4px;
-    border-radius: 8px;
-    font-size: 10px;
-    font-weight: 500;
-  }
-  .br { background: var(--red-light); color: var(--red); }
-  .ba { background: var(--amber-light); color: var(--amber); }
-  .bg { background: var(--accent-light); color: var(--accent); }
-  .bgr { background: var(--bg); color: var(--text3); }
-  .bpu { background: var(--purple-light); color: var(--purple); }
+/* NOTES */
+.nh{display:flex;flex-direction:column;gap:4px;margin-bottom:7px;max-height:110px;overflow-y:auto}
+.ne{background:var(--surface);border-radius:4px;padding:7px 9px;border:1px solid var(--border)}
+.nt{font-size:12px;color:var(--text)}.nd{font-size:10px;color:var(--text3);margin-top:2px}
+.nir{display:flex;gap:6px}
+.nir textarea{flex:1;font-size:12px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--rs);background:var(--surface);color:var(--text);resize:none;height:46px;font-family:'DM Sans',sans-serif;outline:none}
+.btn-sv{padding:6px 10px;font-size:12px;font-family:'DM Sans',sans-serif;border:none;border-radius:var(--rs);background:var(--accent);color:#fff;cursor:pointer;align-self:flex-end;white-space:nowrap}
 
-  .mar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-  }
-  .mar button {
-    font-size: 11px;
-    padding: 4px 10px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: none;
-    cursor: pointer;
-    color: var(--text2);
-    font-family: 'DM Sans', sans-serif;
-  }
-  .rc { font-size: 11px; color: var(--text3); }
+/* LOOKUP */
+.lkg{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:8px}
+.lkgh{padding:9px 13px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px}
+.lkghn{font-size:13px;font-weight:500;color:var(--text)}.lkghc{font-size:11px;color:var(--text3)}.lkghct{font-size:11px;color:var(--text3);margin-left:auto;white-space:nowrap}
+.lkp2{padding:8px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;cursor:pointer}
+.lkp2:last-child{border-bottom:none}.lkp2:hover{background:var(--bg)}
+.lp1{flex:1;min-width:0}.lp1n{font-size:12px;font-weight:500;color:var(--text)}.lp1m{font-size:11px;color:var(--text3);margin-top:1px}
 
-  /* ── CLIENT CARDS ── */
-  .list { display: flex; flex-direction: column; gap: 6px; }
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 11px 14px;
-    cursor: pointer;
-    transition: border-color 0.15s;
-  }
-  .card:hover { border-color: var(--border2); }
-  .card.sel { border-color: var(--accent); }
-  .card.done { opacity: 0.45; }
-  .ct { display: flex; align-items: flex-start; gap: 10px; }
-  .av {
-    width: 34px; height: 34px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 600;
-    flex-shrink: 0;
-  }
-  .av-gr { background: var(--accent-light); color: var(--accent); }
-  .av-bl { background: var(--blue-light); color: var(--blue); }
-  .av-am { background: var(--amber-light); color: var(--amber); }
-  .av-pu { background: var(--purple-light); color: var(--purple); }
-  .av-rd { background: var(--red-light); color: var(--red); }
-  .ci { flex: 1; min-width: 0; }
-  .cn {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-  .ci-ins { font-size: 10px; font-weight: 400; color: var(--text3); }
-  .hh-badge {
-    font-size: 10px;
-    padding: 1px 6px;
-    border-radius: 20px;
-    background: var(--purple-light);
-    color: var(--purple);
-    border: 1px solid #C4B5FD;
-  }
-  .claim-badge {
-    font-size: 10px;
-    padding: 1px 6px;
-    border-radius: 20px;
-    background: var(--red-light);
-    color: var(--red);
-    border: 1px solid #FECACA;
-  }
-  .cm { font-size: 11px; color: var(--text3); margin-top: 2px; display: flex; gap: 6px; flex-wrap: wrap; }
-  .cr { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; flex-shrink: 0; }
-  .sp { font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
-  .sp-ov { background: var(--red-light); color: var(--red); }
-  .sp-tw { background: var(--amber-light); color: var(--amber); }
-  .sp-up { background: var(--accent-light); color: var(--accent); }
-  .sp-no { background: var(--bg); color: var(--text3); }
-  .sp-dn { background: var(--accent-light); color: var(--accent); }
-  .pt {
-    font-size: 10px;
-    padding: 2px 6px;
-    border-radius: 20px;
-    background: var(--bg);
-    color: var(--text3);
-    border: 1px solid var(--border);
-  }
-  .fd { font-size: 10px; color: var(--text3); }
-  .chk {
-    width: 16px; height: 16px;
-    border-radius: 50%;
-    border: 1px solid var(--border2);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; flex-shrink: 0;
-    background: var(--surface);
-    margin-top: 2px;
-    transition: all 0.15s;
-  }
-  .chk.on { background: var(--accent-light); border-color: var(--accent); }
+/* DQ */
+.dqi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:11px 13px;margin-bottom:6px}
+.dqil{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:6px}
+.dqtags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:5px}
+.dqt{padding:2px 7px;border-radius:20px;font-size:11px;background:var(--amber-l);color:var(--amber);border:1px solid #F6D860}
+.dqr{font-size:11px;color:var(--text3)}
 
-  /* ── DETAIL PANEL ── */
-  .dp {
-    background: var(--bg);
-    border-radius: var(--radius-sm);
-    padding: 14px;
-    margin-top: 10px;
-    border: 1px solid var(--border);
-  }
-  .dh { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-  .da { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; flex-shrink: 0; }
-  .dn { font-size: 14px; font-weight: 500; color: var(--text); }
-  .ds { font-size: 11px; color: var(--text2); margin-top: 2px; }
-  .fg {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 10px;
-    margin-bottom: 12px;
-  }
-  .fi label { font-size: 10px; color: var(--text3); display: block; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
-  .fi span { font-size: 12px; color: var(--text); font-family: 'DM Mono', monospace; }
-  .fi span.normal { font-family: 'DM Sans', sans-serif; }
-  .locked { filter: blur(4px); user-select: none; cursor: not-allowed; }
-  .sl { font-size: 10px; font-weight: 600; color: var(--text3); margin-bottom: 7px; text-transform: uppercase; letter-spacing: 0.06em; }
-  .fu-row {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 12px;
-    padding: 8px 12px;
-    background: var(--surface);
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-  }
-  .fu-row label { font-size: 12px; color: var(--text2); flex: 1; }
-  .fu-row input[type=date] {
-    font-size: 12px;
-    padding: 4px 8px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-  }
-
-  /* ── CLAIMS SECTION ── */
-  .claims-section {
-    margin-bottom: 12px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    overflow: hidden;
-  }
-  .claims-header {
-    padding: 8px 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border-bottom: 1px solid var(--border);
-    background: var(--bg);
-  }
-  .claims-title { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; flex: 1; }
-  .claim-open-btn {
-    font-size: 11px;
-    padding: 3px 8px;
-    border: 1px solid var(--red);
-    border-radius: 4px;
-    background: none;
-    cursor: pointer;
-    color: var(--red);
-    font-family: 'DM Sans', sans-serif;
-  }
-  .claim-close-btn {
-    font-size: 11px;
-    padding: 3px 8px;
-    border: 1px solid var(--border2);
-    border-radius: 4px;
-    background: none;
-    cursor: pointer;
-    color: var(--text2);
-    font-family: 'DM Sans', sans-serif;
-  }
-  .claim-body { padding: 10px 12px; }
-  .claim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
-  .claim-field label { font-size: 10px; color: var(--text3); display: block; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.04em; }
-  .claim-field select, .claim-field input {
-    width: 100%;
-    font-size: 12px;
-    padding: 5px 8px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-  }
-  .claim-status-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-weight: 500;
-  }
-  .cs-submitted { background: var(--blue-light); color: var(--blue); }
-  .cs-review { background: var(--amber-light); color: var(--amber); }
-  .cs-approved { background: var(--accent-light); color: var(--accent); }
-  .cs-paid { background: var(--accent-light); color: var(--accent); }
-  .cs-denied { background: var(--red-light); color: var(--red); }
-  .claim-note-row { display: flex; gap: 6px; }
-  .claim-note-row input {
-    flex: 1;
-    font-size: 12px;
-    padding: 5px 8px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-  }
-  .btn-sm {
-    padding: 5px 10px;
-    font-size: 11px;
-    font-family: 'DM Sans', sans-serif;
-    border: none;
-    border-radius: 4px;
-    background: var(--accent);
-    color: #fff;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-
-  /* ── HOUSEHOLD SECTION ── */
-  .hhs {
-    margin-bottom: 12px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    overflow: hidden;
-  }
-  .hhh { padding: 7px 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); background: var(--bg); }
-  .hhht { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; flex: 1; }
-  .hha {
-    font-size: 11px;
-    padding: 3px 8px;
-    border: 1px solid var(--border2);
-    border-radius: 4px;
-    background: none;
-    cursor: pointer;
-    color: var(--text2);
-    font-family: 'DM Sans', sans-serif;
-  }
-  .hhm { padding: 7px 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); font-size: 12px; }
-  .hhm:last-child { border-bottom: none; }
-  .hhm-n { flex: 1; color: var(--text); }
-  .hhm-p { color: var(--text3); font-size: 11px; }
-  .hhm-r { font-size: 11px; color: var(--text3); cursor: pointer; padding: 2px 5px; border-radius: 4px; }
-  .hhm-r:hover { background: var(--bg); }
-  .lkp { padding: 8px 12px; background: var(--bg); border-top: 1px solid var(--border); }
-  .lkp-l { font-size: 11px; color: var(--text3); margin-bottom: 5px; }
-  .lkp-list { display: flex; flex-direction: column; gap: 3px; max-height: 120px; overflow-y: auto; }
-  .lkp-opt { display: flex; align-items: center; gap: 8px; padding: 5px 7px; border-radius: 4px; cursor: pointer; font-size: 12px; color: var(--text); }
-  .lkp-opt:hover { background: var(--surface); }
-
-  /* ── NOTES ── */
-  .nh { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; max-height: 120px; overflow-y: auto; }
-  .ne { background: var(--surface); border-radius: 4px; padding: 7px 10px; border: 1px solid var(--border); }
-  .nt { font-size: 12px; color: var(--text); }
-  .nd { font-size: 10px; color: var(--text3); margin-top: 2px; }
-  .nir { display: flex; gap: 6px; }
-  .nir textarea {
-    flex: 1;
-    font-size: 12px;
-    padding: 7px 9px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: var(--surface);
-    color: var(--text);
-    resize: none;
-    height: 50px;
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-  }
-  .btn-sv {
-    padding: 7px 12px;
-    font-size: 12px;
-    font-family: 'DM Sans', sans-serif;
-    border: none;
-    border-radius: var(--radius-sm);
-    background: var(--accent);
-    color: #fff;
-    cursor: pointer;
-    align-self: flex-end;
-    white-space: nowrap;
-  }
-
-  /* ── LOOKUP ── */
-  .lkg { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 8px; }
-  .lkgh { padding: 10px 14px; background: var(--bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-  .lkghn { font-size: 13px; font-weight: 500; color: var(--text); }
-  .lkghc { font-size: 11px; color: var(--text3); }
-  .lkghct { font-size: 11px; color: var(--text3); margin-left: auto; white-space: nowrap; }
-  .lkp2 { padding: 9px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 9px; cursor: pointer; }
-  .lkp2:last-child { border-bottom: none; }
-  .lkp2:hover { background: var(--bg); }
-  .lp1 { flex: 1; min-width: 0; }
-  .lp1n { font-size: 12px; font-weight: 500; color: var(--text); }
-  .lp1m { font-size: 11px; color: var(--text3); margin-top: 1px; }
-
-  /* ── DATA QUALITY ── */
-  .dqi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 6px; }
-  .dqil { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); margin-bottom: 7px; }
-  .dqtags { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 5px; }
-  .dqt { padding: 2px 8px; border-radius: 20px; font-size: 11px; background: var(--amber-light); color: var(--amber); border: 1px solid #F6D860; }
-  .dqr { font-size: 11px; color: var(--text3); }
-
-  /* ── MODAL ── */
-  .modal-bg {
-    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 40px 16px;
-    z-index: 200;
-    overflow-y: auto;
-  }
-  .modal {
-    background: var(--surface);
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    padding: 28px;
-    width: 100%;
-    max-width: 560px;
-  }
-  .modal-title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 20px; }
-  .fgr { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-  .fg2 { display: flex; flex-direction: column; gap: 5px; }
-  .fg2.full { grid-column: 1 / -1; }
-  .fg2 label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
-  .fg2 input, .fg2 select, .fg2 textarea {
-    font-size: 13px;
-    padding: 7px 10px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-  }
-  .fg2 input:focus, .fg2 select:focus, .fg2 textarea:focus { border-color: var(--accent); }
-  .fg2 textarea { resize: none; height: 56px; }
-  .dup-warn {
-    display: none;
-    background: var(--amber-light);
-    border: 1px solid #F6D860;
-    border-radius: var(--radius-sm);
-    padding: 8px 12px;
-    font-size: 12px;
-    color: var(--amber);
-    margin-bottom: 12px;
-  }
-  .fac { display: flex; gap: 8px; justify-content: flex-end; }
-  .bcn {
-    padding: 7px 16px;
-    font-size: 13px;
-    font-family: 'DM Sans', sans-serif;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: none;
-    cursor: pointer;
-    color: var(--text2);
-  }
-  .bsb {
-    padding: 7px 18px;
-    font-size: 13px;
-    font-family: 'DM Sans', sans-serif;
-    border: none;
-    border-radius: var(--radius-sm);
-    background: var(--accent);
-    color: #fff;
-    cursor: pointer;
-  }
-
-  .empty { text-align: center; padding: 3rem; color: var(--text3); font-size: 13px; }
-  .sync-indicator { font-size: 11px; color: var(--text3); display: flex; align-items: center; gap: 5px; }
-  .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+/* MODAL */
+.mbg{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-start;justify-content:center;padding:32px 16px;z-index:200;overflow-y:auto}
+.mod{background:var(--surface);border-radius:14px;border:1px solid var(--border);padding:24px;width:100%;max-width:540px}
+.mtit{font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px}
+.fgr{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}
+.fg2{display:flex;flex-direction:column;gap:4px}.fg2.full{grid-column:1/-1}
+.fg2 label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em}
+.fg2 input,.fg2 select,.fg2 textarea{font-size:13px;padding:7px 9px;border:1px solid var(--border);border-radius:var(--rs);background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;outline:none}
+.fg2 input:focus,.fg2 select:focus,.fg2 textarea:focus{border-color:var(--accent)}
+.fg2 textarea{resize:none;height:52px}
+.dup-warn{display:none;background:var(--amber-l);border:1px solid #F6D860;border-radius:var(--rs);padding:7px 11px;font-size:12px;color:var(--amber);margin-bottom:10px}
+.fac{display:flex;gap:7px;justify-content:flex-end}
+.bcn{padding:7px 14px;font-size:13px;font-family:'DM Sans',sans-serif;border:1px solid var(--border);border-radius:var(--rs);background:none;cursor:pointer;color:var(--text2)}
+.bsb{padding:7px 16px;font-size:13px;font-family:'DM Sans',sans-serif;border:none;border-radius:var(--rs);background:var(--accent);color:#fff;cursor:pointer}
+.empty{text-align:center;padding:3rem;color:var(--text3);font-size:13px}
+.loading{text-align:center;padding:3rem;color:var(--text3);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.spinner{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 
-<!-- ══ LOGIN SCREEN ══ -->
+<!-- LOGIN -->
 <div id="loginScreen">
-  <div class="login-card">
-    <div class="login-logo">Insurance by Rattan</div>
-    <div class="login-title">Advisor Portal</div>
-    <div class="login-sub">Sign in with your Google account to continue</div>
-    <div id="g_id_onload"
-      data-client_id="49708486624-1ct34k1ur759otklcd2cnlgbaa2vggd1.apps.googleusercontent.com"
-      data-callback="handleCredentialResponse"
-      data-auto_prompt="false">
+  <div class="lc">
+    <div class="llogo">Insurance by Rattan</div>
+    <div class="ltitle">Advisor Portal</div>
+    <div class="lsub">Sign in with your authorized Google account</div>
+    <div class="signin-wrap">
+      <div id="g_id_onload"
+        data-client_id="49708486624-1ct34k1ur759otklcd2cnlgbaa2vggd1.apps.googleusercontent.com"
+        data-callback="handleCredentialResponse"
+        data-auto_prompt="false">
+      </div>
+      <div class="g_id_signin"
+        data-type="standard"
+        data-shape="rectangular"
+        data-theme="outline"
+        data-text="sign_in_with"
+        data-size="large"
+        data-width="300">
+      </div>
     </div>
-    <div class="g_id_signin"
-      data-type="standard"
-      data-shape="rectangular"
-      data-theme="outline"
-      data-text="sign_in_with"
-      data-size="large"
-      data-width="300">
-    </div>
-    <div id="loginError">Access denied. This portal is restricted to authorized accounts only.</div>
+    <div class="lerror" id="loginError">Access denied. Only authorized accounts can access this portal.</div>
   </div>
 </div>
 
-<!-- ══ APP SHELL ══ -->
+<!-- APP -->
 <div id="appShell">
   <nav class="topnav">
     <span class="nav-brand">IBR Portal</span>
-    <div class="nav-divider"></div>
+    <div class="ndiv"></div>
     <div class="mode-toggle">
       <button class="mode-btn active" id="modeFollowup" onclick="setMode('followup')">Follow-ups</button>
       <button class="mode-btn" id="modeLookup" onclick="setMode('lookup')">Client lookup</button>
       <button class="mode-btn" id="modeClaims" onclick="setMode('claims')">Claims</button>
       <button class="mode-btn" id="modeDq" onclick="setMode('dq')">Data quality</button>
     </div>
-    <div class="search-wrap">
-      <svg class="search-icon" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M10 10L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <div class="sw">
+      <svg class="si" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M10 10L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       <input type="text" id="searchInput" placeholder="Search name, phone, email, city…" oninput="render()">
     </div>
-    <div class="nav-spacer"></div>
-    <div class="sync-indicator"><div class="sync-dot"></div><span id="syncStatus">Connected to Sheet</span></div>
-    <div class="user-pill">
-      <div class="user-avatar" id="userAvatar">R</div>
-      <span id="userName">Rattan</span>
-      <span class="owner-badge" id="roleLabel">Owner</span>
-    </div>
-    <button class="btn-logout" onclick="logout()">Sign out</button>
+    <div class="nsp"></div>
+    <div class="sync"><div class="sdot" id="sdot"></div><span id="syncStatus">Connecting…</span></div>
+    <div class="upill"><div class="uav" id="uav">R</div><span id="uname">Rattan</span><span class="obadge" id="roleLabel">Owner</span></div>
+    <button class="btn-lo" onclick="logout()">Sign out</button>
     <button class="btn-new" onclick="openModal()">+ New sale</button>
   </nav>
-
   <div class="main">
     <div class="undo-bar" id="undoBar"></div>
-
     <div id="fctrl">
       <div class="filter-row">
-        <span class="filter-label">Show:</span>
+        <span class="fl">Show:</span>
         <select class="preset" id="preset" onchange="applyPreset()">
           <option value="followups">Follow-ups only (default)</option>
           <option value="all">All products</option>
@@ -750,716 +257,252 @@
         <button class="tab" id="t-up" onclick="setTab('upcoming')">Upcoming <span class="bdg bg" id="b-up">0</span></button>
         <button class="tab" id="t-al" onclick="setTab('all')">All <span class="bdg bgr" id="b-al">0</span></button>
       </div>
-      <div class="mar">
-        <span class="rc" id="rc"></span>
-        <button onclick="markAllDone()">Mark all visible as complete</button>
-      </div>
+      <div class="mar"><span class="rc" id="rc"></span><button onclick="markAllDone()">Mark all visible as complete</button></div>
     </div>
-
     <div id="list"></div>
   </div>
 </div>
-
 <div id="modal"></div>
 
+<script src="https://accounts.google.com/gsi/client" async></script>
 <script>
 // ══ CONFIG ══
-const CONFIG = {
-  CLIENT_ID: '49708486624-1ct34k1ur759otklcd2cnlgbaa2vggd1.apps.googleusercontent.com',
-  SHEET_ID: '1T1Q8o1zFMjg5s0gP494LOk4nH0L0Uk628nklI9Me2AY',
-  SHEET_TAB: 'Sold Policies',
-  OWNER_EMAIL: 'rattan.taggar@gmail.com',
-  ASSISTANT_EMAILS: [],  // Add assistant Gmail(s) here when hired: e.g. 'assistant@gmail.com'
-  PORTAL_URL: 'https://www.ibrinsurance.ca/ibr-portal-2024.html',
-  // Column mapping (1-indexed, matching your sheet)
-  COLS: {
-    clientName: 3,      // C
-    insuredName: 4,     // D
-    dateSold: 5,        // E
-    company: 6,         // F
-    coverage: 7,        // G
-    policyNumber: 8,    // H
-    notes1: 9,          // I
-    notes2: 10,         // J
-    askedReview: 12,    // L
-    phone: 14,          // N
-    email: 15,          // O
-    city: 16,           // P
-    amountPaid: 17,     // Q  ← owner only
-    commission: 18,     // R  ← owner only
-    source: 20,         // T
-    product: 21,        // U
-    followupDate: 22,   // V  ← CRM writes here
-    crmNotes: 23,       // W  ← CRM writes here
-    claimStatus: 24,    // X  ← CRM writes here
-    householdLinks: 25, // Y  ← CRM writes here
-  }
-};
+const OWNER = 'rattan.taggar@gmail.com';
+const ASSISTANTS = ['insurancebyrattan@gmail.com'];
+// ↓ Replace this with your Apps Script Web App URL after deployment
+const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
 
-// ══ STATE ══
-let currentUser = null;
-let isOwner = false;
-let accessToken = null;
-let clients = [];
-let nextId = 1000;
-let mode = 'followup';
-let tab = 'overdue';
-let sel = null;
-let preset = 'followups';
-let nnt = {};
-let lkp = null;
-let undoStack = [];
-let sheetLoaded = false;
+const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
+const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
+function cls(p){const n=(p||'').toLowerCase().trim();if(TRAVEL.has(n))return'travel';if(LIFE.has(n))return'life';if(n==='critical illness')return'ci';if(['disability','disability insurance'].includes(n))return'dis';if(['rrsp','resp','tfsa','fhsa','hisa'].includes(n))return'inv';if(['group insurance','team','team insurance','h&d'].includes(n))return'grp';return'other';}
+const PRODUCTS=['Term Insurance','Critical Illness','UL Insurance','Whole Life','Disability Insurance','RRSP','RESP','TFSA','FHSA','HISA','Group Insurance','H&D','Team','VTC','Supervisa','Travel Insurance','Truck-Travel','International Student','Student Insurance','Emergency Medical'];
+const CLAIM_TYPES=['Death Benefit','Critical Illness Payout','Disability Claim','Travel/Medical','Trip Cancellation','Other'];
+const CLAIM_STATUSES=['Submitted','In Review','Approved','Paid','Denied'];
+const DQG=[{l:'Disability variants',i:['Disability','Disability Insurance']},{l:'Truck-Travel variants',i:['Truck-Travel','Truck - Travel','Truck Travel']},{l:'RRSP typos',i:['RRSP','RRP','SRRP']},{l:'Transfer variants',i:['UL Transfer','WL Transfer','Term Transfer','Transfer']},{l:'Likely wrong column',i:['Tiktok','Entity']}];
 
-// ══ PRODUCT CLASSIFICATION ══
-const TRAVEL = new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical','truck - travel','travel - truck']);
-const LIFE = new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
-function cls(p) {
-  const n = (p||'').toLowerCase().trim();
-  if (TRAVEL.has(n)) return 'travel';
-  if (LIFE.has(n)) return 'life';
-  if (n === 'critical illness') return 'ci';
-  if (n === 'disability' || n === 'disability insurance') return 'dis';
-  if (['rrsp','resp','tfsa','fhsa','hisa'].includes(n)) return 'inv';
-  if (['group insurance','team','team insurance','h&d'].includes(n)) return 'grp';
-  return 'other';
+let isOwner=false, clients=[], nextId=1000, mode='followup', tab='overdue', sel=null, preset='followups', nnt={}, lkp=null, undoStack=[], sheetConnected=false;
+
+// ── AUTH ──
+function handleCredentialResponse(resp){
+  const p=parseJwt(resp.credential);
+  const email=p.email;
+  if(![OWNER,...ASSISTANTS].includes(email)){document.getElementById('loginError').style.display='block';return;}
+  isOwner=(email===OWNER);
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appShell').style.display='block';
+  const i=(p.name||email).split(' ').filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('');
+  document.getElementById('uav').textContent=i;
+  document.getElementById('uname').textContent=(p.name||email).split(' ')[0];
+  document.getElementById('roleLabel').textContent=isOwner?'Owner':'Assistant';
+  loadData();
 }
+function parseJwt(t){return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));}
+function logout(){google.accounts.id.disableAutoSelect();document.getElementById('appShell').style.display='none';document.getElementById('loginScreen').style.display='flex';clients=[];sel=null;}
 
-const PRODUCTS = ['Term Insurance','Critical Illness','UL Insurance','Whole Life','Disability Insurance','RRSP','RESP','TFSA','FHSA','HISA','Group Insurance','H&D','Team','VTC','Supervisa','Travel Insurance','Truck-Travel','International Student','Student Insurance','Emergency Medical'];
-const CLAIM_TYPES = ['Death Benefit','Critical Illness Payout','Disability Claim','Travel/Medical','Trip Cancellation','Other'];
-const CLAIM_STATUSES = ['Submitted','In Review','Approved','Paid','Denied'];
-const DQG = [
-  {l:'Disability variants', i:['Disability','Disability Insurance']},
-  {l:'Truck-Travel variants', i:['Truck-Travel','Truck - Travel','Truck Travel']},
-  {l:'RRSP typos', i:['RRSP','RRP','SRRP']},
-  {l:'Transfer variants', i:['UL Transfer','WL Transfer','Term Transfer','Transfer']},
-  {l:'Likely wrong column (not a product)', i:['Tiktok','Entity']},
-];
-
-// ══ GOOGLE AUTH ══
-function handleCredentialResponse(response) {
-  const payload = parseJwt(response.credential);
-  const email = payload.email;
-  const allowed = [CONFIG.OWNER_EMAIL, ...CONFIG.ASSISTANT_EMAILS];
-  if (!allowed.includes(email)) {
-    document.getElementById('loginError').style.display = 'block';
-    return;
-  }
-  currentUser = payload;
-  isOwner = (email === CONFIG.OWNER_EMAIL);
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('appShell').style.display = 'block';
-  const ini = (payload.name||email).split(' ').filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('');
-  document.getElementById('userAvatar').textContent = ini;
-  document.getElementById('userName').textContent = (payload.name||email).split(' ')[0];
-  document.getElementById('roleLabel').textContent = isOwner ? 'Owner' : 'Assistant';
-  if (!isOwner) document.getElementById('roleLabel').style.background = '#DBEAFE';
-  loadFromSheet(response.credential);
-}
-
-function parseJwt(token) {
-  const base64 = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
-  return JSON.parse(atob(base64));
-}
-
-function logout() {
-  google.accounts.id.disableAutoSelect();
-  document.getElementById('appShell').style.display = 'none';
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('loginError').style.display = 'none';
-  currentUser = null; accessToken = null; clients = []; sel = null;
-}
-
-// ══ GOOGLE SHEETS API ══
-async function loadFromSheet(credential) {
-  document.getElementById('syncStatus').textContent = 'Loading sheet…';
-  try {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SHEET_ID}/values/${encodeURIComponent(CONFIG.SHEET_TAB)}?key=&access_token=`;
-    // Use identity token for read — exchange for access token
-    const tokenResp = await fetch(`https://oauth2.googleapis.com/token`, {
-      method: 'POST',
-      headers: {'Content-Type':'application/x-www-form-urlencoded'},
-      body: `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=${credential}`
-    });
-    // For now, use the sheets API with the credential directly via gapi
-    await loadGapi(credential);
-  } catch(e) {
-    console.warn('Sheet load error:', e);
-    loadDemoData();
-    document.getElementById('syncStatus').textContent = 'Demo mode (no sheet)';
+// ── LOAD FROM APPS SCRIPT ──
+async function loadData(){
+  document.getElementById('syncStatus').textContent='Loading…';
+  document.getElementById('list').innerHTML='<div class="loading"><div class="spinner"></div><span>Loading your clients…</span></div>';
+  if(APPS_SCRIPT_URL==='YOUR_APPS_SCRIPT_URL_HERE'){loadDemo();return;}
+  try{
+    const r=await fetch(APPS_SCRIPT_URL+'?action=getData');
+    const d=await r.json();
+    if(d.error){throw new Error(d.error);}
+    parseRows(d.rows);
+    sheetConnected=true;
+    document.getElementById('sdot').classList.remove('err');
+    document.getElementById('syncStatus').textContent=`${clients.length} clients · live`;
+    render();
+  }catch(e){
+    console.warn('Sheet load error:',e);
+    loadDemo();
+    document.getElementById('sdot').classList.add('err');
+    document.getElementById('syncStatus').textContent='Demo mode — sheet not connected';
   }
 }
 
-async function loadGapi(credential) {
-  // Use Google Identity Services token exchange
-  const tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: CONFIG.CLIENT_ID,
-    scope: 'https://www.googleapis.com/auth/spreadsheets',
-    callback: async (tokenResponse) => {
-      if (tokenResponse.access_token) {
-        accessToken = tokenResponse.access_token;
-        await fetchSheetData();
-      } else {
-        loadDemoData();
-      }
-    },
+async function sheetWrite(action, data){
+  if(!sheetConnected||APPS_SCRIPT_URL==='YOUR_APPS_SCRIPT_URL_HERE')return;
+  try{
+    await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify({action,...data}),headers:{'Content-Type':'text/plain'}});
+  }catch(e){console.warn('Write error:',e);}
+}
+
+function parseRows(rows){
+  clients=[];
+  rows.forEach((r,i)=>{
+    let parsedNotes=[];
+    if(r.crmNotes){try{parsedNotes=JSON.parse(r.crmNotes);}catch{parsedNotes=[{t:r.crmNotes,d:''}];}}
+    if(r.n1)parsedNotes.push({t:r.n1,d:'From sheet',sheet:true});
+    if(r.n2)parsedNotes.push({t:r.n2,d:'From sheet',sheet:true});
+    let claim=null;
+    if(r.claimStatus){try{claim=JSON.parse(r.claimStatus);}catch{}}
+    let hh=[];
+    if(r.householdLinks){try{hh=JSON.parse(r.householdLinks);}catch{}}
+    clients.push({id:nextId++,rowNum:r.rowNum,cn:r.cn,ins:r.ins||r.cn,ds:r.ds,co:r.co,cv:r.cv,pn:r.pn,ph:r.ph,em:r.em,cy:r.cy,ap:r.ap,cm:r.cm,src:r.src,pr:r.pr,fu:r.fu||null,done:false,notes:parsedNotes,hh,claim});
   });
-  tokenClient.requestAccessToken({prompt: ''});
 }
 
-async function fetchSheetData() {
-  try {
-    const resp = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SHEET_ID}/values/${encodeURIComponent(CONFIG.SHEET_TAB)}`,
-      { headers: { Authorization: `Bearer ${accessToken}` } }
-    );
-    const data = await resp.json();
-    if (data.values) {
-      parseSheetRows(data.values);
-      sheetLoaded = true;
-      document.getElementById('syncStatus').textContent = `${clients.length} clients loaded`;
-    } else {
-      loadDemoData();
-    }
-  } catch(e) {
-    loadDemoData();
-    document.getElementById('syncStatus').textContent = 'Demo mode';
-  }
-}
-
-function parseSheetRows(rows) {
-  const C = CONFIG.COLS;
-  clients = [];
-  rows.slice(1).forEach((row, i) => {
-    const get = (col) => (row[col-1] || '').toString().trim();
-    const cn = get(C.clientName);
-    if (!cn) return;
-    const notesRaw = [get(C.notes1), get(C.notes2)].filter(Boolean).join(' | ');
-    const crmNotesRaw = get(C.crmNotes);
-    let parsedNotes = [];
-    if (crmNotesRaw) {
-      try { parsedNotes = JSON.parse(crmNotesRaw); } catch { parsedNotes = [{t: crmNotesRaw, d: ''}]; }
-    }
-    if (notesRaw) parsedNotes.push({t: notesRaw, d: 'From sheet', sheet: true});
-    let claimData = null;
-    const cs = get(C.claimStatus);
-    if (cs) { try { claimData = JSON.parse(cs); } catch { claimData = null; } }
-    let hhLinks = [];
-    const hhr = get(C.householdLinks);
-    if (hhr) { try { hhLinks = JSON.parse(hhr); } catch { hhLinks = []; } }
-    clients.push({
-      id: nextId++,
-      rowNum: i + 2,
-      cn: cn,
-      ins: get(C.insuredName) || cn,
-      ds: get(C.dateSold),
-      co: get(C.company),
-      cv: get(C.coverage),
-      pn: get(C.policyNumber),
-      ph: get(C.phone),
-      em: get(C.email),
-      cy: get(C.city),
-      ap: get(C.amountPaid),
-      cm: get(C.commission),
-      src: get(C.source),
-      pr: get(C.product),
-      fu: get(C.followupDate) || null,
-      done: false,
-      notes: parsedNotes,
-      hh: hhLinks,
-      claim: claimData,
-    });
-  });
-  render();
-}
-
-async function writeToSheet(rowNum, colIndex, value) {
-  if (!accessToken || !sheetLoaded) return;
-  const colLetter = String.fromCharCode(64 + colIndex);
-  const range = `${CONFIG.SHEET_TAB}!${colLetter}${rowNum}`;
-  await fetch(
-    `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`,
-    {
-      method: 'PUT',
-      headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ values: [[value]] })
-    }
-  );
-}
-
-async function appendToSheet(rowData) {
-  if (!accessToken || !sheetLoaded) return;
-  const range = `${CONFIG.SHEET_TAB}!A:Y`;
-  await fetch(
-    `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SHEET_ID}/values/${encodeURIComponent(range)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,
-    {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ values: [rowData] })
-    }
-  );
-}
-
-// ══ DEMO DATA (fallback) ══
-function loadDemoData() {
-  const tod = new Date(); tod.setHours(0,0,0,0);
-  const aD = (d,n) => { const r=new Date(d); r.setDate(r.getDate()+n); return r.toISOString().split('T')[0]; };
-  const t = tod.toISOString().split('T')[0];
-  clients = [
-    {id:nextId++,rowNum:2,cn:'Harjinder Singh',ins:'Harjinder Singh',ds:'2022-03-15',co:'Canada Life',cv:'$500,000',pn:'CL-2022-4421',ph:'416-555-0191, 416-555-0192',em:'harjinder.s@gmail.com',cy:'Brampton',ap:'$3,200',cm:'$640',src:'Referral',pr:'Critical Illness',fu:aD(t,-10),done:false,notes:[{t:'Interested in disability rider.',d:'2024-11-02'}],hh:[],claim:null},
-    {id:nextId++,rowNum:3,cn:'Priya Mehta',ins:'Raj Mehta',ds:'2023-06-01',co:'Sun Life',cv:'$250,000',pn:'SL-2023-8871',ph:'905-555-0147',em:'priya.mehta@hotmail.com | priya@work.ca',cy:'Mississauga',ap:'$1,800',cm:'$360',src:'Walk-in',pr:'Term Insurance',fu:aD(t,4),done:false,notes:[{t:'Wants to increase coverage at anniversary.',d:'2025-03-20'}],hh:[4],claim:null},
-    {id:nextId++,rowNum:4,cn:'Gurpreet Kaur',ins:'Gurpreet Kaur',ds:'2021-09-20',co:'Manulife',cv:'RRSP',pn:'MF-2021-3310',ph:'647-555-0132',em:'gurpreet.k@yahoo.ca',cy:'Scarborough',ap:'$2,400',cm:'$480',src:'Facebook',pr:'RRSP',fu:aD(t,3),done:false,notes:[],hh:[],claim:null},
-    {id:nextId++,rowNum:5,cn:'Priya Mehta',ins:'Arjun Mehta',ds:'2024-01-15',co:'Manulife',cv:'RESP',pn:'MF-2024-7733',ph:'905-555-0147',em:'priya.mehta@hotmail.com',cy:'Mississauga',ap:'$900',cm:'$180',src:'Walk-in',pr:'RESP',fu:null,done:false,notes:[],hh:[2],claim:null},
-    {id:nextId++,rowNum:6,cn:'Tejinder Sandhu',ins:'Tejinder Sandhu',ds:'2023-03-10',co:'Canada Life',cv:'$150,000',pn:'CL-2023-5521',ph:'905-555-0199',em:'tej.sandhu@bell.net',cy:'Vaughan',ap:'$1,100',cm:'$220',src:'Referral',pr:'Term Insurance',fu:aD(t,14),done:false,notes:[{t:'Considering converting to whole life.',d:'2024-09-01'}],hh:[],claim:{type:'Death Benefit',opened:'2025-01-10',status:'In Review',notes:'Policy CL-2023-5521 — death claim submitted'}},
-    {id:nextId++,rowNum:7,cn:'Amritpal Dhaliwal',ins:'Amritpal Dhaliwal',ds:'2023-01-10',co:'Empire Life',cv:'$1,000,000',pn:'EL-2023-0092',ph:'416-555-0188',em:'amritpal.d@gmail.com',cy:'Toronto',ap:'$5,600',cm:'$1,120',src:'Referral',pr:'UL Insurance',fu:aD(t,30),done:false,notes:[],hh:[],claim:null},
-    {id:nextId++,rowNum:8,cn:'Navneet Brar',ins:'Navneet Brar',ds:'2024-02-14',co:'iA Financial',cv:'$50,000',pn:'IA-2024-5543',ph:'905-555-0173',em:'navneet.b@outlook.com',cy:'Ajax',ap:'$1,200',cm:'$240',src:'Instagram',pr:'FHSA',fu:aD(t,-3),done:false,notes:[],hh:[],claim:null},
+// ── DEMO DATA ──
+function loadDemo(){
+  const t=new Date(),aD=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r.toISOString().split('T')[0];},td=t.toISOString().split('T')[0];
+  clients=[
+    {id:nextId++,rowNum:2,cn:'Harjinder Singh',ins:'Harjinder Singh',ds:'2022-03-15',co:'Canada Life',cv:'$500,000',pn:'CL-2022-4421',ph:'416-555-0191, 416-555-0192',em:'harjinder.s@gmail.com',cy:'Brampton',ap:'$3,200',cm:'$640',src:'Referral',pr:'Critical Illness',fu:aD(td,-10),done:false,notes:[{t:'Interested in disability rider.',d:'2024-11-02'}],hh:[],claim:null},
+    {id:nextId++,rowNum:3,cn:'Priya Mehta',ins:'Raj Mehta',ds:'2023-06-01',co:'Sun Life',cv:'$250,000',pn:'SL-2023-8871',ph:'905-555-0147',em:'priya.mehta@hotmail.com',cy:'Mississauga',ap:'$1,800',cm:'$360',src:'Walk-in',pr:'Term Insurance',fu:aD(td,4),done:false,notes:[{t:'Wants to increase coverage.',d:'2025-03-20'}],hh:[4],claim:null},
+    {id:nextId++,rowNum:4,cn:'Gurpreet Kaur',ins:'Gurpreet Kaur',ds:'2021-09-20',co:'Manulife',cv:'RRSP',pn:'MF-2021-3310',ph:'647-555-0132',em:'gurpreet.k@yahoo.ca',cy:'Scarborough',ap:'$2,400',cm:'$480',src:'Facebook',pr:'RRSP',fu:aD(td,3),done:false,notes:[],hh:[],claim:null},
+    {id:nextId++,rowNum:5,cn:'Priya Mehta',ins:'Arjun Mehta',ds:'2024-01-15',co:'Manulife',cv:'RESP',pn:'MF-2024-7733',ph:'905-555-0147',em:'priya.mehta@hotmail.com',cy:'Mississauga',ap:'$900',cm:'$180',src:'Walk-in',pr:'RESP',fu:null,done:false,notes:[],hh:[3],claim:null},
+    {id:nextId++,rowNum:6,cn:'Tejinder Sandhu',ins:'Tejinder Sandhu',ds:'2023-03-10',co:'Canada Life',cv:'$150,000',pn:'CL-2023-5521',ph:'905-555-0199',em:'tej.sandhu@bell.net',cy:'Vaughan',ap:'$1,100',cm:'$220',src:'Referral',pr:'Term Insurance',fu:aD(td,14),done:false,notes:[{t:'Considering converting to whole life.',d:'2024-09-01'}],hh:[],claim:{type:'Death Benefit',opened:'2025-01-10',status:'In Review',notes:'Policy CL-2023-5521 claim submitted',followup:''}},
+    {id:nextId++,rowNum:7,cn:'Amritpal Dhaliwal',ins:'Amritpal Dhaliwal',ds:'2023-01-10',co:'Empire Life',cv:'$1,000,000',pn:'EL-2023-0092',ph:'416-555-0188',em:'amritpal.d@gmail.com',cy:'Toronto',ap:'$5,600',cm:'$1,120',src:'Referral',pr:'UL Insurance',fu:aD(td,30),done:false,notes:[],hh:[],claim:null},
   ];
   render();
 }
 
-// ══ UNDO ══
-function snap() { return JSON.parse(JSON.stringify(clients)); }
-function pushUndo(lbl) {
-  undoStack.push({lbl, s: snap()});
-  if (undoStack.length > 20) undoStack.shift();
-  const b = document.getElementById('undoBar');
-  b.innerHTML = `<span style="flex:1">Last action: <strong>${lbl}</strong></span><button onclick="doUndo()">Undo</button><button onclick="this.parentElement.style.display='none'" style="margin-left:4px;background:none;border:none;cursor:pointer;color:var(--amber);font-size:14px">×</button>`;
-  b.style.display = 'flex';
-}
-function doUndo() {
-  if (!undoStack.length) return;
-  const u = undoStack.pop();
-  clients = u.s;
-  sel = null;
-  document.getElementById('undoBar').style.display = 'none';
-  render();
-}
+// ── UNDO ──
+function snap(){return JSON.parse(JSON.stringify(clients));}
+function pushUndo(lbl){undoStack.push({lbl,s:snap()});if(undoStack.length>20)undoStack.shift();const b=document.getElementById('undoBar');b.innerHTML=`<span style="flex:1">Last action: <strong>${lbl}</strong></span><button onclick="doUndo()">Undo</button><button onclick="this.parentElement.style.display='none'" style="margin-left:4px;background:none;border:none;cursor:pointer;color:var(--amber);font-size:16px">×</button>`;b.style.display='flex';}
+function doUndo(){if(!undoStack.length)return;const u=undoStack.pop();clients=u.s;sel=null;document.getElementById('undoBar').style.display='none';render();}
 
-// ══ HELPERS ══
-const tod2 = new Date(); tod2.setHours(0,0,0,0);
-function fmtDate(d) { if (!d) return '—'; try { return new Date(d).toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'}); } catch { return d; } }
-function ini(n) { return (n||'?').split(' ').filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join(''); }
-const AVC = ['av-gr','av-bl','av-am','av-pu','av-rd'];
-function avc(n) { let h=0; for (let c of (n||'')) h=(h*31+c.charCodeAt(0))&0xffff; return AVC[h%AVC.length]; }
-function nc(s) { return (s||'').split(/[,|]/).map(x=>x.trim().toLowerCase()).filter(Boolean); }
+// ── HELPERS ──
+const tod=new Date();tod.setHours(0,0,0,0);
+function fmtD(d){if(!d)return'—';try{return new Date(d).toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'});}catch{return d;}}
+function ini(n){return(n||'?').split(' ').filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('');}
+const AVC=['av-gr','av-bl','av-am','av-pu','av-rd'];
+function avc(n){let h=0;for(let c of(n||''))h=(h*31+c.charCodeAt(0))&0xffff;return AVC[h%AVC.length];}
+function nc(s){return(s||'').split(/[,|]/).map(x=>x.trim().toLowerCase()).filter(Boolean);}
+function gst(c){if(c.done)return'done';if(!c.fu)return'none';const fd=new Date(c.fu);fd.setHours(0,0,0,0);const d=Math.ceil((fd-tod)/864e5);if(d<0)return'overdue';if(d<=7)return'thisweek';return'upcoming';}
+function vbp(c){const cl=cls(c.pr);if(preset==='followups')return cl!=='travel';if(preset==='all')return true;if(preset==='life')return cl==='life';if(preset==='ci')return cl==='ci';if(preset==='disability')return cl==='dis';if(preset==='investments')return cl==='inv';if(preset==='group')return cl==='grp';if(preset==='travel')return cl==='travel';return true;}
+function getAllLinked(c){const ap=nc(c.ph),ae=nc(c.em),mh=new Set(c.hh||[]);return clients.filter(o=>{if(o.id===c.id)return false;return mh.has(o.id)||nc(o.ph).some(p=>ap.includes(p))||nc(o.em).some(e=>ae.includes(e));});}
+function getFiltered(){const q=(document.getElementById('searchInput').value||'').toLowerCase();return clients.filter(c=>{if(!vbp(c))return false;const mq=!q||[c.cn,c.cy,c.pn,c.ins,c.ph,c.em].some(x=>(x||'').toLowerCase().includes(q));if(!mq)return false;const s=gst(c);if(tab==='overdue')return s==='overdue';if(tab==='thisweek')return s==='thisweek';if(tab==='upcoming')return s==='upcoming';return true;});}
 
-function gst(c) {
-  if (c.done) return 'done';
-  if (!c.fu) return 'none';
-  const fd = new Date(c.fu); fd.setHours(0,0,0,0);
-  const d = Math.ceil((fd - tod2) / 864e5);
-  if (d < 0) return 'overdue';
-  if (d <= 7) return 'thisweek';
-  return 'upcoming';
-}
+// ── CONTROLS ──
+function applyPreset(){preset=document.getElementById('preset').value;sel=null;render();}
+function setMode(m){mode=m;sel=null;lkp=null;['followup','lookup','claims','dq'].forEach(x=>document.getElementById('mode'+x.charAt(0).toUpperCase()+x.slice(1)).classList.toggle('active',x===m));document.getElementById('fctrl').style.display=m==='followup'?'':'none';document.getElementById('searchInput').placeholder=m==='lookup'?'Type phone, email, or name…':'Search name, phone, email, city…';render();}
+function setTab(t){tab=t;sel=null;[['ov','overdue'],['tw','thisweek'],['up','upcoming'],['al','all']].forEach(([k,v])=>document.getElementById('t-'+k).classList.toggle('active',v===t));render();}
+function markAllDone(){pushUndo('Mark all complete');getFiltered().forEach(c=>c.done=true);render();}
+function ubdg(){const base=clients.filter(vbp);const q=(document.getElementById('searchInput').value||'').toLowerCase();const qf=q?base.filter(c=>[c.cn,c.cy,c.pn].some(x=>(x||'').toLowerCase().includes(q))):base;[['ov','overdue'],['tw','thisweek'],['up','upcoming']].forEach(([k,v])=>document.getElementById('b-'+k).textContent=qf.filter(c=>gst(c)===v).length);document.getElementById('b-al').textContent=qf.length;}
 
-function vbp(c) {
-  const cl = cls(c.pr);
-  if (preset === 'followups') return cl !== 'travel';
-  if (preset === 'all') return true;
-  if (preset === 'life') return cl === 'life';
-  if (preset === 'ci') return cl === 'ci';
-  if (preset === 'disability') return cl === 'dis';
-  if (preset === 'investments') return cl === 'inv';
-  if (preset === 'group') return cl === 'grp';
-  if (preset === 'travel') return cl === 'travel';
-  return true;
-}
+// ── RENDER ──
+function render(){if(mode==='followup')renderFU();else if(mode==='lookup')renderLookup();else if(mode==='claims')renderClaims();else renderDQ();}
+function renderFU(){ubdg();const f=getFiltered();document.getElementById('rc').textContent=f.length+' client'+(f.length===1?'':'s');document.getElementById('list').innerHTML=f.length?f.map(cardH).join(''):'<div class="empty">No clients in this view</div>';}
+const SP={overdue:['sp-ov','Overdue'],thisweek:['sp-tw','Due this week'],upcoming:['sp-up','Upcoming'],none:['sp-no','No follow-up'],done:['sp-dn','Complete']};
+const csMap={Submitted:'cs-sub','In Review':'cs-rev',Approved:'cs-app',Paid:'cs-paid',Denied:'cs-den'};
 
-function getAllLinked(c) {
-  const ap = nc(c.ph), ae = nc(c.em), mh = new Set(c.hh||[]);
-  return clients.filter(o => {
-    if (o.id === c.id) return false;
-    return mh.has(o.id) || nc(o.ph).some(p=>ap.includes(p)) || nc(o.em).some(e=>ae.includes(e));
-  });
-}
+function cardH(c){const s=gst(c);const[sc,sl]=SP[s];const lnk=getAllLinked(c);const isel=sel===c.id;
+return`<div class="card${isel?' sel':''}${c.done?' done':''}" onclick="selC(${c.id})">
+<div class="ct">
+<div class="chk${c.done?' on':''}" onclick="event.stopPropagation();togDone(${c.id})">${c.done?`<svg viewBox="0 0 10 10" fill="none" width="9" height="9"><path d="M2 5l2.5 2.5L8 3" stroke="#1B4332" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div>
+<div class="av ${avc(c.cn)}">${ini(c.cn)}</div>
+<div class="ci"><div class="cn">${c.cn}${c.cn!==c.ins?`<span class="ci-ins">insured: ${c.ins}</span>`:''}${lnk.length?`<span class="hh-badge">household ${lnk.length}</span>`:''}${c.claim?`<span class="claim-badge">claim active</span>`:''}</div>
+<div class="cm2"><span>${c.cy}</span><span>${nc(c.ph)[0]||''}</span><span>${c.co}</span></div></div>
+<div class="cr"><span class="sp ${sc}">${sl}</span>${c.fu?`<span class="fd">${fmtD(c.fu)}</span>`:''}<span class="pt">${c.pr}</span></div></div>
+${isel?detH(c):''}
+</div>`;}
 
-function getFiltered() {
-  const q = (document.getElementById('searchInput').value||'').toLowerCase();
-  return clients.filter(c => {
-    if (!vbp(c)) return false;
-    const mq = !q || [c.cn,c.cy,c.pn,c.ins,c.ph,c.em].some(x=>(x||'').toLowerCase().includes(q));
-    if (!mq) return false;
-    const s = gst(c);
-    if (tab === 'overdue') return s === 'overdue';
-    if (tab === 'thisweek') return s === 'thisweek';
-    if (tab === 'upcoming') return s === 'upcoming';
-    return true;
-  });
-}
+function detH(c){
+const lnk=getAllLinked(c);const linkable=clients.filter(o=>o.id!==c.id&&!lnk.find(l=>l.id===o.id));const isPicker=lkp===c.id;
+const commVal=isOwner?c.cm:`<span class="locked">●●●●</span>`;const apVal=isOwner?c.ap:`<span class="locked">●●●●</span>`;
+return`<div class="dp" onclick="event.stopPropagation()">
+<div class="dh"><div class="da ${avc(c.cn)}">${ini(c.cn)}</div><div><div class="dn">${c.cn}</div><div class="ds2">Insured: ${c.ins} · ${c.pr}</div></div></div>
+<div class="fg">
+<div class="fi"><label>Company</label><span class="n">${c.co}</span></div>
+<div class="fi"><label>Policy #</label><span>${c.pn}</span></div>
+<div class="fi"><label>Coverage</label><span class="n">${c.cv}</span></div>
+<div class="fi"><label>Date sold</label><span class="n">${fmtD(c.ds)}</span></div>
+<div class="fi"><label>Phone</label><span class="n">${c.ph}</span></div>
+<div class="fi"><label>Email</label><span class="n">${c.em}</span></div>
+<div class="fi"><label>Amount paid</label><span>${apVal}</span></div>
+<div class="fi"><label>Commission</label><span>${commVal}</span></div>
+<div class="fi"><label>Source</label><span class="n">${c.src}</span></div>
+<div class="fi"><label>City</label><span class="n">${c.cy}</span></div>
+</div>
+<div class="fu-row"><label>Next follow-up date</label><input type="date" value="${c.fu||''}" onchange="updFU(${c.id},this.value)"></div>
+${claimH(c)}
+<div class="hhs"><div class="hhh"><span class="hhht">Household / linked files</span><button class="hha" onclick="lkp=lkp===${c.id}?null:${c.id};render()">+ Link file</button></div>
+${lnk.length?lnk.map(l=>`<div class="hhm"><div class="av ${avc(l.cn)}" style="width:22px;height:22px;font-size:9px;flex-shrink:0">${ini(l.cn)}</div><span class="hhm-n">${l.cn}</span><span class="hhm-p">${l.pr}</span>${(c.hh||[]).includes(l.id)?`<span class="hhm-r" onclick="unlnk(${c.id},${l.id})">remove</span>`:`<span style="font-size:10px;color:var(--text3);padding:2px 4px">auto</span>`}</div>`).join(''):`<div style="padding:7px 11px;font-size:12px;color:var(--text3)">No linked files — phone/email matches auto-link</div>`}
+${isPicker&&linkable.length?`<div class="lkp"><div class="lkp-l">Select a file to manually link:</div><div class="lkp-list">${linkable.map(l=>`<div class="lkp-opt" onclick="lnkFile(${c.id},${l.id})"><div class="av ${avc(l.cn)}" style="width:22px;height:22px;font-size:9px">${ini(l.cn)}</div><span style="flex:1">${l.cn}</span><span style="font-size:11px;color:var(--text3)">${l.pr}·${l.cy}</span></div>`).join('')}</div></div>`:isPicker?`<div class="lkp"><div class="lkp-l">No other files available to link</div></div>`:''}
+</div>
+<div class="sl">Notes</div>
+<div class="nh">${c.notes.length?c.notes.map(n=>`<div class="ne"><div class="nt">${n.t}</div><div class="nd">${n.d||''}</div></div>`).join(''):`<div style="font-size:12px;color:var(--text3);padding:2px 0">No notes yet</div>`}</div>
+<div class="nir"><textarea id="ni-${c.id}" placeholder="Add a note…" oninput="nnt[${c.id}]=this.value">${nnt[c.id]||''}</textarea><button class="btn-sv" onclick="addNote(${c.id})">Save note</button></div>
+</div>`;}
 
-// ══ CONTROLS ══
-function applyPreset() { preset = document.getElementById('preset').value; sel = null; render(); }
-function setMode(m) {
-  mode = m; sel = null; lkp = null;
-  ['followup','lookup','claims','dq'].forEach(x => document.getElementById('mode'+x.charAt(0).toUpperCase()+x.slice(1)).classList.toggle('active', x===m));
-  document.getElementById('fctrl').style.display = m === 'followup' ? '' : 'none';
-  document.getElementById('searchInput').placeholder = m === 'lookup' ? 'Type phone, email, or name…' : 'Search name, phone, email, city…';
-  render();
-}
-function setTab(t) {
-  tab = t; sel = null;
-  [['ov','overdue'],['tw','thisweek'],['up','upcoming'],['al','all']].forEach(([k,v]) => document.getElementById('t-'+k).classList.toggle('active', v===t));
-  render();
-}
-function markAllDone() { pushUndo('Mark all as complete'); getFiltered().forEach(c => c.done = true); render(); }
+function claimH(c){
+if(!c.claim)return`<div class="clm-sec"><div class="clm-hdr"><span class="clm-title">Claim</span><button class="clm-open" onclick="openClaim(${c.id})">+ Open claim</button></div><div style="padding:7px 11px;font-size:12px;color:var(--text3)">No active claim on this policy</div></div>`;
+const st=c.claim.status||'Submitted';const sc=csMap[st]||'cs-sub';
+return`<div class="clm-sec"><div class="clm-hdr"><span class="clm-title">Active claim</span><span class="cs-pill ${sc}">${st}</span><button class="clm-close" onclick="closeClaim(${c.id})">Close claim</button></div>
+<div class="clm-body"><div class="clm-grid">
+<div class="cf"><label>Claim type</label><select onchange="updClaim(${c.id},'type',this.value)">${CLAIM_TYPES.map(t=>`<option${t===c.claim.type?' selected':''}>${t}</option>`).join('')}</select></div>
+<div class="cf"><label>Status</label><select onchange="updClaim(${c.id},'status',this.value)">${CLAIM_STATUSES.map(s=>`<option${s===st?' selected':''}>${s}</option>`).join('')}</select></div>
+<div class="cf"><label>Date opened</label><input type="date" value="${c.claim.opened||''}" onchange="updClaim(${c.id},'opened',this.value)"></div>
+<div class="cf"><label>Follow-up date</label><input type="date" value="${c.claim.followup||''}" onchange="updClaim(${c.id},'followup',this.value)"></div>
+</div>
+<div class="clm-nr"><input type="text" placeholder="Claim notes…" id="cn-${c.id}" value="${c.claim.notes||''}"><button class="btn-sm" onclick="updClaim(${c.id},'notes',document.getElementById('cn-${c.id}').value)">Save</button></div>
+</div></div>`;}
 
-function ubdg() {
-  const base = clients.filter(vbp);
-  const q = (document.getElementById('searchInput').value||'').toLowerCase();
-  const qf = q ? base.filter(c=>[c.cn,c.cy,c.pn].some(x=>(x||'').toLowerCase().includes(q))) : base;
-  [['ov','overdue'],['tw','thisweek'],['up','upcoming']].forEach(([k,v]) => document.getElementById('b-'+k).textContent = qf.filter(c=>gst(c)===v).length);
-  document.getElementById('b-al').textContent = qf.length;
-}
+function renderClaims(){
+const active=clients.filter(c=>c.claim);
+document.getElementById('list').innerHTML=active.length?`<div style="margin-bottom:10px;font-size:13px;font-weight:500;color:var(--text)">${active.length} active claim${active.length===1?'':'s'}</div>`+active.map(c=>{const st=c.claim.status||'Submitted';const sc=csMap[st]||'cs-sub';const days=c.claim.opened?Math.ceil((tod-new Date(c.claim.opened))/864e5):'?';return`<div class="card${sel===c.id?' sel':''}" onclick="selC(${c.id})">
+<div class="ct"><div class="av ${avc(c.cn)}">${ini(c.cn)}</div>
+<div class="ci"><div class="cn">${c.cn}<span class="claim-badge">claim active</span></div><div class="cm2"><span>${c.pr}</span><span>${c.co}</span><span>${c.cy}</span></div></div>
+<div class="cr"><span class="cs-pill ${sc}" style="font-size:10px;padding:2px 8px">${st}</span><span class="fd">${c.claim.type||''}</span><span class="fd">Opened ${fmtD(c.claim.opened)} · ${days}d ago</span></div></div>
+${sel===c.id?`<div class="dp" onclick="event.stopPropagation()">${claimH(c)}</div>`:''}
+</div>`;}).join(''):'<div class="empty">No active claims</div>';}
 
-// ══ RENDER ══
-function render() {
-  if (mode === 'followup') renderFollowup();
-  else if (mode === 'lookup') renderLookup();
-  else if (mode === 'claims') renderClaims();
-  else renderDQ();
-}
+function renderLookup(){const q=(document.getElementById('searchInput').value||'').toLowerCase().trim();const el=document.getElementById('list');if(!q){el.innerHTML='<div class="empty">Type a name, phone number, or email to find all their policies</div>';return;}
+const rel=clients.filter(c=>[c.cn,c.ins,...nc(c.ph),...nc(c.em)].some(x=>(x||'').toLowerCase().includes(q)));
+if(!rel.length){el.innerHTML='<div class="empty">No matching clients found</div>';return;}
+const grps={};rel.forEach(c=>{const k=[c.cn.toLowerCase(),...nc(c.ph)].sort().join('|');if(!grps[k])grps[k]={n:c.cn,ph:nc(c.ph),em:nc(c.em),pol:[]};grps[k].pol.push(c);});
+el.innerHTML=Object.values(grps).map(g=>`<div class="lkg"><div class="lkgh"><div class="av ${avc(g.n)}" style="width:30px;height:30px;font-size:10px">${ini(g.n)}</div><div><div class="lkghn">${g.n}</div><div class="lkghc">${[...g.ph,...g.em].slice(0,3).join(' · ')}</div></div><div class="lkghct">${g.pol.length} polic${g.pol.length===1?'y':'ies'}</div></div>
+${g.pol.map(p=>`<div class="lkp2" onclick="jumpTo(${p.id})"><div class="lp1"><div class="lp1n">${p.pr} — ${p.pn}${p.claim?` <span class="claim-badge">claim</span>`:''}</div><div class="lp1m">${p.co}·${p.cv}·sold ${fmtD(p.ds)}</div></div><span class="pt">${cls(p.pr)==='travel'?'No follow-up':'Follow-up'}</span></div>`).join('')}
+</div>`).join('');}
 
-function renderFollowup() {
-  ubdg();
-  const f = getFiltered();
-  document.getElementById('rc').textContent = f.length + ' client' + (f.length===1?'':'s');
-  document.getElementById('list').innerHTML = f.length ? f.map(cardH).join('') : '<div class="empty">No clients in this view</div>';
-}
+function renderDQ(){const ap=[...new Set(clients.map(c=>(c.pr||'').trim()))].sort();document.getElementById('list').innerHTML=`<div style="margin-bottom:10px"><div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px">Data quality report</div><div style="font-size:12px;color:var(--text2)">Scans your Google Sheet on every load. ${clients.length} total rows loaded.</div></div>${DQG.map(g=>`<div class="dqi"><div class="dqil">${g.l}</div><div class="dqtags">${g.i.map(i=>`<span class="dqt">${i}</span>`).join('')}</div><div class="dqr">Fix: standardize with find-and-replace in your Google Sheet</div></div>`).join('')}<div class="dqi"><div class="dqil">All unique product values in your sheet</div><div class="dqtags">${ap.map(p=>`<span class="dqt" style="background:var(--bg);color:var(--text3);border-color:var(--border)">${p}</span>`).join('')}</div></div>`;}
 
-const SP = {overdue:['sp-ov','Overdue'],thisweek:['sp-tw','Due this week'],upcoming:['sp-up','Upcoming'],none:['sp-no','No follow-up'],done:['sp-dn','Complete']};
+// ── ACTIONS ──
+function selC(id){sel=sel===id?null:id;lkp=null;render();}
+function togDone(id){pushUndo('Mark complete/incomplete');const c=clients.find(x=>x.id===id);if(c)c.done=!c.done;render();}
+function updFU(id,v){const c=clients.find(x=>x.id===id);if(!c)return;pushUndo('Follow-up date changed');c.fu=v;c.done=false;sheetWrite('writeFollowupDate',{rowNum:c.rowNum,value:v});render();}
+function addNote(id){const c=clients.find(x=>x.id===id);const t=(nnt[id]||'').trim();if(!c||!t)return;pushUndo('Note added');const d=new Date().toLocaleDateString('en-CA');c.notes.unshift({t,d});nnt[id]='';const keep=c.notes.filter(n=>!n.sheet);sheetWrite('writeCrmNotes',{rowNum:c.rowNum,notesJson:JSON.stringify(keep)});render();}
+function lnkFile(a,b){const ca=clients.find(x=>x.id===a),cb=clients.find(x=>x.id===b);if(!ca||!cb)return;pushUndo(`Linked ${ca.cn} ↔ ${cb.cn}`);if(!ca.hh.includes(b))ca.hh.push(b);if(!cb.hh.includes(a))cb.hh.push(a);lkp=null;sheetWrite('writeHouseholdLinks',{rowNum:ca.rowNum,linksJson:JSON.stringify(ca.hh)});sheetWrite('writeHouseholdLinks',{rowNum:cb.rowNum,linksJson:JSON.stringify(cb.hh)});render();}
+function unlnk(a,b){const ca=clients.find(x=>x.id===a),cb=clients.find(x=>x.id===b);if(!ca||!cb)return;pushUndo(`Unlinked ${ca.cn} ↔ ${cb.cn}`);ca.hh=ca.hh.filter(x=>x!==b);cb.hh=cb.hh.filter(x=>x!==a);sheetWrite('writeHouseholdLinks',{rowNum:ca.rowNum,linksJson:JSON.stringify(ca.hh)});sheetWrite('writeHouseholdLinks',{rowNum:cb.rowNum,linksJson:JSON.stringify(cb.hh)});render();}
+function openClaim(id){const c=clients.find(x=>x.id===id);if(!c)return;pushUndo('Claim opened');c.claim={type:'Death Benefit',opened:new Date().toISOString().split('T')[0],status:'Submitted',notes:'',followup:''};sheetWrite('writeClaimStatus',{rowNum:c.rowNum,claimJson:JSON.stringify(c.claim)});render();}
+function closeClaim(id){const c=clients.find(x=>x.id===id);if(!c)return;pushUndo('Claim closed');c.claim=null;sheetWrite('writeClaimStatus',{rowNum:c.rowNum,claimJson:''});render();}
+function updClaim(id,field,val){const c=clients.find(x=>x.id===id);if(!c||!c.claim)return;c.claim[field]=val;sheetWrite('writeClaimStatus',{rowNum:c.rowNum,claimJson:JSON.stringify(c.claim)});render();}
+function jumpTo(id){sel=id;preset='all';document.getElementById('preset').value='all';setMode('followup');setTab('all');}
 
-function cardH(c) {
-  const s = gst(c);
-  const [sc,sl] = SP[s];
-  const lnk = getAllLinked(c);
-  const isel = sel === c.id;
-  return `<div class="card${isel?' sel':''}${c.done?' done':''}" onclick="selC(${c.id})">
-    <div class="ct">
-      <div class="chk${c.done?' on':''}" onclick="event.stopPropagation();togDone(${c.id})">${c.done?`<svg viewBox="0 0 10 10" fill="none" width="9" height="9"><path d="M2 5l2.5 2.5L8 3" stroke="${'#1B4332'}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div>
-      <div class="av ${avc(c.cn)}">${ini(c.cn)}</div>
-      <div class="ci">
-        <div class="cn">${c.cn}${c.cn!==c.ins?`<span class="ci-ins">insured: ${c.ins}</span>`:''}${lnk.length?`<span class="hh-badge">household ${lnk.length}</span>`:''}${c.claim?`<span class="claim-badge">claim active</span>`:''}</div>
-        <div class="cm"><span>${c.cy}</span><span>${nc(c.ph)[0]||''}</span><span>${c.co}</span></div>
-      </div>
-      <div class="cr">
-        <span class="sp ${sc}">${sl}</span>
-        ${c.fu?`<span class="fd">${fmtDate(c.fu)}</span>`:''}
-        <span class="pt">${c.pr}</span>
-      </div>
-    </div>
-    ${isel ? detH(c) : ''}
-  </div>`;
-}
+// ── NEW SALE MODAL ──
+function openModal(){document.getElementById('modal').innerHTML=`<div class="mbg" onclick="if(event.target===this)document.getElementById('modal').innerHTML=''"><div class="mod">
+<div class="mtit">New sale</div>
+<div class="fgr">
+<div class="fg2"><label>Client name *</label><input id="f-cn" placeholder="Harjinder Singh"></div>
+<div class="fg2"><label>Insured name</label><input id="f-ins" placeholder="If different from client"></div>
+<div class="fg2"><label>Date sold</label><input id="f-ds" type="date" value="${new Date().toISOString().split('T')[0]}"></div>
+<div class="fg2"><label>Company</label><input id="f-co" placeholder="Sun Life, Manulife…"></div>
+<div class="fg2"><label>Product sold *</label><select id="f-pr"><option value="">Select…</option>${PRODUCTS.map(p=>`<option>${p}</option>`).join('')}</select></div>
+<div class="fg2"><label>Policy number</label><input id="f-pn" placeholder="SL-2025-XXXX"></div>
+<div class="fg2"><label>Coverage amount</label><input id="f-cv" placeholder="$500,000"></div>
+<div class="fg2"><label>Amount paid</label><input id="f-ap" placeholder="$1,200"></div>
+<div class="fg2"><label>Commission</label><input id="f-cm" placeholder="$240"></div>
+<div class="fg2"><label>Source</label><input id="f-src" placeholder="Referral, Instagram…"></div>
+<div class="fg2"><label>Phone</label><input id="f-ph" placeholder="416-555-0000" oninput="chkDup()"></div>
+<div class="fg2"><label>Email</label><input id="f-em" placeholder="client@email.com" oninput="chkDup()"></div>
+<div class="fg2"><label>City</label><input id="f-cy" placeholder="Brampton"></div>
+<div class="fg2"><label>Next follow-up date</label><input id="f-fu" type="date"></div>
+<div class="fg2 full"><label>Notes</label><textarea id="f-nt" placeholder="Any initial notes…"></textarea></div>
+</div>
+<div class="dup-warn" id="dupWarn"></div>
+<div class="fac"><button class="bcn" onclick="document.getElementById('modal').innerHTML=''">Cancel</button><button class="bsb" onclick="submitSale()">Add to CRM + Sheet</button></div>
+</div></div>`;}
 
-function detH(c) {
-  const lnk = getAllLinked(c);
-  const linkable = clients.filter(o=>o.id!==c.id&&!lnk.find(l=>l.id===o.id));
-  const isPicker = lkp === c.id;
-  const commVal = isOwner ? c.cm : '<span class="locked">●●●●</span>';
-  const apVal = isOwner ? c.ap : '<span class="locked">●●●●</span>';
-  return `<div class="dp" onclick="event.stopPropagation()">
-    <div class="dh">
-      <div class="da ${avc(c.cn)}">${ini(c.cn)}</div>
-      <div><div class="dn">${c.cn}</div><div class="ds">Insured: ${c.ins} · ${c.pr}</div></div>
-    </div>
-    <div class="fg">
-      <div class="fi"><label>Company</label><span class="normal">${c.co}</span></div>
-      <div class="fi"><label>Policy #</label><span>${c.pn}</span></div>
-      <div class="fi"><label>Coverage</label><span class="normal">${c.cv}</span></div>
-      <div class="fi"><label>Date sold</label><span class="normal">${fmtDate(c.ds)}</span></div>
-      <div class="fi"><label>Phone</label><span class="normal">${c.ph}</span></div>
-      <div class="fi"><label>Email</label><span class="normal">${c.em}</span></div>
-      <div class="fi"><label>Amount paid</label><span>${apVal}</span></div>
-      <div class="fi"><label>Commission</label><span>${commVal}</span></div>
-      <div class="fi"><label>Source</label><span class="normal">${c.src}</span></div>
-      <div class="fi"><label>City</label><span class="normal">${c.cy}</span></div>
-    </div>
-    <div class="fu-row">
-      <label>Next follow-up date</label>
-      <input type="date" value="${c.fu||''}" onchange="updFU(${c.id},this.value)">
-    </div>
-    ${claimH(c)}
-    <div class="hhs">
-      <div class="hhh"><span class="hhht">Household / linked files</span><button class="hha" onclick="lkp=lkp===${c.id}?null:${c.id};render()">+ Link file</button></div>
-      ${lnk.length ? lnk.map(l=>`<div class="hhm"><div class="av ${avc(l.cn)}" style="width:24px;height:24px;font-size:9px;flex-shrink:0">${ini(l.cn)}</div><span class="hhm-n">${l.cn}</span><span class="hhm-p">${l.pr}</span>${(c.hh||[]).includes(l.id)?`<span class="hhm-r" onclick="unlnk(${c.id},${l.id})">remove</span>`:`<span style="font-size:10px;color:var(--text3);padding:2px 5px">auto</span>`}</div>`).join('') : `<div style="padding:8px 12px;font-size:12px;color:var(--text3)">No linked files — phone/email matches link automatically</div>`}
-      ${isPicker&&linkable.length?`<div class="lkp"><div class="lkp-l">Select a file to manually link:</div><div class="lkp-list">${linkable.map(l=>`<div class="lkp-opt" onclick="lnkFile(${c.id},${l.id})"><div class="av ${avc(l.cn)}" style="width:24px;height:24px;font-size:9px">${ini(l.cn)}</div><span style="flex:1">${l.cn}</span><span style="font-size:11px;color:var(--text3)">${l.pr} · ${l.cy}</span></div>`).join('')}</div></div>`:''}
-    </div>
-    <div class="sl">Notes</div>
-    <div class="nh">${c.notes.length?c.notes.map(n=>`<div class="ne"><div class="nt">${n.t}</div><div class="nd">${n.d||''}</div></div>`).join(''):`<div style="font-size:12px;color:var(--text3);padding:2px 0">No notes yet</div>`}</div>
-    <div class="nir">
-      <textarea id="ni-${c.id}" placeholder="Add a note…" oninput="nnt[${c.id}]=this.value">${nnt[c.id]||''}</textarea>
-      <button class="btn-sv" onclick="addNote(${c.id})">Save note</button>
-    </div>
-  </div>`;
-}
+function chkDup(){const ph=(document.getElementById('f-ph').value||'').toLowerCase().trim();const em=(document.getElementById('f-em').value||'').toLowerCase().trim();const m=clients.filter(c=>nc(c.ph).some(p=>ph&&p.includes(ph))||nc(c.em).some(e=>em&&e.includes(em)));const w=document.getElementById('dupWarn');if(m.length){w.style.display='block';w.textContent=`Existing files found: ${[...new Set(m.map(x=>x.cn))].join(', ')} — will auto-link as household`;}else w.style.display='none';}
 
-function claimH(c) {
-  if (!c.claim) {
-    return `<div class="claims-section">
-      <div class="claims-header">
-        <span class="claims-title">Claim</span>
-        <button class="claim-open-btn" onclick="openClaim(${c.id})">+ Open claim</button>
-      </div>
-      <div style="padding:8px 12px;font-size:12px;color:var(--text3)">No active claim</div>
-    </div>`;
-  }
-  const st = c.claim.status || 'Submitted';
-  const stClass = {Submitted:'cs-submitted','In Review':'cs-review',Approved:'cs-approved',Paid:'cs-paid',Denied:'cs-denied'}[st] || 'cs-submitted';
-  return `<div class="claims-section">
-    <div class="claims-header">
-      <span class="claims-title">Active claim</span>
-      <span class="claim-status-pill ${stClass}">${st}</span>
-      <button class="claim-close-btn" onclick="closeClaim(${c.id})">Close claim</button>
-    </div>
-    <div class="claim-body">
-      <div class="claim-grid">
-        <div class="claim-field"><label>Claim type</label><select onchange="updateClaim(${c.id},'type',this.value)">${CLAIM_TYPES.map(t=>`<option${t===c.claim.type?' selected':''}>${t}</option>`).join('')}</select></div>
-        <div class="claim-field"><label>Status</label><select onchange="updateClaim(${c.id},'status',this.value)">${CLAIM_STATUSES.map(s=>`<option${s===st?' selected':''}>${s}</option>`).join('')}</select></div>
-        <div class="claim-field"><label>Date opened</label><input type="date" value="${c.claim.opened||''}" onchange="updateClaim(${c.id},'opened',this.value)"></div>
-        <div class="claim-field"><label>Follow-up date</label><input type="date" value="${c.claim.followup||''}" onchange="updateClaim(${c.id},'followup',this.value)"></div>
-      </div>
-      <div class="claim-note-row">
-        <input type="text" placeholder="Add claim note…" id="cn-${c.id}" value="${c.claim.notes||''}">
-        <button class="btn-sm" onclick="updateClaim(${c.id},'notes',document.getElementById('cn-${c.id}').value)">Save</button>
-      </div>
-    </div>
-  </div>`;
-}
-
-function renderClaims() {
-  const active = clients.filter(c => c.claim);
-  document.getElementById('list').innerHTML = active.length ?
-    `<div style="margin-bottom:10px;font-size:13px;font-weight:500;color:var(--text)">${active.length} active claim${active.length===1?'':'s'}</div>` + active.map(c => {
-      const st = c.claim.status || 'Submitted';
-      const stClass = {Submitted:'cs-submitted','In Review':'cs-review',Approved:'cs-approved',Paid:'cs-paid',Denied:'cs-denied'}[st] || 'cs-submitted';
-      const daysSince = c.claim.opened ? Math.ceil((tod2 - new Date(c.claim.opened)) / 864e5) : '?';
-      return `<div class="card${sel===c.id?' sel':''}" onclick="selC(${c.id})">
-        <div class="ct">
-          <div class="av ${avc(c.cn)}">${ini(c.cn)}</div>
-          <div class="ci">
-            <div class="cn">${c.cn} <span class="claim-badge">claim active</span></div>
-            <div class="cm"><span>${c.pr}</span><span>${c.co}</span><span>${c.cy}</span></div>
-          </div>
-          <div class="cr">
-            <span class="claim-status-pill ${stClass}" style="font-size:10px;padding:2px 8px">${st}</span>
-            <span class="fd">${c.claim.type||''}</span>
-            <span class="fd">Opened ${fmtDate(c.claim.opened)} · ${daysSince}d</span>
-          </div>
-        </div>
-        ${sel===c.id ? `<div class="dp" onclick="event.stopPropagation()">${claimH(c)}</div>` : ''}
-      </div>`;
-    }).join('') :
-    '<div class="empty">No active claims</div>';
-}
-
-function renderLookup() {
-  const q = (document.getElementById('searchInput').value||'').toLowerCase().trim();
-  const el = document.getElementById('list');
-  if (!q) { el.innerHTML = '<div class="empty">Type a name, phone number, or email to find all their policies</div>'; return; }
-  const rel = clients.filter(c=>[c.cn,c.ins,...nc(c.ph),...nc(c.em)].some(x=>(x||'').toLowerCase().includes(q)));
-  if (!rel.length) { el.innerHTML = '<div class="empty">No matching clients found</div>'; return; }
-  const grps = {};
-  rel.forEach(c => {
-    const k = [c.cn.toLowerCase(),...nc(c.ph)].sort().join('|');
-    if (!grps[k]) grps[k] = {n:c.cn, ph:nc(c.ph), em:nc(c.em), pol:[]};
-    grps[k].pol.push(c);
-  });
-  el.innerHTML = Object.values(grps).map(g => `<div class="lkg">
-    <div class="lkgh">
-      <div class="av ${avc(g.n)}" style="width:30px;height:30px;font-size:10px">${ini(g.n)}</div>
-      <div><div class="lkghn">${g.n}</div><div class="lkghc">${[...g.ph,...g.em].slice(0,3).join(' · ')}</div></div>
-      <div class="lkghct">${g.pol.length} polic${g.pol.length===1?'y':'ies'}</div>
-    </div>
-    ${g.pol.map(p=>`<div class="lkp2" onclick="jumpTo(${p.id})">
-      <div class="lp1">
-        <div class="lp1n">${p.pr} — ${p.pn}${p.claim?` <span class="claim-badge">claim active</span>`:''}</div>
-        <div class="lp1m">${p.co} · ${p.cv} · sold ${fmtDate(p.ds)}</div>
-      </div>
-      <span class="pt">${cls(p.pr)==='travel'?'No follow-up':'Follow-up'}</span>
-    </div>`).join('')}
-  </div>`).join('');
-}
-
-function renderDQ() {
-  const ap = [...new Set(clients.map(c=>(c.pr||'').trim()))].sort();
-  document.getElementById('list').innerHTML = `
-    <div style="margin-bottom:12px">
-      <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px">Data quality report</div>
-      <div style="font-size:12px;color:var(--text2)">Scans your Google Sheet on every load and flags inconsistencies automatically.</div>
-    </div>
-    ${DQG.map(g=>`<div class="dqi"><div class="dqil">${g.l}</div><div class="dqtags">${g.i.map(i=>`<span class="dqt">${i}</span>`).join('')}</div><div class="dqr">Fix: standardize spelling with find-and-replace in your Google Sheet</div></div>`).join('')}
-    <div class="dqi"><div class="dqil">All unique product values detected in your sheet</div><div class="dqtags">${ap.map(p=>`<span class="dqt" style="background:var(--bg);color:var(--text3);border-color:var(--border)">${p}</span>`).join('')}</div></div>`;
-}
-
-// ══ ACTIONS ══
-function selC(id) { sel = sel===id ? null : id; lkp = null; render(); }
-
-function togDone(id) {
-  pushUndo('Mark complete / incomplete');
-  const c = clients.find(x=>x.id===id);
-  if (c) c.done = !c.done;
-  render();
-}
-
-function updFU(id, v) {
-  const c = clients.find(x=>x.id===id);
-  if (!c) return;
-  pushUndo('Follow-up date changed');
-  c.fu = v; c.done = false;
-  writeToSheet(c.rowNum, CONFIG.COLS.followupDate, v);
-  render();
-}
-
-function addNote(id) {
-  const c = clients.find(x=>x.id===id);
-  const t = (nnt[id]||'').trim();
-  if (!c||!t) return;
-  pushUndo('Note added');
-  const d = new Date().toLocaleDateString('en-CA');
-  c.notes.unshift({t, d});
-  nnt[id] = '';
-  const existingNotes = c.notes.filter(n=>!n.sheet);
-  writeToSheet(c.rowNum, CONFIG.COLS.crmNotes, JSON.stringify(existingNotes));
-  render();
-}
-
-function lnkFile(a, b) {
-  const ca = clients.find(x=>x.id===a), cb = clients.find(x=>x.id===b);
-  if (!ca||!cb) return;
-  pushUndo(`Linked ${ca.cn} ↔ ${cb.cn}`);
-  if (!ca.hh.includes(b)) ca.hh.push(b);
-  if (!cb.hh.includes(a)) cb.hh.push(a);
-  lkp = null;
-  writeToSheet(ca.rowNum, CONFIG.COLS.householdLinks, JSON.stringify(ca.hh));
-  writeToSheet(cb.rowNum, CONFIG.COLS.householdLinks, JSON.stringify(cb.hh));
-  render();
-}
-
-function unlnk(a, b) {
-  const ca = clients.find(x=>x.id===a), cb = clients.find(x=>x.id===b);
-  if (!ca||!cb) return;
-  pushUndo(`Unlinked ${ca.cn} ↔ ${cb.cn}`);
-  ca.hh = ca.hh.filter(x=>x!==b);
-  cb.hh = cb.hh.filter(x=>x!==a);
-  writeToSheet(ca.rowNum, CONFIG.COLS.householdLinks, JSON.stringify(ca.hh));
-  writeToSheet(cb.rowNum, CONFIG.COLS.householdLinks, JSON.stringify(cb.hh));
-  render();
-}
-
-function openClaim(id) {
-  const c = clients.find(x=>x.id===id);
-  if (!c) return;
-  pushUndo('Claim opened');
-  c.claim = { type: 'Death Benefit', opened: new Date().toISOString().split('T')[0], status: 'Submitted', notes: '', followup: '' };
-  writeToSheet(c.rowNum, CONFIG.COLS.claimStatus, JSON.stringify(c.claim));
-  render();
-}
-
-function closeClaim(id) {
-  const c = clients.find(x=>x.id===id);
-  if (!c) return;
-  pushUndo('Claim closed');
-  c.claim = null;
-  writeToSheet(c.rowNum, CONFIG.COLS.claimStatus, '');
-  render();
-}
-
-function updateClaim(id, field, val) {
-  const c = clients.find(x=>x.id===id);
-  if (!c||!c.claim) return;
-  c.claim[field] = val;
-  writeToSheet(c.rowNum, CONFIG.COLS.claimStatus, JSON.stringify(c.claim));
-  render();
-}
-
-function jumpTo(id) { sel = id; preset = 'all'; document.getElementById('preset').value = 'all'; setMode('followup'); setTab('all'); }
-
-// ══ ADD NEW SALE MODAL ══
-function openModal() {
-  document.getElementById('modal').innerHTML = `<div class="modal-bg" onclick="if(event.target===this)document.getElementById('modal').innerHTML=''">
-    <div class="modal">
-      <div class="modal-title">New sale</div>
-      <div class="fgr">
-        <div class="fg2"><label>Client name *</label><input id="f-cn" placeholder="Harjinder Singh"></div>
-        <div class="fg2"><label>Insured name</label><input id="f-ins" placeholder="If different from client"></div>
-        <div class="fg2"><label>Date sold</label><input id="f-ds" type="date" value="${new Date().toISOString().split('T')[0]}"></div>
-        <div class="fg2"><label>Company</label><input id="f-co" placeholder="Sun Life, Manulife…"></div>
-        <div class="fg2"><label>Product sold *</label><select id="f-pr"><option value="">Select…</option>${PRODUCTS.map(p=>`<option>${p}</option>`).join('')}</select></div>
-        <div class="fg2"><label>Policy number</label><input id="f-pn" placeholder="SL-2025-XXXX"></div>
-        <div class="fg2"><label>Coverage amount</label><input id="f-cv" placeholder="$500,000"></div>
-        <div class="fg2"><label>Amount paid</label><input id="f-ap" placeholder="$1,200"></div>
-        <div class="fg2"><label>Commission</label><input id="f-cm" placeholder="$240"></div>
-        <div class="fg2"><label>Source</label><input id="f-src" placeholder="Referral, Instagram…"></div>
-        <div class="fg2"><label>Phone</label><input id="f-ph" placeholder="416-555-0000" oninput="chkDup()"></div>
-        <div class="fg2"><label>Email</label><input id="f-em" placeholder="client@email.com" oninput="chkDup()"></div>
-        <div class="fg2"><label>City</label><input id="f-cy" placeholder="Brampton"></div>
-        <div class="fg2"><label>Next follow-up date</label><input id="f-fu" type="date"></div>
-        <div class="fg2 full"><label>Notes</label><textarea id="f-nt" placeholder="Any initial notes…"></textarea></div>
-      </div>
-      <div class="dup-warn" id="dupWarn"></div>
-      <div class="fac">
-        <button class="bcn" onclick="document.getElementById('modal').innerHTML=''">Cancel</button>
-        <button class="bsb" onclick="submitSale()">Add to CRM + Sheet</button>
-      </div>
-    </div>
-  </div>`;
-}
-
-function chkDup() {
-  const ph = (document.getElementById('f-ph').value||'').toLowerCase().trim();
-  const em = (document.getElementById('f-em').value||'').toLowerCase().trim();
-  const matches = clients.filter(c => nc(c.ph).some(p=>ph&&p.includes(ph)) || nc(c.em).some(e=>em&&e.includes(em)));
-  const w = document.getElementById('dupWarn');
-  if (matches.length) {
-    w.style.display = 'block';
-    w.textContent = `Existing files found: ${[...new Set(matches.map(m=>m.cn))].join(', ')} — new sale will be auto-linked as household`;
-  } else {
-    w.style.display = 'none';
-  }
-}
-
-async function submitSale() {
-  const g = id => (document.getElementById(id).value||'').trim();
-  const cn = g('f-cn'), pr = g('f-pr');
-  if (!cn||!pr) { alert('Client name and product are required'); return; }
-  const nc2 = {
-    id: nextId++, rowNum: clients.length + 2,
-    cn, ins: g('f-ins')||cn, ds: g('f-ds'), co: g('f-co'), pr,
-    pn: g('f-pn'), cv: g('f-cv'), ap: g('f-ap'), cm: g('f-cm'),
-    src: g('f-src'), ph: g('f-ph'), em: g('f-em'), cy: g('f-cy'),
-    fu: g('f-fu')||null, done: false,
-    notes: g('f-nt') ? [{t:g('f-nt'), d:new Date().toLocaleDateString('en-CA')}] : [],
-    hh: [], claim: null
-  };
-  pushUndo(`Added ${cn}`);
-  clients.unshift(nc2);
-  // Build sheet row (columns A-W)
-  const row = Array(23).fill('');
-  const C = CONFIG.COLS;
-  row[C.clientName-1] = nc2.cn;
-  row[C.insuredName-1] = nc2.ins;
-  row[C.dateSold-1] = nc2.ds;
-  row[C.company-1] = nc2.co;
-  row[C.coverage-1] = nc2.cv;
-  row[C.policyNumber-1] = nc2.pn;
-  row[C.phone-1] = nc2.ph;
-  row[C.email-1] = nc2.em;
-  row[C.city-1] = nc2.cy;
-  row[C.amountPaid-1] = nc2.ap;
-  row[C.commission-1] = nc2.cm;
-  row[C.source-1] = nc2.src;
-  row[C.product-1] = nc2.pr;
-  row[C.followupDate-1] = nc2.fu||'';
-  row[C.crmNotes-1] = nc2.notes.length ? JSON.stringify(nc2.notes) : '';
-  await appendToSheet(row);
-  document.getElementById('modal').innerHTML = '';
-  preset = 'all'; document.getElementById('preset').value = 'all';
-  tab = 'all';
-  [['ov','overdue'],['tw','thisweek'],['up','upcoming'],['al','all']].forEach(([k,v]) => document.getElementById('t-'+k).classList.toggle('active', v==='all'));
-  sel = nc2.id;
-  render();
-}
+async function submitSale(){
+const g=id=>(document.getElementById(id).value||'').trim();const cn=g('f-cn'),pr=g('f-pr');
+if(!cn||!pr){alert('Client name and product are required');return;}
+const nc2={id:nextId++,rowNum:clients.length+2,cn,ins:g('f-ins')||cn,ds:g('f-ds'),co:g('f-co'),pr,pn:g('f-pn'),cv:g('f-cv'),ap:g('f-ap'),cm:g('f-cm'),src:g('f-src'),ph:g('f-ph'),em:g('f-em'),cy:g('f-cy'),fu:g('f-fu')||null,done:false,notes:g('f-nt')?[{t:g('f-nt'),d:new Date().toLocaleDateString('en-CA')}]:[],hh:[],claim:null};
+pushUndo(`Added ${cn}`);clients.unshift(nc2);
+await sheetWrite('appendNewSale',{rowData:{cn:nc2.cn,ins:nc2.ins,ds:nc2.ds,co:nc2.co,cv:nc2.cv,pn:nc2.pn,ph:nc2.ph,em:nc2.em,cy:nc2.cy,ap:nc2.ap,cm:nc2.cm,src:nc2.src,pr:nc2.pr,fu:nc2.fu||'',crmNotes:nc2.notes.length?JSON.stringify(nc2.notes):''}});
+document.getElementById('modal').innerHTML='';preset='all';document.getElementById('preset').value='all';tab='all';[['ov','overdue'],['tw','thisweek'],['up','upcoming'],['al','all']].forEach(([k,v])=>document.getElementById('t-'+k).classList.toggle('active',v==='all'));sel=nc2.id;render();}
 </script>
 </body>
 </html>
