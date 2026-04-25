@@ -270,7 +270,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3Nj4LfwmxJ8dL90v9cPUYmGvxmZCP8BUpruI9jienymrTRmR6X577e3NYKeir8TXw/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsezfmu7ugl8EngHjs3I-1hB7Mj_65V5VKUIcxlkUz93pM6ad4hrEleKKNY4msqVKu/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -303,7 +303,7 @@ function logout(){google.accounts.id.disableAutoSelect();document.getElementById
 async function loadData(){
   document.getElementById('syncStatus').textContent='Loading…';
   document.getElementById('list').innerHTML='<div class="loading"><div class="spinner"></div><span>Loading your clients…</span></div>';
-  if(APPS_SCRIPT_URL==='https://script.google.com/macros/s/AKfycbz3Nj4LfwmxJ8dL90v9cPUYmGvxmZCP8BUpruI9jienymrTRmR6X577e3NYKeir8TXw/exec'){loadDemo();return;}
+  if(APPS_SCRIPT_URL==='https://script.google.com/macros/s/AKfycbxsezfmu7ugl8EngHjs3I-1hB7Mj_65V5VKUIcxlkUz93pM6ad4hrEleKKNY4msqVKu/exec'){loadDemo();return;}
   try{
     const r=await fetch(APPS_SCRIPT_URL+'?action=getData');
     const d=await r.json();
@@ -322,7 +322,7 @@ async function loadData(){
 }
 
 async function sheetWrite(action, data){
-  if(!sheetConnected||APPS_SCRIPT_URL==='https://script.google.com/macros/s/AKfycbz3Nj4LfwmxJ8dL90v9cPUYmGvxmZCP8BUpruI9jienymrTRmR6X577e3NYKeir8TXw/exec')return;
+  if(!sheetConnected||APPS_SCRIPT_URL==='https://script.google.com/macros/s/AKfycbxsezfmu7ugl8EngHjs3I-1hB7Mj_65V5VKUIcxlkUz93pM6ad4hrEleKKNY4msqVKu/exec')return;
   try{
     await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify({action,...data}),headers:{'Content-Type':'text/plain'}});
   }catch(e){console.warn('Write error:',e);}
@@ -503,6 +503,17 @@ const nc2={id:nextId++,rowNum:clients.length+2,cn,ins:g('f-ins')||cn,ds:g('f-ds'
 pushUndo(`Added ${cn}`);clients.unshift(nc2);
 await sheetWrite('appendNewSale',{rowData:{cn:nc2.cn,ins:nc2.ins,ds:nc2.ds,co:nc2.co,cv:nc2.cv,pn:nc2.pn,ph:nc2.ph,em:nc2.em,cy:nc2.cy,ap:nc2.ap,cm:nc2.cm,src:nc2.src,pr:nc2.pr,fu:nc2.fu||'',crmNotes:nc2.notes.length?JSON.stringify(nc2.notes):''}});
 document.getElementById('modal').innerHTML='';preset='all';document.getElementById('preset').value='all';tab='all';[['ov','overdue'],['tw','thisweek'],['up','upcoming'],['al','all']].forEach(([k,v])=>document.getElementById('t-'+k).classList.toggle('active',v==='all'));sel=nc2.id;render();}
+
+function renderLkpSearch(cid){
+  const c=clients.find(x=>x.id===cid);if(!c)return;
+  const lnk=getAllLinked(c);
+  const linkable=clients.filter(o=>o.id!==c.id&&!lnk.find(l=>l.id===o.id));
+  const q=(document.getElementById('lkp-search-'+cid).value||'').toLowerCase();
+  const filtered=q?linkable.filter(l=>[l.cn,l.pr,l.cy,l.ph].some(x=>(x||'').toLowerCase().includes(q))):linkable.slice(0,8);
+  const el=document.getElementById('lkp-list-'+cid);
+  if(!el)return;
+  el.innerHTML=filtered.length?filtered.map(l=>`<div class="lkp-opt" onclick="lnkFile(${cid},${l.id})"><div class="av ${avc(l.cn)}" style="width:22px;height:22px;font-size:9px">${ini(l.cn)}</div><span style="flex:1">${l.cn}</span><span style="font-size:11px;color:var(--text3)">${l.pr}·${l.cy}</span></div>`).join(''):'<div style="font-size:12px;color:var(--text3);padding:4px 7px">No matches found</div>';
+}
 </script>
 </body>
 </html>
