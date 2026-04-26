@@ -185,6 +185,48 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 .loading{text-align:center;padding:3rem;color:var(--text3);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:12px}
 .spinner{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+.leads-board{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1rem}
+.leads-col{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.leads-col-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;background:var(--bg)}
+.leads-col-title{font-size:12px;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:.06em;flex:1}
+.leads-col-count{font-size:11px;padding:2px 7px;border-radius:20px;background:var(--bg);color:var(--text3);border:1px solid var(--border)}
+.btn-add-lead{font-size:11px;padding:3px 8px;border:1px solid var(--border2);border-radius:4px;background:none;cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif}
+.lead-card{padding:11px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s}
+.lead-card:hover{background:var(--bg)}
+.lead-card:last-child{border-bottom:none}
+.lead-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px}
+.lead-meta{font-size:11px;color:var(--text3);margin-bottom:5px}
+.lead-note{font-size:11px;color:var(--text2);margin-bottom:6px;padding:5px 8px;background:var(--bg);border-radius:4px;border-left:2px solid var(--border2)}
+.lead-actions{display:flex;gap:6px;flex-wrap:wrap}
+.lead-btn{font-size:10px;padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:none;cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif;transition:all .1s}
+.lead-btn:hover{background:var(--bg)}
+.lead-btn.wa{border-color:#25D366;color:#25D366}
+.lead-btn.wa:hover{background:#f0fdf4}
+.lead-btn.convert{border-color:var(--accent);color:var(--accent)}
+.lead-btn.lost{border-color:var(--red);color:var(--red)}
+.lead-due{font-size:10px;padding:2px 6px;border-radius:20px;margin-left:auto}
+.lead-due.overdue{background:var(--red-l);color:var(--red)}
+.lead-due.today{background:var(--amber-l);color:var(--amber)}
+.lead-due.upcoming{background:var(--accent-l);color:var(--accent)}
+.lead-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;text-align:center}
+.stat-num{font-size:22px;font-weight:600;color:var(--text);margin-bottom:2px}
+.stat-label{font-size:11px;color:var(--text3)}
+.an-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.an-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.an-title{font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.an-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.an-bar-label{font-size:11px;color:var(--text2);width:100px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.an-bar-wrap{flex:1;background:var(--bg);border-radius:20px;height:6px;overflow:hidden}
+.an-bar-fill{height:100%;border-radius:20px;background:var(--accent);transition:width .5s}
+.an-bar-val{font-size:11px;color:var(--text3);width:60px;text-align:right;flex-shrink:0}
+.an-yrrow{display:flex;gap:8px;margin-bottom:8px;align-items:baseline}
+.an-yr{font-size:12px;color:var(--text3);width:36px;flex-shrink:0}
+.an-yrtotal{font-size:13px;font-weight:500;color:var(--text);flex:1}
+.an-yrchange{font-size:11px;padding:1px 6px;border-radius:20px}
+.an-pos{background:var(--accent-l);color:var(--accent)}
+.an-neg{background:var(--red-l);color:var(--red)}
 </style>
 </head>
 <body>
@@ -223,6 +265,8 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
       <button class="mode-btn active" id="modeFollowup" onclick="setMode('followup')">Follow-ups</button>
       <button class="mode-btn" id="modeLookup" onclick="setMode('lookup')">Client lookup</button>
       <button class="mode-btn" id="modeClaims" onclick="setMode('claims')">Claims</button>
+      <button class="mode-btn" id="modeLeads" onclick="setMode('leads')">Leads</button>
+      <button class="mode-btn" id="modeAnalytics" onclick="setMode('analytics')">Analytics</button>
       <button class="mode-btn" id="modeDq" onclick="setMode('dq')">Data quality</button>
     </div>
     <div class="sw">
@@ -270,7 +314,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwREQlMkOyA5KecuitaP33kDjLqY8w1hyJpxRbBqY3A63GS85u9LV0TmEjkEwiwIh99/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPOnlI9pDHcg3l-UQ5NJKuIIyJRZkPRUNj1v0j0EfAX0sq91UnP5GNzkcA9LA0N-Rn/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -327,6 +371,7 @@ async function loadData(){
     sheetConnected=true;
     document.getElementById('sdot').classList.remove('err');
     document.getElementById('syncStatus').textContent=clients.length+' clients · live';
+    loadLeads();
     render();
   }catch(e){
     console.error('Load error:',e);
@@ -416,13 +461,29 @@ function onSearch(){
 
 // ── CONTROLS ──
 function applyPreset(){preset=document.getElementById('preset').value;sel=null;render();}
-function setMode(m){mode=m;sel=null;lkp=null;['followup','lookup','claims','dq'].forEach(x=>document.getElementById('mode'+x.charAt(0).toUpperCase()+x.slice(1)).classList.toggle('active',x===m));document.getElementById('fctrl').style.display=m==='followup'?'':'none';document.getElementById('searchInput').placeholder=m==='lookup'?'Type phone, email, or name…':'Search name, phone, email, city…';render();}
+function setMode(m){
+  mode=m;sel=null;lkp=null;
+  ['followup','lookup','claims','leads','analytics','dq'].forEach(function(x){
+    var el=document.getElementById('mode'+x.charAt(0).toUpperCase()+x.slice(1));
+    if(el)el.classList.toggle('active',x===m);
+  });
+  document.getElementById('fctrl').style.display=m==='followup'?'':'none';
+  document.getElementById('searchInput').placeholder=m==='lookup'?'Type phone, email, or name…':'Search name, phone, email, city…';
+  render();
+}
 function setTab(t){tab=t;sel=null;[['ov','overdue'],['tw','thisweek'],['up','upcoming'],['al','all']].forEach(([k,v])=>document.getElementById('t-'+k).classList.toggle('active',v===t));render();}
 function markAllDone(){pushUndo('Mark all complete');getFiltered().forEach(c=>c.done=true);render();}
 function ubdg(){const base=clients.filter(vbp);const q=(document.getElementById('searchInput').value||'').toLowerCase();const qf=q?base.filter(c=>[c.cn,c.cy,c.pn].some(x=>(x||'').toLowerCase().includes(q))):base;[['ov','overdue'],['tw','thisweek'],['up','upcoming']].forEach(([k,v])=>document.getElementById('b-'+k).textContent=qf.filter(c=>gst(c)===v).length);document.getElementById('b-al').textContent=qf.length;}
 
 // ── RENDER ──
-function render(){if(mode==='followup')renderFU();else if(mode==='lookup')renderLookup();else if(mode==='claims')renderClaims();else renderDQ();}
+function render(){
+  if(mode==='followup')renderFU();
+  else if(mode==='lookup')renderLookup();
+  else if(mode==='claims')renderClaims();
+  else if(mode==='leads')renderLeads();
+  else if(mode==='analytics')renderAnalytics();
+  else renderDQ();
+}
 function renderFU(){ubdg();const f=getFiltered();document.getElementById('rc').textContent=f.length+' client'+(f.length===1?'':'s');document.getElementById('list').innerHTML=f.length?f.map(cardH).join(''):'<div class="empty">No clients in this view</div>';}
 const SP={overdue:['sp-ov','Overdue'],thisweek:['sp-tw','Due this week'],upcoming:['sp-up','Upcoming'],none:['sp-no','No follow-up'],done:['sp-dn','Complete']};
 const csMap={Submitted:'cs-sub','In Review':'cs-rev',Approved:'cs-app',Paid:'cs-paid',Denied:'cs-den'};
@@ -673,6 +734,325 @@ function hhToggle(el){
   exp.style.display=open?'block':'none';
   if(arrow)arrow.textContent=open?'▾':'▸';
 }
+
+// ════════════════════════════════════════════════════
+// LEADS MODULE
+// ════════════════════════════════════════════════════
+var leads = [];
+var leadNextId = 5000;
+var LEADS_TAB = 'CRM_Leads';
+var LEADS_LISTS = ['Life & CI Leads', 'VTC & SV'];
+var leadEditId = null;
+
+// Load leads from sheet
+async function loadLeads(){
+  if(!sheetConnected) return;
+  try{
+    var r = await fetch(APPS_SCRIPT_URL+'?action=getLeads');
+    var d = await r.json();
+    if(d.leads) leads = d.leads;
+  }catch(e){ console.warn('Leads load error:',e); }
+}
+
+// Save lead to sheet
+async function saveLead(lead){
+  if(!sheetConnected) return;
+  try{
+    var params = new URLSearchParams({action:'saveLead',leadJson:JSON.stringify(lead)});
+    await fetch(APPS_SCRIPT_URL+'?'+params.toString());
+  }catch(e){ console.warn('Lead save error:',e); }
+}
+
+function addLead(list){
+  var name = prompt('Client name / note:');
+  if(!name) return;
+  var phone = prompt('Phone number (optional):');
+  var note = prompt('Notes (optional):');
+  var due = prompt('Due date YYYY-MM-DD (optional):');
+  var lead = {
+    id: leadNextId++,
+    list: list,
+    name: name,
+    phone: (phone||'').trim(),
+    note: (note||'').trim(),
+    due: (due||'').trim(),
+    created: new Date().toISOString().split('T')[0],
+    status: 'active' // active | converted | lost
+  };
+  pushUndo('Add lead: '+name);
+  leads.unshift(lead);
+  saveLead(lead);
+  render();
+}
+
+function convertLead(id){
+  var l = leads.find(function(x){return x.id===id;});
+  if(!l) return;
+  pushUndo('Convert lead: '+l.name);
+  l.status = 'converted';
+  l.convertedDate = new Date().toISOString().split('T')[0];
+  saveLead(l);
+  // Pre-fill new sale modal
+  openModal();
+  setTimeout(function(){
+    var cn = document.getElementById('f-cn');
+    var ph = document.getElementById('f-ph');
+    var nt = document.getElementById('f-nt');
+    if(cn) cn.value = l.name;
+    if(ph) ph.value = l.phone;
+    if(nt) nt.value = l.note;
+    if(ph && l.phone) chkDup();
+  }, 100);
+  render();
+}
+
+function lostLead(id){
+  var l = leads.find(function(x){return x.id===id;});
+  if(!l) return;
+  if(!confirm('Mark "'+l.name+'" as lost/closed without converting?')) return;
+  pushUndo('Lost lead: '+l.name);
+  l.status = 'lost';
+  l.lostDate = new Date().toISOString().split('T')[0];
+  saveLead(l);
+  render();
+}
+
+function whatsappLead(phone, name){
+  if(!phone){ alert('No phone number for this lead'); return; }
+  var clean = phone.replace(/\D/g,'');
+  if(clean.length===10) clean = '1'+clean;
+  var msg = encodeURIComponent('Hi '+name+', this is Rattan from IBR Insurance. I wanted to follow up with you regarding your insurance needs. Do you have a few minutes to connect?');
+  window.open('https://wa.me/'+clean+'?text='+msg,'_blank');
+}
+
+function getDueStatus(due){
+  if(!due) return null;
+  var tod = new Date(); tod.setHours(0,0,0,0);
+  var fd = new Date(due); fd.setHours(0,0,0,0);
+  var diff = Math.ceil((fd-tod)/864e5);
+  if(diff<0) return 'overdue';
+  if(diff===0) return 'today';
+  return 'upcoming';
+}
+
+function renderLeads(){
+  var el = document.getElementById('list');
+  var activeLeads = leads.filter(function(l){return l.status==='active';});
+  var convertedLeads = leads.filter(function(l){return l.status==='converted';});
+  var lostLeads = leads.filter(function(l){return l.status==='lost';});
+  var total = leads.length;
+  var convRate = total>0?Math.round(convertedLeads.length/total*100):0;
+  var lostRate = total>0?Math.round(lostLeads.length/total*100):0;
+
+  // Stats row
+  var html = '<div class="lead-stats">';
+  html += '<div class="stat-card"><div class="stat-num">'+activeLeads.length+'</div><div class="stat-label">Active leads</div></div>';
+  html += '<div class="stat-card"><div class="stat-num" style="color:var(--accent)">'+convertedLeads.length+'</div><div class="stat-label">Converted</div></div>';
+  html += '<div class="stat-card"><div class="stat-num" style="color:var(--red)">'+lostLeads.length+'</div><div class="stat-label">Lost / closed</div></div>';
+  html += '<div class="stat-card"><div class="stat-num">'+convRate+'%</div><div class="stat-label">Conversion rate<br><span style="font-size:10px;color:var(--red)">'+lostRate+'% lost</span></div></div>';
+  html += '</div>';
+
+  // Conversion by list
+  html += '<div style="display:flex;gap:12px;margin-bottom:14px;">';
+  LEADS_LISTS.forEach(function(listName){
+    var listLeads = leads.filter(function(l){return l.list===listName;});
+    var listConv = listLeads.filter(function(l){return l.status==='converted';}).length;
+    var listLost = listLeads.filter(function(l){return l.status==='lost';}).length;
+    var listTotal = listLeads.length;
+    var rate = listTotal>0?Math.round(listConv/listTotal*100):0;
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:9px 14px;flex:1">';
+    html += '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">'+listName+'</div>';
+    html += '<div style="font-size:12px;color:var(--text2)">'+listTotal+' total &middot; <span style="color:var(--accent)">'+listConv+' converted ('+rate+'%)</span> &middot; <span style="color:var(--red)">'+listLost+' lost</span></div>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // Two-column board - active leads only
+  html += '<div class="leads-board">';
+  LEADS_LISTS.forEach(function(listName){
+    var listActive = activeLeads.filter(function(l){return l.list===listName;});
+    html += '<div class="leads-col">';
+    html += '<div class="leads-col-header">';
+    html += '<span class="leads-col-title">'+listName+'</span>';
+    html += '<span class="leads-col-count">'+listActive.length+'</span>';
+    html += '<button class="btn-add-lead" onclick="addLead(\''+listName+'\')">+ Add</button>';
+    html += '</div>';
+    if(listActive.length===0){
+      html += '<div style="padding:16px;font-size:12px;color:var(--text3);text-align:center">No active leads</div>';
+    } else {
+      listActive.forEach(function(l){
+        var ds = getDueStatus(l.due);
+        html += '<div class="lead-card">';
+        html += '<div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px">';
+        html += '<div class="lead-name" style="flex:1">'+l.name+'</div>';
+        if(ds) html += '<span class="lead-due '+ds+'">'+(ds==='overdue'?'Overdue':ds==='today'?'Today':fmtD(l.due))+'</span>';
+        html += '</div>';
+        if(l.phone) html += '<div class="lead-meta">'+l.phone+'</div>';
+        if(l.note) html += '<div class="lead-note">'+l.note+'</div>';
+        html += '<div class="lead-meta" style="margin-bottom:5px">Added '+fmtD(l.created)+'</div>';
+        html += '<div class="lead-actions">';
+        if(l.phone) html += '<button class="lead-btn wa" onclick="whatsappLead(\''+l.phone+'\',\''+l.name+'\')">WhatsApp</button>';
+        html += '<button class="lead-btn convert" onclick="convertLead('+l.id+')">Convert \u2192 Sale</button>';
+        html += '<button class="lead-btn lost" onclick="lostLead('+l.id+')">Lost</button>';
+        html += '</div></div>';
+      });
+    }
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // Recent converted/lost at bottom
+  var recent = leads.filter(function(l){return l.status!=='active';}).slice(0,10);
+  if(recent.length){
+    html += '<div style="margin-top:4px"><div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Recent closed leads</div>';
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden">';
+    recent.forEach(function(l){
+      var statusColor = l.status==='converted'?'var(--accent)':'var(--red)';
+      var statusLabel = l.status==='converted'?'Converted':'Lost';
+      html += '<div style="padding:8px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">';
+      html += '<div style="flex:1"><div style="font-size:12px;color:var(--text)">'+l.name+'</div>';
+      html += '<div style="font-size:11px;color:var(--text3)">'+l.list+(l.phone?' \xb7 '+l.phone:'')+'</div></div>';
+      html += '<span style="font-size:11px;padding:2px 8px;border-radius:20px;background:'+statusColor+'22;color:'+statusColor+'">'+statusLabel+'</span>';
+      html += '</div>';
+    });
+    html += '</div></div>';
+  }
+
+  el.innerHTML = html;
+}
+
+// ════════════════════════════════════════════════════
+// ANALYTICS MODULE
+// ════════════════════════════════════════════════════
+function renderAnalytics(){
+  var el = document.getElementById('list');
+  if(!sheetConnected || clients.length===0){
+    el.innerHTML='<div class="empty">Loading analytics\u2026 data must be loaded first</div>';
+    return;
+  }
+
+  var tod = new Date();
+  var curYear = tod.getFullYear();
+
+  // Commission by year
+  var byYear = {};
+  clients.forEach(function(c){
+    if(!c.ds) return;
+    var y = new Date(c.ds).getFullYear();
+    if(!y||isNaN(y)) return;
+    if(!byYear[y]) byYear[y]={commission:0,count:0,products:{}};
+    var comm = parseFloat((c.cm||'').replace(/[^0-9.-]/g,''))||0;
+    byYear[y].commission += comm;
+    byYear[y].count++;
+    var pr = (c.pr||'').trim();
+    if(pr) byYear[y].products[pr]=(byYear[y].products[pr]||0)+1;
+  });
+
+  var years = Object.keys(byYear).map(Number).filter(function(y){return y>=2019;}).sort(function(a,b){return b-a;});
+
+  // Product breakdown overall
+  var byProduct = {};
+  clients.forEach(function(c){
+    var pr=(c.pr||'').trim();
+    if(!pr) return;
+    if(!byProduct[pr]) byProduct[pr]={count:0,commission:0};
+    byProduct[pr].count++;
+    byProduct[pr].commission+=parseFloat((c.cm||'').replace(/[^0-9.-]/g,''))||0;
+  });
+  var topProducts = Object.entries(byProduct).sort(function(a,b){return b[1].commission-a[1].commission;}).slice(0,10);
+
+  // Source breakdown
+  var bySource = {};
+  clients.forEach(function(c){
+    var s=(c.src||'Unknown').trim();
+    if(!bySource[s]) bySource[s]={count:0,commission:0};
+    bySource[s].count++;
+    bySource[s].commission+=parseFloat((c.cm||'').replace(/[^0-9.-]/g,''))||0;
+  });
+  var topSources = Object.entries(bySource).sort(function(a,b){return b[1].count-a[1].count;}).slice(0,8);
+
+  // Monthly for current year
+  var byMonth = {};
+  for(var m=1;m<=12;m++) byMonth[m]=0;
+  clients.forEach(function(c){
+    if(!c.ds) return;
+    var d=new Date(c.ds);
+    if(d.getFullYear()===curYear){
+      var mo=d.getMonth()+1;
+      byMonth[mo]+=(parseFloat((c.cm||'').replace(/[^0-9.-]/g,''))||0);
+    }
+  });
+  var maxMonth = Math.max.apply(null,Object.values(byMonth))||1;
+  var maxProd = topProducts.length?topProducts[0][1].commission:1;
+  var maxSrc = topSources.length?topSources[0][1].count:1;
+
+  var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var fmt$ = function(n){return '$'+n.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');};
+
+  var html = '';
+
+  // Year-over-year table
+  html += '<div class="an-card" style="margin-bottom:14px">';
+  html += '<div class="an-title">Commission by year</div>';
+  years.forEach(function(y,i){
+    var curr = byYear[y].commission;
+    var prev = byYear[years[i+1]] ? byYear[years[i+1]].commission : null;
+    var change = prev ? Math.round((curr-prev)/prev*100) : null;
+    html += '<div class="an-yrrow">';
+    html += '<span class="an-yr">'+y+'</span>';
+    html += '<span class="an-yrtotal">'+fmt$(curr)+'</span>';
+    html += '<span style="font-size:11px;color:var(--text3);margin-right:8px">'+byYear[y].count+' policies</span>';
+    if(change!==null) html += '<span class="an-yrchange '+(change>=0?'an-pos':'an-neg')+'">'+(change>=0?'+':'')+change+'%</span>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // Monthly bars current year
+  html += '<div class="an-card" style="margin-bottom:14px">';
+  html += '<div class="an-title">Monthly commission — '+curYear+'</div>';
+  for(var mo=1;mo<=12;mo++){
+    var val=byMonth[mo];
+    var pct=Math.round(val/maxMonth*100);
+    html += '<div class="an-bar-row">';
+    html += '<span class="an-bar-label">'+MONTHS[mo-1]+'</span>';
+    html += '<div class="an-bar-wrap"><div class="an-bar-fill" style="width:'+pct+'%"></div></div>';
+    html += '<span class="an-bar-val">'+fmt$(val)+'</span>';
+    html += '</div>';
+  }
+  html += '</div>';
+
+  html += '<div class="an-grid">';
+
+  // Top products by commission
+  html += '<div class="an-card">';
+  html += '<div class="an-title">Top products by commission</div>';
+  topProducts.forEach(function(entry){
+    var pct=Math.round(entry[1].commission/maxProd*100);
+    html += '<div class="an-bar-row">';
+    html += '<span class="an-bar-label" title="'+entry[0]+'">'+entry[0]+'</span>';
+    html += '<div class="an-bar-wrap"><div class="an-bar-fill" style="width:'+pct+'%;background:var(--blue)"></div></div>';
+    html += '<span class="an-bar-val">'+fmt$(entry[1].commission)+'</span>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // Top sources
+  html += '<div class="an-card">';
+  html += '<div class="an-title">Top referral sources</div>';
+  topSources.forEach(function(entry){
+    var pct=Math.round(entry[1].count/maxSrc*100);
+    html += '<div class="an-bar-row">';
+    html += '<span class="an-bar-label" title="'+entry[0]+'">'+entry[0]+'</span>';
+    html += '<div class="an-bar-wrap"><div class="an-bar-fill" style="width:'+pct+'%;background:var(--purple)"></div></div>';
+    html += '<span class="an-bar-val">'+entry[1].count+' ('+fmt$(entry[1].commission)+')</span>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  html += '</div>';
+  el.innerHTML = html;
+}
+
 </script>
 </body>
 </html>
