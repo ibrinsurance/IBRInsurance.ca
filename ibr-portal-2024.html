@@ -464,38 +464,125 @@ ${isel?detH(c):''}
 </div>`;}
 
 function detH(c){
-const lnk=getAllLinked(c);const linkable=clients.filter(o=>o.id!==c.id&&!lnk.find(l=>l.id===o.id));const isPicker=lkp===c.id;
-const commVal=isOwner?c.cm:`<span class="locked">●●●●</span>`;const apVal=isOwner?c.ap:`<span class="locked">●●●●</span>`;
-return`<div class="dp" onclick="event.stopPropagation()">
-<div class="dh"><div class="da ${avc(c.cn)}">${ini(c.cn)}</div><div><div class="dn">${c.cn}</div><div class="ds2">Insured: ${c.ins} · ${c.pr}</div></div></div>
-<div class="fg">
-<div class="fi"><label>Company</label><span class="n">${c.co}</span></div>
-<div class="fi"><label>Policy #</label><span>${c.pn}</span></div>
-<div class="fi"><label>Coverage</label><span class="n">${c.cv}</span></div>
-<div class="fi"><label>Date sold</label><span class="n">${fmtD(c.ds)}</span></div>
-<div class="fi"><label>Phone</label><span class="n">${c.ph}</span></div>
-<div class="fi"><label>Email</label><span class="n">${c.em}</span></div>
-<div class="fi"><label>Amount paid</label><span>${apVal}</span></div>
-<div class="fi"><label>Commission</label><span>${commVal}</span></div>
-<div class="fi"><label>Source</label><span class="n">${c.src}</span></div>
-<div class="fi"><label>City</label><span class="n">${c.cy}</span></div>
-</div>
-<div class="fu-row"><label>Next follow-up date</label><input type="date" value="${c.fu||''}" onchange="updFU(${c.id},this.value)"></div>
-${claimH(c)}
-<div class="hhs"><div class="hhh"><span class="hhht">Household / linked files</span><button class="hha" onclick="togglePicker(${c.id})">+ Link file</button></div>
-${hhRows(c,lnk)}
-<div class="lkp" id="picker-${c.id}" style="display:${isPicker?'block':'none'}">
-  <div class="lkp-l">Search to link a file (${linkable.length} available):</div>
-  <input type="text" id="lkp-search-${c.id}" placeholder="Type name, policy #, phone, city, product…" style="width:100%;font-size:12px;padding:6px 9px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;outline:none;margin-bottom:6px;display:block" oninput="renderLkpSearch(${c.id})">
-  <div class="lkp-list" id="lkp-list-${c.id}">
-    ${lkpRows(c,linkable)}
-  </div>
-</div>
-</div>
-<div class="sl">Notes</div>
-<div class="nh">${c.notes.length?c.notes.map(n=>`<div class="ne"><div class="nt">${n.t}</div><div class="nd">${n.d||''}</div></div>`).join(''):`<div style="font-size:12px;color:var(--text3);padding:2px 0">No notes yet</div>`}</div>
-<div class="nir"><textarea id="ni-${c.id}" placeholder="Add a note…" oninput="nnt[${c.id}]=this.value">${nnt[c.id]||''}</textarea><button class="btn-sv" onclick="addNote(${c.id})">Save note</button></div>
-</div>`;}
+  var lnk=getAllLinked(c);
+  var linkable=clients.filter(function(o){return o.id!==c.id&&!lnk.find(function(l){return l.id===o.id;});});
+  var commVal=isOwner?c.cm:'<span class="locked">●●●●</span>';
+  var apVal=isOwner?c.ap:'<span class="locked">●●●●</span>';
+  
+  var html='<div class="dp" onclick="event.stopPropagation()">';
+  
+  // Header
+  html+='<div class="dh"><div class="da '+avc(c.cn)+'">'+ini(c.cn)+'</div>';
+  html+='<div><div class="dn">'+c.cn+'</div><div class="ds2">Insured: '+c.ins+' · '+c.pr+'</div></div></div>';
+  
+  // Fields grid
+  html+='<div class="fg">';
+  html+='<div class="fi"><label>Company</label><span class="n">'+c.co+'</span></div>';
+  html+='<div class="fi"><label>Policy #</label><span>'+c.pn+'</span></div>';
+  html+='<div class="fi"><label>Coverage</label><span class="n">'+c.cv+'</span></div>';
+  html+='<div class="fi"><label>Date sold</label><span class="n">'+fmtD(c.ds)+'</span></div>';
+  html+='<div class="fi"><label>Phone</label><span class="n">'+c.ph+'</span></div>';
+  html+='<div class="fi"><label>Email</label><span class="n">'+c.em+'</span></div>';
+  html+='<div class="fi"><label>Amount paid</label><span>'+apVal+'</span></div>';
+  html+='<div class="fi"><label>Commission</label><span>'+commVal+'</span></div>';
+  html+='<div class="fi"><label>Source</label><span class="n">'+c.src+'</span></div>';
+  html+='<div class="fi"><label>City</label><span class="n">'+c.cy+'</span></div>';
+  html+='</div>';
+  
+  // Follow-up
+  html+='<div class="fu-row"><label>Next follow-up date</label>';
+  html+='<input type="date" value="'+(c.fu||'')+'" onchange="updFU('+c.id+',this.value)"></div>';
+  
+  // Claim section
+  html+=claimH(c);
+  
+  // Household section
+  html+='<div class="hhs">';
+  html+='<div class="hhh"><span class="hhht">Household / linked files ('+lnk.length+')</span>';
+  html+='<button class="hha" onclick="event.stopPropagation();togglePicker('+c.id+')">+ Link file</button></div>';
+  
+  if(lnk.length===0){
+    html+='<div style="padding:8px 12px;font-size:12px;color:var(--text3)">No linked files — phone/email matches auto-link</div>';
+  } else {
+    lnk.forEach(function(l){
+      var isManual=(c.hh||[]).includes(l.id);
+      var expandId='hhx-'+c.id+'-'+l.id;
+      var arrowId='hha-'+c.id+'-'+l.id;
+      html+='<div style="border-bottom:1px solid var(--border)">';
+      // Clickable row header
+      html+='<div style="display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;background:var(--surface)" ';
+      html+='onclick="event.stopPropagation();var e=document.getElementById(''+expandId+'');var a=document.getElementById(''+arrowId+'');if(e){var h=e.style.display==='none';e.style.display=h?'block':'none';if(a)a.textContent=h?'▾':'▸'}">';
+      html+='<div class="av '+avc(l.cn)+'" style="width:28px;height:28px;font-size:10px;flex-shrink:0">'+ini(l.cn)+'</div>';
+      html+='<div style="flex:1;min-width:0">';
+      html+='<div style="font-size:13px;font-weight:500;color:var(--text)">'+l.cn+'</div>';
+      html+='<div style="font-size:11px;color:var(--text3)">'+l.pr+' · '+l.co+' · '+(l.cy||'')+'</div>';
+      html+='</div>';
+      html+='<div style="display:flex;align-items:center;gap:8px">';
+      if(isManual){
+        html+='<span style="font-size:11px;color:var(--text3);cursor:pointer;padding:2px 6px;border:1px solid var(--border);border-radius:4px" onclick="event.stopPropagation();unlnk('+c.id+','+l.id+')">remove</span>';
+      } else {
+        html+='<span style="font-size:10px;color:var(--text3);padding:2px 5px;background:var(--bg);border-radius:4px">auto</span>';
+      }
+      html+='<span id="'+arrowId+'" style="font-size:12px;color:var(--text3)">▸</span>';
+      html+='</div></div>';
+      // Expandable detail section
+      html+='<div id="'+expandId+'" style="display:none;padding:12px 14px 12px 48px;background:var(--bg);border-top:1px solid var(--border)">';
+      html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">';
+      html+='<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Insured</div><div style="font-size:12px;color:var(--text)">'+(l.ins||'—')+'</div></div>';
+      html+='<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Policy #</div><div style="font-size:12px;color:var(--text);font-family:'DM Mono',monospace">'+(l.pn||'—')+'</div></div>';
+      html+='<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Date sold</div><div style="font-size:12px;color:var(--text)">'+fmtD(l.ds)+'</div></div>';
+      html+='<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Coverage</div><div style="font-size:12px;color:var(--text)">'+(l.cv||'—')+'</div></div>';
+      html+='<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Phone</div><div style="font-size:12px;color:var(--text)">'+(l.ph||'—')+'</div></div>';
+      html+='<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Follow-up</div><div style="font-size:12px;color:var(--text)">'+(l.fu?fmtD(l.fu):'Not set')+'</div></div>';
+      html+='</div>';
+      if(l.notes&&l.notes.filter(function(n){return !n.sheet;}).length){
+        var note=l.notes.filter(function(n){return !n.sheet;})[0];
+        html+='<div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Latest note</div>';
+        html+='<div style="font-size:12px;color:var(--text);background:var(--surface);padding:6px 9px;border-radius:4px;border:1px solid var(--border);margin-bottom:8px">'+note.t+'</div>';
+      }
+      html+='<button onclick="event.stopPropagation();jumpTo('+l.id+')" style="font-size:11px;padding:5px 12px;border:1px solid var(--border2);border-radius:var(--rs);background:var(--surface);cursor:pointer;color:var(--text2);font-family:'DM Sans',sans-serif">Open full file →</button>';
+      html+='</div></div>';
+    });
+  }
+  
+  // Link file picker
+  html+='<div id="picker-'+c.id+'" style="display:none;padding:10px 12px;background:var(--bg);border-top:1px solid var(--border)">';
+  html+='<div style="font-size:11px;color:var(--text3);margin-bottom:6px">Search to link a file ('+linkable.length+' available):</div>';
+  html+='<input type="text" id="lkp-search-'+c.id+'" placeholder="Type name, policy #, phone, city, product…" ';
+  html+='style="width:100%;font-size:12px;padding:6px 9px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;outline:none;margin-bottom:6px" ';
+  html+='oninput="event.stopPropagation();renderLkpSearch('+c.id+')">';
+  html+='<div id="lkp-list-'+c.id+'">';
+  // Initial 8 results
+  var initial=linkable.slice(0,8);
+  initial.forEach(function(l){
+    html+='<div class="lkp-opt" onclick="event.stopPropagation();lnkFile('+c.id+','+l.id+')">';
+    html+='<div class="av '+avc(l.cn)+'" style="width:24px;height:24px;font-size:9px;flex-shrink:0">'+ini(l.cn)+'</div>';
+    html+='<div style="flex:1;min-width:0">';
+    html+='<div style="font-size:12px;color:var(--text)">'+l.cn+(l.ins&&l.ins!==l.cn?' / '+l.ins:'')+'</div>';
+    html+='<div style="font-size:10px;color:var(--text3)">'+l.pr+' · '+(l.pn||'')+' · '+l.co+' · '+l.cy+'</div>';
+    html+='</div></div>';
+  });
+  if(linkable.length>8){
+    html+='<div style="font-size:11px;color:var(--text3);padding:4px 7px">Showing 8 of '+linkable.length+' — type to filter</div>';
+  }
+  html+='</div></div></div>';
+  
+  // Notes
+  html+='<div class="sl">Notes</div>';
+  html+='<div class="nh">';
+  if(c.notes&&c.notes.length){
+    c.notes.forEach(function(n){
+      html+='<div class="ne"><div class="nt">'+n.t+'</div><div class="nd">'+(n.d||'')+'</div></div>';
+    });
+  } else {
+    html+='<div style="font-size:12px;color:var(--text3);padding:2px 0">No notes yet</div>';
+  }
+  html+='</div>';
+  html+='<div class="nir"><textarea id="ni-'+c.id+'" placeholder="Add a note…" oninput="nnt['+c.id+']=this.value">'+(nnt[c.id]||'')+'</textarea>';
+  html+='<button class="btn-sv" onclick="addNote('+c.id+')">Save note</button></div>';
+  html+='</div>';
+  return html;
+}
 
 function claimH(c){
 if(!c.claim)return`<div class="clm-sec"><div class="clm-hdr"><span class="clm-title">Claim</span><button class="clm-open" onclick="openClaim(${c.id})">+ Open claim</button></div><div style="padding:7px 11px;font-size:12px;color:var(--text3)">No active claim on this policy</div></div>`;
@@ -615,70 +702,7 @@ function togglePicker(cid){
 }
 
 
-function hhRows(c, lnk){
-  if(!lnk.length) return '<div style="padding:7px 11px;font-size:12px;color:var(--text3)">No linked files — phone/email matches auto-link</div>';
-  return lnk.map(function(l){
-    var isManual=(c.hh||[]).includes(l.id);
-    var removeBtn=isManual
-      ? '<span class="hhm-r" onclick="event.stopPropagation();unlnk('+c.id+','+l.id+')">remove</span>'
-      : '<span style="font-size:10px;color:var(--text3);padding:2px 4px">auto</span>';
-    var insuredLine=l.ins&&l.ins!==l.cn?'<span style="font-weight:400;color:var(--text3);font-size:11px"> / '+l.ins+'</span>':'';
-    var noteHtml='';
-    if(l.notes&&l.notes.length){
-      noteHtml='<div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;margin-top:8px">Latest note</div>'
-        +'<div style="font-size:12px;color:var(--text);background:var(--surface);padding:6px 9px;border-radius:4px;border:1px solid var(--border)">'+l.notes[0].t+'</div>';
-    }
-    return '<div style="border-bottom:1px solid var(--border)" onclick="event.stopPropagation()">'
-      +'<div style="display:flex;align-items:center;gap:7px;padding:9px 12px;cursor:pointer" onclick="event.stopPropagation();toggleHHExpand('+l.id+')">'
-        +'<div class="av '+avc(l.cn)+'" style="width:26px;height:26px;font-size:10px;flex-shrink:0">'+ini(l.cn)+'</div>'
-        +'<div style="flex:1;min-width:0">'
-          +'<div style="font-size:12px;font-weight:500;color:var(--text)">'+l.cn+insuredLine+'</div>'
-          +'<div style="font-size:11px;color:var(--text3);margin-top:1px">'+l.pr+' · '+l.co+'</div>'
-        +'</div>'
-        +'<div style="display:flex;align-items:center;gap:8px;flex-shrink:0">'
-          +removeBtn
-          +'<span style="font-size:11px;color:var(--text3)" id="hh-arrow-'+l.id+'">▸</span>'
-        +'</div>'
-      +'</div>'
-      +'<div id="hh-expand-'+l.id+'" style="display:none;padding:10px 12px 12px 45px;background:var(--bg);border-top:1px solid var(--border)">'
-        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px">'
-          +'<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px">Insured</div><div style="font-size:12px;color:var(--text)">'+(l.ins||'—')+'</div></div>'
-          +'<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px">Policy #</div><div style="font-size:12px;color:var(--text);font-family:'DM Mono',monospace">'+(l.pn||'—')+'</div></div>'
-          +'<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px">Product</div><div style="font-size:12px;color:var(--text)">'+(l.pr||'—')+'</div></div>'
-          +'<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px">Date sold</div><div style="font-size:12px;color:var(--text)">'+fmtD(l.ds)+'</div></div>'
-          +'<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px">Coverage</div><div style="font-size:12px;color:var(--text)">'+(l.cv||'—')+'</div></div>'
-          +'<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px">Follow-up</div><div style="font-size:12px;color:var(--text)">'+(l.fu?fmtD(l.fu):'Not set')+'</div></div>'
-        +'</div>'
-        +noteHtml
-        +'<div style="margin-top:10px">'
-          +'<button onclick="event.stopPropagation();jumpTo('+l.id+')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border2);border-radius:4px;background:none;cursor:pointer;color:var(--text2);font-family:'DM Sans',sans-serif">Open full file →</button>'
-        +'</div>'
-      +'</div>'
-    +'</div>';
-  }).join('');
-}
 
-function lkpRows(c, linkable){
-  return linkable.slice(0,8).map(function(l){
-    return '<div class="lkp-opt" onclick="lnkFile('+c.id+','+l.id+')">'
-      +'<div class="av '+avc(l.cn)+'" style="width:24px;height:24px;font-size:9px;flex-shrink:0">'+ini(l.cn)+'</div>'
-      +'<div style="flex:1;min-width:0">'
-        +'<div style="font-size:12px;color:var(--text)">'+l.cn+(l.ins&&l.ins!==l.cn?' / '+l.ins:'')+'</div>'
-        +'<div style="font-size:10px;color:var(--text3)">'+l.pr+' · '+(l.pn||'')+'  · '+l.co+' · '+l.cy+'</div>'
-      +'</div>'
-    +'</div>';
-  }).join('')
-  +(linkable.length>8?'<div style="font-size:11px;color:var(--text3);padding:4px 7px">Showing 8 of '+linkable.length+' — type to filter</div>':'');
-}
-
-function toggleHHExpand(lid){
-  // Find by data attribute in case ID has special chars
-  var el=document.getElementById("hh-expand-"+lid);
-  var arrow=document.getElementById("hh-arrow-"+lid);
-  if(!el){
-    console.warn("hh-expand-"+lid+" not found");
-    return;
-  }
   var isHidden=el.style.display==="none"||el.style.display==="";
   el.style.display=isHidden?"block":"none";
   if(arrow)arrow.textContent=isHidden?"▾":"▸";
