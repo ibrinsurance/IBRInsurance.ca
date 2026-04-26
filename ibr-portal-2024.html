@@ -300,31 +300,33 @@ function parseJwt(t){return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').re
 function logout(){google.accounts.id.disableAutoSelect();document.getElementById('appShell').style.display='none';document.getElementById('loginScreen').style.display='flex';clients=[];sel=null;}
 
 // ── LOAD FROM APPS SCRIPT ──
-async function loadData(){
+async async function loadData(){
   document.getElementById('syncStatus').textContent='Loading…';
-  document.getElementById('list').innerHTML='<div class="loading"><div class="spinner"></div><span>Loading your clients…</span></div>';
-  if(APPS_SCRIPT_URL==='https://script.google.com/macros/s/AKfycbxsezfmu7ugl8EngHjs3I-1hB7Mj_65V5VKUIcxlkUz93pM6ad4hrEleKKNY4msqVKu/exec'){loadDemo();return;}
+  document.getElementById('list').innerHTML='<div class="loading"><div class="spinner"></div><span>Connecting to your sheet…</span></div>';
   try{
-    const r=await fetch(APPS_SCRIPT_URL+'?action=getData');
+    const r=await fetch('/api/sheet?action=getData');
+    if(!r.ok)throw new Error('HTTP '+r.status);
     const d=await r.json();
-    if(d.error){throw new Error(d.error);}
+    if(d.error)throw new Error(d.error);
     parseRows(d.rows);
     sheetConnected=true;
     document.getElementById('sdot').classList.remove('err');
-    document.getElementById('syncStatus').textContent=`${clients.length} clients · live`;
+    document.getElementById('syncStatus').textContent=clients.length+' clients · live';
     render();
   }catch(e){
-    console.warn('Sheet load error:',e);
-    loadDemo();
+    console.error('Load error:',e);
     document.getElementById('sdot').classList.add('err');
-    document.getElementById('syncStatus').textContent='Demo mode — sheet not connected';
+    document.getElementById('syncStatus').textContent='Cannot reach sheet';
+    document.getElementById('list').innerHTML='<div class="empty" style="max-width:380px;margin:0 auto;text-align:left"><strong>Cannot connect to Google Sheet</strong><br><br>Error: '+e.message+'<br><br>The /api/sheet proxy may not be deployed yet on Vercel.</div>';
   }
 }
 
 async function sheetWrite(action, data){
-  if(!sheetConnected||APPS_SCRIPT_URL==='https://script.google.com/macros/s/AKfycbxsezfmu7ugl8EngHjs3I-1hB7Mj_65V5VKUIcxlkUz93pM6ad4hrEleKKNY4msqVKu/exec')return;
+  if(!sheetConnected)return;
   try{
-    await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify({action,...data}),headers:{'Content-Type':'text/plain'}});
+    const params=new URLSearchParams({action});
+    Object.entries(data).forEach(([k,v])=>params.set(k,typeof v==='object'?JSON.stringify(v):v));
+    await fetch('/api/sheet?'+params.toString());
   }catch(e){console.warn('Write error:',e);}
 }
 
@@ -343,19 +345,6 @@ function parseRows(rows){
   });
 }
 
-// ── DEMO DATA ──
-function loadDemo(){
-  const t=new Date(),aD=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r.toISOString().split('T')[0];},td=t.toISOString().split('T')[0];
-  clients=[
-    {id:nextId++,rowNum:2,cn:'Harjinder Singh',ins:'Harjinder Singh',ds:'2022-03-15',co:'Canada Life',cv:'$500,000',pn:'CL-2022-4421',ph:'416-555-0191, 416-555-0192',em:'harjinder.s@gmail.com',cy:'Brampton',ap:'$3,200',cm:'$640',src:'Referral',pr:'Critical Illness',fu:aD(td,-10),done:false,notes:[{t:'Interested in disability rider.',d:'2024-11-02'}],hh:[],claim:null},
-    {id:nextId++,rowNum:3,cn:'Priya Mehta',ins:'Raj Mehta',ds:'2023-06-01',co:'Sun Life',cv:'$250,000',pn:'SL-2023-8871',ph:'905-555-0147',em:'priya.mehta@hotmail.com',cy:'Mississauga',ap:'$1,800',cm:'$360',src:'Walk-in',pr:'Term Insurance',fu:aD(td,4),done:false,notes:[{t:'Wants to increase coverage.',d:'2025-03-20'}],hh:[4],claim:null},
-    {id:nextId++,rowNum:4,cn:'Gurpreet Kaur',ins:'Gurpreet Kaur',ds:'2021-09-20',co:'Manulife',cv:'RRSP',pn:'MF-2021-3310',ph:'647-555-0132',em:'gurpreet.k@yahoo.ca',cy:'Scarborough',ap:'$2,400',cm:'$480',src:'Facebook',pr:'RRSP',fu:aD(td,3),done:false,notes:[],hh:[],claim:null},
-    {id:nextId++,rowNum:5,cn:'Priya Mehta',ins:'Arjun Mehta',ds:'2024-01-15',co:'Manulife',cv:'RESP',pn:'MF-2024-7733',ph:'905-555-0147',em:'priya.mehta@hotmail.com',cy:'Mississauga',ap:'$900',cm:'$180',src:'Walk-in',pr:'RESP',fu:null,done:false,notes:[],hh:[3],claim:null},
-    {id:nextId++,rowNum:6,cn:'Tejinder Sandhu',ins:'Tejinder Sandhu',ds:'2023-03-10',co:'Canada Life',cv:'$150,000',pn:'CL-2023-5521',ph:'905-555-0199',em:'tej.sandhu@bell.net',cy:'Vaughan',ap:'$1,100',cm:'$220',src:'Referral',pr:'Term Insurance',fu:aD(td,14),done:false,notes:[{t:'Considering converting to whole life.',d:'2024-09-01'}],hh:[],claim:{type:'Death Benefit',opened:'2025-01-10',status:'In Review',notes:'Policy CL-2023-5521 claim submitted',followup:''}},
-    {id:nextId++,rowNum:7,cn:'Amritpal Dhaliwal',ins:'Amritpal Dhaliwal',ds:'2023-01-10',co:'Empire Life',cv:'$1,000,000',pn:'EL-2023-0092',ph:'416-555-0188',em:'amritpal.d@gmail.com',cy:'Toronto',ap:'$5,600',cm:'$1,120',src:'Referral',pr:'UL Insurance',fu:aD(td,30),done:false,notes:[],hh:[],claim:null},
-  ];
-  render();
-}
 
 // ── UNDO ──
 function snap(){return JSON.parse(JSON.stringify(clients));}
