@@ -918,7 +918,7 @@ function renderLeads(){
 var _anYears = [];      // selected years for comparison
 var _anMonths = [];     // selected months filter (empty = all)
 var _anExpHH = {};      // expanded households in top 50
-var _anView = 'monthly'; // 'monthly' | 'products' | 'households'
+var _anView = 'monthly'; // 'monthly' | 'products' | 'sources' | 'households'
 var _anBuilt = false;   // has data been processed
 
 function _buildAnalyticsData(){
@@ -1017,7 +1017,7 @@ function renderAnalytics(){
 
   // ── VIEW TOGGLE ────────────────────────────────────────────────────
   html += '<div style="display:flex;gap:8px;margin-bottom:14px">';
-  var views = [['monthly','Monthly totals'],['products','By product'],['households','Top 50 clients']];
+  var views = [['monthly','Monthly totals'],['products','By product'],['sources','Lead sources'],['companies','By company'],['households','Top 50 clients']];
   views.forEach(function(v){
     html += '<button data-vw="'+v[0]+'" onclick="_anSetView(this.dataset.vw)" style="padding:6px 14px;border-radius:var(--rs);border:1px solid '+(_anView===v[0]?'var(--accent)':'var(--border)')+';background:'+(_anView===v[0]?'var(--accent)':'var(--surface)')+';color:'+(_anView===v[0]?'#fff':'var(--text2)')+';font-size:12px;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:'+(_anView===v[0]?'600':'400')+'">'+v[1]+'</button>';
   });
@@ -1152,6 +1152,200 @@ function renderAnalytics(){
       html+='</div>';
     });
     html += '</div>';
+  }
+
+  // ── VIEW: LEAD SOURCES ────────────────────────────────────────────
+  else if(_anView==='sources'){
+    var f$ = function(n){return '$'+Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');};
+    // Build source data with product breakdown
+    var srcData = {};
+    clients.forEach(function(c){
+      var src = (c.src||'Unknown').trim()||'Unknown';
+      var pr = (c.pr||'Unknown').trim()||'Unknown';
+      var comm = parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;
+      if(!srcData[src]) srcData[src] = {comm:0, count:0, byProduct:{}, clients:new Set()};
+      srcData[src].comm += comm;
+      srcData[src].count++;
+      srcData[src].clients.add(c.cn);
+      if(!srcData[src].byProduct[pr]) srcData[src].byProduct[pr] = {comm:0, count:0};
+      srcData[src].byProduct[pr].comm += comm;
+      srcData[src].byProduct[pr].count++;
+    });
+
+    // Convert sets to counts
+    Object.values(srcData).forEach(function(s){ s.uniqueClients = s.clients.size; delete s.clients; });
+
+    var sortedSrc = Object.entries(srcData).sort(function(a,b){return b[1].comm-a[1].comm;});
+    var maxComm = sortedSrc.length ? sortedSrc[0][1].comm : 1;
+    var totalComm = sortedSrc.reduce(function(s,e){return s+e[1].comm;},0);
+    var totalPolicies = sortedSrc.reduce(function(s,e){return s+e[1].count;},0);
+
+    html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">';
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px"><div style="font-size:20px;font-weight:700">'+sortedSrc.length+'</div><div style="font-size:11px;color:var(--text3)">Unique sources</div></div>';
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px"><div style="font-size:20px;font-weight:700;color:var(--accent)">'+f$(totalComm)+'</div><div style="font-size:11px;color:var(--text3)">Total commission tracked</div></div>';
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px"><div style="font-size:20px;font-weight:700">'+totalPolicies+'</div><div style="font-size:11px;color:var(--text3)">Total policies</div></div>';
+    var topSrc = sortedSrc[0];
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px"><div style="font-size:16px;font-weight:700;color:var(--accent)">'+( topSrc?topSrc[0]:'')+'</div><div style="font-size:11px;color:var(--text3)">Top source ('+( topSrc?f$(topSrc[1].comm):'')+' comm)</div></div>';
+    html += '</div>';
+
+    // Main source breakdown table
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px">';
+    html += '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Commission & policies by source — click to expand product breakdown</div>';
+
+    sortedSrc.forEach(function(entry, i){
+      var src = entry[0]; var d = entry[1];
+      var pct = Math.round(d.comm/maxComm*100);
+      var sharePct = totalComm > 0 ? (d.comm/totalComm*100).toFixed(1) : 0;
+      var expKey = 'src'+i;
+      var expanded = _anExpHH[expKey];
+      var avgComm = d.count > 0 ? d.comm/d.count : 0;
+
+      html += '<div style="border-bottom:1px solid var(--border);padding:10px 0">';
+      // Summary row - clickable
+      html += '<div data-hhk="'+expKey+'" onclick="_anClickHH(this)" style="cursor:pointer;user-select:none">';
+      html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">';
+      html += '<div style="flex:1"><span style="font-size:13px;font-weight:600;color:var(--text)">'+src+'</span>';
+      html += ' <span style="font-size:11px;color:var(--text3)">'+sharePct+'% of total</span></div>';
+      html += '<div style="display:flex;gap:16px;align-items:center">';
+      html += '<div style="text-align:right"><div style="font-size:12px;color:var(--text3)">Policies</div><div style="font-size:13px;font-weight:600;color:var(--text)">'+d.count+'</div></div>';
+      html += '<div style="text-align:right"><div style="font-size:12px;color:var(--text3)">Clients</div><div style="font-size:13px;font-weight:600;color:var(--text)">'+d.uniqueClients+'</div></div>';
+      html += '<div style="text-align:right"><div style="font-size:12px;color:var(--text3)">Avg/policy</div><div style="font-size:13px;font-weight:600;color:var(--text)">'+f$(avgComm)+'</div></div>';
+      html += '<div style="text-align:right"><div style="font-size:12px;color:var(--text3)">Commission</div><div style="font-size:14px;font-weight:700;color:var(--accent)">'+f$(d.comm)+'</div></div>';
+      html += '<span style="color:var(--text3);font-size:13px">'+(expanded?'▾':'▸')+'</span>';
+      html += '</div></div>';
+      // Bar
+      html += '<div style="background:var(--bg);border-radius:3px;height:8px;overflow:hidden">';
+      html += '<div style="width:'+pct+'%;height:100%;background:var(--accent);border-radius:3px"></div></div>';
+      html += '</div>';
+
+      // Expanded: product breakdown for this source
+      if(expanded){
+        var prodEntries = Object.entries(d.byProduct).sort(function(a,b){return b[1].comm-a[1].comm;});
+        var maxProd = prodEntries.length ? prodEntries[0][1].comm : 1;
+        html += '<div style="padding:10px 0 4px 12px;border-top:1px solid var(--border);margin-top:6px">';
+        html += '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Products from this source:</div>';
+        html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:6px">';
+        prodEntries.forEach(function(pe){
+          var ppct = Math.round(pe[1].comm/maxProd*100);
+          var pShare = d.comm > 0 ? (pe[1].comm/d.comm*100).toFixed(0) : 0;
+          html += '<div style="background:var(--bg);border-radius:6px;padding:8px 10px">';
+          html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">';
+          html += '<span style="font-size:12px;font-weight:500;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+pe[0]+'">'+pe[0]+'</span>';
+          html += '<span style="font-size:10px;padding:1px 5px;background:var(--accent-l);color:var(--accent);border-radius:20px">'+pShare+'%</span>';
+          html += '</div>';
+          html += '<div style="background:var(--surface);border-radius:2px;height:5px;overflow:hidden;margin-bottom:4px">';
+          html += '<div style="width:'+ppct+'%;height:100%;background:var(--blue);border-radius:2px"></div></div>';
+          html += '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3)">';
+          html += '<span>'+pe[1].count+' polic'+(pe[1].count===1?'y':'ies')+'</span><span style="color:var(--text);font-weight:500">'+f$(pe[1].comm)+'</span>';
+          html += '</div></div>';
+        });
+        html += '</div></div>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+
+    // Source efficiency table (avg commission per policy, client conversion)
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px">';
+    html += '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Source efficiency — which sources bring the highest-value clients?</div>';
+    html += '<table style="width:100%;border-collapse:collapse;font-size:12px">';
+    html += '<thead><tr style="border-bottom:1px solid var(--border)">';
+    ['Source','Policies','Unique clients','Avg comm/policy','Avg policies/client','Total commission'].forEach(function(h){
+      html += '<th style="text-align:'+(h==='Source'?'left':'right')+';padding:5px 8px;font-size:10px;color:var(--text3);font-weight:500;text-transform:uppercase">'+h+'</th>';
+    });
+    html += '</tr></thead><tbody>';
+    sortedSrc.sort(function(a,b){return (b[1].count>0?b[1].comm/b[1].count:0)-(a[1].count>0?a[1].comm/a[1].count:0);}).forEach(function(e,i){
+      var d=e[1];
+      var avgP = d.count>0?d.comm/d.count:0;
+      var avgPPC = d.uniqueClients>0?d.count/d.uniqueClients:0;
+      html += '<tr style="border-bottom:1px solid var(--border);'+(i%2===0?'':'background:var(--bg)')+'">';
+      html += '<td style="padding:7px 8px;font-weight:500;color:var(--text)">'+e[0]+'</td>';
+      html += '<td style="padding:7px 8px;text-align:right;color:var(--text2)">'+d.count+'</td>';
+      html += '<td style="padding:7px 8px;text-align:right;color:var(--text2)">'+d.uniqueClients+'</td>';
+      html += '<td style="padding:7px 8px;text-align:right;font-weight:600;color:'+(avgP>500?'var(--accent)':'var(--text)')+'">'+f$(avgP)+'</td>';
+      html += '<td style="padding:7px 8px;text-align:right;color:var(--text2)">'+avgPPC.toFixed(1)+'</td>';
+      html += '<td style="padding:7px 8px;text-align:right;font-weight:600;color:var(--accent)">'+f$(d.comm)+'</td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+  }
+
+  // ── VIEW: BY COMPANY ─────────────────────────────────────────────
+  else if(_anView==='companies'){
+    var f$ = function(n){return '$'+Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');};
+    var coData = {};
+    clients.forEach(function(c){
+      var co = (c.co||'Unknown').trim()||'Unknown';
+      var pr = (c.pr||'Unknown').trim()||'Unknown';
+      var comm = parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;
+      var d = new Date(c.ds); var y = d.getFullYear();
+      if(!coData[co]) coData[co]={comm:0,count:0,byProduct:{},byYear:{},clients:new Set()};
+      coData[co].comm+=comm; coData[co].count++;
+      coData[co].clients.add(c.cn);
+      if(!coData[co].byProduct[pr]) coData[co].byProduct[pr]={comm:0,count:0};
+      coData[co].byProduct[pr].comm+=comm; coData[co].byProduct[pr].count++;
+      if(!coData[co].byYear[y]) coData[co].byYear[y]={comm:0,count:0};
+      coData[co].byYear[y].comm+=comm; coData[co].byYear[y].count++;
+    });
+    Object.values(coData).forEach(function(d){d.uniqueClients=d.clients.size;delete d.clients;});
+    var sortedCo = Object.entries(coData).sort(function(a,b){return b[1].comm-a[1].comm;});
+    var maxCoComm = sortedCo.length?sortedCo[0][1].comm:1;
+    var YC={'2019':'#94a3b8','2020':'#6366f1','2021':'#8b5cf6','2022':'#f59e0b','2023':'#10b981','2024':'#3b82f6','2025':'#ef4444','2026':'#f97316'};
+
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px">';
+    html += '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Commission by insurance company — click to see product & year breakdown</div>';
+    sortedCo.forEach(function(entry,i){
+      var co=entry[0]; var d=entry[1];
+      var pct=Math.round(d.comm/maxCoComm*100);
+      var expKey='co'+i; var expanded=_anExpHH[expKey];
+      html+='<div style="border-bottom:1px solid var(--border);padding:10px 0">';
+      html+='<div data-hhk="'+expKey+'" onclick="_anClickHH(this)" style="cursor:pointer;user-select:none">';
+      html+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:5px">';
+      html+='<span style="font-size:13px;font-weight:600;color:var(--text);flex:1">'+co+'</span>';
+      html+='<div style="display:flex;gap:14px;align-items:center">';
+      html+='<div style="text-align:right"><div style="font-size:11px;color:var(--text3)">Policies</div><div style="font-size:13px;font-weight:600">'+d.count+'</div></div>';
+      html+='<div style="text-align:right"><div style="font-size:11px;color:var(--text3)">Clients</div><div style="font-size:13px;font-weight:600">'+d.uniqueClients+'</div></div>';
+      html+='<div style="text-align:right"><div style="font-size:11px;color:var(--text3)">Avg/policy</div><div style="font-size:13px;font-weight:600">'+f$(d.count>0?d.comm/d.count:0)+'</div></div>';
+      html+='<div style="text-align:right"><div style="font-size:11px;color:var(--text3)">Total</div><div style="font-size:14px;font-weight:700;color:var(--accent)">'+f$(d.comm)+'</div></div>';
+      html+='<span style="color:var(--text3);font-size:13px">'+(expanded?'▾':'▸')+'</span>';
+      html+='</div></div>';
+      html+='<div style="background:var(--bg);border-radius:3px;height:6px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:var(--blue);border-radius:3px"></div></div>';
+      html+='</div>';
+      if(expanded){
+        var prods=Object.entries(d.byProduct).sort(function(a,b){return b[1].comm-a[1].comm;});
+        var years=Object.entries(d.byYear).sort(function(a,b){return b[0]-a[0];}).slice(0,5);
+        html+='<div style="padding:10px 0 6px 0;border-top:1px solid var(--border);margin-top:6px;display:grid;grid-template-columns:1fr 1fr;gap:14px">';
+        // Products column
+        html+='<div>';
+        html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">Products</div>';
+        var maxPr=prods.length?prods[0][1].comm:1;
+        prods.slice(0,8).forEach(function(pe){
+          var ppct=Math.round(pe[1].comm/maxPr*100);
+          html+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">';
+          html+='<span style="font-size:11px;color:var(--text2);width:110px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+pe[0]+'">'+pe[0]+'</span>';
+          html+='<div style="flex:1;background:var(--bg);border-radius:2px;height:5px;overflow:hidden"><div style="width:'+ppct+'%;height:100%;background:var(--blue);border-radius:2px"></div></div>';
+          html+='<span style="font-size:11px;color:var(--text);width:54px;text-align:right;flex-shrink:0">'+f$(pe[1].comm)+'</span>';
+          html+='</div>';
+        });
+        html+='</div>';
+        // Year trend column
+        html+='<div>';
+        html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">Year trend</div>';
+        var maxYr=years.length?Math.max.apply(null,years.map(function(e){return e[1].comm;})):1;
+        years.forEach(function(ye){
+          var ypct=Math.round(ye[1].comm/maxYr*100);
+          var yc=YC[ye[0]]||'#64748b';
+          html+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">';
+          html+='<span style="font-size:11px;color:'+yc+';width:36px;font-weight:600;flex-shrink:0">'+ye[0]+'</span>';
+          html+='<div style="flex:1;background:var(--bg);border-radius:2px;height:5px;overflow:hidden"><div style="width:'+ypct+'%;height:100%;background:'+yc+';border-radius:2px"></div></div>';
+          html+='<span style="font-size:11px;color:var(--text);width:54px;text-align:right;flex-shrink:0">'+f$(ye[1].comm)+'</span>';
+          html+='</div>';
+        });
+        html+='</div></div>';
+      }
+      html+='</div>';
+    });
+    html+='</div>';
   }
 
   // ── VIEW: TOP 50 HOUSEHOLDS ───────────────────────────────────────
