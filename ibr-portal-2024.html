@@ -285,7 +285,8 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
       <div class="filter-row">
         <span class="fl">Show:</span>
         <select class="preset" id="preset" onchange="applyPreset()">
-          <option value="followups">Follow-ups only (default)</option>
+          <option value="all">All products</option>
+          <option value="followups">Follow-ups only</option>
           <option value="all">All products</option>
           <option value="life">Life insurance (Term, UL, WL)</option>
           <option value="ci">Critical illness</option>
@@ -296,10 +297,10 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
         </select>
       </div>
       <div class="tabs">
-        <button class="tab active" id="t-ov" onclick="setTab('overdue')">Overdue <span class="bdg br" id="b-ov">0</span></button>
+        <button class="tab" id="t-ov" onclick="setTab('overdue')">Overdue <span class="bdg br" id="b-ov">0</span></button>
         <button class="tab" id="t-tw" onclick="setTab('thisweek')">This week <span class="bdg ba" id="b-tw">0</span></button>
         <button class="tab" id="t-up" onclick="setTab('upcoming')">Upcoming <span class="bdg bg" id="b-up">0</span></button>
-        <button class="tab" id="t-al" onclick="setTab('all')">All <span class="bdg bgr" id="b-al">0</span></button>
+        <button class="tab active" id="t-al" onclick="setTab('all')">All <span class="bdg bgr" id="b-al">0</span></button>
       </div>
       <div class="mar"><span class="rc" id="rc"></span><button onclick="markAllDone()">Mark all visible as complete</button></div>
     </div>
@@ -324,7 +325,7 @@ const CLAIM_TYPES=['Death Benefit','Critical Illness Payout','Disability Claim',
 const CLAIM_STATUSES=['Submitted','In Review','Approved','Paid','Denied'];
 const DQG=[{l:'Disability variants',i:['Disability','Disability Insurance']},{l:'Truck-Travel variants',i:['Truck-Travel','Truck - Travel','Truck Travel']},{l:'RRSP typos',i:['RRSP','RRP','SRRP']},{l:'Transfer variants',i:['UL Transfer','WL Transfer','Term Transfer','Transfer']},{l:'Likely wrong column',i:['Tiktok','Entity']}];
 
-let isOwner=false, clients=[], nextId=1000, mode='followup', tab='overdue', sel=null, preset='followups', nnt={}, lkp=null, undoStack=[], sheetConnected=false;
+let isOwner=false, clients=[], nextId=1000, mode='followup', tab='all', sel=null, preset='all', nnt={}, lkp=null, undoStack=[], sheetConnected=false;
 
 // ── AUTH ──
 window.addEventListener('load', function(){
