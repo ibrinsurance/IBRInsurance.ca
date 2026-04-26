@@ -923,302 +923,357 @@ function renderLeads(){
   el.innerHTML = html;
 }
 
-// ════════════════════════════════════════════════════
-// ANALYTICS MODULE
-// ════════════════════════════════════════════════════
+// ================================================================
+// ANALYTICS MODULE - fully rewritten
+// ================================================================
+var _anYears = [];      // selected years for comparison
+var _anMonths = [];     // selected months filter (empty = all)
+var _anExpHH = {};      // expanded households in top 50
+var _anView = 'monthly'; // 'monthly' | 'products' | 'households'
+var _anBuilt = false;   // has data been processed
 
-// State for analytics filters
-var anSelectedYears = [];
-var anExpandedHH = {};
+function _buildAnalyticsData(){
+  var tod = new Date();
+  var curYear = tod.getFullYear();
+  var data = {
+    curYear: curYear,
+    curMonth: tod.getMonth() + 1,
+    yearProgress: Math.ceil((tod - new Date(curYear,0,1))/864e5) / (365 + (curYear%4===0?1:0)),
+    byYM: {},   // [year][month] = {comm, count, byProd:{pr:comm}}
+    byYear: {},
+    byProd: {},
+    bySrc: {},
+    allYears: []
+  };
+  clients.forEach(function(c){
+    if(!c.ds) return;
+    var d = new Date(c.ds);
+    var y = d.getFullYear(); var m = d.getMonth()+1;
+    if(!y||isNaN(y)||y<2019||y>curYear) return;
+    var comm = parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;
+    var pr = (c.pr||'').trim()||'Unknown';
+    var src = (c.src||'Unknown').trim();
+    if(!data.byYM[y]) data.byYM[y]={};
+    if(!data.byYM[y][m]) data.byYM[y][m]={comm:0,count:0,byProd:{}};
+    if(!data.byYear[y]) data.byYear[y]={comm:0,count:0};
+    data.byYM[y][m].comm += comm;
+    data.byYM[y][m].count++;
+    data.byYM[y][m].byProd[pr] = (data.byYM[y][m].byProd[pr]||0) + comm;
+    data.byYear[y].comm += comm;
+    data.byYear[y].count++;
+    if(!data.byProd[pr]) data.byProd[pr]={comm:0,count:0};
+    data.byProd[pr].comm+=comm; data.byProd[pr].count++;
+    if(!data.bySrc[src]) data.bySrc[src]={comm:0,count:0};
+    data.bySrc[src].comm+=comm; data.bySrc[src].count++;
+  });
+  data.allYears = Object.keys(data.byYear).map(Number).sort(function(a,b){return a-b;});
+  // Default: last 4 years selected
+  if(_anYears.length===0) _anYears = data.allYears.slice(-4).slice();
+  return data;
+}
 
 function renderAnalytics(){
-  var el=document.getElementById('list');
+  var el = document.getElementById('list');
   if(!sheetConnected||clients.length===0){
-    el.innerHTML='<div class="empty">Sign in and wait for data to load first</div>';
+    el.innerHTML='<div class="empty">Data not loaded yet — sign in and wait for clients to load</div>';
     return;
   }
+  var D = _buildAnalyticsData();
+  var f$ = function(n){return '$'+Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');};
+  var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var YC = {2019:'#94a3b8',2020:'#6366f1',2021:'#8b5cf6',2022:'#f59e0b',2023:'#10b981',2024:'#3b82f6',2025:'#ef4444',2026:'#f97316',2027:'#06b6d4'};
+  var curY = D.curYear;
+  var curYComm = D.byYear[curY]?D.byYear[curY].comm:0;
+  var projected = D.yearProgress>0 ? curYComm/D.yearProgress : 0;
+  var prevY = curY-1;
+  var prevYComm = D.byYear[prevY]?D.byYear[prevY].comm:0;
+  var pct = prevYComm>0?((projected-prevYComm)/prevYComm*100):0;
+  var displayYears = D.allYears.filter(function(y){return _anYears.indexOf(y)>=0;});
+  var html = '';
 
-  var tod=new Date();
-  var curYear=tod.getFullYear();
-  var curMonth=tod.getMonth()+1;
-  var dayOfYear=Math.ceil((tod-new Date(curYear,0,1))/864e5);
-  var daysInYear=365+(curYear%4===0?1:0);
-  var yearProgress=dayOfYear/daysInYear;
-  var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var fmt$=function(n){return '$'+Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');};
-
-  // Build all data structures
-  var byYearMonth={};   // [year][month] = {commission, count, products:{pr:commission}}
-  var byYear={};
-  var byProduct={};
-  var bySource={};
-
-  clients.forEach(function(c){
-    if(!c.ds)return;
-    var d=new Date(c.ds);
-    var y=d.getFullYear();
-    var m=d.getMonth()+1;
-    if(!y||isNaN(y)||y<2019||y>curYear)return;
-    if(!byYearMonth[y])byYearMonth[y]={};
-    if(!byYearMonth[y][m])byYearMonth[y][m]={commission:0,count:0,products:{}};
-    if(!byYear[y])byYear[y]={commission:0,count:0};
-    var comm=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;
-    byYearMonth[y][m].commission+=comm;
-    byYearMonth[y][m].count++;
-    var pr=(c.pr||'').trim();
-    if(pr){
-      byYearMonth[y][m].products[pr]=(byYearMonth[y][m].products[pr]||0)+comm;
-      if(!byProduct[pr])byProduct[pr]={count:0,commission:0};
-      byProduct[pr].count++;byProduct[pr].commission+=comm;
-    }
-    byYear[y].commission+=comm;byYear[y].count++;
-    var src=(c.src||'Unknown').trim();
-    if(!bySource[src])bySource[src]={count:0,commission:0};
-    bySource[src].count++;bySource[src].commission+=comm;
+  // ── KPI STRIP ──────────────────────────────────────────────────────
+  html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">';
+  var kpis = [
+    [f$(curYComm), curY+' YTD commission', ''],
+    [f$(projected), 'Full year projected', 'color:var(--accent)'],
+    [(pct>=0?'+':'')+pct.toFixed(1)+'%', 'vs '+prevY+' projected', 'color:'+(pct>=0?'var(--accent)':'var(--red)')],
+    [(D.byYear[curY]?D.byYear[curY].count:0)+' sold', 'Policies in '+curY, '']
+  ];
+  kpis.forEach(function(k){
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px">';
+    html += '<div style="font-size:20px;font-weight:700;'+k[2]+'">'+k[0]+'</div>';
+    html += '<div style="font-size:11px;color:var(--text3);margin-top:2px">'+k[1]+'</div></div>';
   });
+  html += '</div>';
 
-  var allYears=Object.keys(byYearMonth).map(Number).sort(function(a,b){return a-b;});
-  // Default: show last 4 years if no selection
-  if(anSelectedYears.length===0) anSelectedYears=allYears.slice(-4);
-  var displayYears=allYears.filter(function(y){return anSelectedYears.indexOf(y)>=0;}).sort(function(a,b){return a-b;});
-
-  var curYearComm=byYear[curYear]?byYear[curYear].commission:0;
-  var projected=yearProgress>0?curYearComm/yearProgress:0;
-  var prevYear=curYear-1;
-  var prevYearComm=byYear[prevYear]?byYear[prevYear].commission:0;
-  var vsLastYear=prevYearComm>0?((projected-prevYearComm)/prevYearComm*100):0;
-  var topProducts=Object.entries(byProduct).sort(function(a,b){return b[1].commission-a[1].commission;}).slice(0,12);
-  var topSources=Object.entries(bySource).sort(function(a,b){return b[1].count-a[1].count;}).slice(0,8);
-  var maxProd=topProducts.length?topProducts[0][1].commission:1;
-  var maxSrc=topSources.length?topSources[0][1].count:1;
-  var yearColors={'2019':'#94a3b8','2020':'#6366f1','2021':'#8b5cf6','2022':'#f59e0b','2023':'#10b981','2024':'#3b82f6','2025':'#ef4444','2026':'#f97316'};
-
-  var html='';
-
-  // ── STATS ROW ──
-  html+='<div class="lead-stats" style="margin-bottom:14px">';
-  html+='<div class="stat-card"><div class="stat-num">'+fmt$(curYearComm)+'</div><div class="stat-label">'+curYear+' to date</div></div>';
-  html+='<div class="stat-card"><div class="stat-num" style="color:var(--accent)">'+fmt$(projected)+'</div><div class="stat-label">Full year projected</div></div>';
-  var vsColor=vsLastYear>=0?'var(--accent)':'var(--red)';
-  html+='<div class="stat-card"><div class="stat-num" style="color:'+vsColor+'">'+(vsLastYear>=0?'+':'')+vsLastYear.toFixed(1)+'%</div><div class="stat-label">vs '+prevYear+' projected</div></div>';
-  html+='<div class="stat-card"><div class="stat-num">'+(byYear[curYear]?byYear[curYear].count:0)+'</div><div class="stat-label">Policies '+curYear+'</div></div>';
-  html+='</div>';
-
-  // ── YEAR SELECTOR ──
-  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:14px">';
-  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Compare years (select which to show):</div>';
-  html+='<div style="display:flex;gap:8px;flex-wrap:wrap">';
-  allYears.forEach(function(y){
-    var sel=anSelectedYears.indexOf(y)>=0;
-    var color=yearColors[y]||'#64748b';
-    html+='<button onclick="anToggleYear('+y+')" style="padding:4px 12px;border-radius:20px;border:2px solid '+color+';background:'+(sel?color:'none')+';color:'+(sel?'#fff':color)+';font-size:12px;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:500">'+y+'</button>';
+  // ── YEAR SELECTOR ──────────────────────────────────────────────────
+  html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:14px">';
+  html += '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Select years to compare:</div>';
+  html += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">';
+  D.allYears.forEach(function(y){
+    var sel = _anYears.indexOf(y)>=0;
+    var c = YC[y]||'#64748b';
+    html += '<button onclick="_anToggleYear('+y+')" style="padding:5px 14px;border-radius:20px;border:2px solid '+c+';background:'+(sel?c:'transparent')+';color:'+(sel?'#fff':c)+';font-size:12px;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:600;transition:all .15s">'+y+'</button>';
   });
-  html+='</div></div>';
-
-  // ── YEAR OVER YEAR TABLE ──
-  html+='<div class="an-card" style="margin-bottom:14px"><div class="an-title">Year-over-year commission</div>';
-  Object.keys(byYear).map(Number).sort(function(a,b){return b-a;}).forEach(function(y,i,arr){
-    var curr=byYear[y].commission;
-    var prev=byYear[arr[i+1]]?byYear[arr[i+1]].commission:null;
-    var change=prev?Math.round((curr-prev)/prev*100):null;
-    var isCur=y===curYear;
-    var color=yearColors[y]||'#64748b';
-    html+='<div class="an-yrrow" style="border-left:3px solid '+color+';padding-left:8px;margin-bottom:6px">';
-    html+='<span class="an-yr" style="'+(isCur?'font-weight:600':'')+'">'+y+'</span>';
-    html+='<span class="an-yrtotal" style="'+(isCur?'color:var(--accent)':'')+'">'+fmt$(curr)+(isCur?' <span style="font-size:10px;color:var(--text3)">proj: '+fmt$(projected)+'</span>':'')+'</span>';
-    html+='<span style="font-size:11px;color:var(--text3);margin-right:8px">'+byYear[y].count+' policies</span>';
-    if(change!==null)html+='<span class="an-yrchange '+(change>=0?'an-pos':'an-neg')+'">'+(change>=0?'+':'')+change+'%</span>';
-    html+='</div>';
+  html += '</div>';
+  // Month filter
+  html += '<div style="display:flex;gap:6px;flex-wrap:wrap">';
+  html += '<span style="font-size:11px;color:var(--text3);line-height:22px;margin-right:2px">Filter months:</span>';
+  MONTHS.forEach(function(mn,i){
+    var sel = _anMonths.length===0||_anMonths.indexOf(i+1)>=0;
+    html += '<button onclick="_anToggleMo('+(i+1)+')" style="padding:2px 8px;border-radius:4px;border:1px solid var(--border);background:'+(sel?'var(--text)':'transparent')+';color:'+(sel?'#fff':'var(--text3)')+';font-size:11px;font-family:DM Sans,sans-serif;cursor:pointer">'+mn+'</button>';
   });
-  html+='</div>';
+  if(_anMonths.length>0) html += '<button onclick="_anMonths=[];renderAnalytics()" style="padding:2px 8px;border-radius:4px;border:1px solid var(--red);color:var(--red);background:none;font-size:11px;font-family:DM Sans,sans-serif;cursor:pointer">Clear</button>';
+  html += '</div></div>';
 
-  // ── MONTHLY BY PRODUCT comparison (the key chart) ──
-  html+='<div class="an-card" style="margin-bottom:14px">';
-  html+='<div class="an-title">Monthly commission by product — selected years side by side</div>';
-  html+='<div style="font-size:11px;color:var(--text3);margin-bottom:10px">Click a month to see product breakdown</div>';
-  // Legend for selected years
-  html+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">';
-  displayYears.forEach(function(y){
-    var color=yearColors[y]||'#64748b';
-    html+='<div style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2)">';
-    html+='<div style="width:10px;height:10px;border-radius:2px;background:'+color+'"></div>'+y+'</div>';
+  // ── VIEW TOGGLE ────────────────────────────────────────────────────
+  html += '<div style="display:flex;gap:8px;margin-bottom:14px">';
+  var views = [['monthly','Monthly totals'],['products','By product'],['households','Top 50 clients']];
+  views.forEach(function(v){
+    html += '<button onclick="_anView=''+v[0]+'';renderAnalytics()" style="padding:6px 14px;border-radius:var(--rs);border:1px solid '+(_anView===v[0]?'var(--accent)':'var(--border)')+';background:'+(_anView===v[0]?'var(--accent)':'var(--surface)')+';color:'+(_anView===v[0]?'#fff':'var(--text2)')+';font-size:12px;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:'+(_anView===v[0]?'600':'400')+'">'+v[1]+'</button>';
   });
-  html+='</div>';
+  html += '</div>';
 
-  // Max for scaling
-  var maxM=0;
-  displayYears.forEach(function(y){for(var m=1;m<=12;m++){var v=byYearMonth[y]&&byYearMonth[y][m]?byYearMonth[y][m].commission:0;if(v>maxM)maxM=v;}});
-  if(maxM===0)maxM=1;
+  var showMonths = _anMonths.length>0 ? _anMonths : [1,2,3,4,5,6,7,8,9,10,11,12];
 
-  for(var mo=1;mo<=12;mo++){
-    var mKey='month-'+mo;
-    var expanded=anExpandedHH[mKey];
-    html+='<div style="margin-bottom:4px">';
-    // Month row with bars for each selected year
-    html+='<div style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 0" data-mkey="'+mKey+'" onclick="anToggleMonth(this.dataset.mkey)">';
-    html+='<span style="font-size:12px;font-weight:500;color:var(--text);width:32px;flex-shrink:0">'+MONTHS[mo-1]+'</span>';
-    html+='<div style="flex:1">';
+  // ── VIEW: MONTHLY TOTALS ───────────────────────────────────────────
+  if(_anView==='monthly'){
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px">';
+    html += '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Monthly commission — vertical bars (click month for product breakdown)</div>';
+    // Find max for all selected years+months
+    var maxV = 0;
+    showMonths.forEach(function(m){displayYears.forEach(function(y){var v=D.byYM[y]&&D.byYM[y][m]?D.byYM[y][m].comm:0;if(v>maxV)maxV=v;});});
+    if(maxV===0) maxV=1;
+    // Legend
+    html += '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px">';
+    displayYears.forEach(function(y){html+='<div style="display:flex;align-items:center;gap:4px;font-size:11px"><div style="width:12px;height:12px;border-radius:2px;background:'+(YC[y]||'#64748b')+'"></div>'+y+'</div>';});
+    html += '</div>';
+    // Bar chart - one group per month
+    html += '<div style="display:flex;gap:6px;align-items:flex-end;overflow-x:auto;padding-bottom:4px">';
+    showMonths.forEach(function(m){
+      html += '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;min-width:'+(displayYears.length*18+10)+'px">';
+      // bars
+      html += '<div style="display:flex;align-items:flex-end;gap:2px;height:120px">';
+      displayYears.forEach(function(y){
+        var val = D.byYM[y]&&D.byYM[y][m] ? D.byYM[y][m].comm : 0;
+        var h = Math.max(2, Math.round(val/maxV*120));
+        var c = YC[y]||'#64748b';
+        var isCur = (y===curY&&m===D.curMonth);
+        html += '<div title="'+y+' '+MONTHS[m-1]+': '+f$(val)+'" style="width:16px;height:'+h+'px;background:'+c+';border-radius:2px 2px 0 0;cursor:pointer;'+(isCur?'outline:2px solid '+c+';outline-offset:2px':'')+'" onclick="_anDrilldown('+y+','+m+')"></div>';
+      });
+      html += '</div>';
+      html += '<div style="font-size:10px;color:var(--text3)">'+MONTHS[m-1]+'</div>';
+      html += '</div>';
+    });
+    html += '</div></div>';
+    // Year-over-year table
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px">';
+    html += '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Year-over-year summary</div>';
+    html += '<table style="width:100%;border-collapse:collapse;font-size:12px">';
+    html += '<thead><tr style="border-bottom:1px solid var(--border)">';
+    html += '<th style="text-align:left;padding:5px 8px;font-size:10px;color:var(--text3);font-weight:500;text-transform:uppercase">Year</th>';
+    showMonths.forEach(function(m){html+='<th style="text-align:right;padding:5px 4px;font-size:10px;color:var(--text3);font-weight:500">'+MONTHS[m-1]+'</th>';});
+    html += '<th style="text-align:right;padding:5px 8px;font-size:10px;color:var(--text3);font-weight:500">TOTAL</th>';
+    html += '<th style="text-align:right;padding:5px 8px;font-size:10px;color:var(--text3);font-weight:500">vs prev</th>';
+    html += '</tr></thead><tbody>';
+    displayYears.slice().reverse().forEach(function(y,yi,arr){
+      var prevYr = arr[yi+1];
+      var rowTotal = 0;
+      showMonths.forEach(function(m){rowTotal+=D.byYM[y]&&D.byYM[y][m]?D.byYM[y][m].comm:0;});
+      var prevTotal = 0;
+      if(prevYr){showMonths.forEach(function(m){prevTotal+=D.byYM[prevYr]&&D.byYM[prevYr][m]?D.byYM[prevYr][m].comm:0;});}
+      var chg = prevTotal>0?Math.round((rowTotal-prevTotal)/prevTotal*100):null;
+      var isCur=y===curY;
+      var rowColor = YC[y]||'#64748b';
+      html += '<tr style="border-bottom:1px solid var(--border);'+(isCur?'background:var(--bg)':'')+'">';
+      html += '<td style="padding:6px 8px;font-weight:'+(isCur?'700':'400')+';color:'+rowColor+'">'+y+(isCur?' ✦':'')+'</td>';
+      showMonths.forEach(function(m){
+        var v=D.byYM[y]&&D.byYM[y][m]?D.byYM[y][m].comm:0;
+        var prevV=prevYr&&D.byYM[prevYr]&&D.byYM[prevYr][m]?D.byYM[prevYr][m].comm:0;
+        var better=prevV>0&&v>prevV;var worse=prevV>0&&v<prevV;
+        html+='<td style="text-align:right;padding:6px 4px;font-size:11px;color:'+(better?'var(--accent)':worse?'var(--red)':'var(--text2)')+';">'+(v?f$(v):'–')+'</td>';
+      });
+      html += '<td style="text-align:right;padding:6px 8px;font-weight:600;color:var(--text)">'+f$(rowTotal)+'</td>';
+      html += '<td style="text-align:right;padding:6px 8px">'+(chg!==null?'<span style="font-size:11px;padding:1px 6px;border-radius:20px;background:'+(chg>=0?'var(--accent-l)':'var(--red-l)')+';color:'+(chg>=0?'var(--accent)':'var(--red)')+'>"+(chg>=0?"+":"")+chg+"%</span>":'')+'</td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+  }
+
+  // ── VIEW: BY PRODUCT ──────────────────────────────────────────────
+  else if(_anView==='products'){
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px">';
+    html += '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Commission by product — selected months & years (click bar to see year breakdown)</div>';
+    // Aggregate product commission for selected years+months
+    var prodData = {};
     displayYears.forEach(function(y){
-      var val=byYearMonth[y]&&byYearMonth[y][mo]?byYearMonth[y][mo].commission:0;
-      var pct=Math.round(val/maxM*100);
-      var color=yearColors[y]||'#64748b';
-      var isCurMo=(y===curYear&&mo===curMonth);
-      html+='<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px">';
-      html+='<div style="flex:1;background:var(--bg);border-radius:2px;height:8px;overflow:hidden">';
-      html+='<div style="width:'+pct+'%;height:100%;background:'+color+';border-radius:2px"></div></div>';
-      html+='<span style="font-size:11px;color:var(--text2);width:64px;text-align:right;flex-shrink:0">'+y+': '+fmt$(val)+'</span>';
+      showMonths.forEach(function(m){
+        var md = D.byYM[y]&&D.byYM[y][m] ? D.byYM[y][m].byProd : {};
+        Object.entries(md).forEach(function(e){
+          if(!prodData[e[0]]) prodData[e[0]]={total:0,byYear:{}};
+          prodData[e[0]].total+=e[1];
+          prodData[e[0]].byYear[y]=(prodData[e[0]].byYear[y]||0)+e[1];
+        });
+      });
+    });
+    var prods = Object.entries(prodData).sort(function(a,b){return b[1].total-a[1].total;});
+    var maxP = prods.length?prods[0][1].total:1;
+    prods.forEach(function(e){
+      var pct = Math.round(e[1].total/maxP*100);
+      html += '<div style="margin-bottom:10px">';
+      html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">';
+      html += '<span style="font-size:12px;color:var(--text);width:130px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+e[0]+'">'+e[0]+'</span>';
+      html += '<div style="flex:1;background:var(--bg);border-radius:3px;height:16px;overflow:hidden;position:relative">';
+      // Stacked bar by year
+      var offset = 0;
+      displayYears.forEach(function(y){
+        var yv = e[1].byYear[y]||0;
+        var ypct = Math.round(yv/maxP*100);
+        if(ypct>0){
+          html += '<div title="'+y+': '+f$(yv)+'" style="position:absolute;left:'+offset+'%;width:'+ypct+'%;height:100%;background:'+(YC[y]||'#64748b')+';opacity:.85"></div>';
+          offset+=ypct;
+        }
+      });
+      html += '</div>';
+      html += '<span style="font-size:12px;font-weight:500;color:var(--text);width:72px;text-align:right;flex-shrink:0">'+f$(e[1].total)+'</span>';
+      html += '</div>';
+      // Year breakdown inline
+      html += '<div style="display:flex;gap:10px;padding-left:138px;flex-wrap:wrap">';
+      displayYears.forEach(function(y){
+        var yv=e[1].byYear[y]||0;
+        if(!yv)return;
+        html+='<span style="font-size:10px;color:'+(YC[y]||'#64748b')+'">'+y+': '+f$(yv)+'</span>';
+      });
+      html += '</div></div>';
+    });
+    html += '</div>';
+    // Source breakdown
+    var topSrc = Object.entries(D.bySrc).sort(function(a,b){return b[1].comm-a[1].comm;}).slice(0,8);
+    var maxS = topSrc.length?topSrc[0][1].comm:1;
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px">';
+    html += '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Top referral sources (all time)</div>';
+    topSrc.forEach(function(e){
+      var pct=Math.round(e[1].comm/maxS*100);
+      html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">';
+      html+='<span style="font-size:11px;color:var(--text2);width:100px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+e[0]+'</span>';
+      html+='<div style="flex:1;background:var(--bg);border-radius:2px;height:8px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:var(--purple);border-radius:2px"></div></div>';
+      html+='<span style="font-size:11px;color:var(--text);width:80px;text-align:right;flex-shrink:0">'+f$(e[1].comm)+' ('+e[1].count+')</span>';
+      html+='</div>';
+    });
+    html += '</div>';
+  }
+
+  // ── VIEW: TOP 50 HOUSEHOLDS ───────────────────────────────────────
+  else if(_anView==='households'){
+    // Group by phone
+    var hhG = {};
+    clients.forEach(function(c){
+      var phones=(c.ph||'').split(/[,|]/).map(function(x){return x.trim().toLowerCase();}).filter(Boolean);
+      var key=[c.cn.toLowerCase()].concat(phones).sort().join('|');
+      if(!hhG[key])hhG[key]={name:c.cn,phones:phones,city:c.cy,policies:[],comm:0};
+      var cm=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;
+      hhG[key].comm+=cm;
+      hhG[key].policies.push(c);
+    });
+    var top50=Object.values(hhG).sort(function(a,b){return b.comm-a.comm;}).slice(0,50);
+    html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px">';
+    html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Top 50 clients by total commission — click to expand all policies</div>';
+    html+='<div style="font-size:11px;color:var(--text3);margin-bottom:12px">Clients with multiple policies count all policies combined. Click any policy to open full file.</div>';
+    top50.forEach(function(g,i){
+      var expKey='hh'+i;
+      var expanded=_anExpHH[expKey];
+      html+='<div style="border-bottom:1px solid var(--border)">';
+      // Summary row
+      html+='<div data-hhk="'+expKey+'" onclick="_anClickHH(this)" style="display:flex;align-items:center;gap:8px;padding:9px 0;cursor:pointer;user-select:none">';
+      html+='<span style="font-size:12px;color:var(--text3);width:26px;flex-shrink:0;text-align:right">'+(i+1)+'</span>';
+      html+='<div class="av '+avc(g.name)+'" style="width:28px;height:28px;font-size:10px;flex-shrink:0">'+ini(g.name)+'</div>';
+      html+='<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500;color:var(--text)">'+g.name+'</div>';
+      html+='<div style="font-size:11px;color:var(--text3)">'+(g.phones[0]||'')+(g.city?' · '+g.city:'')+'</div></div>';
+      html+='<span style="font-size:11px;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:2px 8px;color:var(--text2);flex-shrink:0">'+g.policies.length+' polic'+(g.policies.length===1?'y':'ies')+'</span>';
+      html+='<span style="font-size:14px;font-weight:700;color:var(--accent);width:80px;text-align:right;flex-shrink:0">'+f$(g.comm)+'</span>';
+      html+='<span style="color:var(--text3);flex-shrink:0;font-size:13px;margin-left:4px">'+(expanded?'▾':'▸')+'</span>';
+      html+='</div>';
+      // Expanded policies
+      if(expanded){
+        html+='<div style="padding:6px 0 10px 34px">';
+        // Sort policies by commission desc
+        var sorted=g.policies.slice().sort(function(a,b){return (parseFloat((b.cm||'').toString().replace(/[^0-9.-]/g,''))||0)-(parseFloat((a.cm||'').toString().replace(/[^0-9.-]/g,''))||0);});
+        sorted.forEach(function(p){
+          var pc=parseFloat((p.cm||'').toString().replace(/[^0-9.-]/g,''))||0;
+          html+='<div data-pid="'+p.id+'" onclick="_anOpenPolicy(this)" style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--bg);border-radius:6px;margin-bottom:3px;cursor:pointer;border:1px solid transparent" onmouseover="this.style.borderColor='var(--border2)'" onmouseout="this.style.borderColor='transparent'">';
+          html+='<div style="flex:1;min-width:0">';
+          html+='<div style="font-size:12px;font-weight:500;color:var(--text)">'+p.pr+(p.ins&&p.ins!==p.cn?' <span style="font-weight:400;font-size:11px;color:var(--text3)">/ '+p.ins+'</span>':'')+'</div>';
+          html+='<div style="font-size:11px;color:var(--text3)">'+p.co+' · '+(p.pn||'—')+' · sold '+(p.ds?fmtD(p.ds):'—')+(p.cv?' · '+p.cv:'')+'</div>';
+          if(p.fu)html+='<div style="font-size:10px;color:var(--amber)">Follow-up: '+fmtD(p.fu)+'</div>';
+          html+='</div>';
+          if(pc)html+='<span style="font-size:12px;font-weight:600;color:var(--accent);flex-shrink:0">'+f$(pc)+'</span>';
+          html+='<span style="font-size:11px;color:var(--text3);flex-shrink:0;padding:2px 7px;border:1px solid var(--border);border-radius:4px">Open →</span>';
+          html+='</div>';
+        });
+        if(g.phones[0]){
+          var cl=g.phones[0].replace(/\D/g,'');if(cl.length===10)cl='1'+cl;
+          html+='<button data-phone="'+cl+'" data-name="'+g.name+'" onclick="hhWA(this)" style="margin-top:4px;font-size:11px;padding:4px 12px;border:1px solid #25D366;border-radius:4px;background:none;cursor:pointer;color:#25D366;font-family:DM Sans,sans-serif;margin-left:0">✓ WhatsApp follow-up</button>';
+        }
+        html+='</div>';
+      }
       html+='</div>';
     });
     html+='</div>';
-    html+='<span style="font-size:12px;color:var(--text3);flex-shrink:0">'+(expanded?'▾':'▸')+'</span>';
-    html+='</div>';
-    // Expandable product breakdown per year
-    if(expanded){
-      html+='<div style="padding:8px 12px 8px 38px;background:var(--bg);border-radius:4px;margin-bottom:4px">';
-      displayYears.forEach(function(y){
-        var monthData=byYearMonth[y]&&byYearMonth[y][mo]?byYearMonth[y][mo]:null;
-        if(!monthData||monthData.commission===0)return;
-        var color=yearColors[y]||'#64748b';
-        html+='<div style="margin-bottom:8px">';
-        html+='<div style="font-size:11px;font-weight:600;color:'+color+';margin-bottom:4px">'+y+' — '+fmt$(monthData.commission)+' total</div>';
-        var prods=Object.entries(monthData.products).sort(function(a,b){return b[1]-a[1];}).slice(0,8);
-        var maxProdMonth=prods.length?prods[0][1]:1;
-        prods.forEach(function(e){
-          var pct=Math.round(e[1]/maxProdMonth*100);
-          html+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">';
-          html+='<span style="font-size:11px;color:var(--text2);width:120px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+e[0]+'">'+e[0]+'</span>';
-          html+='<div style="flex:1;background:var(--surface);border-radius:2px;height:6px;overflow:hidden">';
-          html+='<div style="width:'+pct+'%;height:100%;background:'+color+';opacity:.7;border-radius:2px"></div></div>';
-          html+='<span style="font-size:11px;color:var(--text);width:60px;text-align:right;flex-shrink:0">'+fmt$(e[1])+'</span>';
-          html+='</div>';
-        });
-        html+='</div>';
-      });
-      html+='</div>';
-    }
-    html+='</div>';
   }
-  html+='</div>';
 
-  html+='<div class="an-grid">';
-  // Top products
-  html+='<div class="an-card"><div class="an-title">Top products by commission (all time)</div>';
-  topProducts.forEach(function(e){
-    var pct=Math.round(e[1].commission/maxProd*100);
-    html+='<div class="an-bar-row"><span class="an-bar-label" title="'+e[0]+'">'+e[0]+'</span><div class="an-bar-wrap"><div class="an-bar-fill" style="width:'+pct+'%;background:var(--blue)"></div></div><span class="an-bar-val">'+fmt$(e[1].commission)+'</span></div>';
-  });
-  html+='</div>';
-  // Sources
-  html+='<div class="an-card"><div class="an-title">Top referral sources</div>';
-  topSources.forEach(function(e){
-    var pct=Math.round(e[1].count/maxSrc*100);
-    html+='<div class="an-bar-row"><span class="an-bar-label" title="'+e[0]+'">'+e[0]+'</span><div class="an-bar-wrap"><div class="an-bar-fill" style="width:'+pct+'%;background:var(--purple)"></div></div><span class="an-bar-val">'+e[1].count+' ('+fmt$(e[1].commission)+')</span></div>';
-  });
-  html+='</div>';
-  html+='</div>';
-
-  // ── TOP 50 HOUSEHOLDS ──
-  var hhGroups={};
-  clients.forEach(function(c){
-    var phones=(c.ph||'').split(/[,|]/).map(function(x){return x.trim().toLowerCase();}).filter(Boolean);
-    var key=[c.cn.toLowerCase()].concat(phones).sort().join('|');
-    if(!hhGroups[key])hhGroups[key]={name:c.cn,phones:phones,email:c.em,city:c.cy,policies:[],commission:0};
-    var comm=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;
-    hhGroups[key].commission+=comm;
-    hhGroups[key].policies.push(c);
-  });
-  var topHH=Object.values(hhGroups).filter(function(g){return g.policies.length>0;}).sort(function(a,b){return b.commission-a.commission;}).slice(0,50);
-
-  html+='<div class="an-card" style="margin-top:14px">';
-  html+='<div style="display:flex;align-items:center;margin-bottom:10px">';
-  html+='<div class="an-title" style="margin-bottom:0;flex:1">Top 50 clients by commission — click to see all policies</div>';
-  html+='</div>';
-  topHH.forEach(function(g,i){
-    var expanded=anExpandedHH['hh-'+i];
-    var totalPolicies=g.policies.length;
-    html+='<div style="border-bottom:1px solid var(--border)">';
-    // Summary row - clickable
-    html+='<div style="display:flex;align-items:center;gap:8px;padding:9px 0;cursor:pointer" data-hhkey="hh-'+i+'" onclick="anToggleHH(this.dataset.hhkey)">';
-    html+='<span style="font-size:12px;font-weight:600;color:var(--text3);width:28px;flex-shrink:0">'+(i+1)+'</span>';
-    html+='<div class="av '+avc(g.name)+'" style="width:28px;height:28px;font-size:10px;flex-shrink:0">'+ini(g.name)+'</div>';
-    html+='<div style="flex:1;min-width:0">';
-    html+='<div style="font-size:13px;font-weight:500;color:var(--text)">'+g.name+'</div>';
-    html+='<div style="font-size:11px;color:var(--text3)">'+(g.phones[0]||'')+(g.city?' · '+g.city:'')+'</div>';
-    html+='</div>';
-    html+='<span style="font-size:11px;color:var(--text3);padding:2px 7px;background:var(--bg);border-radius:20px;flex-shrink:0">'+totalPolicies+' polic'+(totalPolicies===1?'y':'ies')+'</span>';
-    html+='<span style="font-size:13px;font-weight:600;color:var(--accent);width:80px;text-align:right;flex-shrink:0">'+fmt$(g.commission)+'</span>';
-    html+='<span style="font-size:12px;color:var(--text3);flex-shrink:0;margin-left:4px">'+(expanded?'▾':'▸')+'</span>';
-    html+='</div>';
-    // Expanded policies
-    if(expanded){
-      html+='<div style="padding:4px 0 10px 36px">';
-      g.policies.forEach(function(p){
-        var comm=parseFloat((p.cm||'').toString().replace(/[^0-9.-]/g,''))||0;
-        html+='<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg);border-radius:6px;margin-bottom:4px;cursor:pointer" onclick="jumpTo('+p.id+')">';
-        html+='<div style="flex:1;min-width:0">';
-        html+='<div style="font-size:12px;font-weight:500;color:var(--text)">'+p.pr+(p.ins&&p.ins!==p.cn?' <span style="font-weight:400;color:var(--text3);font-size:11px">/ '+p.ins+'</span>':'')+'</div>';
-        html+='<div style="font-size:11px;color:var(--text3)">'+p.co+' · '+(p.pn||'no policy #')+' · '+(p.ds?fmtD(p.ds):'')+(p.cv?' · '+p.cv:'')+'</div>';
-        if(p.fu)html+='<div style="font-size:10px;color:var(--amber);margin-top:1px">Follow-up: '+fmtD(p.fu)+'</div>';
-        html+='</div>';
-        if(comm)html+='<span style="font-size:12px;font-weight:500;color:var(--accent);flex-shrink:0">'+fmt$(comm)+'</span>';
-        html+='<span style="font-size:10px;color:var(--text3);flex-shrink:0">Open →</span>';
-        html+='</div>';
-      });
-      // Quick follow-up from here
-      if(g.phones[0]){
-        var clean=g.phones[0].replace(/\D/g,'');if(clean.length===10)clean='1'+clean;
-        html+='<button data-phone="'+clean+'" data-name="'+g.name+'" onclick="hhWA(this)" style="margin-top:4px;font-size:11px;padding:4px 10px;border:1px solid #25D366;border-radius:4px;background:none;cursor:pointer;color:#25D366;font-family:DM Sans,sans-serif">WhatsApp</button>';
-      }
-      html+='</div>';
-    }
-    html+='</div>';
-  });
-  html+='</div>';
-
-  el.innerHTML=html;
+  el.innerHTML = html;
 }
 
-async function submitEdit(id){
-  var c=clients.find(function(x){return x.id===id;});
-  if(!c)return;
-  pushUndo('Edit: '+c.cn);
-  var g=function(eid){var el=document.getElementById(eid);return el&&!el.disabled?(el.value||'').trim():'';};
-  c.cn=g('e-cn')||c.cn;
-  c.ins=g('e-ins')||c.ins;
-  c.ds=g('e-ds')||c.ds;
-  c.co=g('e-co')||c.co;
-  c.pr=g('e-pr')||c.pr;
-  c.pn=g('e-pn')||c.pn;
-  c.cv=g('e-cv')||c.cv;
-  c.ap=g('e-ap')||c.ap;
-  if(isOwner)c.cm=g('e-cm')||c.cm;
-  c.src=g('e-src')||c.src;
-  c.ph=g('e-ph')||c.ph;
-  c.em=g('e-em')||c.em;
-  c.cy=g('e-cy')||c.cy;
-  c.fu=g('e-fu')||null;
-  // Write changed fields back to sheet
-  var C={clientName:3,insuredName:4,dateSold:5,company:6,coverage:7,policyNumber:8,phone:14,email:15,city:16,amountPaid:17,commission:18,source:20,product:21,followupDate:22};
-  var updates=[
-    [C.clientName,c.cn],[C.insuredName,c.ins],[C.dateSold,c.ds],[C.company,c.co],
-    [C.coverage,c.cv],[C.policyNumber,c.pn],[C.phone,c.ph],[C.email,c.em],
-    [C.city,c.cy],[C.amountPaid,c.ap],[C.source,c.src],[C.product,c.pr],[C.followupDate,c.fu||'']
-  ];
-  if(isOwner)updates.push([C.commission,c.cm]);
-  for(var i=0;i<updates.length;i++){
-    sheetWrite('writeFollowupDate',{rowNum:c.rowNum,value:updates[i][1],colOverride:updates[i][0]});
+// Drilldown popup for bar click
+function _anDrilldown(y, m){
+  var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var f$=function(n){return '$'+Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');};
+  var D=_buildAnalyticsData();
+  var md=D.byYM[y]&&D.byYM[y][m]?D.byYM[y][m]:{comm:0,byProd:{}};
+  var prods=Object.entries(md.byProd).sort(function(a,b){return b[1]-a[1];});
+  var maxP=prods.length?prods[0][1]:1;
+  var html='<div class="mbg" onclick="if(event.target===this)document.getElementById('modal').innerHTML=''">'
+    +'<div class="mod"><div class="mtit">'+MONTHS[m-1]+' '+y+' — '+f$(md.comm)+' commission</div>'
+    +'<div style="font-size:12px;color:var(--text3);margin-bottom:14px">'+md.count+' policies sold</div>';
+  prods.forEach(function(e){
+    var pct=Math.round(e[1]/maxP*100);
+    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
+    html+='<span style="font-size:12px;color:var(--text2);width:140px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+e[0]+'</span>';
+    html+='<div style="flex:1;background:var(--bg);border-radius:3px;height:10px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:var(--accent);border-radius:3px"></div></div>';
+    html+='<span style="font-size:12px;font-weight:600;color:var(--text);width:70px;text-align:right;flex-shrink:0">'+f$(e[1])+'</span>';
+    html+='</div>';
+  });
+  html+='<div style="text-align:right;margin-top:10px"><button class="bcn" onclick="document.getElementById('modal').innerHTML=''">Close</button></div>'
+    +'</div></div>';
+  document.getElementById('modal').innerHTML=html;
+}
+
+function _anToggleYear(y){
+  var i=_anYears.indexOf(y);
+  if(i>=0){if(_anYears.length>1)_anYears.splice(i,1);}
+  else _anYears.push(y);
+  renderAnalytics();
+}
+
+function _anToggleMo(m){
+  if(_anMonths.length===0){
+    // Initialize with all months selected, then deselect this one
+    _anMonths=[1,2,3,4,5,6,7,8,9,10,11,12];
   }
-  document.getElementById('modal').innerHTML='';
-  render();
-  alert('Changes saved \u2713');
+  var i=_anMonths.indexOf(m);
+  if(i>=0){if(_anMonths.length>1)_anMonths.splice(i,1);}
+  else _anMonths.push(m);
+  renderAnalytics();
 }
 
-
-function hhWA(el){
-  var phone = el.getAttribute('data-phone');
-  var name = el.getAttribute('data-name');
-  whatsappLead(phone, name);
+function _anClickHH(el){
+  var k=el.getAttribute('data-hhk');
+  _anExpHH[k]=!_anExpHH[k];
+  renderAnalytics();
 }
-</script>
-</body>
-</html>
+
+function _anOpenPolicy(el){
+  var id=parseInt(el.getAttribute('data-pid'));
+  if(id) jumpTo(id);
+}
+
