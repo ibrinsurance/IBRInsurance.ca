@@ -491,7 +491,7 @@ function detH(c){
       html+='</div>';
       html+='<div style="padding:0 12px 9px 46px">';
       html+='<button style="font-size:11px;padding:3px 10px;border:1px solid var(--border2);border-radius:4px;background:var(--surface);cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif" ';
-      html+='onclick="event.stopPropagation();sel='+l.id+';preset=\'all\';document.getElementById(\'preset\').value=\'all\';setMode(\'followup\');setTab(\'all\')">Open full file \u2192</button>';
+      html+='onclick="event.stopPropagation();jumpTo('+l.id+')">Open full file →</button>';
       html+='</div></div>';
     });
   }
@@ -562,7 +562,30 @@ function unlnk(a,b){const ca=clients.find(x=>x.id===a),cb=clients.find(x=>x.id==
 function openClaim(id){const c=clients.find(x=>x.id===id);if(!c)return;pushUndo('Claim opened');c.claim={type:'Death Benefit',opened:new Date().toISOString().split('T')[0],status:'Submitted',notes:'',followup:''};sheetWrite('writeClaimStatus',{rowNum:c.rowNum,claimJson:JSON.stringify(c.claim)});render();}
 function closeClaim(id){const c=clients.find(x=>x.id===id);if(!c)return;pushUndo('Claim closed');c.claim=null;sheetWrite('writeClaimStatus',{rowNum:c.rowNum,claimJson:''});render();}
 function updClaim(id,field,val){const c=clients.find(x=>x.id===id);if(!c||!c.claim)return;c.claim[field]=val;sheetWrite('writeClaimStatus',{rowNum:c.rowNum,claimJson:JSON.stringify(c.claim)});render();}
-function jumpTo(id){sel=id;preset='all';document.getElementById('preset').value='all';setMode('followup');setTab('all');}
+function jumpTo(id){
+  sel=null;
+  setTimeout(function(){
+    sel=id;
+    preset='all';
+    document.getElementById('preset').value='all';
+    tab='all';
+    [['ov','overdue'],['tw','thisweek'],['up','upcoming'],['al','all']].forEach(function(pair){
+      var el=document.getElementById('t-'+pair[0]);
+      if(el)el.classList.toggle('active',pair[1]==='all');
+    });
+    mode='followup';
+    ['followup','lookup','claims','dq'].forEach(function(x){
+      var el=document.getElementById('mode'+x.charAt(0).toUpperCase()+x.slice(1));
+      if(el)el.classList.toggle('active',x==='followup');
+    });
+    document.getElementById('fctrl').style.display='';
+    render();
+    setTimeout(function(){
+      var card=document.querySelector('.card.sel');
+      if(card)card.scrollIntoView({behavior:'smooth',block:'center'});
+    },150);
+  },50);
+}
 
 // ── NEW SALE MODAL ──
 function openModal(){document.getElementById('modal').innerHTML=`<div class="mbg" onclick="if(event.target===this)document.getElementById('modal').innerHTML=''"><div class="mod">
