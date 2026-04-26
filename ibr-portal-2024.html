@@ -270,7 +270,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = '/api/sheet'; // Proxied via Vercel — bypasses CORS
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsezfmu7ugl8EngHjs3I-1hB7Mj_65V5VKUIcxlkUz93pM6ad4hrEleKKNY4msqVKu/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -300,25 +300,66 @@ function parseJwt(t){return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').re
 function logout(){google.accounts.id.disableAutoSelect();document.getElementById('appShell').style.display='none';document.getElementById('loginScreen').style.display='flex';clients=[];sel=null;}
 
 // ── LOAD FROM APPS SCRIPT ──
-async async function loadData(){
+async function loadData(){
   document.getElementById('syncStatus').textContent='Loading…';
   document.getElementById('list').innerHTML='<div class="loading"><div class="spinner"></div><span>Connecting to your sheet…</span></div>';
-  try{
-    const r=await fetch('/api/sheet?action=getData');
-    if(!r.ok)throw new Error('HTTP '+r.status);
-    const d=await r.json();
-    if(d.error)throw new Error(d.error);
-    parseRows(d.rows);
-    sheetConnected=true;
-    document.getElementById('sdot').classList.remove('err');
-    document.getElementById('syncStatus').textContent=clients.length+' clients · live';
-    render();
-  }catch(e){
-    console.error('Load error:',e);
+  // Use hidden iframe to load Apps Script — bypasses CORS for static sites
+  const iframe=document.createElement('iframe');
+  iframe.style.display='none';
+  iframe.src=APPS_SCRIPT_URL+'?action=getData&t='+Date.now();
+  document.body.appendChild(iframe);
+  
+  // Also try direct fetch — works if Apps Script CORS is configured
+  fetch(APPS_SCRIPT_URL+'?action=getData', {
+    method:'GET',
+    mode:'no-cors'
+  }).catch(()=>{});
+
+  // Primary: script tag JSONP approach
+  window._crmData=null;
+  window._crmLoad=function(d){
+    window._crmData=d;
+    if(d&&d.rows){
+      parseRows(d.rows);
+      sheetConnected=true;
+      document.getElementById('sdot').classList.remove('err');
+      document.getElementById('syncStatus').textContent=clients.length+' clients · live';
+      render();
+    }
+  };
+  
+  // Try fetch with credentials omitted — Apps Script allows this when deployed as "anyone"
+  fetch(APPS_SCRIPT_URL+'?action=getData', {
+    method:'GET',
+    mode:'cors',
+    credentials:'omit',
+    redirect:'follow'
+  })
+  .then(r=>r.json())
+  .then(d=>{
+    if(d.rows){
+      parseRows(d.rows);
+      sheetConnected=true;
+      document.getElementById('sdot').classList.remove('err');
+      document.getElementById('syncStatus').textContent=clients.length+' clients · live';
+      render();
+    } else {
+      throw new Error(d.error||'No rows returned');
+    }
+  })
+  .catch(e=>{
+    console.error('Direct fetch failed:',e.message);
     document.getElementById('sdot').classList.add('err');
     document.getElementById('syncStatus').textContent='Cannot reach sheet';
-    document.getElementById('list').innerHTML='<div class="empty" style="max-width:380px;margin:0 auto;text-align:left"><strong>Cannot connect to Google Sheet</strong><br><br>Error: '+e.message+'<br><br>The /api/sheet proxy may not be deployed yet on Vercel.</div>';
-  }
+    document.getElementById('list').innerHTML=`<div class="empty" style="max-width:420px;margin:0 auto;text-align:left;line-height:1.8">
+      <strong>Cannot connect to Google Sheet</strong><br><br>
+      <strong>Fix:</strong> In your Apps Script deployment settings, make sure:<br>
+      • Execute as: <strong>Me</strong><br>
+      • Who has access: <strong>Anyone</strong> (not "Anyone with Google account")<br><br>
+      Then click <strong>Deploy → Manage deployments → Edit → New version → Deploy</strong><br><br>
+      Error: ${e.message}
+    </div>`;
+  });
 }
 
 async function sheetWrite(action, data){
@@ -326,7 +367,8 @@ async function sheetWrite(action, data){
   try{
     const params=new URLSearchParams({action});
     Object.entries(data).forEach(([k,v])=>params.set(k,typeof v==='object'?JSON.stringify(v):v));
-    await fetch('/api/sheet?'+params.toString());
+    // Use no-cors for writes — we don't need the response
+    fetch(APPS_SCRIPT_URL+'?'+params.toString(),{mode:'no-cors',redirect:'follow'});
   }catch(e){console.warn('Write error:',e);}
 }
 
