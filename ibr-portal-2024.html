@@ -57,7 +57,7 @@ body{font-family:DM Sans,sans-serif;background:var(--bg);color:var(--text);font-
 .btn-new{padding:5px 12px;font-size:12px;font-family:DM Sans,sans-serif;border:none;border-radius:var(--rs);background:var(--accent);color:#fff;cursor:pointer;white-space:nowrap}
 
 /* MAIN */
-.main{padding:16px 20px;max-width:960px;margin:0 auto}
+.main{padding:16px 20px;max-width:960px;margin:0 auto;position:relative}
 .undo-bar{display:none;background:var(--amber-l);border:1px solid #F6D860;border-radius:var(--rs);padding:7px 12px;margin-bottom:10px;align-items:center;gap:8px;font-size:12px;color:var(--amber)}
 .undo-bar button{padding:3px 9px;font-size:11px;font-family:DM Sans,sans-serif;border:1px solid #F6D860;border-radius:4px;background:#fff;color:var(--amber);cursor:pointer}
 
@@ -67,7 +67,7 @@ body{font-family:DM Sans,sans-serif;background:var(--bg);color:var(--text);font-
 select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(--rs);background:var(--surface);font-family:DM Sans,sans-serif;font-size:12px;color:var(--text);cursor:pointer;flex:1;min-width:150px;outline:none}
 
 /* TABS */
-.tabs{display:flex;gap:2px;margin-bottom:8px;border-bottom:1px solid var(--border)}
+.tabs{display:flex;gap:2px;margin-bottom:8px;border-bottom:1px solid var(--border);position:relative;z-index:10}
 .tab{padding:6px 11px;font-size:12px;font-family:DM Sans,sans-serif;border:none;background:none;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px;display:flex;align-items:center;gap:4px;white-space:nowrap;transition:all .15s;position:relative;z-index:100}
 .tab.active{color:var(--text);border-bottom-color:var(--accent);font-weight:500}
 .bdg{display:inline-flex;align-items:center;justify-content:center;min-width:15px;height:15px;padding:0 3px;border-radius:8px;font-size:10px;font-weight:500}
@@ -1042,6 +1042,55 @@ function renderAnalytics(){
     html+='<div class="an-bar-row"><span class="an-bar-label" title="'+e[0]+'">'+e[0]+'</span><div class="an-bar-wrap"><div class="an-bar-fill" style="width:'+pct+'%;background:var(--purple)"></div></div><span class="an-bar-val">'+e[1].count+'</span></div>';
   });
   html+='</div></div>';
+
+  // ── TOP 25 HOUSEHOLDS BY COMMISSION ──
+  // Group clients by shared phone/email, sum commission
+  var hhGroups = {};
+  clients.forEach(function(c){
+    var phones = (c.ph||'').split(/[,|]/).map(function(x){return x.trim().toLowerCase();}).filter(Boolean);
+    var emails = (c.em||'').split(/[,|]/).map(function(x){return x.trim().toLowerCase();}).filter(Boolean);
+    // Create a key from all contact info
+    var key = [c.cn.toLowerCase()].concat(phones).sort().join('|');
+    if(!hhGroups[key]){
+      hhGroups[key]={name:c.cn,phones:phones,emails:emails,policies:[],commission:0,count:0};
+    }
+    var comm=parseFloat((c.cm||'').replace(/[^0-9.-]/g,''))||0;
+    hhGroups[key].commission+=comm;
+    hhGroups[key].count++;
+    hhGroups[key].policies.push(c.pr);
+  });
+
+  var topHH = Object.values(hhGroups)
+    .filter(function(g){return g.count>1;}) // only actual households (2+ policies)
+    .sort(function(a,b){return b.commission-a.commission;})
+    .slice(0,25);
+
+  if(topHH.length){
+    html+='<div class="an-card" style="margin-bottom:14px">';
+    html+='<div class="an-title">Top 25 households by commission (multi-policy clients)</div>';
+    html+='<div style="overflow-x:auto">';
+    html+='<table style="width:100%;border-collapse:collapse;font-size:12px">';
+    html+='<thead><tr style="border-bottom:1px solid var(--border)">';
+    html+='<th style="text-align:left;padding:6px 8px;font-size:10px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.05em">#</th>';
+    html+='<th style="text-align:left;padding:6px 8px;font-size:10px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.05em">Client</th>';
+    html+='<th style="text-align:right;padding:6px 8px;font-size:10px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.05em">Policies</th>';
+    html+='<th style="text-align:left;padding:6px 8px;font-size:10px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.05em">Products</th>';
+    html+='<th style="text-align:right;padding:6px 8px;font-size:10px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.05em">Total commission</th>';
+    html+='</tr></thead><tbody>';
+    topHH.forEach(function(g,i){
+      var uniqueProducts=[...new Set(g.policies)].join(', ');
+      var rowBg=i%2===0?'':'background:var(--bg)';
+      html+='<tr style="border-bottom:1px solid var(--border);'+rowBg+'">';
+      html+='<td style="padding:7px 8px;color:var(--text3)">'+(i+1)+'</td>';
+      html+='<td style="padding:7px 8px"><div style="font-weight:500;color:var(--text)">'+g.name+'</div><div style="font-size:10px;color:var(--text3)">'+(g.phones[0]||'')+'</div></td>';
+      html+='<td style="padding:7px 8px;text-align:right;color:var(--text)">'+g.count+'</td>';
+      html+='<td style="padding:7px 8px;color:var(--text2);font-size:11px;max-width:200px">'+uniqueProducts+'</td>';
+      html+='<td style="padding:7px 8px;text-align:right;font-weight:600;color:var(--accent)">'+fmt$(g.commission)+'</td>';
+      html+='</tr>';
+    });
+    html+='</tbody></table></div></div>';
+  }
+
   el.innerHTML=html;
 }
 
