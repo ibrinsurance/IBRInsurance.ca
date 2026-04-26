@@ -497,7 +497,23 @@ ${lnk.length?lnk.map(l=>`<div class="hhm" style="flex-direction:column;align-ite
     ${l.co?`<span>${l.co}</span>`:''}
   </div>
 </div>`).join(''):`<div style="padding:7px 11px;font-size:12px;color:var(--text3)">No linked files — phone/email matches auto-link</div>`}
-${isPicker&&linkable.length?`<div class="lkp"><div class="lkp-l">Select a file to manually link:</div><div class="lkp-list">${linkable.map(l=>`<div class="lkp-opt" onclick="lnkFile(${c.id},${l.id})"><div class="av ${avc(l.cn)}" style="width:22px;height:22px;font-size:9px">${ini(l.cn)}</div><span style="flex:1">${l.cn}</span><span style="font-size:11px;color:var(--text3)">${l.pr}·${l.cy}</span></div>`).join('')}</div></div>`:isPicker?`<div class="lkp"><div class="lkp-l">No other files available to link</div></div>`:''}
+${isPicker?`<div class="lkp">
+  <div class="lkp-l">Search to link a file (${linkable.length} available):</div>
+  <input type="text" id="lkp-search-${c.id}" 
+    placeholder="Type name, policy #, phone, city…" 
+    style="width:100%;font-size:12px;padding:6px 9px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;outline:none;margin-bottom:6px;display:block" 
+    oninput="renderLkpSearch(${c.id})">
+  <div class="lkp-list" id="lkp-list-${c.id}">
+    ${linkable.slice(0,8).map(l=>`<div class="lkp-opt" onclick="lnkFile(${c.id},${l.id})">
+      <div class="av ${avc(l.cn)}" style="width:24px;height:24px;font-size:9px;flex-shrink:0">${ini(l.cn)}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;color:var(--text)">${l.cn}${l.ins&&l.ins!==l.cn?' / '+l.ins:''}</div>
+        <div style="font-size:10px;color:var(--text3)">${l.pr} · ${l.pn||''} · ${l.co} · ${l.cy}</div>
+      </div>
+    </div>`).join('')}
+    ${linkable.length>8?`<div style="font-size:11px;color:var(--text3);padding:4px 7px">Showing 8 of ${linkable.length} — type to filter</div>`:''}
+  </div>
+</div>`:''}
 </div>
 <div class="sl">Notes</div>
 <div class="nh">${c.notes.length?c.notes.map(n=>`<div class="ne"><div class="nt">${n.t}</div><div class="nd">${n.d||''}</div></div>`).join(''):`<div style="font-size:12px;color:var(--text3);padding:2px 0">No notes yet</div>`}</div>
@@ -583,25 +599,27 @@ await sheetWrite('appendNewSale',{rowData:{cn:nc2.cn,ins:nc2.ins,ds:nc2.ds,co:nc
 document.getElementById('modal').innerHTML='';preset='all';document.getElementById('preset').value='all';tab='all';[['ov','overdue'],['tw','thisweek'],['up','upcoming'],['al','all']].forEach(([k,v])=>document.getElementById('t-'+k).classList.toggle('active',v==='all'));sel=nc2.id;render();}
 
 function renderLkpSearch(cid){
-  const c=clients.find(x=>x.id===cid);if(!c)return;
+  const c=clients.find(x=>x.id===cid);
+  if(!c)return;
   const lnk=getAllLinked(c);
   const linkable=clients.filter(o=>o.id!==c.id&&!lnk.find(l=>l.id===o.id));
-  const q=(document.getElementById('lkp-search-'+cid).value||'').toLowerCase();
-  const filtered=q
-    ?linkable.filter(l=>[l.cn,l.ins,l.pr,l.cy,l.ph,l.pn,l.co].some(x=>(x||'').toLowerCase().includes(q))).slice(0,20)
-    :linkable.slice(0,6);
+  const qEl=document.getElementById('lkp-search-'+cid);
+  const qL=qEl?(qEl.value||'').toLowerCase().trim():'';
+  const filtered=qL
+    ?linkable.filter(l=>[l.cn,l.ins,l.pr,l.cy,l.ph,l.pn,l.co].some(x=>(x||'').toLowerCase().includes(qL))).slice(0,20)
+    :linkable.slice(0,8);
   const el=document.getElementById('lkp-list-'+cid);
   if(!el)return;
   el.innerHTML=filtered.length
     ?filtered.map(l=>`<div class="lkp-opt" onclick="lnkFile(${cid},${l.id})">
-        <div class="av ${avc(l.cn)}" style="width:22px;height:22px;font-size:9px;flex-shrink:0">${ini(l.cn)}</div>
+        <div class="av ${avc(l.cn)}" style="width:24px;height:24px;font-size:9px;flex-shrink:0">${ini(l.cn)}</div>
         <div style="flex:1;min-width:0">
           <div style="font-size:12px;color:var(--text)">${l.cn}${l.ins&&l.ins!==l.cn?' / '+l.ins:''}</div>
-          <div style="font-size:10px;color:var(--text3)">${l.pr} · ${l.pn||'no policy #'} · ${l.co} · ${l.cy}</div>
+          <div style="font-size:10px;color:var(--text3)">${l.pr} · ${l.pn||''} · ${l.co} · ${l.cy}</div>
         </div>
       </div>`).join('')
-    +(q&&filtered.length===20?`<div style="font-size:11px;color:var(--text3);padding:4px 7px">Showing top 20 — refine your search</div>`:'')
-    :'<div style="font-size:12px;color:var(--text3);padding:4px 7px">No matches found</div>';
+    +(qL&&filtered.length===20?`<div style="font-size:11px;color:var(--text3);padding:4px 7px">Top 20 shown — refine search</div>`:'')
+    :'<div style="font-size:12px;color:var(--text3);padding:5px 7px">No matches found</div>';
 }
 </script>
 </body>
