@@ -441,16 +441,11 @@ ${isel?detH(c):''}
 function detH(c){
   var lnk=getAllLinked(c);
   var linkable=clients.filter(function(o){return o.id!==c.id&&!lnk.find(function(l){return l.id===o.id;});});
-  var commVal=isOwner?c.cm:'<span class="locked">●●●●</span>';
-  var apVal=isOwner?c.ap:'<span class="locked">●●●●</span>';
-  
+  var commVal=isOwner?c.cm:'<span class="locked">&#9679;&#9679;&#9679;&#9679;</span>';
+  var apVal=isOwner?c.ap:'<span class="locked">&#9679;&#9679;&#9679;&#9679;</span>';
   var html='<div class="dp" onclick="event.stopPropagation()">';
-  
-  // Header
   html+='<div class="dh"><div class="da '+avc(c.cn)+'">'+ini(c.cn)+'</div>';
-  html+='<div><div class="dn">'+c.cn+'</div><div class="ds2">Insured: '+c.ins+' · '+c.pr+'</div></div></div>';
-  
-  // Fields grid
+  html+='<div><div class="dn">'+c.cn+'</div><div class="ds2">Insured: '+c.ins+' \xb7 '+c.pr+'</div></div></div>';
   html+='<div class="fg">';
   html+='<div class="fi"><label>Company</label><span class="n">'+c.co+'</span></div>';
   html+='<div class="fi"><label>Policy #</label><span>'+c.pn+'</span></div>';
@@ -463,98 +458,65 @@ function detH(c){
   html+='<div class="fi"><label>Source</label><span class="n">'+c.src+'</span></div>';
   html+='<div class="fi"><label>City</label><span class="n">'+c.cy+'</span></div>';
   html+='</div>';
-  
-  // Follow-up
   html+='<div class="fu-row"><label>Next follow-up date</label>';
   html+='<input type="date" value="'+(c.fu||'')+'" onchange="updFU('+c.id+',this.value)"></div>';
-  
-  // Claim section
   html+=claimH(c);
-  
-  // Household section
+  // Household
   html+='<div class="hhs">';
   html+='<div class="hhh"><span class="hhht">Household / linked files ('+lnk.length+')</span>';
   html+='<button class="hha" onclick="event.stopPropagation();togglePicker('+c.id+')">+ Link file</button></div>';
-  
   if(lnk.length===0){
-    html+='<div style="padding:8px 12px;font-size:12px;color:var(--text3)">No linked files — phone/email matches auto-link</div>';
+    html+='<div style="padding:8px 12px;font-size:12px;color:var(--text3)">No linked files \u2014 phone/email matches auto-link</div>';
   } else {
     lnk.forEach(function(l){
       var isManual=(c.hh||[]).includes(l.id);
-      var expandId='hhx-'+c.id+'-'+l.id;
-      var arrowId='hha-'+c.id+'-'+l.id;
       html+='<div style="border-bottom:1px solid var(--border)">';
-      // Clickable row header
-      html+='<div style="display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;background:var(--surface)" onclick="event.stopPropagation();hhToggle(this)" data-eid="'+expandId+'" data-aid="'+arrowId+'">';
-      html+='<div class="av '+avc(l.cn)+'" style="width:28px;height:28px;font-size:10px;flex-shrink:0">'+ini(l.cn)+'</div>';
-      html+='<div style="flex:1;min-width:0">';
-      html+='<div style="font-size:13px;font-weight:500;color:var(--text)">'+l.cn+'</div>';
-      html+='<div style="font-size:11px;color:var(--text3)">'+l.pr+' · '+l.co+' · '+(l.cy||'')+'</div>';
-      html+='</div>';
-      html+='<div style="display:flex;align-items:center;gap:8px">';
+      html+='<div style="padding:9px 12px;background:var(--surface)">';
+      html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">';
+      html+='<div class="av '+avc(l.cn)+'" style="width:26px;height:26px;font-size:10px;flex-shrink:0">'+ini(l.cn)+'</div>';
+      html+='<div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text)">'+l.cn+(l.ins&&l.ins!==l.cn?' <span style="font-size:11px;font-weight:400;color:var(--text3)">/ '+l.ins+'</span>':'')+'</div>';
+      html+='<div style="font-size:11px;color:var(--text3)">'+l.pr+' \xb7 '+l.co+'</div></div>';
+      html+='<div style="display:flex;align-items:center;gap:6px">';
       if(isManual){
         html+='<span style="font-size:11px;color:var(--text3);cursor:pointer;padding:2px 6px;border:1px solid var(--border);border-radius:4px" onclick="event.stopPropagation();unlnk('+c.id+','+l.id+')">remove</span>';
       } else {
         html+='<span style="font-size:10px;color:var(--text3);padding:2px 5px;background:var(--bg);border-radius:4px">auto</span>';
       }
-      html+='<span id="'+arrowId+'" style="font-size:12px;color:var(--text3)">▸</span>';
       html+='</div></div>';
-      // Expandable detail section
-      html+='<div id="'+expandId+'" style="display:none;padding:12px 14px 12px 48px;background:var(--bg);border-top:1px solid var(--border)">';
-      html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">';
-      html+='<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Insured</div><div style="font-size:12px;color:var(--text)">'+(l.ins||'—')+'</div></div>';
-      html+='<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Policy #</div><div style="font-size:12px;color:var(--text);font-family:DM Mono,monospace">'+(l.pn||'—')+'</div></div>';
-      html+='<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Date sold</div><div style="font-size:12px;color:var(--text)">'+fmtD(l.ds)+'</div></div>';
-      html+='<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Coverage</div><div style="font-size:12px;color:var(--text)">'+(l.cv||'—')+'</div></div>';
-      html+='<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Phone</div><div style="font-size:12px;color:var(--text)">'+(l.ph||'—')+'</div></div>';
-      html+='<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Follow-up</div><div style="font-size:12px;color:var(--text)">'+(l.fu?fmtD(l.fu):'Not set')+'</div></div>';
+      html+='<div style="display:flex;gap:16px;padding:0 12px 8px 46px;font-size:11px;flex-wrap:wrap">';
+      html+='<span style="color:var(--text3)">Policy: <strong style="color:var(--text)">'+(l.pn||'\u2014')+'</strong></span>';
+      html+='<span style="color:var(--text3)">Sold: <strong style="color:var(--text)">'+fmtD(l.ds)+'</strong></span>';
+      html+='<span style="color:var(--text3)">Coverage: <strong style="color:var(--text)">'+(l.cv||'\u2014')+'</strong></span>';
+      if(l.fu)html+='<span style="color:var(--text3)">Follow-up: <strong style="color:var(--amber)">'+fmtD(l.fu)+'</strong></span>';
       html+='</div>';
-      if(l.notes&&l.notes.filter(function(n){return !n.sheet;}).length){
-        var note=l.notes.filter(function(n){return !n.sheet;})[0];
-        html+='<div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Latest note</div>';
-        html+='<div style="font-size:12px;color:var(--text);background:var(--surface);padding:6px 9px;border-radius:4px;border:1px solid var(--border);margin-bottom:8px">'+note.t+'</div>';
-      }
-      html+='<button onclick="event.stopPropagation();jumpTo('+l.id+')" style="font-size:11px;padding:5px 12px;border:1px solid var(--border2);border-radius:var(--rs);background:var(--surface);cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif">Open full file →</button>';
+      html+='<div style="padding:0 12px 9px 46px">';
+      html+='<button style="font-size:11px;padding:3px 10px;border:1px solid var(--border2);border-radius:4px;background:var(--surface);cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif" ';
+      html+='onclick="event.stopPropagation();sel='+l.id+';preset=\'all\';document.getElementById(\'preset\').value=\'all\';setMode(\'followup\');setTab(\'all\')">Open full file \u2192</button>';
       html+='</div></div>';
     });
   }
-  
-  // Link file picker
   html+='<div id="picker-'+c.id+'" style="display:none;padding:10px 12px;background:var(--bg);border-top:1px solid var(--border)">';
   html+='<div style="font-size:11px;color:var(--text3);margin-bottom:6px">Search to link a file ('+linkable.length+' available):</div>';
-  html+='<input type="text" id="lkp-search-'+c.id+'" placeholder="Type name, policy #, phone, city, product…" ';
+  html+='<input type="text" id="lkp-search-'+c.id+'" placeholder="Type name, policy #, phone, city\u2026" ';
   html+='style="width:100%;font-size:12px;padding:6px 9px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-family:DM Sans,sans-serif;outline:none;margin-bottom:6px" ';
   html+='oninput="event.stopPropagation();renderLkpSearch('+c.id+')">';
   html+='<div id="lkp-list-'+c.id+'">';
-  // Initial 8 results
-  var initial=linkable.slice(0,8);
-  initial.forEach(function(l){
+  linkable.slice(0,8).forEach(function(l){
     html+='<div class="lkp-opt" onclick="event.stopPropagation();lnkFile('+c.id+','+l.id+')">';
     html+='<div class="av '+avc(l.cn)+'" style="width:24px;height:24px;font-size:9px;flex-shrink:0">'+ini(l.cn)+'</div>';
-    html+='<div style="flex:1;min-width:0">';
-    html+='<div style="font-size:12px;color:var(--text)">'+l.cn+(l.ins&&l.ins!==l.cn?' / '+l.ins:'')+'</div>';
-    html+='<div style="font-size:10px;color:var(--text3)">'+l.pr+' · '+(l.pn||'')+' · '+l.co+' · '+l.cy+'</div>';
-    html+='</div></div>';
+    html+='<div style="flex:1;min-width:0"><div style="font-size:12px;color:var(--text)">'+l.cn+(l.ins&&l.ins!==l.cn?' / '+l.ins:'')+'</div>';
+    html+='<div style="font-size:10px;color:var(--text3)">'+l.pr+' \xb7 '+(l.pn||'')+' \xb7 '+l.co+' \xb7 '+l.cy+'</div></div></div>';
   });
-  if(linkable.length>8){
-    html+='<div style="font-size:11px;color:var(--text3);padding:4px 7px">Showing 8 of '+linkable.length+' — type to filter</div>';
-  }
+  if(linkable.length>8)html+='<div style="font-size:11px;color:var(--text3);padding:4px 7px">Showing 8 of '+linkable.length+' \u2014 type to filter</div>';
   html+='</div></div></div>';
-  
-  // Notes
-  html+='<div class="sl">Notes</div>';
-  html+='<div class="nh">';
+  html+='<div class="sl">Notes</div><div class="nh">';
   if(c.notes&&c.notes.length){
-    c.notes.forEach(function(n){
-      html+='<div class="ne"><div class="nt">'+n.t+'</div><div class="nd">'+(n.d||'')+'</div></div>';
-    });
+    c.notes.forEach(function(n){html+='<div class="ne"><div class="nt">'+n.t+'</div><div class="nd">'+(n.d||'')+'</div></div>';});
   } else {
     html+='<div style="font-size:12px;color:var(--text3);padding:2px 0">No notes yet</div>';
   }
-  html+='</div>';
-  html+='<div class="nir"><textarea id="ni-'+c.id+'" placeholder="Add a note…" oninput="nnt['+c.id+']=this.value">'+(nnt[c.id]||'')+'</textarea>';
-  html+='<button class="btn-sv" onclick="addNote('+c.id+')">Save note</button></div>';
-  html+='</div>';
+  html+='</div><div class="nir"><textarea id="ni-'+c.id+'" placeholder="Add a note\u2026" oninput="nnt['+c.id+']=this.value">'+(nnt[c.id]||'')+'</textarea>';
+  html+='<button class="btn-sv" onclick="addNote('+c.id+')">Save note</button></div></div>';
   return html;
 }
 
