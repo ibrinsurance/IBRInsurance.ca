@@ -1,7 +1,1 @@
-{
-  "functions": {
-    "api/sheet.js": {
-      "runtime": "@vercel/node"
-    }
-  }
-}
+{}
