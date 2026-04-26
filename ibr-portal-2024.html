@@ -37,7 +37,7 @@ body{font-family:DM Sans,sans-serif;background:var(--bg);color:var(--text);font-
 
 /* TOPNAV */
 #appShell{display:none}
-.topnav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;gap:10px;height:52px;position:sticky;top:0;z-index:1000;flex-wrap:wrap}
+.topnav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;gap:8px;height:52px;position:sticky;top:0;z-index:1000;overflow-x:auto;overflow-y:hidden;white-space:nowrap}
 .nav-brand{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);white-space:nowrap}
 .ndiv{width:1px;height:20px;background:var(--border)}
 .mode-toggle{display:flex;border:1px solid var(--border);border-radius:var(--rs);overflow:hidden}
@@ -507,7 +507,8 @@ function detH(c){
   var apVal=isOwner?c.ap:'<span class="locked">&#9679;&#9679;&#9679;&#9679;</span>';
   var html='<div class="dp" onclick="event.stopPropagation()">';
   html+='<div class="dh"><div class="da '+avc(c.cn)+'">'+ini(c.cn)+'</div>';
-  html+='<div><div class="dn">'+c.cn+'</div><div class="ds2">Insured: '+c.ins+' \xb7 '+c.pr+'</div></div></div>';
+  html+='<div style="flex:1"><div class="dn">'+c.cn+'</div><div class="ds2">Insured: '+c.ins+' \xb7 '+c.pr+'</div></div>';
+  html+='<button onclick="event.stopPropagation();openEditModal('+c.id+')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border2);border-radius:4px;background:none;cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif;margin-left:auto;flex-shrink:0">Edit policy</button></div>';
   html+='<div class="fg">';
   html+='<div class="fi"><label>Company</label><span class="n">'+c.co+'</span></div>';
   html+='<div class="fi"><label>Policy #</label><span>'+c.pn+'</span></div>';
@@ -926,132 +927,184 @@ function renderLeads(){
 // ANALYTICS MODULE
 // ════════════════════════════════════════════════════
 function renderAnalytics(){
-  var el = document.getElementById('list');
-  if(!sheetConnected || clients.length===0){
-    el.innerHTML='<div class="empty">Loading analytics\u2026 data must be loaded first</div>';
+  var el=document.getElementById('list');
+  if(!sheetConnected||clients.length===0){
+    el.innerHTML='<div class="empty">Sign in and wait for data to load first</div>';
     return;
   }
-
-  var tod = new Date();
-  var curYear = tod.getFullYear();
-
-  // Commission by year
-  var byYear = {};
-  clients.forEach(function(c){
-    if(!c.ds) return;
-    var y = new Date(c.ds).getFullYear();
-    if(!y||isNaN(y)) return;
-    if(!byYear[y]) byYear[y]={commission:0,count:0,products:{}};
-    var comm = parseFloat((c.cm||'').replace(/[^0-9.-]/g,''))||0;
-    byYear[y].commission += comm;
-    byYear[y].count++;
-    var pr = (c.pr||'').trim();
-    if(pr) byYear[y].products[pr]=(byYear[y].products[pr]||0)+1;
-  });
-
-  var years = Object.keys(byYear).map(Number).filter(function(y){return y>=2019;}).sort(function(a,b){return b-a;});
-
-  // Product breakdown overall
-  var byProduct = {};
-  clients.forEach(function(c){
-    var pr=(c.pr||'').trim();
-    if(!pr) return;
-    if(!byProduct[pr]) byProduct[pr]={count:0,commission:0};
-    byProduct[pr].count++;
-    byProduct[pr].commission+=parseFloat((c.cm||'').replace(/[^0-9.-]/g,''))||0;
-  });
-  var topProducts = Object.entries(byProduct).sort(function(a,b){return b[1].commission-a[1].commission;}).slice(0,10);
-
-  // Source breakdown
-  var bySource = {};
-  clients.forEach(function(c){
-    var s=(c.src||'Unknown').trim();
-    if(!bySource[s]) bySource[s]={count:0,commission:0};
-    bySource[s].count++;
-    bySource[s].commission+=parseFloat((c.cm||'').replace(/[^0-9.-]/g,''))||0;
-  });
-  var topSources = Object.entries(bySource).sort(function(a,b){return b[1].count-a[1].count;}).slice(0,8);
-
-  // Monthly for current year
-  var byMonth = {};
-  for(var m=1;m<=12;m++) byMonth[m]=0;
-  clients.forEach(function(c){
-    if(!c.ds) return;
-    var d=new Date(c.ds);
-    if(d.getFullYear()===curYear){
-      var mo=d.getMonth()+1;
-      byMonth[mo]+=(parseFloat((c.cm||'').replace(/[^0-9.-]/g,''))||0);
-    }
-  });
-  var maxMonth = Math.max.apply(null,Object.values(byMonth))||1;
-  var maxProd = topProducts.length?topProducts[0][1].commission:1;
-  var maxSrc = topSources.length?topSources[0][1].count:1;
-
+  var tod=new Date();
+  var curYear=tod.getFullYear();
+  var curMonth=tod.getMonth()+1;
+  var dayOfYear=Math.ceil((tod-new Date(curYear,0,1))/864e5);
+  var daysInYear=365+(curYear%4===0?1:0);
+  var yearProgress=dayOfYear/daysInYear;
   var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var fmt$ = function(n){return '$'+n.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');};
-
-  var html = '';
-
-  // Year-over-year table
-  html += '<div class="an-card" style="margin-bottom:14px">';
-  html += '<div class="an-title">Commission by year</div>';
-  years.forEach(function(y,i){
-    var curr = byYear[y].commission;
-    var prev = byYear[years[i+1]] ? byYear[years[i+1]].commission : null;
-    var change = prev ? Math.round((curr-prev)/prev*100) : null;
-    html += '<div class="an-yrrow">';
-    html += '<span class="an-yr">'+y+'</span>';
-    html += '<span class="an-yrtotal">'+fmt$(curr)+'</span>';
-    html += '<span style="font-size:11px;color:var(--text3);margin-right:8px">'+byYear[y].count+' policies</span>';
-    if(change!==null) html += '<span class="an-yrchange '+(change>=0?'an-pos':'an-neg')+'">'+(change>=0?'+':'')+change+'%</span>';
-    html += '</div>';
+  var fmt$=function(n){return '$'+n.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');};
+  var byYearMonth={};
+  var byYear={};
+  var byProduct={};
+  var bySource={};
+  clients.forEach(function(c){
+    if(!c.ds)return;
+    var d=new Date(c.ds);
+    var y=d.getFullYear();
+    var m=d.getMonth()+1;
+    if(!y||isNaN(y)||y<2019||y>curYear)return;
+    if(!byYearMonth[y])byYearMonth[y]={};
+    if(!byYearMonth[y][m])byYearMonth[y][m]={commission:0,count:0};
+    if(!byYear[y])byYear[y]={commission:0,count:0};
+    var comm=parseFloat((c.cm||'').replace(/[^0-9.-]/g,''))||0;
+    byYearMonth[y][m].commission+=comm;
+    byYearMonth[y][m].count++;
+    byYear[y].commission+=comm;
+    byYear[y].count++;
+    var pr=(c.pr||'').trim();
+    if(pr){if(!byProduct[pr])byProduct[pr]={count:0,commission:0};byProduct[pr].count++;byProduct[pr].commission+=comm;}
+    var src=(c.src||'Unknown').trim();
+    if(!bySource[src])bySource[src]={count:0,commission:0};bySource[src].count++;bySource[src].commission+=comm;
   });
-  html += '</div>';
-
-  // Monthly bars current year
-  html += '<div class="an-card" style="margin-bottom:14px">';
-  html += '<div class="an-title">Monthly commission — '+curYear+'</div>';
-  for(var mo=1;mo<=12;mo++){
-    var val=byMonth[mo];
-    var pct=Math.round(val/maxMonth*100);
-    html += '<div class="an-bar-row">';
-    html += '<span class="an-bar-label">'+MONTHS[mo-1]+'</span>';
-    html += '<div class="an-bar-wrap"><div class="an-bar-fill" style="width:'+pct+'%"></div></div>';
-    html += '<span class="an-bar-val">'+fmt$(val)+'</span>';
-    html += '</div>';
+  var years=Object.keys(byYearMonth).map(Number).sort(function(a,b){return a-b;});
+  var displayYears=years.slice(-5);
+  var curYearComm=byYear[curYear]?byYear[curYear].commission:0;
+  var projected=yearProgress>0?curYearComm/yearProgress:0;
+  var prevYear=curYear-1;
+  var prevYearComm=byYear[prevYear]?byYear[prevYear].commission:0;
+  var vsLastYear=prevYearComm>0?((projected-prevYearComm)/prevYearComm*100):0;
+  var topProducts=Object.entries(byProduct).sort(function(a,b){return b[1].commission-a[1].commission;}).slice(0,10);
+  var topSources=Object.entries(bySource).sort(function(a,b){return b[1].count-a[1].count;}).slice(0,8);
+  var maxProd=topProducts.length?topProducts[0][1].commission:1;
+  var maxSrc=topSources.length?topSources[0][1].count:1;
+  var yearColors=['#6366f1','#10b981','#f59e0b','#ef4444','#3b82f6'];
+  var html='';
+  // Stats
+  html+='<div class="lead-stats" style="margin-bottom:14px">';
+  html+='<div class="stat-card"><div class="stat-num">'+fmt$(curYearComm)+'</div><div class="stat-label">'+curYear+' to date</div></div>';
+  html+='<div class="stat-card"><div class="stat-num" style="color:var(--accent)">'+fmt$(projected)+'</div><div class="stat-label">Full year projected</div></div>';
+  var vsColor=vsLastYear>=0?'var(--accent)':'var(--red)';
+  html+='<div class="stat-card"><div class="stat-num" style="color:'+vsColor+'">'+(vsLastYear>=0?'+':'')+vsLastYear.toFixed(1)+'%</div><div class="stat-label">vs '+prevYear+' ('+fmt$(prevYearComm)+')</div></div>';
+  html+='<div class="stat-card"><div class="stat-num">'+(byYear[curYear]?byYear[curYear].count:0)+'</div><div class="stat-label">Policies '+curYear+'</div></div>';
+  html+='</div>';
+  // Year table
+  html+='<div class="an-card" style="margin-bottom:14px"><div class="an-title">Year-over-year</div>';
+  Object.keys(byYear).map(Number).sort(function(a,b){return b-a;}).forEach(function(y,i,arr){
+    var curr=byYear[y].commission;
+    var prev=byYear[arr[i+1]]?byYear[arr[i+1]].commission:null;
+    var change=prev?Math.round((curr-prev)/prev*100):null;
+    var isCur=y===curYear;
+    html+='<div class="an-yrrow">';
+    html+='<span class="an-yr" style="'+(isCur?'font-weight:600':'')+'">'+y+'</span>';
+    html+='<span class="an-yrtotal" style="'+(isCur?'color:var(--accent)':'')+'">'+fmt$(curr)+(isCur?' <span style="font-size:10px;color:var(--text3)">proj: '+fmt$(projected)+'</span>':'')+'</span>';
+    html+='<span style="font-size:11px;color:var(--text3);margin-right:8px">'+byYear[y].count+' policies</span>';
+    if(change!==null)html+='<span class="an-yrchange '+(change>=0?'an-pos':'an-neg')+'">'+(change>=0?'+':'')+change+'%</span>';
+    html+='</div>';
+  });
+  html+='</div>';
+  // Monthly multi-year comparison
+  html+='<div class="an-card" style="margin-bottom:14px"><div class="an-title">Monthly side-by-side (last '+displayYears.length+' years)</div>';
+  html+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">';
+  displayYears.forEach(function(y,i){
+    html+='<div style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2)">';
+    html+='<div style="width:10px;height:10px;border-radius:2px;background:'+yearColors[i%yearColors.length]+'"></div>'+y+'</div>';
+  });
+  html+='</div>';
+  var maxM=0;
+  displayYears.forEach(function(y){for(var m=1;m<=12;m++){var v=byYearMonth[y]&&byYearMonth[y][m]?byYearMonth[y][m].commission:0;if(v>maxM)maxM=v;}});
+  if(maxM===0)maxM=1;
+  for(var m=1;m<=12;m++){
+    html+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">';
+    html+='<span style="font-size:11px;color:var(--text2);width:28px;flex-shrink:0">'+MONTHS[m-1]+'</span>';
+    html+='<div style="flex:1">';
+    displayYears.forEach(function(y,i){
+      var val=byYearMonth[y]&&byYearMonth[y][m]?byYearMonth[y][m].commission:0;
+      var pct=Math.round(val/maxM*100);
+      var isCurMonthYear=(y===curYear&&m===curMonth);
+      html+='<div style="display:flex;align-items:center;gap:4px;margin-bottom:2px">';
+      html+='<div style="flex:1;background:var(--bg);border-radius:2px;height:6px;overflow:hidden">';
+      html+='<div style="width:'+pct+'%;height:100%;background:'+yearColors[i%yearColors.length]+';border-radius:2px;'+(isCurMonthYear?'box-shadow:0 0 0 1px '+yearColors[i%yearColors.length]:'')+'"></div></div>';
+      html+='<span style="font-size:10px;color:var(--text3);width:54px;text-align:right;flex-shrink:0">'+fmt$(val)+'</span>';
+      html+='</div>';
+    });
+    html+='</div></div>';
   }
-  html += '</div>';
-
-  html += '<div class="an-grid">';
-
-  // Top products by commission
-  html += '<div class="an-card">';
-  html += '<div class="an-title">Top products by commission</div>';
-  topProducts.forEach(function(entry){
-    var pct=Math.round(entry[1].commission/maxProd*100);
-    html += '<div class="an-bar-row">';
-    html += '<span class="an-bar-label" title="'+entry[0]+'">'+entry[0]+'</span>';
-    html += '<div class="an-bar-wrap"><div class="an-bar-fill" style="width:'+pct+'%;background:var(--blue)"></div></div>';
-    html += '<span class="an-bar-val">'+fmt$(entry[1].commission)+'</span>';
-    html += '</div>';
+  html+='</div>';
+  html+='<div class="an-grid">';
+  // Products
+  html+='<div class="an-card"><div class="an-title">Top products by commission</div>';
+  topProducts.forEach(function(e){
+    var pct=Math.round(e[1].commission/maxProd*100);
+    html+='<div class="an-bar-row"><span class="an-bar-label" title="'+e[0]+'">'+e[0]+'</span><div class="an-bar-wrap"><div class="an-bar-fill" style="width:'+pct+'%;background:var(--blue)"></div></div><span class="an-bar-val">'+fmt$(e[1].commission)+'</span></div>';
   });
-  html += '</div>';
-
-  // Top sources
-  html += '<div class="an-card">';
-  html += '<div class="an-title">Top referral sources</div>';
-  topSources.forEach(function(entry){
-    var pct=Math.round(entry[1].count/maxSrc*100);
-    html += '<div class="an-bar-row">';
-    html += '<span class="an-bar-label" title="'+entry[0]+'">'+entry[0]+'</span>';
-    html += '<div class="an-bar-wrap"><div class="an-bar-fill" style="width:'+pct+'%;background:var(--purple)"></div></div>';
-    html += '<span class="an-bar-val">'+entry[1].count+' ('+fmt$(entry[1].commission)+')</span>';
-    html += '</div>';
+  html+='</div>';
+  // Sources
+  html+='<div class="an-card"><div class="an-title">Top referral sources</div>';
+  topSources.forEach(function(e){
+    var pct=Math.round(e[1].count/maxSrc*100);
+    html+='<div class="an-bar-row"><span class="an-bar-label" title="'+e[0]+'">'+e[0]+'</span><div class="an-bar-wrap"><div class="an-bar-fill" style="width:'+pct+'%;background:var(--purple)"></div></div><span class="an-bar-val">'+e[1].count+'</span></div>';
   });
-  html += '</div>';
+  html+='</div></div>';
+  el.innerHTML=html;
+}
 
-  html += '</div>';
-  el.innerHTML = html;
+function openEditModal(id){
+  var c=clients.find(function(x){return x.id===id;});
+  if(!c)return;
+  document.getElementById('modal').innerHTML='<div class="mbg" onclick="if(event.target===this)document.getElementById(\'modal\').innerHTML=\'\'">'
+  +'<div class="mod"><div class="mtit">Edit policy \u2014 '+c.cn+'</div>'
+  +'<div class="fgr">'
+  +'<div class="fg2"><label>Client name</label><input id="e-cn" value="'+c.cn+'"></div>'
+  +'<div class="fg2"><label>Insured name</label><input id="e-ins" value="'+c.ins+'"></div>'
+  +'<div class="fg2"><label>Date sold</label><input id="e-ds" type="date" value="'+c.ds+'"></div>'
+  +'<div class="fg2"><label>Company</label><input id="e-co" value="'+c.co+'"></div>'
+  +'<div class="fg2"><label>Product sold</label><select id="e-pr">'+PRODUCTS.map(function(p){return'<option'+(p===c.pr?' selected':'')+'>'+p+'</option>';}).join('')+'</select></div>'
+  +'<div class="fg2"><label>Policy number</label><input id="e-pn" value="'+c.pn+'"></div>'
+  +'<div class="fg2"><label>Coverage amount</label><input id="e-cv" value="'+c.cv+'"></div>'
+  +'<div class="fg2"><label>Amount paid</label><input id="e-ap" value="'+c.ap+'"></div>'
+  +(isOwner?'<div class="fg2"><label>Commission</label><input id="e-cm" value="'+c.cm+'"></div>':'<div class="fg2"><label>Commission</label><input disabled placeholder="Owner only"></div>')
+  +'<div class="fg2"><label>Source</label><input id="e-src" value="'+c.src+'"></div>'
+  +'<div class="fg2"><label>Phone</label><input id="e-ph" value="'+c.ph+'"></div>'
+  +'<div class="fg2"><label>Email</label><input id="e-em" value="'+c.em+'"></div>'
+  +'<div class="fg2"><label>City</label><input id="e-cy" value="'+c.cy+'"></div>'
+  +'<div class="fg2"><label>Next follow-up</label><input id="e-fu" type="date" value="'+(c.fu||'')+'"></div>'
+  +'</div>'
+  +'<div class="fac">'
+  +'<button class="bcn" onclick="document.getElementById(\'modal\').innerHTML=\'\'">Cancel</button>'
+  +'<button class="bsb" onclick="submitEdit('+id+')">Save changes</button>'
+  +'</div></div></div>';
+}
+
+async function submitEdit(id){
+  var c=clients.find(function(x){return x.id===id;});
+  if(!c)return;
+  pushUndo('Edit: '+c.cn);
+  var g=function(eid){var el=document.getElementById(eid);return el&&!el.disabled?(el.value||'').trim():'';};
+  c.cn=g('e-cn')||c.cn;
+  c.ins=g('e-ins')||c.ins;
+  c.ds=g('e-ds')||c.ds;
+  c.co=g('e-co')||c.co;
+  c.pr=g('e-pr')||c.pr;
+  c.pn=g('e-pn')||c.pn;
+  c.cv=g('e-cv')||c.cv;
+  c.ap=g('e-ap')||c.ap;
+  if(isOwner)c.cm=g('e-cm')||c.cm;
+  c.src=g('e-src')||c.src;
+  c.ph=g('e-ph')||c.ph;
+  c.em=g('e-em')||c.em;
+  c.cy=g('e-cy')||c.cy;
+  c.fu=g('e-fu')||null;
+  // Write changed fields back to sheet
+  var C={clientName:3,insuredName:4,dateSold:5,company:6,coverage:7,policyNumber:8,phone:14,email:15,city:16,amountPaid:17,commission:18,source:20,product:21,followupDate:22};
+  var updates=[
+    [C.clientName,c.cn],[C.insuredName,c.ins],[C.dateSold,c.ds],[C.company,c.co],
+    [C.coverage,c.cv],[C.policyNumber,c.pn],[C.phone,c.ph],[C.email,c.em],
+    [C.city,c.cy],[C.amountPaid,c.ap],[C.source,c.src],[C.product,c.pr],[C.followupDate,c.fu||'']
+  ];
+  if(isOwner)updates.push([C.commission,c.cm]);
+  for(var i=0;i<updates.length;i++){
+    sheetWrite('writeFollowupDate',{rowNum:c.rowNum,value:updates[i][1],colOverride:updates[i][0]});
+  }
+  document.getElementById('modal').innerHTML='';
+  render();
+  alert('Changes saved \u2713');
 }
 
 </script>
