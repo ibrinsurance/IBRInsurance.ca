@@ -227,7 +227,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
     </div>
     <div class="sw">
       <svg class="si" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M10 10L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      <input type="text" id="searchInput" placeholder="Search name, phone, email, city…" oninput="render()">
+      <input type="text" id="searchInput" placeholder="Search name, phone, email, city…" oninput="onSearch()">
     </div>
     <div class="nsp"></div>
     <div class="sync"><div class="sdot" id="sdot"></div><span id="syncStatus">Connecting…</span></div>
@@ -403,7 +403,41 @@ function nc(s){return(s||'').split(/[,|]/).map(x=>x.trim().toLowerCase()).filter
 function gst(c){if(c.done)return'done';if(!c.fu)return'none';const fd=new Date(c.fu);fd.setHours(0,0,0,0);const d=Math.ceil((fd-tod)/864e5);if(d<0)return'overdue';if(d<=7)return'thisweek';return'upcoming';}
 function vbp(c){const cl=cls(c.pr);if(preset==='followups')return cl!=='travel';if(preset==='all')return true;if(preset==='life')return cl==='life';if(preset==='ci')return cl==='ci';if(preset==='disability')return cl==='dis';if(preset==='investments')return cl==='inv';if(preset==='group')return cl==='grp';if(preset==='travel')return cl==='travel';return true;}
 function getAllLinked(c){const ap=nc(c.ph),ae=nc(c.em),mh=new Set(c.hh||[]);return clients.filter(o=>{if(o.id===c.id)return false;return mh.has(o.id)||nc(o.ph).some(p=>ap.includes(p))||nc(o.em).some(e=>ae.includes(e));});}
-function getFiltered(){const q=(document.getElementById('searchInput').value||'').toLowerCase();return clients.filter(c=>{if(!vbp(c))return false;const mq=!q||[c.cn,c.cy,c.pn,c.ins,c.ph,c.em].some(x=>(x||'').toLowerCase().includes(q));if(!mq)return false;const s=gst(c);if(tab==='overdue')return s==='overdue';if(tab==='thisweek')return s==='thisweek';if(tab==='upcoming')return s==='upcoming';return true;});}
+function getFiltered(){
+  const q=(document.getElementById('searchInput').value||'').toLowerCase().trim();
+  return clients.filter(c=>{
+    if(!vbp(c))return false;
+    // Search across all key fields including phone and email
+    const mq=!q||[c.cn,c.ins,c.cy,c.pn,c.ph,c.em,c.co,c.pr,c.src].some(x=>(x||'').toLowerCase().includes(q));
+    if(!mq)return false;
+    // If actively searching, show all tabs; otherwise respect tab filter
+    if(q)return true;
+    const s=gst(c);
+    if(tab==='overdue')return s==='overdue';
+    if(tab==='thisweek')return s==='thisweek';
+    if(tab==='upcoming')return s==='upcoming';
+    return true;
+  });
+}
+
+// ── SEARCH ──
+function onSearch(){
+  const q=(document.getElementById('searchInput').value||'').trim();
+  if(q){
+    // Auto-switch to All tab and all products when searching
+    if(tab!=='all'){
+      tab='all';
+      [['ov','overdue'],['tw','thisweek'],['up','upcoming'],['al','all']].forEach(([k,v])=>
+        document.getElementById('t-'+k).classList.toggle('active',v==='all')
+      );
+    }
+    if(preset!=='all'){
+      preset='all';
+      document.getElementById('preset').value='all';
+    }
+  }
+  render();
+}
 
 // ── CONTROLS ──
 function applyPreset(){preset=document.getElementById('preset').value;sel=null;render();}
@@ -449,7 +483,20 @@ return`<div class="dp" onclick="event.stopPropagation()">
 <div class="fu-row"><label>Next follow-up date</label><input type="date" value="${c.fu||''}" onchange="updFU(${c.id},this.value)"></div>
 ${claimH(c)}
 <div class="hhs"><div class="hhh"><span class="hhht">Household / linked files</span><button class="hha" onclick="lkp=lkp===${c.id}?null:${c.id};render()">+ Link file</button></div>
-${lnk.length?lnk.map(l=>`<div class="hhm"><div class="av ${avc(l.cn)}" style="width:22px;height:22px;font-size:9px;flex-shrink:0">${ini(l.cn)}</div><span class="hhm-n">${l.cn}</span><span class="hhm-p">${l.pr}</span>${(c.hh||[]).includes(l.id)?`<span class="hhm-r" onclick="unlnk(${c.id},${l.id})">remove</span>`:`<span style="font-size:10px;color:var(--text3);padding:2px 4px">auto</span>`}</div>`).join(''):`<div style="padding:7px 11px;font-size:12px;color:var(--text3)">No linked files — phone/email matches auto-link</div>`}
+${lnk.length?lnk.map(l=>`<div class="hhm" style="flex-direction:column;align-items:flex-start;gap:3px;padding:8px 12px">
+  <div style="display:flex;align-items:center;gap:7px;width:100%">
+    <div class="av ${avc(l.cn)}" style="width:22px;height:22px;font-size:9px;flex-shrink:0">${ini(l.cn)}</div>
+    <span class="hhm-n">${l.cn}</span>
+    <span class="hhm-p" style="margin-left:auto">${l.pr}</span>
+    ${(c.hh||[]).includes(l.id)?`<span class="hhm-r" onclick="unlnk(${c.id},${l.id})">remove</span>`:`<span style="font-size:10px;color:var(--text3);padding:2px 4px">auto</span>`}
+  </div>
+  <div style="display:flex;gap:12px;padding-left:29px;font-size:11px;color:var(--text3)">
+    ${l.ins&&l.ins!==l.cn?`<span>Insured: ${l.ins}</span>`:''}
+    ${l.pn?`<span>Policy: ${l.pn}</span>`:''}
+    ${l.ds?`<span>Sold: ${fmtD(l.ds)}</span>`:''}
+    ${l.co?`<span>${l.co}</span>`:''}
+  </div>
+</div>`).join(''):`<div style="padding:7px 11px;font-size:12px;color:var(--text3)">No linked files — phone/email matches auto-link</div>`}
 ${isPicker&&linkable.length?`<div class="lkp"><div class="lkp-l">Select a file to manually link:</div><div class="lkp-list">${linkable.map(l=>`<div class="lkp-opt" onclick="lnkFile(${c.id},${l.id})"><div class="av ${avc(l.cn)}" style="width:22px;height:22px;font-size:9px">${ini(l.cn)}</div><span style="flex:1">${l.cn}</span><span style="font-size:11px;color:var(--text3)">${l.pr}·${l.cy}</span></div>`).join('')}</div></div>`:isPicker?`<div class="lkp"><div class="lkp-l">No other files available to link</div></div>`:''}
 </div>
 <div class="sl">Notes</div>
@@ -540,10 +587,21 @@ function renderLkpSearch(cid){
   const lnk=getAllLinked(c);
   const linkable=clients.filter(o=>o.id!==c.id&&!lnk.find(l=>l.id===o.id));
   const q=(document.getElementById('lkp-search-'+cid).value||'').toLowerCase();
-  const filtered=q?linkable.filter(l=>[l.cn,l.pr,l.cy,l.ph].some(x=>(x||'').toLowerCase().includes(q))):linkable.slice(0,8);
+  const filtered=q
+    ?linkable.filter(l=>[l.cn,l.ins,l.pr,l.cy,l.ph,l.pn,l.co].some(x=>(x||'').toLowerCase().includes(q))).slice(0,20)
+    :linkable.slice(0,6);
   const el=document.getElementById('lkp-list-'+cid);
   if(!el)return;
-  el.innerHTML=filtered.length?filtered.map(l=>`<div class="lkp-opt" onclick="lnkFile(${cid},${l.id})"><div class="av ${avc(l.cn)}" style="width:22px;height:22px;font-size:9px">${ini(l.cn)}</div><span style="flex:1">${l.cn}</span><span style="font-size:11px;color:var(--text3)">${l.pr}·${l.cy}</span></div>`).join(''):'<div style="font-size:12px;color:var(--text3);padding:4px 7px">No matches found</div>';
+  el.innerHTML=filtered.length
+    ?filtered.map(l=>`<div class="lkp-opt" onclick="lnkFile(${cid},${l.id})">
+        <div class="av ${avc(l.cn)}" style="width:22px;height:22px;font-size:9px;flex-shrink:0">${ini(l.cn)}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;color:var(--text)">${l.cn}${l.ins&&l.ins!==l.cn?' / '+l.ins:''}</div>
+          <div style="font-size:10px;color:var(--text3)">${l.pr} · ${l.pn||'no policy #'} · ${l.co} · ${l.cy}</div>
+        </div>
+      </div>`).join('')
+    +(q&&filtered.length===20?`<div style="font-size:11px;color:var(--text3);padding:4px 7px">Showing top 20 — refine your search</div>`:'')
+    :'<div style="font-size:12px;color:var(--text3);padding:4px 7px">No matches found</div>';
 }
 </script>
 </body>
