@@ -328,20 +328,7 @@ const DQG=[{l:'Disability variants',i:['Disability','Disability Insurance']},{l:
 let isOwner=false, clients=[], nextId=1000, mode='followup', tab='all', sel=null, preset='all', nnt={}, lkp=null, undoStack=[], sheetConnected=false;
 
 // ── AUTH ──
-window.addEventListener('load', function(){
-  // Re-initialize Google Sign-in after page load to ensure it fires correctly
-  if(window.google && google.accounts){
-    google.accounts.id.initialize({
-      client_id: '49708486624-1ct34k1ur759otklcd2cnlgbaa2vggd1.apps.googleusercontent.com',
-      callback: handleCredentialResponse,
-      auto_prompt: false
-    });
-    google.accounts.id.renderButton(
-      document.querySelector('.g_id_signin'),
-      {type:'standard',shape:'rectangular',theme:'outline',text:'sign_in_with',size:'large',width:300}
-    );
-  }
-});
+// Google Sign-in configured via data-attributes on g_id_onload div
 
 function handleCredentialResponse(resp){
   const p=parseJwt(resp.credential);
@@ -651,28 +638,30 @@ function jumpTo(id){
 }
 
 // ── NEW SALE MODAL ──
-function openModal(){document.getElementById('modal').innerHTML=`<div class="mbg" onclick="if(event.target===this)document.getElementById('modal').innerHTML=''"><div class="mod">
-<div class="mtit">New sale</div>
-<div class="fgr">
-<div class="fg2"><label>Client name *</label><input id="f-cn" placeholder="Harjinder Singh"></div>
-<div class="fg2"><label>Insured name</label><input id="f-ins" placeholder="If different from client"></div>
-<div class="fg2"><label>Date sold</label><input id="f-ds" type="date" value="${new Date().toISOString().split('T')[0]}"></div>
-<div class="fg2"><label>Company</label><input id="f-co" placeholder="Sun Life, Manulife…"></div>
-<div class="fg2"><label>Product sold *</label><select id="f-pr"><option value="">Select…</option>${PRODUCTS.map(p=>`<option>${p}</option>`).join('')}</select></div>
-<div class="fg2"><label>Policy number</label><input id="f-pn" placeholder="SL-2025-XXXX"></div>
-<div class="fg2"><label>Coverage amount</label><input id="f-cv" placeholder="$500,000"></div>
-<div class="fg2"><label>Amount paid</label><input id="f-ap" placeholder="$1,200"></div>
-<div class="fg2"><label>Commission</label><input id="f-cm" placeholder="$240"></div>
-<div class="fg2"><label>Source</label><input id="f-src" placeholder="Referral, Instagram…"></div>
-<div class="fg2"><label>Phone</label><input id="f-ph" placeholder="416-555-0000" oninput="chkDup()"></div>
-<div class="fg2"><label>Email</label><input id="f-em" placeholder="client@email.com" oninput="chkDup()"></div>
-<div class="fg2"><label>City</label><input id="f-cy" placeholder="Brampton"></div>
-<div class="fg2"><label>Next follow-up date</label><input id="f-fu" type="date"></div>
-<div class="fg2 full"><label>Notes</label><textarea id="f-nt" placeholder="Any initial notes…"></textarea></div>
-</div>
-<div class="dup-warn" id="dupWarn"></div>
-<div class="fac"><button class="bcn" onclick="document.getElementById('modal').innerHTML=''">Cancel</button><button class="bsb" onclick="submitSale()">Add to CRM + Sheet</button></div>
-</div></div>`;}
+function openModal(){
+  document.getElementById('modal').innerHTML=`<div class="mbg" onclick="if(event.target===this)document.getElementById('modal').innerHTML=''"><div class="mod">
+  <div class="mtit">New sale</div>
+  <div class="fgr">
+    <div class="fg2"><label>Client name *</label><input id="f-cn" placeholder="Harjinder Singh"></div>
+    <div class="fg2"><label>Insured name</label><input id="f-ins" placeholder="If different from client"></div>
+    <div class="fg2"><label>Date sold</label><input id="f-ds" type="date" value="${new Date().toISOString().split('T')[0]}"></div>
+    <div class="fg2"><label>Company</label><input id="f-co" placeholder="Sun Life, Manulife…"></div>
+    <div class="fg2"><label>Product sold *</label><select id="f-pr"><option value="">Select…</option>${PRODUCTS.map(p=>`<option>${p}</option>`).join('')}</select></div>
+    <div class="fg2"><label>Policy number</label><input id="f-pn" placeholder="SL-2025-XXXX"></div>
+    <div class="fg2"><label>Coverage amount</label><input id="f-cv" placeholder="$500,000"></div>
+    <div class="fg2"><label>Amount paid</label><input id="f-ap" placeholder="$1,200"></div>
+    <div class="fg2"><label>Commission</label><input id="f-cm" placeholder="$240"></div>
+    <div class="fg2"><label>Source</label><input id="f-src" placeholder="Referral, Instagram…"></div>
+    <div class="fg2"><label>Phone</label><input id="f-ph" placeholder="416-555-0000" oninput="chkDup()"></div>
+    <div class="fg2"><label>Email</label><input id="f-em" placeholder="client@email.com" oninput="chkDup()"></div>
+    <div class="fg2"><label>City</label><input id="f-cy" placeholder="Brampton"></div>
+    <div class="fg2"><label>Next follow-up date</label><input id="f-fu" type="date"></div>
+    <div class="fg2 full"><label>Notes</label><textarea id="f-nt" placeholder="Any initial notes…"></textarea></div>
+  </div>
+  <div class="dup-warn" id="dupWarn"></div>
+  <div class="fac"><button class="bcn" onclick="document.getElementById('modal').innerHTML=''">Cancel</button><button class="bsb" onclick="submitSale()">Add to CRM + Sheet</button></div>
+  </div></div>`;
+}
 
 function chkDup(){const ph=(document.getElementById('f-ph').value||'').toLowerCase().trim();const em=(document.getElementById('f-em').value||'').toLowerCase().trim();const m=clients.filter(c=>nc(c.ph).some(p=>ph&&p.includes(ph))||nc(c.em).some(e=>em&&e.includes(em)));const w=document.getElementById('dupWarn');if(m.length){w.style.display='block';w.textContent=`Existing files found: ${[...new Set(m.map(x=>x.cn))].join(', ')} — will auto-link as household`;}else w.style.display='none';}
 
@@ -1030,7 +1019,7 @@ function renderAnalytics(){
   html += '<div style="display:flex;gap:8px;margin-bottom:14px">';
   var views = [['monthly','Monthly totals'],['products','By product'],['households','Top 50 clients']];
   views.forEach(function(v){
-    html += '<button onclick="_anView=''+v[0]+'';renderAnalytics()" style="padding:6px 14px;border-radius:var(--rs);border:1px solid '+(_anView===v[0]?'var(--accent)':'var(--border)')+';background:'+(_anView===v[0]?'var(--accent)':'var(--surface)')+';color:'+(_anView===v[0]?'#fff':'var(--text2)')+';font-size:12px;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:'+(_anView===v[0]?'600':'400')+'">'+v[1]+'</button>';
+    html += '<button data-vw="'+v[0]+'" onclick="_anSetView(this.dataset.vw)" style="padding:6px 14px;border-radius:var(--rs);border:1px solid '+(_anView===v[0]?'var(--accent)':'var(--border)')+';background:'+(_anView===v[0]?'var(--accent)':'var(--surface)')+';color:'+(_anView===v[0]?'#fff':'var(--text2)')+';font-size:12px;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:'+(_anView===v[0]?'600':'400')+'">'+v[1]+'</button>';
   });
   html += '</div>';
 
@@ -1091,10 +1080,12 @@ function renderAnalytics(){
         var v=D.byYM[y]&&D.byYM[y][m]?D.byYM[y][m].comm:0;
         var prevV=prevYr&&D.byYM[prevYr]&&D.byYM[prevYr][m]?D.byYM[prevYr][m].comm:0;
         var better=prevV>0&&v>prevV;var worse=prevV>0&&v<prevV;
-        html+='<td style="text-align:right;padding:6px 4px;font-size:11px;color:'+(better?'var(--accent)':worse?'var(--red)':'var(--text2)')+';">'+(v?f$(v):'–')+'</td>';
+        html+='<td style="text-align:right;padding:6px 4px;font-size:11px;color:'+(better?'var(--accent)':worse?'var(--red)':'var(--text2)')+'">'+(v?f$(v):'–')+'</td>';
       });
       html += '<td style="text-align:right;padding:6px 8px;font-weight:600;color:var(--text)">'+f$(rowTotal)+'</td>';
-      html += '<td style="text-align:right;padding:6px 8px">'+(chg!==null?'<span style="font-size:11px;padding:1px 6px;border-radius:20px;background:'+(chg>=0?'var(--accent-l)':'var(--red-l)')+';color:'+(chg>=0?'var(--accent)':'var(--red)')+'>"+(chg>=0?"+":"")+chg+"%</span>":'')+'</td>';
+      html += '<td style="text-align:right;padding:6px 8px">';
+      if(chg!==null){ html += '<span style="font-size:11px;padding:1px 6px;border-radius:20px;background:'+(chg>=0?'var(--accent-l)':'var(--red-l)')+';color:'+(chg>=0?'var(--accent)':'var(--red)')+'">'+(chg>=0?'+':'')+chg+'%</span>'; }
+      html += '</td>';
       html += '</tr>';
     });
     html += '</tbody></table></div>';
@@ -1200,7 +1191,7 @@ function renderAnalytics(){
         var sorted=g.policies.slice().sort(function(a,b){return (parseFloat((b.cm||'').toString().replace(/[^0-9.-]/g,''))||0)-(parseFloat((a.cm||'').toString().replace(/[^0-9.-]/g,''))||0);});
         sorted.forEach(function(p){
           var pc=parseFloat((p.cm||'').toString().replace(/[^0-9.-]/g,''))||0;
-          html+='<div data-pid="'+p.id+'" onclick="_anOpenPolicy(this)" style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--bg);border-radius:6px;margin-bottom:3px;cursor:pointer;border:1px solid transparent" onmouseover="this.style.borderColor='var(--border2)'" onmouseout="this.style.borderColor='transparent'">';
+          html+='<div data-pid="'+p.id+'" onclick="_anOpenPolicy(this)" style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--bg);border-radius:6px;margin-bottom:3px;cursor:pointer;border:1px solid var(--border)">';
           html+='<div style="flex:1;min-width:0">';
           html+='<div style="font-size:12px;font-weight:500;color:var(--text)">'+p.pr+(p.ins&&p.ins!==p.cn?' <span style="font-weight:400;font-size:11px;color:var(--text3)">/ '+p.ins+'</span>':'')+'</div>';
           html+='<div style="font-size:11px;color:var(--text3)">'+p.co+' · '+(p.pn||'—')+' · sold '+(p.ds?fmtD(p.ds):'—')+(p.cv?' · '+p.cv:'')+'</div>';
@@ -1232,7 +1223,7 @@ function _anDrilldown(y, m){
   var md=D.byYM[y]&&D.byYM[y][m]?D.byYM[y][m]:{comm:0,byProd:{}};
   var prods=Object.entries(md.byProd).sort(function(a,b){return b[1]-a[1];});
   var maxP=prods.length?prods[0][1]:1;
-  var html='<div class="mbg" onclick="if(event.target===this)document.getElementById('modal').innerHTML=''">'
+  var html='<div class="mbg" onclick="if(event.target===this)document.getElementById(\'modal\').innerHTML=\'\'">'
     +'<div class="mod"><div class="mtit">'+MONTHS[m-1]+' '+y+' — '+f$(md.comm)+' commission</div>'
     +'<div style="font-size:12px;color:var(--text3);margin-bottom:14px">'+md.count+' policies sold</div>';
   prods.forEach(function(e){
@@ -1243,11 +1234,12 @@ function _anDrilldown(y, m){
     html+='<span style="font-size:12px;font-weight:600;color:var(--text);width:70px;text-align:right;flex-shrink:0">'+f$(e[1])+'</span>';
     html+='</div>';
   });
-  html+='<div style="text-align:right;margin-top:10px"><button class="bcn" onclick="document.getElementById('modal').innerHTML=''">Close</button></div>'
+  html+='<div style="text-align:right;margin-top:10px"><button class="bcn" onclick="document.getElementById(\'modal\').innerHTML=\'\'">Close</button></div>'
     +'</div></div>';
   document.getElementById('modal').innerHTML=html;
 }
 
+function _anSetView(v){_anView=v;renderAnalytics();}
 function _anToggleYear(y){
   var i=_anYears.indexOf(y);
   if(i>=0){if(_anYears.length>1)_anYears.splice(i,1);}
@@ -1276,4 +1268,6 @@ function _anOpenPolicy(el){
   var id=parseInt(el.getAttribute('data-pid'));
   if(id) jumpTo(id);
 }
-
+</script>
+</body>
+</html>
