@@ -277,12 +277,13 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
     <div class="sync"><div class="sdot" id="sdot"></div><span id="syncStatus">Connecting…</span></div>
     <div class="upill"><div class="uav" id="uav">R</div><span id="uname">Rattan</span><span class="obadge" id="roleLabel">Owner</span></div>
     <button class="btn-lo" onclick="logout()">Sign out</button>
+    <button onclick="refreshData()" style="padding:5px 10px;font-size:12px;font-family:DM Sans,sans-serif;border:1px solid var(--border);border-radius:var(--rs);background:none;cursor:pointer;color:var(--text2);display:flex;align-items:center;gap:4px" id="refreshBtn">&#8635; Refresh</button>
     <button class="btn-new" onclick="openModal()">+ New sale</button>
   </nav>
   <div class="main">
     <div class="undo-bar" id="undoBar"></div>
     <div id="fctrl">
-      <div class="filter-row">
+      <div class="filter-row" style="flex-wrap:wrap;gap:8px">
         <span class="fl">Show:</span>
         <select class="preset" id="preset" onchange="applyPreset()">
           <option value="all">All products</option>
@@ -295,6 +296,8 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
           <option value="group">Group / H&D / Team</option>
           <option value="travel">Travel / Visitor only</option>
         </select>
+        <button onclick="showClosed=!showClosed;render()" id="closedToggle" style="padding:5px 12px;font-size:12px;font-family:DM Sans,sans-serif;border:1px solid var(--border);border-radius:var(--rs);background:none;cursor:pointer;color:var(--text2);white-space:nowrap">Show closed</button>
+        <span id="closedCount" style="font-size:11px;color:var(--text3)"></span>
       </div>
       <div class="tabs">
         <button class="tab" id="t-ov" onclick="setTab('overdue')">Overdue <span class="bdg br" id="b-ov">0</span></button>
@@ -315,7 +318,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPOnlI9pDHcg3l-UQ5NJKuIIyJRZkPRUNj1v0j0EfAX0sq91UnP5GNzkcA9LA0N-Rn/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyRJUZOq7PVGuiOnV3hEBmGcrW_s0HD02nP6A25u7lxW6BXCUbc6ptaJpiwV4R8NRT9/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -325,7 +328,7 @@ const CLAIM_TYPES=['Death Benefit','Critical Illness Payout','Disability Claim',
 const CLAIM_STATUSES=['Submitted','In Review','Approved','Paid','Denied'];
 const DQG=[{l:'Disability variants',i:['Disability','Disability Insurance']},{l:'Truck-Travel variants',i:['Truck-Travel','Truck - Travel','Truck Travel']},{l:'RRSP typos',i:['RRSP','RRP','SRRP']},{l:'Transfer variants',i:['UL Transfer','WL Transfer','Term Transfer','Transfer']},{l:'Likely wrong column',i:['Tiktok','Entity']}];
 
-let isOwner=false, clients=[], nextId=1000, mode='followup', tab='all', sel=null, preset='all', nnt={}, lkp=null, undoStack=[], sheetConnected=false;
+let isOwner=false, clients=[], nextId=1000, mode='followup', tab='all', sel=null, preset='all', nnt={}, lkp=null, undoStack=[], sheetConnected=false, showClosed=false;
 
 // ── AUTH ──
 // Google Sign-in configured via data-attributes on g_id_onload div
@@ -391,7 +394,7 @@ function parseRows(rows){
     if(r.claimStatus){try{claim=JSON.parse(r.claimStatus);}catch{}}
     let hh=[];
     if(r.householdLinks){try{hh=JSON.parse(r.householdLinks);}catch{}}
-    clients.push({id:nextId++,rowNum:r.rowNum,cn:r.cn,ins:r.ins||r.cn,ds:r.ds,co:r.co,cv:r.cv,pn:r.pn,ph:r.ph,em:r.em,cy:r.cy,ap:r.ap,cm:r.cm,src:r.src,pr:r.pr,fu:r.fu||null,done:false,notes:parsedNotes,hh,claim});
+    clients.push({id:nextId++,rowNum:r.rowNum,cn:r.cn,ins:r.ins||r.cn,ds:r.ds,co:r.co,cv:r.cv,pn:r.pn,ph:r.ph,em:r.em,cy:r.cy,ap:r.ap,cm:r.cm,src:r.src,pr:r.pr,fu:r.fu||null,done:false,notes:parsedNotes,hh,claim,status:r.policyStatus||'active'});
   });
 }
 
@@ -411,19 +414,28 @@ function nc(s){return(s||'').split(/[,|]/).map(x=>x.trim().toLowerCase()).filter
 function gst(c){if(c.done)return'done';if(!c.fu)return'none';const fd=new Date(c.fu);fd.setHours(0,0,0,0);const d=Math.ceil((fd-tod)/864e5);if(d<0)return'overdue';if(d<=7)return'thisweek';return'upcoming';}
 function vbp(c){const cl=cls(c.pr);if(preset==='followups')return cl!=='travel';if(preset==='all')return true;if(preset==='life')return cl==='life';if(preset==='ci')return cl==='ci';if(preset==='disability')return cl==='dis';if(preset==='investments')return cl==='inv';if(preset==='group')return cl==='grp';if(preset==='travel')return cl==='travel';return true;}
 function getAllLinked(c){const ap=nc(c.ph),ae=nc(c.em),mh=new Set(c.hh||[]);return clients.filter(o=>{if(o.id===c.id)return false;return mh.has(o.id)||nc(o.ph).some(p=>ap.includes(p))||nc(o.em).some(e=>ae.includes(e));});}
+// Products requiring follow-up (not travel/visitor)
+var FOLLOWUP_PRODS = new Set(['term insurance','ul insurance','whole life','critical illness','disability','disability insurance','rrsp','resp','tfsa','fhsa','hisa','group insurance','h&d','team','ul transfer','term transfer','wl transfer']);
+function needsFollowup(c){ return FOLLOWUP_PRODS.has((c.pr||'').toLowerCase().trim()); }
+
 function getFiltered(){
   const q=(document.getElementById('searchInput').value||'').toLowerCase().trim();
-  return clients.filter(c=>{
-    if(!vbp(c))return false;
-    // Search across all key fields including phone and email
+  return clients.filter(function(c){
+    // Exclude closed unless showClosed or searching
+    if(!q && !showClosed && c.status==='closed') return false;
+    // Follow-up mode (no search): only follow-up products + active
+    if(mode==='followup' && !q){
+      if(!needsFollowup(c)) return false;
+      if(c.status==='closed') return false;
+    }
+    if(!vbp(c)) return false;
     const mq=!q||[c.cn,c.ins,c.cy,c.pn,c.ph,c.em,c.co,c.pr,c.src].some(x=>(x||'').toLowerCase().includes(q));
-    if(!mq)return false;
-    // If actively searching, show all tabs; otherwise respect tab filter
-    if(q)return true;
+    if(!mq) return false;
+    if(q) return true;
     const s=gst(c);
-    if(tab==='overdue')return s==='overdue';
-    if(tab==='thisweek')return s==='thisweek';
-    if(tab==='upcoming')return s==='upcoming';
+    if(tab==='overdue') return s==='overdue';
+    if(tab==='thisweek') return s==='thisweek';
+    if(tab==='upcoming') return s==='upcoming';
     return true;
   });
 }
@@ -472,7 +484,14 @@ function render(){
   else if(mode==='analytics')renderAnalytics();
   else renderDQ();
 }
-function renderFU(){ubdg();const f=getFiltered();document.getElementById('rc').textContent=f.length+' client'+(f.length===1?'':'s');document.getElementById('list').innerHTML=f.length?f.map(cardH).join(''):'<div class="empty">No clients in this view</div>';}
+function renderFU(){
+  // Update closed toggle button state
+  var ct = document.getElementById('closedToggle');
+  if(ct) ct.style.background = showClosed ? 'var(--text)' : 'none', ct.style.color = showClosed ? '#fff' : 'var(--text2)';
+  var closedCount = clients.filter(function(c){return c.status==='closed';}).length;
+  var ccEl = document.getElementById('closedCount');
+  if(ccEl) ccEl.textContent = closedCount > 0 ? closedCount+' closed' : '';
+  ubdg();const f=getFiltered();document.getElementById('rc').textContent=f.length+' client'+(f.length===1?'':'s');document.getElementById('list').innerHTML=f.length?f.map(cardH).join(''):'<div class="empty">No clients in this view</div>';}
 const SP={overdue:['sp-ov','Overdue'],thisweek:['sp-tw','Due this week'],upcoming:['sp-up','Upcoming'],none:['sp-no','No follow-up'],done:['sp-dn','Complete']};
 const csMap={Submitted:'cs-sub','In Review':'cs-rev',Approved:'cs-app',Paid:'cs-paid',Denied:'cs-den'};
 
@@ -495,7 +514,14 @@ function detH(c){
   var html='<div class="dp" onclick="event.stopPropagation()">';
   html+='<div class="dh"><div class="da '+avc(c.cn)+'">'+ini(c.cn)+'</div>';
   html+='<div style="flex:1"><div class="dn">'+c.cn+'</div><div class="ds2">Insured: '+c.ins+' \xb7 '+c.pr+'</div></div>';
-  html+='<button onclick="event.stopPropagation();openEditModal('+c.id+')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border2);border-radius:4px;background:none;cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif;margin-left:auto;flex-shrink:0">Edit policy</button></div>';
+  html+='<div style="display:flex;gap:6px;margin-left:auto;flex-shrink:0">';
+  html+='<button onclick="event.stopPropagation();openEditModal('+c.id+')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border2);border-radius:4px;background:none;cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif">Edit policy</button>';
+  if(c.status==='closed'){
+    html+='<button onclick="event.stopPropagation();togglePolicyClosed('+c.id+')" style="font-size:11px;padding:4px 10px;border:1px solid var(--accent);border-radius:4px;background:var(--accent-l);cursor:pointer;color:var(--accent);font-family:DM Sans,sans-serif">Reopen</button>';
+  } else {
+    html+='<button onclick="event.stopPropagation();togglePolicyClosed('+c.id+')" style="font-size:11px;padding:4px 10px;border:1px solid var(--red);border-radius:4px;background:none;cursor:pointer;color:var(--red);font-family:DM Sans,sans-serif">Mark closed</button>';
+  }
+  html+='</div></div>';
   html+='<div class="fg">';
   html+='<div class="fi"><label>Company</label><span class="n">'+c.co+'</span></div>';
   html+='<div class="fi"><label>Policy #</label><span>'+c.pn+'</span></div>';
@@ -518,7 +544,13 @@ function detH(c){
   if(lnk.length===0){
     html+='<div style="padding:8px 12px;font-size:12px;color:var(--text3)">No linked files \u2014 phone/email matches auto-link</div>';
   } else {
-    lnk.forEach(function(l){
+    // Filter linked: by default hide closed unless showClosed
+    var visibleLnk = showClosed ? lnk : lnk.filter(function(l){return l.status!=='closed';});
+    var closedLnkCount = lnk.length - visibleLnk.length;
+    if(closedLnkCount > 0){
+      html+='<div style="padding:5px 12px;font-size:11px;color:var(--text3);background:var(--bg)">'+closedLnkCount+' closed polic'+(closedLnkCount===1?'y':'ies')+' hidden. <button onclick="showClosed=true;render()" style="border:none;background:none;cursor:pointer;color:var(--blue);font-size:11px;font-family:DM Sans,sans-serif">Show all</button></div>';
+    }
+    visibleLnk.forEach(function(l){
       var isManual=(c.hh||[]).includes(l.id);
       html+='<div style="border-bottom:1px solid var(--border)">';
       html+='<div style="padding:9px 12px;background:var(--surface)">';
@@ -1017,7 +1049,7 @@ function renderAnalytics(){
 
   // ── VIEW TOGGLE ────────────────────────────────────────────────────
   html += '<div style="display:flex;gap:8px;margin-bottom:14px">';
-  var views = [['monthly','Monthly totals'],['products','By product'],['sources','Lead sources'],['companies','By company'],['households','Top 50 clients']];
+  var views = [['monthly','Monthly totals'],['products','By product'],['sources','Lead sources'],['companies','By company'],['portfolio','Book of business'],['geo','Geography'],['households','Top 50 clients']];
   views.forEach(function(v){
     html += '<button data-vw="'+v[0]+'" onclick="_anSetView(this.dataset.vw)" style="padding:6px 14px;border-radius:var(--rs);border:1px solid '+(_anView===v[0]?'var(--accent)':'var(--border)')+';background:'+(_anView===v[0]?'var(--accent)':'var(--surface)')+';color:'+(_anView===v[0]?'#fff':'var(--text2)')+';font-size:12px;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:'+(_anView===v[0]?'600':'400')+'">'+v[1]+'</button>';
   });
@@ -1348,7 +1380,163 @@ function renderAnalytics(){
     html+='</div>';
   }
 
-  // ── VIEW: TOP 50 HOUSEHOLDS ───────────────────────────────────────
+  // ── VIEW: BOOK OF BUSINESS ────────────────────────────────────────
+  else if(_anView==='portfolio'){
+    var f$=function(n){return '$'+Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');};
+    var tod2=new Date();tod2.setHours(0,0,0,0);var curY2=tod2.getFullYear();
+    var clientPolicies={};
+    clients.forEach(function(c){
+      var phones=(c.ph||'').split(/[,|]/).map(function(x){return x.trim().toLowerCase();}).filter(Boolean);
+      var key=[c.cn.toLowerCase()].concat(phones).sort().join('|');
+      if(!clientPolicies[key])clientPolicies[key]={name:c.cn,policies:[],comm:0};
+      clientPolicies[key].policies.push(c);
+      clientPolicies[key].comm+=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;
+    });
+    var allClients=Object.values(clientPolicies);
+    var multiPolicy=allClients.filter(function(c){return c.policies.length>1;});
+    var singlePolicy=allClients.filter(function(c){return c.policies.length===1;});
+    var avgPPC=allClients.length>0?(clients.length/allClients.length):0;
+    var crossSell=allClients.length>0?(multiPolicy.length/allClients.length*100):0;
+    var monthlyCount={};
+    clients.forEach(function(c){
+      if(!c.ds)return;
+      var d=new Date(c.ds);var y=d.getFullYear();var m=d.getMonth()+1;
+      if(y<2022)return;
+      var k=y+'-'+(m<10?'0':'')+m;
+      monthlyCount[k]=(monthlyCount[k]||0)+1;
+    });
+    var mkKeys=Object.keys(monthlyCount).sort();
+    var last12=mkKeys.slice(-12);var prev12=mkKeys.slice(-24,-12);
+    var l12T=last12.reduce(function(s,k){return s+(monthlyCount[k]||0);},0);
+    var p12T=prev12.reduce(function(s,k){return s+(monthlyCount[k]||0);},0);
+    var velChg=p12T>0?((l12T-p12T)/p12T*100):0;
+    var prodComm={};
+    clients.forEach(function(c){
+      var pr=(c.pr||'').trim()||'Unknown';
+      var comm=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;
+      if(!prodComm[pr])prodComm[pr]={total:0,count:0};
+      prodComm[pr].total+=comm;prodComm[pr].count++;
+    });
+    var prodRanked=Object.entries(prodComm).filter(function(e){return e[1].count>=3;}).map(function(e){return{pr:e[0],avg:e[1].total/e[1].count,total:e[1].total,count:e[1].count};}).sort(function(a,b){return b.avg-a.avg;}).slice(0,12);
+    var withFU=clients.filter(function(c){return c.fu;}).length;
+    var overdueC=clients.filter(function(c){if(!c.fu)return false;var fd=new Date(c.fu);fd.setHours(0,0,0,0);return fd<tod2;}).length;
+    var activeCl=clients.filter(function(c){return c.claim;}).length;
+    var firstSale=clients.reduce(function(min,c){if(!c.ds)return min;var d=new Date(c.ds);return d<min?d:min;},new Date());
+    var yearsAct=((tod2-firstSale)/(365*864e5));
+    var totalComm=clients.reduce(function(s,c){return s+(parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0);},0);
+    var avgCommYr=totalComm/Math.max(1,yearsAct);
+    html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">';
+    [[allClients.length+' clients','Unique clients in book',''],[avgPPC.toFixed(2),'Avg policies per client','color:var(--accent)'],[crossSell.toFixed(1)+'%','Multi-policy rate',crossSell>40?'color:var(--accent)':'color:var(--amber)'],[activeCl,'Active claims',activeCl>0?'color:var(--red)':'color:var(--accent)']].forEach(function(k){
+      html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px"><div style="font-size:22px;font-weight:700;'+k[2]+'">'+k[0]+'</div><div style="font-size:11px;color:var(--text3);margin-top:2px">'+k[1]+'</div></div>';
+    });
+    html+='</div>';
+    html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">';
+    [[clients.length,'Total policies in book',''],[f$(avgCommYr),'Avg commission per year','color:var(--accent)'],[( l12T/12).toFixed(1)+'/mo','Avg policies/mo (last 12)',''],[( velChg>=0?'+':'')+velChg.toFixed(1)+'%','Sales velocity vs prior year',velChg>=0?'color:var(--accent)':'color:var(--red)']].forEach(function(k){
+      html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px"><div style="font-size:22px;font-weight:700;'+k[2]+'">'+k[0]+'</div><div style="font-size:11px;color:var(--text3);margin-top:2px">'+k[1]+'</div></div>';
+    });
+    html+='</div>';
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">';
+    // Velocity chart
+    html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px">';
+    html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Sales velocity — policies per month (last 12 months)</div>';
+    var maxVel=Math.max.apply(null,last12.map(function(k){return monthlyCount[k]||0;}))||1;
+    html+='<div style="display:flex;gap:4px;align-items:flex-end;height:80px;margin-bottom:6px">';
+    var MN2=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    last12.forEach(function(k){
+      var v=monthlyCount[k]||0;var h2=Math.max(2,Math.round(v/maxVel*80));
+      var pts=k.split('-');var isCurM=(parseInt(pts[0])===curY2&&parseInt(pts[1])===tod2.getMonth()+1);
+      html+='<div style="display:flex;flex-direction:column;align-items:center;flex:1"><div style="width:100%;background:'+(isCurM?'var(--accent)':'var(--blue)')+';border-radius:2px 2px 0 0;height:'+h2+'px" title="'+MN2[parseInt(pts[1])-1]+' '+pts[0]+': '+v+' policies"></div>';
+      html+='<div style="font-size:9px;color:var(--text3);margin-top:2px">'+MN2[parseInt(pts[1])-1]+'</div></div>';
+    });
+    html+='</div></div>';
+    // Client loyalty
+    html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px">';
+    html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Client loyalty — policies per client</div>';
+    var buckets={'1 policy':0,'2 policies':0,'3 policies':0,'4 policies':0,'5+ policies':0};
+    allClients.forEach(function(c){var n=c.policies.length;if(n===1)buckets['1 policy']++;else if(n===2)buckets['2 policies']++;else if(n===3)buckets['3 policies']++;else if(n===4)buckets['4 policies']++;else buckets['5+ policies']++;});
+    var maxB=Math.max.apply(null,Object.values(buckets))||1;
+    var bCols=['#94a3b8','#3b82f6','#10b981','#f59e0b','#6366f1'];
+    Object.entries(buckets).forEach(function(e,i){
+      var pct=Math.round(e[1]/maxB*100);var sp=allClients.length>0?(e[1]/allClients.length*100).toFixed(0):0;
+      html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:11px;color:var(--text2);width:80px;flex-shrink:0">'+e[0]+'</span><div style="flex:1;background:var(--bg);border-radius:2px;height:8px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:'+bCols[i]+';border-radius:2px"></div></div><span style="font-size:11px;color:var(--text);width:60px;text-align:right;flex-shrink:0">'+e[1]+' ('+sp+'%)</span></div>';
+    });
+    var mCommTotal=multiPolicy.reduce(function(s,c){return s+c.comm;},0);
+    var sCommTotal=singlePolicy.reduce(function(s,c){return s+c.comm;},0);
+    html+='<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:11px;color:var(--text3)">Multi-policy: <strong style="color:var(--accent)">'+f$(mCommTotal)+'</strong> vs single-policy: <strong>'+f$(sCommTotal)+'</strong></div>';
+    html+='</div></div>';
+    // Avg commission per policy
+    html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px">';
+    html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Avg commission per policy — which products pay best? (min 3 policies)</div>';
+    html+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px">';
+    var maxAvg2=prodRanked.length?prodRanked[0].avg:1;
+    prodRanked.forEach(function(p,i){
+      var pct=Math.round(p.avg/maxAvg2*100);
+      var medal=i===0?'#1 ':i===1?'#2 ':i===2?'#3 ':'';;
+      html+='<div style="background:var(--bg);border-radius:6px;padding:10px 12px;border:1px solid var(--border)"><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+p.pr+'">'+medal+p.pr+'</div><div style="background:var(--surface);border-radius:2px;height:5px;overflow:hidden;margin-bottom:6px"><div style="width:'+pct+'%;height:100%;background:var(--accent);border-radius:2px"></div></div><div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--text3)">'+p.count+' policies</span><span style="font-weight:600;color:var(--accent)">'+f$(p.avg)+'/policy</span></div></div>';
+    });
+    html+='</div></div>';
+    html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px"><div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Book health</div>';
+    html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">';
+    [[withFU,'With follow-up set',withFU>0?'color:var(--accent)':''],[overdueC,'Overdue follow-ups',overdueC>0?'color:var(--red)':'color:var(--accent)'],[clients.length-withFU,'No follow-up date','color:var(--amber)'],[activeCl,'Active claims',activeCl>0?'color:var(--red)':'color:var(--accent)']].forEach(function(k){
+      html+='<div style="text-align:center;padding:10px"><div style="font-size:28px;font-weight:700;'+k[2]+'">'+k[0]+'</div><div style="font-size:11px;color:var(--text3);margin-top:2px">'+k[1]+'</div></div>';
+    });
+    html+='</div></div>';
+  }
+
+  // ── VIEW: GEOGRAPHY ────────────────────────────────────────────────
+  else if(_anView==='geo'){
+    var f$=function(n){return '$'+Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');};
+    var geoData={};
+    clients.forEach(function(c){
+      var city=(c.cy||'Unknown').trim()||'Unknown';
+      var comm=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;
+      var pr=(c.pr||'').trim()||'Unknown';
+      if(!geoData[city])geoData[city]={comm:0,count:0,clients:new Set(),byProduct:{}};
+      geoData[city].comm+=comm;geoData[city].count++;geoData[city].clients.add(c.cn);
+      if(!geoData[city].byProduct[pr])geoData[city].byProduct[pr]={comm:0,count:0};
+      geoData[city].byProduct[pr].comm+=comm;geoData[city].byProduct[pr].count++;
+    });
+    Object.values(geoData).forEach(function(d){d.uniqueClients=d.clients.size;delete d.clients;});
+    var sortedGeo=Object.entries(geoData).sort(function(a,b){return b[1].comm-a[1].comm;});
+    var maxGC=sortedGeo.length?sortedGeo[0][1].comm:1;
+    var totalGC=sortedGeo.reduce(function(s,e){return s+e[1].comm;},0);
+    html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px">';
+    html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Commission by city — '+sortedGeo.length+' cities in your book</div>';
+    html+='<div style="font-size:11px;color:var(--text3);margin-bottom:12px">Click any city to see product breakdown</div>';
+    sortedGeo.forEach(function(entry,i){
+      var city=entry[0];var d=entry[1];
+      var pct=Math.round(d.comm/maxGC*100);var sp=totalGC>0?(d.comm/totalGC*100).toFixed(1):0;
+      var expKey='geo'+i;var expanded=_anExpHH[expKey];
+      html+='<div style="border-bottom:1px solid var(--border);padding:8px 0">';
+      html+='<div data-hhk="'+expKey+'" onclick="_anClickHH(this)" style="cursor:pointer;user-select:none">';
+      html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">';
+      html+='<span style="font-size:13px;font-weight:600;color:var(--text);flex:1">'+city+'</span>';
+      html+='<div style="display:flex;gap:12px;align-items:center">';
+      html+='<span style="font-size:11px;color:var(--text3)">'+d.count+' policies</span>';
+      html+='<span style="font-size:11px;color:var(--text3)">'+d.uniqueClients+' clients</span>';
+      html+='<span style="font-size:11px;color:var(--text3)">'+sp+'%</span>';
+      html+='<span style="font-size:14px;font-weight:700;color:var(--accent);width:72px;text-align:right">'+f$(d.comm)+'</span>';
+      html+='<span style="color:var(--text3)">'+( expanded?'▾':'▸')+'</span>';
+      html+='</div></div>';
+      html+='<div style="background:var(--bg);border-radius:2px;height:6px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:var(--purple);border-radius:2px"></div></div>';
+      html+='</div>';
+      if(expanded){
+        var prods=Object.entries(d.byProduct).sort(function(a,b){return b[1].comm-a[1].comm;}).slice(0,8);
+        var maxPr=prods.length?prods[0][1].comm:1;
+        html+='<div style="padding:8px 0 6px 12px;border-top:1px solid var(--border);margin-top:4px">';
+        html+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:5px">';
+        prods.forEach(function(pe){
+          var ppct=Math.round(pe[1].comm/maxPr*100);
+          html+='<div style="background:var(--bg);border-radius:4px;padding:6px 8px"><div style="font-size:11px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:3px" title="'+pe[0]+'">'+pe[0]+'</div><div style="background:var(--surface);border-radius:2px;height:4px;overflow:hidden;margin-bottom:3px"><div style="width:'+ppct+'%;height:100%;background:var(--purple);border-radius:2px"></div></div><div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3)"><span>'+pe[1].count+'</span><span style="color:var(--text);font-weight:500">'+f$(pe[1].comm)+'</span></div></div>';
+        });
+        html+='</div></div>';
+      }
+      html+='</div>';
+    });
+    html+='</div>';
+  }
+
+    // ── VIEW: TOP 50 HOUSEHOLDS ───────────────────────────────────────
   else if(_anView==='households'){
     // Group by phone
     var hhG = {};
@@ -1461,6 +1649,42 @@ function _anClickHH(el){
 function _anOpenPolicy(el){
   var id=parseInt(el.getAttribute('data-pid'));
   if(id) jumpTo(id);
+}
+
+async function refreshData(){
+  var btn = document.getElementById('refreshBtn');
+  if(btn){ btn.textContent = '⏳ Loading...'; btn.disabled = true; }
+  clients = [];
+  sel = null;
+  try{
+    var r = await fetch(APPS_SCRIPT_URL+'?action=getData');
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    var d = await r.json();
+    if(d.error) throw new Error(d.error);
+    parseRows(d.rows);
+    sheetConnected = true;
+    document.getElementById('sdot').classList.remove('err');
+    document.getElementById('syncStatus').textContent = clients.length+' clients · live';
+    loadLeads();
+    render();
+    if(btn){ btn.textContent = '✓ Updated'; setTimeout(function(){btn.textContent='蘵 Refresh';btn.disabled=false;},2000); }
+  }catch(e){
+    document.getElementById('sdot').classList.add('err');
+    document.getElementById('syncStatus').textContent = 'Refresh failed';
+    if(btn){ btn.textContent = '蘵 Refresh'; btn.disabled = false; }
+  }
+}
+
+function togglePolicyClosed(id){
+  var c = clients.find(function(x){return x.id===id;});
+  if(!c)return;
+  var newStatus = c.status==='closed' ? 'active' : 'closed';
+  pushUndo((newStatus==='closed'?'Closed':'Reopened')+': '+c.cn);
+  c.status = newStatus;
+  // Write to sheet column Z (26)
+  sheetWrite('writeCell', {rowNum:c.rowNum, colNum:26, value:newStatus==='closed'?'closed':''});
+  sel = null;
+  render();
 }
 </script>
 </body>
