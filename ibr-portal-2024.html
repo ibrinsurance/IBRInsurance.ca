@@ -1390,56 +1390,286 @@ function _anGeoView(f$){
 }
 
 function _anInsightsView(D,MONTHS,f$){
-  var insights=[];var tod2=new Date();var curY2=D.curYear;var curM2=D.curMonth;
-  // Best month for products
-  var bestMonthProd={};
-  for(var mo=1;mo<=12;mo++){var prods={};Object.keys(D.byYM).forEach(function(y){var md=D.byYM[y][mo];if(!md)return;Object.entries(md.byProd).forEach(function(e){prods[e[0]]=(prods[e[0]]||0)+e[1];});});var topPr=Object.entries(prods).sort(function(a,b){return b[1]-a[1];})[0];if(topPr)bestMonthProd[mo]={product:topPr[0],comm:topPr[1]};}
-  var nextMonths=[curM2%12+1,(curM2+1)%12+1];
-  var nextIns=nextMonths.map(function(m){var bmp=bestMonthProd[m];if(!bmp)return null;return MONTHS[m-1]+': historically strongest product is <strong>'+bmp.product+'</strong>';}).filter(Boolean);
-  if(nextIns.length)insights.push({type:'opportunity',icon:'[CAL]',title:'Best products for upcoming months',body:nextIns.join('<br>'),detail:'Based on multi-year patterns \u2014 focus ads on these products now to capitalize on seasonal demand.'});
-  // Underperforming months
-  var underM=[];
-  for(var mo2=1;mo2<curM2;mo2++){var thisY=D.byYM[curY2]&&D.byYM[curY2][mo2]?D.byYM[curY2][mo2].comm:0;var lastY=D.byYM[curY2-1]&&D.byYM[curY2-1][mo2]?D.byYM[curY2-1][mo2].comm:0;if(lastY>0&&thisY<lastY*0.8)underM.push({mo:mo2,thisY:thisY,lastY:lastY,gap:lastY-thisY,pct:Math.round((lastY-thisY)/lastY*100)});}
-  if(underM.length){var totalGap=underM.reduce(function(s,m){return s+m.gap;},0);insights.push({type:'warning',icon:'[!]',title:'Months below '+(curY2-1)+' pace',body:underM.map(function(m){return MONTHS[m.mo-1]+': '+f$(m.thisY)+' vs '+f$(m.lastY)+' last year (<span style="color:var(--red)">-'+m.pct+'%</span>)';}).join('<br>'),detail:'Total gap vs last year: <strong style="color:var(--red)">'+f$(totalGap)+'</strong>. Consider what drove stronger results in '+(curY2-1)+'.'});}
-  // Best source
-  var srcEff=Object.entries(D.bySrc).filter(function(e){return e[1].count>=3;}).map(function(e){return{src:e[0],avg:e[1].comm/e[1].count,total:e[1].comm,count:e[1].count};}).sort(function(a,b){return b.avg-a.avg;});
-  if(srcEff.length>=2){var best2=srcEff[0];insights.push({type:'opportunity',icon:'[TARGET]',title:'Highest-value source: '+best2.src,body:'Avg commission <strong style="color:var(--accent)">'+f$(best2.avg)+'</strong>/policy ('+best2.count+' policies)',detail:'Double down on '+best2.src+' outreach \u2014 it produces '+(best2.avg/srcEff[srcEff.length-1].avg).toFixed(1)+'x more per policy than your lowest-value source.'});}
-  // Cross-sell
-  var hhG2={};clients.filter(function(c){return c.status!=='closed';}).forEach(function(c){var ph=(c.ph||'').split(/[,|]/)[0].trim().toLowerCase();var key=ph||c.cn.toLowerCase();if(!hhG2[key])hhG2[key]={products:new Set(),policies:[]};hhG2[key].products.add((c.pr||'').trim().toLowerCase());hhG2[key].policies.push(c);});
-  var singleProd=Object.values(hhG2).filter(function(g){return g.products.size===1&&g.policies.length===1;});
-  var lifeOnly=singleProd.filter(function(g){return['term insurance','ul insurance','whole life'].some(function(p){return g.products.has(p);});});
-  var vtcOnly=singleProd.filter(function(g){return g.products.has('vtc')||g.products.has('supervisa');});
-  insights.push({type:'opportunity',icon:'[MONEY]',title:'Cross-sell: '+singleProd.length+' single-product active clients',body:'<strong>'+lifeOnly.length+'</strong> life/term only \u2014 offer CI or RRSP<br><strong>'+vtcOnly.length+'</strong> VTC/Supervisa only \u2014 strong life insurance candidates',detail:'Converting even 10% to a second product at your avg commission could add significant revenue.'});
-  // Follow-up gaps
-  var overdueF=clients.filter(function(c){if(!c.fu||c.status==='closed')return false;var fd=new Date(c.fu);fd.setHours(0,0,0,0);return fd<tod2;});
-  var noFU=clients.filter(function(c){return !c.fu&&c.status!=='closed'&&FOLLOWUP_PRODS.has((c.pr||'').toLowerCase().trim());});
-  if(overdueF.length>0||noFU.length>0)insights.push({type:'warning',icon:'[BELL]',title:'Follow-up gaps',body:'<strong style="color:var(--red)">'+overdueF.length+' overdue</strong> follow-up dates<br><strong style="color:var(--amber)">'+noFU.length+'</strong> follow-up products with no date set',detail:'Each missed follow-up is a potential renewal or cross-sell lost. Set dates on all follow-up product clients today.'});
-  // Revenue projection
-  var ytdC=D.byYear[curY2]?D.byYear[curY2].comm:0;var dayOfYear=Math.ceil((tod2-new Date(curY2,0,1))/864e5);var daysInYear=365+(curY2%4===0?1:0);var proj2=dayOfYear>0?ytdC/dayOfYear*daysInYear:0;var prevYC=D.byYear[curY2-1]?D.byYear[curY2-1].comm:0;var daysLeft=daysInYear-dayOfYear;var onTrack=proj2>=prevYC;
-  if(prevYC>0)insights.push({type:onTrack?'positive':'warning',icon:onTrack?'[TROPHY]':'[CHART]',title:onTrack?'On track to beat '+(curY2-1):'Pace check \u2014 '+f$(prevYC-ytdC)+' needed to match '+(curY2-1),body:'YTD: <strong>'+f$(ytdC)+'</strong> | Projected: <strong style="color:'+(onTrack?'var(--accent)':'var(--red)')+'">'+f$(proj2)+'</strong> | Last year: '+f$(prevYC),detail:onTrack?'You are on pace to beat last year by '+f$(proj2-prevYC)+'.':'Need '+f$((prevYC-ytdC)/Math.max(1,daysLeft))+'/day for '+daysLeft+' remaining days. Focus on highest-commission products.'});
-  // Geography risk
-  var geoC2={};clients.forEach(function(c){var city=(c.cy||'').trim();if(!city)return;var comm=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;if(!geoC2[city])geoC2[city]=0;geoC2[city]+=comm;});
-  var topCities2=Object.entries(geoC2).sort(function(a,b){return b[1]-a[1];}).slice(0,3);var topCommTotal=topCities2.reduce(function(s,e){return s+e[1];},0);var totalCommAll=Object.values(geoC2).reduce(function(s,v){return s+v;},0);
-  if(totalCommAll>0)insights.push({type:'insight',icon:'[MAP]',title:'Geographic concentration risk',body:'Top 3 cities = <strong>'+(totalCommAll>0?Math.round(topCommTotal/totalCommAll*100):0)+'%</strong> of total commission: '+topCities2.map(function(e){return e[0];}).join(', '),detail:'Concentration in a few markets creates risk. Referral campaigns in nearby cities could diversify your book.'});
-  // Render
-  var typeColors={opportunity:'var(--accent)',warning:'var(--red)',positive:'#10b981',insight:'#6366f1'};
-  var typeBg={opportunity:'var(--accent-l)',warning:'var(--red-l)',positive:'#f0fdf4',insight:'#eef2ff'};
-  var typeLabel={opportunity:'Opportunity',warning:'Action needed',positive:'On track',insight:'Insight'};
-  var html='<div style="margin-bottom:12px"><div style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:4px">Business Insights</div><div style="font-size:12px;color:var(--text3)">Automatically calculated from your '+clients.length.toLocaleString()+' policies. No external AI or paid services.</div></div>';
-  insights.forEach(function(ins){
-    var color=typeColors[ins.type]||'var(--accent)';var bg=typeBg[ins.type]||'var(--accent-l)';
-    html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;border-left:4px solid '+color+'">';
-    html+='<div style="display:flex;align-items:flex-start;gap:10px">';
-    html+='<div style="font-size:20px;flex-shrink:0;margin-top:1px">'+ins.icon+'</div>';
-    html+='<div style="flex:1"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">';
-    html+='<span style="font-size:14px;font-weight:600;color:var(--text)">'+ins.title+'</span>';
-    html+='<span style="font-size:10px;padding:2px 7px;border-radius:20px;background:'+bg+';color:'+color+';font-weight:600;text-transform:uppercase;letter-spacing:.05em">'+typeLabel[ins.type]+'</span>';
-    html+='</div><div style="font-size:12px;color:var(--text);margin-bottom:5px">'+ins.body+'</div>';
-    html+='<div style="font-size:11px;color:var(--text3);line-height:1.5">'+ins.detail+'</div></div></div></div>';
+  var insights=[];
+  var tod2=new Date();tod2.setHours(0,0,0,0);
+  var curY2=D.curYear;var curM2=D.curMonth;
+  var totalComm=clients.reduce(function(s,c){return s+(parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0);},0);
+  var avgCommPerPolicy=clients.length>0?totalComm/clients.length:0;
+
+  // Build client groups for LTV analysis
+  var cltGrp={};
+  clients.forEach(function(c){
+    var phones=(c.ph||'').split(/[,|]/).map(function(x){return x.trim().toLowerCase();}).filter(Boolean);
+    var key=[c.cn.toLowerCase()].concat(phones).sort().join('|');
+    if(!cltGrp[key])cltGrp[key]={name:c.cn,policies:[],comm:0,src:'',products:new Set()};
+    var cm=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;
+    cltGrp[key].comm+=cm;cltGrp[key].policies.push(c);
+    if(!cltGrp[key].src)cltGrp[key].src=(c.src||'Unknown').trim();
+    cltGrp[key].products.add((c.pr||'').trim().toLowerCase());
   });
+  var allCltArr=Object.values(cltGrp);
+  var totalLTV=allCltArr.reduce(function(s,c){return s+c.comm;},0);
+
+  // ── INSIGHT 1: REVENUE LEAK DETECTOR ──
+  var noFUActive=clients.filter(function(c){return !c.fu&&c.status!=='closed'&&FOLLOWUP_PRODS.has((c.pr||'').toLowerCase().trim());});
+  var singlePolicyActive=allCltArr.filter(function(g){return g.policies.filter(function(p){return p.status!=='closed';}).length===1;});
+  var vtcOnly=singlePolicyActive.filter(function(g){return g.products.has('vtc')||g.products.has('supervisa');});
+  var lifeOnly=singlePolicyActive.filter(function(g){return['term insurance','ul insurance','whole life'].some(function(p){return g.products.has(p);})&&!g.products.has('critical illness')&&!g.products.has('rrsp');});
+  var leakVal_noFU=noFUActive.length*avgCommPerPolicy*0.15;
+  var leakVal_single=singlePolicyActive.length*avgCommPerPolicy*0.1;
+  var leakVal_vtc=vtcOnly.length*avgCommPerPolicy*0.08;
+  var totalLeak=leakVal_noFU+leakVal_single+leakVal_vtc;
+  var html='';
+  html+='<div style="margin-bottom:14px"><div style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:4px">Business Intelligence</div><div style="font-size:12px;color:var(--text3)">8 auto-calculated insights from your '+clients.length.toLocaleString()+' policies. No external AI or paid services.</div></div>';
+
+  // Revenue Leak card
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:10px;border-left:4px solid var(--red)">';
+  html+='<div style="display:flex;align-items:flex-start;gap:10px">';
+  html+='<div style="font-size:22px">&#128680;</div>';
+  html+='<div style="flex:1">';
+  html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:15px;font-weight:700;color:var(--text)">Revenue Leak Detector</span><span style="font-size:10px;padding:2px 7px;border-radius:20px;background:var(--red-l);color:var(--red);font-weight:600;text-transform:uppercase">Action needed</span></div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px">';
+  html+='<div style="background:var(--red-l);border-radius:6px;padding:10px 12px;text-align:center"><div style="font-size:20px;font-weight:700;color:var(--red)">'+noFUActive.length+'</div><div style="font-size:10px;color:var(--red);margin-bottom:4px">Follow-up products with no date</div><div style="font-size:12px;font-weight:600;color:var(--red)">~'+f$(leakVal_noFU)+'</div><div style="font-size:10px;color:var(--text3)">15% conversion upside</div></div>';
+  html+='<div style="background:var(--amber-l);border-radius:6px;padding:10px 12px;text-align:center"><div style="font-size:20px;font-weight:700;color:var(--amber)">'+singlePolicyActive.length+'</div><div style="font-size:10px;color:var(--amber);margin-bottom:4px">Single-policy clients</div><div style="font-size:12px;font-weight:600;color:var(--amber)">~'+f$(leakVal_single)+'</div><div style="font-size:10px;color:var(--text3)">10% cross-sell upside</div></div>';
+  html+='<div style="background:var(--accent-l);border-radius:6px;padding:10px 12px;text-align:center"><div style="font-size:20px;font-weight:700;color:var(--accent)">'+vtcOnly.length+'</div><div style="font-size:10px;color:var(--accent);margin-bottom:4px">VTC/SV → life candidates</div><div style="font-size:12px;font-weight:600;color:var(--accent)">~'+f$(leakVal_vtc)+'</div><div style="font-size:10px;color:var(--text3)">8% conversion upside</div></div>';
+  html+='</div>';
+  html+='<div style="font-size:13px;font-weight:600;color:var(--text)">Total addressable revenue leak: <span style="color:var(--red)">'+f$(totalLeak)+'</span></div>';
+  html+='<div style="font-size:11px;color:var(--text3);margin-top:4px">Based on your avg commission of '+f$(avgCommPerPolicy)+'/policy at conservative conversion rates. Life/CI clients without CI: '+lifeOnly.length+'</div>';
+  html+='</div></div></div>';
+
+  // ── INSIGHT 2: LTV BY SOURCE ──
+  var ltvBySrc={};
+  allCltArr.forEach(function(g){
+    var src=g.src||'Unknown';
+    if(!ltvBySrc[src])ltvBySrc[src]={totalLTV:0,clients:0,policies:0};
+    ltvBySrc[src].totalLTV+=g.comm;ltvBySrc[src].clients++;ltvBySrc[src].policies+=g.policies.length;
+  });
+  var ltvSorted=Object.entries(ltvBySrc).filter(function(e){return e[1].clients>=2;}).map(function(e){return{src:e[0],avgLTV:e[1].totalLTV/e[1].clients,avgPolicies:e[1].policies/e[1].clients,clients:e[1].clients,total:e[1].totalLTV};}).sort(function(a,b){return b.avgLTV-a.avgLTV;});
+  var maxLTV=ltvSorted.length?ltvSorted[0].avgLTV:1;
+  var lowestLTV=ltvSorted.length>1?ltvSorted[ltvSorted.length-1]:null;
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:10px;border-left:4px solid #6366f1">';
+  html+='<div style="display:flex;align-items:flex-start;gap:10px">';
+  html+='<div style="font-size:22px">&#128176;</div>';
+  html+='<div style="flex:1">';
+  html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:15px;font-weight:700;color:var(--text)">Client Lifetime Value by Source</span><span style="font-size:10px;padding:2px 7px;border-radius:20px;background:#eef2ff;color:#6366f1;font-weight:600;text-transform:uppercase">Insight</span></div>';
+  html+='<div style="font-size:11px;color:var(--text3);margin-bottom:10px">LTV = total commission per client across ALL their policies — not just first sale</div>';
+  ltvSorted.slice(0,8).forEach(function(e,i){
+    var pct=Math.round(e.avgLTV/maxLTV*100);
+    var isBest=i===0;
+    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">';
+    html+='<span style="font-size:11px;color:var(--text2);width:110px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+e.src+'">'+e.src+'</span>';
+    html+='<div style="flex:1;background:var(--bg);border-radius:2px;height:10px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:'+(isBest?'#6366f1':'var(--blue)')+';border-radius:2px"></div></div>';
+    html+='<span style="font-size:11px;font-weight:600;color:var(--text);width:70px;text-align:right;flex-shrink:0">'+f$(e.avgLTV)+'</span>';
+    html+='<span style="font-size:10px;color:var(--text3);width:50px;flex-shrink:0">'+e.clients+' clients</span>';
+    html+='</div>';
+  });
+  if(ltvSorted.length>=2){
+    var ratio=(ltvSorted[0].avgLTV/ltvSorted[ltvSorted.length-1].avgLTV).toFixed(1);
+    html+='<div style="margin-top:8px;padding:8px 10px;background:var(--bg);border-radius:6px;font-size:12px;color:var(--text)">1 <strong style="color:#6366f1">'+ltvSorted[0].src+'</strong> client = <strong style="color:#6366f1">'+ratio+'x</strong> lifetime value vs a '+ltvSorted[ltvSorted.length-1].src+' client</div>';
+  }
+  html+='</div></div></div>';
+
+  // ── INSIGHT 3: NEXT BEST PRODUCT ENGINE ──
+  var crossSellTargets=[];
+  allCltArr.forEach(function(g){
+    var activePolicies=g.policies.filter(function(p){return p.status!=='closed';});
+    if(activePolicies.length===0)return;
+    var prods=new Set(activePolicies.map(function(p){return(p.pr||'').trim().toLowerCase();}));
+    var recs=[];
+    if((prods.has('vtc')||prods.has('supervisa'))&&!prods.has('term insurance')&&!prods.has('ul insurance')&&!prods.has('whole life'))recs.push({product:'Term/UL Life Insurance',reason:'Has VTC/Supervisa → strong life conversation',priority:1});
+    if((prods.has('term insurance')||prods.has('ul insurance'))&&!prods.has('critical illness'))recs.push({product:'Critical Illness',reason:'Has life coverage → CI is natural next step',priority:1});
+    if((prods.has('term insurance')||prods.has('ul insurance'))&&!prods.has('rrsp')&&!prods.has('resp')&&!prods.has('tfsa'))recs.push({product:'RRSP/RESP/TFSA',reason:'Has life coverage → wealth planning conversation',priority:2});
+    if(activePolicies.length>=2&&!prods.has('ul insurance')&&!prods.has('whole life'))recs.push({product:'UL/Whole Life',reason:'Multi-policy client → wealth strategy candidate',priority:2});
+    if(recs.length>0)crossSellTargets.push({name:g.name,phone:g.policies[0].ph||'',recs:recs,topRec:recs.sort(function(a,b){return a.priority-b.priority;})[0]});
+  });
+  crossSellTargets.sort(function(a,b){return a.topRec.priority-b.topRec.priority;}).slice(0,5);
+  var p1Count=crossSellTargets.filter(function(t){return t.topRec.priority===1;}).length;
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:10px;border-left:4px solid var(--accent)">';
+  html+='<div style="display:flex;align-items:flex-start;gap:10px">';
+  html+='<div style="font-size:22px">&#127919;</div>';
+  html+='<div style="flex:1">';
+  html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:15px;font-weight:700;color:var(--text)">Next Best Product Engine</span><span style="font-size:10px;padding:2px 7px;border-radius:20px;background:var(--accent-l);color:var(--accent);font-weight:600;text-transform:uppercase">Opportunity</span></div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px">';
+  [['VTC to Life',vtcOnly.length,'clients ready for life conversation'],['Life to CI',lifeOnly.length,'clients without Critical Illness'],['Multi-policy to UL',allCltArr.filter(function(g){return g.policies.filter(function(p){return p.status!=='closed';}).length>=2;}).length,'clients for wealth strategy']].forEach(function(k){
+    html+='<div style="background:var(--accent-l);border-radius:6px;padding:10px 12px;text-align:center"><div style="font-size:20px;font-weight:700;color:var(--accent)">'+k[1]+'</div><div style="font-size:10px;font-weight:600;color:var(--accent);margin-bottom:2px">'+k[0]+'</div><div style="font-size:10px;color:var(--text3)">'+k[2]+'</div></div>';
+  html+='</div>';
+  html+='<div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px">Top priority cross-sell targets:</div>';
+  });
+  crossSellTargets.slice(0,5).forEach(function(t){
+    html+='<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--bg);border-radius:5px;margin-bottom:4px">';
+    html+='<div class="av '+avc(t.name)+'" style="width:26px;height:26px;font-size:9px;flex-shrink:0">'+ini(t.name)+'</div>';
+    html+='<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--text)">'+t.name+'</div><div style="font-size:11px;color:var(--text3)">'+t.topRec.reason+'</div></div>';
+    html+='<span style="font-size:11px;padding:2px 8px;border-radius:20px;background:var(--accent-l);color:var(--accent);white-space:nowrap;font-weight:500">\u2192 '+t.topRec.product+'</span>';
+    html+='</div>';
+  });
+  html+='<div style="font-size:11px;color:var(--text3);margin-top:6px">'+crossSellTargets.length+' total clients identified as cross-sell candidates ('+p1Count+' high priority)</div>';
+  html+='</div></div></div>';
+
+  // ── INSIGHT 4: CLIENT SEGMENTATION ──
+  var seg={highValue:[],growthPotential:[],vtcSvOnly:[],dormant:[]};
+  var twelveMonthsAgo=new Date(tod2);twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth()-12);
+  var HIGH_VALUE_THRESHOLD=3000;
+  allCltArr.forEach(function(g){
+    var activePols=g.policies.filter(function(p){return p.status!=='closed';});
+    var lastActivity=g.policies.reduce(function(max,p){var d=new Date(p.ds);return d>max?d:max;},new Date(0));
+    var isDormant=lastActivity<twelveMonthsAgo&&g.comm<HIGH_VALUE_THRESHOLD;
+    var prods=new Set(activePols.map(function(p){return(p.pr||'').trim().toLowerCase();}));
+    var isVTCOnly=activePols.length>0&&Array.from(prods).every(function(p){return p==='vtc'||p==='supervisa'||p==='truck-travel'||p==='travel insurance';});
+    if(isDormant)seg.dormant.push(g);
+    else if(g.comm>=HIGH_VALUE_THRESHOLD)seg.highValue.push(g);
+    else if(activePols.length===1&&!isVTCOnly)seg.growthPotential.push(g);
+    else if(isVTCOnly)seg.vtcSvOnly.push(g);
+  });
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:10px;border-left:4px solid #10b981">';
+  html+='<div style="display:flex;align-items:flex-start;gap:10px">';
+  html+='<div style="font-size:22px">&#129520;</div>';
+  html+='<div style="flex:1">';
+  html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:15px;font-weight:700;color:var(--text)">Client Segmentation Engine</span><span style="font-size:10px;padding:2px 7px;border-radius:20px;background:#f0fdf4;color:#10b981;font-weight:600;text-transform:uppercase">Strategy</span></div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">';
+  var segments=[
+    {label:'High Value (>'+f$(HIGH_VALUE_THRESHOLD)+')',count:seg.highValue.length,color:'#6366f1',bg:'#eef2ff',action:'Ask for referrals + offer UL/wealth strategy'},
+    {label:'Growth Potential (1 policy)',count:seg.growthPotential.length,color:'#10b981',bg:'#f0fdf4',action:'Cross-sell CI, RRSP, or CI'},
+    {label:'VTC/SV Only',count:seg.vtcSvOnly.length,color:'#f59e0b',bg:'#fffbeb',action:'Life insurance conversation — high success rate'},
+    {label:'Dormant (12+ mo, low value)',count:seg.dormant.length,color:'#64748b',bg:'#f8fafc',action:'Reactivation campaign — annual review offer'},
+  ];
+  segments.forEach(function(s){
+    html+='<div style="background:'+s.bg+';border-radius:8px;padding:12px">';
+    html+='<div style="font-size:24px;font-weight:700;color:'+s.color+'">'+s.count+'</div>';
+    html+='<div style="font-size:12px;font-weight:600;color:'+s.color+';margin-bottom:4px">'+s.label+'</div>';
+    html+='<div style="font-size:11px;color:var(--text3)">&#10132; '+s.action+'</div>';
+    html+='</div>';
+  });
+  html+='</div></div></div></div>';
+
+  // ── INSIGHT 5: PARETO (TOP 20% = 80%) ──
+  var sortedByComm=allCltArr.filter(function(g){return g.comm>0;}).sort(function(a,b){return b.comm-a.comm;});
+  var top20pct=Math.ceil(sortedByComm.length*0.2);var top20clients=sortedByComm.slice(0,top20pct);
+  var top20comm=top20clients.reduce(function(s,g){return s+g.comm;},0);var top20pct_share=totalLTV>0?Math.round(top20comm/totalLTV*100):0;
+  var top10=sortedByComm.slice(0,10);var top10comm=top10.reduce(function(s,g){return s+g.comm;},0);
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:10px;border-left:4px solid #f59e0b">';
+  html+='<div style="display:flex;align-items:flex-start;gap:10px">';
+  html+='<div style="font-size:22px">&#127942;</div>';
+  html+='<div style="flex:1">';
+  html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:15px;font-weight:700;color:var(--text)">Pareto: Top 20% Clients = '+top20pct_share+'% of Revenue</span><span style="font-size:10px;padding:2px 7px;border-radius:20px;background:#fffbeb;color:#f59e0b;font-weight:600;text-transform:uppercase">Insight</span></div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px">';
+  html+='<div style="background:var(--bg);border-radius:6px;padding:10px 12px;text-align:center"><div style="font-size:20px;font-weight:700;color:#f59e0b">'+top20clients.length+'</div><div style="font-size:10px;color:var(--text3)">Top 20% clients</div><div style="font-size:12px;font-weight:600">'+f$(top20comm)+' commission</div></div>';
+  html+='<div style="background:var(--bg);border-radius:6px;padding:10px 12px;text-align:center"><div style="font-size:20px;font-weight:700;color:#f59e0b">'+top20pct_share+'%</div><div style="font-size:10px;color:var(--text3)">of total revenue</div><div style="font-size:12px;font-weight:600">from '+top20clients.length+' clients</div></div>';
+  html+='<div style="background:var(--bg);border-radius:6px;padding:10px 12px;text-align:center"><div style="font-size:20px;font-weight:700;color:#f59e0b">'+f$(top10comm)+'</div><div style="font-size:10px;color:var(--text3)">from top 10 clients alone</div></div>';
+  html+='</div>';
+  html+='<div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px">Your top 10 clients (replicate their profile):</div>';
+  top10.forEach(function(g,i){
+    var srcSet=new Set(g.policies.map(function(p){return(p.src||'').trim();}).filter(Boolean));
+    var mainSrc=Array.from(srcSet)[0]||'Unknown';
+    html+='<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)">';
+    html+='<span style="font-size:11px;color:var(--text3);width:20px;flex-shrink:0">'+(i+1)+'</span>';
+    html+='<div class="av '+avc(g.name)+'" style="width:24px;height:24px;font-size:9px;flex-shrink:0">'+ini(g.name)+'</div>';
+    html+='<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--text)">'+g.name+'</div><div style="font-size:10px;color:var(--text3)">'+g.policies.length+' policies &middot; '+mainSrc+'</div></div>';
+    html+='<span style="font-size:13px;font-weight:700;color:#f59e0b;flex-shrink:0">'+f$(g.comm)+'</span>';
+    html+='</div>';
+  });
+  html+='</div></div></div>';
+
+  // ── INSIGHT 6: RISK DASHBOARD ──
+  var srcConc={};clients.forEach(function(c){var src=(c.src||'Unknown').trim();srcConc[src]=(srcConc[src]||0)+(parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0);});
+  var srcSorted=Object.entries(srcConc).sort(function(a,b){return b[1]-a[1];});
+  var top3SrcComm=srcSorted.slice(0,3).reduce(function(s,e){return s+e[1];},0);var top1SrcComm=srcSorted[0]?srcSorted[0][1]:0;
+  var top3SrcPct=totalComm>0?Math.round(top3SrcComm/totalComm*100):0;var top1SrcPct=totalComm>0?Math.round(top1SrcComm/totalComm*100):0;
+  var geoConc={};clients.forEach(function(c){var city=(c.cy||'Unknown').trim();geoConc[city]=(geoConc[city]||0)+(parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0);});
+  var geoSorted=Object.entries(geoConc).sort(function(a,b){return b[1]-a[1];});
+  var top3CityComm=geoSorted.slice(0,3).reduce(function(s,e){return s+e[1];},0);var top3CityPct=totalComm>0?Math.round(top3CityComm/totalComm*100):0;
+  var topClientComm=sortedByComm.slice(0,5).reduce(function(s,g){return s+g.comm;},0);var topClientPct=totalLTV>0?Math.round(topClientComm/totalLTV*100):0;
+  var getRisk=function(pct,thresholds){return pct>=thresholds[1]?'red':pct>=thresholds[0]?'amber':'green';};
+  var srcRisk=getRisk(top3SrcPct,[50,70]);var geoRisk=getRisk(top3CityPct,[50,70]);var clientRisk=getRisk(topClientPct,[30,50]);
+  var RISK_COLOR={red:'var(--red)',amber:'var(--amber)',green:'#10b981'};var RISK_LABEL={red:'High risk',amber:'Moderate',green:'Healthy'};
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:10px;border-left:4px solid var(--red)">';
+  html+='<div style="display:flex;align-items:flex-start;gap:10px">';
+  html+='<div style="font-size:22px">&#9888;</div>';
+  html+='<div style="flex:1">';
+  html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:15px;font-weight:700;color:var(--text)">Risk Dashboard</span><span style="font-size:10px;padding:2px 7px;border-radius:20px;background:var(--red-l);color:var(--red);font-weight:600;text-transform:uppercase">Compliance</span></div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px">';
+  [[top3SrcPct+'% from top 3 sources','Source concentration',srcRisk,srcSorted.slice(0,3).map(function(e){return e[0];}).join(', ')],[top3CityPct+'% from top 3 cities','Geographic concentration',geoRisk,geoSorted.slice(0,3).map(function(e){return e[0];}).join(', ')],[topClientPct+'% from top 5 clients','Client concentration',clientRisk,sortedByComm.slice(0,5).map(function(g){return g.name.split(' ')[0];}).join(', ')]].forEach(function(k){
+    html+='<div style="background:var(--bg);border-radius:8px;padding:12px"><div style="font-size:22px;font-weight:700;color:'+RISK_COLOR[k[2]]+'">'+k[0]+'</div><div style="font-size:11px;font-weight:600;color:'+RISK_COLOR[k[2]]+'">'+RISK_LABEL[k[2]]+' \u2014 '+k[1]+'</div><div style="font-size:10px;color:var(--text3);margin-top:3px">'+k[3]+'</div></div>';
+  });
+  html+='</div>';
+  html+='<div style="font-size:11px;color:var(--text3)">FSRA best practice: no single source should exceed 30% of revenue. Diversification protects your book from partner changes or market shifts.</div>';
+  html+='</div></div></div>';
+
+  // ── INSIGHT 7: SEASONALITY HEATMAP ──
+  var heatData={};var FOLLOWUP_PROD_LIST=['Term Insurance','UL Insurance','Whole Life','Critical Illness','RRSP','RESP'];
+  FOLLOWUP_PROD_LIST.forEach(function(pr){heatData[pr]=Array(12).fill(0);});
+  clients.forEach(function(c){if(!c.ds)return;var m=new Date(c.ds).getMonth();var pr=(c.pr||'').trim();if(heatData[pr])heatData[pr][m]+=1;});
+  var maxHeat=0;Object.values(heatData).forEach(function(arr){arr.forEach(function(v){if(v>maxHeat)maxHeat=v;});});
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:10px;border-left:4px solid #8b5cf6">';
+  html+='<div style="display:flex;align-items:flex-start;gap:10px">';
+  html+='<div style="font-size:22px">&#128293;</div>';
+  html+='<div style="flex:1">';
+  html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:15px;font-weight:700;color:var(--text)">Seasonality Heatmap by Product</span><span style="font-size:10px;padding:2px 7px;border-radius:20px;background:#f5f3ff;color:#8b5cf6;font-weight:600;text-transform:uppercase">Campaign Trigger</span></div>';
+  html+='<div style="font-size:11px;color:var(--text3);margin-bottom:10px">Darker = more policies sold that month historically. Start campaigns 30-45 days before peak months.</div>';
+  html+='<div style="overflow-x:auto"><table style="border-collapse:collapse;font-size:10px;width:100%">';
+  html+='<thead><tr><th style="text-align:left;padding:4px 6px;color:var(--text3);font-weight:500;width:120px">Product</th>';
+  MONTHS.forEach(function(m){html+='<th style="text-align:center;padding:4px 3px;color:var(--text3);font-weight:500">'+m+'</th>';});
+  html+='</tr></thead><tbody>';
+  Object.entries(heatData).forEach(function(e){
+    html+='<tr>';
+    html+='<td style="padding:4px 6px;font-size:11px;font-weight:500;color:var(--text);white-space:nowrap">'+e[0]+'</td>';
+    e[1].forEach(function(v,mi){
+      var intensity=maxHeat>0?v/maxHeat:0;var r=Math.round(99+(1-intensity)*156);var g2=Math.round(102+(1-intensity)*153);var b=Math.round(241+(1-intensity)*14);
+      var bg=v===0?'var(--bg)':'rgba('+Math.round(255*(1-intensity*0.7))+','+Math.round(255*(1-intensity*0.9))+',255,'+( intensity*0.9+0.1)+')';
+      var txtColor=intensity>0.5?'var(--accent)':'var(--text3)';
+      html+='<td style="text-align:center;padding:4px 3px"><div style="background:'+bg+';border-radius:3px;padding:3px 2px;font-size:10px;font-weight:'+(intensity>0.5?'700':'400')+';color:'+txtColor+'">'+(v||'')+'</div></td>';
+    });
+    html+='</tr>';
+  });
+  html+='</tbody></table></div>';
+  // Campaign triggers
+  var triggers=[];Object.entries(heatData).forEach(function(e){var peak=e[1].indexOf(Math.max.apply(null,e[1]));if(Math.max.apply(null,e[1])>0){var launchMonth=(peak-1+12)%12;triggers.push({product:e[0],peakMonth:MONTHS[peak],launchMonth:MONTHS[launchMonth]});}});
+  html+='<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">';
+  triggers.forEach(function(t){html+='<div style="background:#f5f3ff;border-radius:20px;padding:3px 10px;font-size:11px;color:#8b5cf6"><strong>'+t.product+'</strong>: launch in '+t.launchMonth+' for '+t.peakMonth+' peak</div>';});
+  html+='</div></div></div></div>';
+
+  // ── INSIGHT 8: FOLLOW-UP PRIORITY SCORE ──
+  var scored=[];
+  allCltArr.forEach(function(g){
+    var score=0;var reasons=[];
+    var activePols=g.policies.filter(function(p){return p.status!=='closed';});
+    if(activePols.length===0)return;
+    if(g.comm>2000){score+=30;reasons.push('High value client (+30)');}
+    else if(g.comm>500){score+=15;reasons.push('Mid value client (+15)');}
+    if(activePols.length===1){score+=20;reasons.push('Single policy — cross-sell (+20)');}
+    var prods=new Set(activePols.map(function(p){return(p.pr||'').trim().toLowerCase();}));
+    if((prods.has('vtc')||prods.has('supervisa'))&&!prods.has('term insurance')){{score+=25;reasons.push('VTC without life (+25)');}}
+    if((prods.has('term insurance'))&&!prods.has('critical illness')){{score+=20;reasons.push('Term without CI (+20)');}}
+    var hasOverdue=activePols.some(function(p){if(!p.fu)return false;var fd=new Date(p.fu);fd.setHours(0,0,0,0);return fd<tod2;});
+    if(hasOverdue){score+=15;reasons.push('Overdue follow-up (+15)');}
+    var hasNoFU=activePols.some(function(p){return!p.fu&&FOLLOWUP_PRODS.has((p.pr||'').toLowerCase().trim());});
+    if(hasNoFU){score+=10;reasons.push('No follow-up set (+10)');}
+    var src=(g.policies[0].src||'').toLowerCase();
+    if(src.includes('referral')||src.includes('aman')||src.includes('friend')){score+=15;reasons.push('Referral source (+15)');}
+    scored.push({name:g.name,phone:g.policies[0].ph||'',score:score,reasons:reasons,comm:g.comm,policies:activePols.length,topRec:crossSellTargets.find(function(t){return t.name===g.name;})});
+  });
+  scored.sort(function(a,b){return b.score-a.score;});var top15=scored.slice(0,15);
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:10px;border-left:4px solid var(--accent)">';
+  html+='<div style="display:flex;align-items:flex-start;gap:10px">';
+  html+='<div style="font-size:22px">&#128241;</div>';
+  html+='<div style="flex:1">';
+  html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:15px;font-weight:700;color:var(--text)">Follow-Up Priority Score — Call These 15 Today</span><span style="font-size:10px;padding:2px 7px;border-radius:20px;background:var(--accent-l);color:var(--accent);font-weight:600;text-transform:uppercase">Action</span></div>';
+  html+='<div style="font-size:11px;color:var(--text3);margin-bottom:10px">Scored by: client value + cross-sell potential + product gaps + overdue status + referral source. Highest score = call first.</div>';
+  html+='<table style="width:100%;border-collapse:collapse;font-size:11px">';
+  html+='<thead><tr style="border-bottom:1px solid var(--border)"><th style="text-align:left;padding:4px 6px;color:var(--text3);font-weight:500">#</th><th style="text-align:left;padding:4px 6px;color:var(--text3);font-weight:500">Client</th><th style="text-align:right;padding:4px 6px;color:var(--text3);font-weight:500">Score</th><th style="text-align:left;padding:4px 6px;color:var(--text3);font-weight:500">Why call</th><th style="text-align:right;padding:4px 6px;color:var(--text3);font-weight:500">LTV</th></tr></thead><tbody>';
+  top15.forEach(function(c,i){
+    html+='<tr style="border-bottom:1px solid var(--border)">';
+    html+='<td style="padding:6px">'+( i+1)+'</td>';
+    html+='<td style="padding:6px"><div style="font-weight:500;color:var(--text)">'+c.name+'</div><div style="font-size:10px;color:var(--text3)">'+c.phone+' &middot; '+c.policies+' polic'+(c.policies===1?'y':'ies')+'</div></td>';
+    var scoreColor=c.score>=70?'var(--red)':c.score>=50?'var(--amber)':'var(--accent)';
+    html+='<td style="padding:6px;text-align:right"><span style="font-size:14px;font-weight:700;color:'+scoreColor+'">'+c.score+'</span></td>';
+    html+='<td style="padding:6px;font-size:10px;color:var(--text3)">'+c.reasons.slice(0,2).join(' &middot; ')+'</td>';
+    html+='<td style="padding:6px;text-align:right;font-weight:600;color:var(--accent)">'+f$(c.comm)+'</td>';
+    html+='</tr>';
+  });
+  html+='</tbody></table></div></div></div>';
+
   return html;
 }
-
 function _anHouseholdsView(f$){
   var hhG={};
   clients.forEach(function(c){var phones=(c.ph||'').split(/[,|]/).map(function(x){return x.trim().toLowerCase();}).filter(Boolean);var key=[c.cn.toLowerCase()].concat(phones).sort().join('|');if(!hhG[key])hhG[key]={name:c.cn,phones:phones,city:c.cy,policies:[],comm:0};var cm=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;hhG[key].comm+=cm;hhG[key].policies.push(c);});
