@@ -296,6 +296,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
           <option value="group">Group / H&D / Team</option>
           <option value="travel">Travel / Visitor only</option>
         </select>
+        <button onclick="setAnniversaryFollowups()" id="anniversaryBtn" style="padding:5px 12px;font-size:12px;font-family:DM Sans,sans-serif;border:1px solid var(--accent);border-radius:var(--rs);background:var(--accent-l);cursor:pointer;color:var(--accent);white-space:nowrap">Set Anniversary Dates</button>
         <button onclick="showClosed=!showClosed;render()" id="closedToggle" style="padding:5px 12px;font-size:12px;font-family:DM Sans,sans-serif;border:1px solid var(--border);border-radius:var(--rs);background:none;cursor:pointer;color:var(--text2);white-space:nowrap">Show closed</button>
         <span id="closedCount" style="font-size:11px;color:var(--text3)"></span>
       </div>
@@ -318,7 +319,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyRJUZOq7PVGuiOnV3hEBmGcrW_s0HD02nP6A25u7lxW6BXCUbc6ptaJpiwV4R8NRT9/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzkVWsYlyzImRxpEbYic0VygiyKnqqlt9tYQzTNWxNeX0ypj4TUqasVNk7jCsQsxS_g/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -842,167 +843,98 @@ function _anDailyView(D,MONTHS,f$){
   var tod2=new Date();tod2.setHours(0,0,0,0);
   var curY2=D.curYear;var curM2=D.curMonth;
   var MN=MONTHS[curM2-1];
-
-  // Historical close metrics
   var totalComm=clients.reduce(function(s,c){return s+(parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0);},0);
   var avgComm=clients.length>0?totalComm/clients.length:0;
-
-  // This month so far
-  var thisMonthClients=clients.filter(function(c){
-    if(!c.ds)return false;
-    var d=new Date(c.ds);
-    return d.getFullYear()===curY2&&d.getMonth()+1===curM2;
-  });
-  var thisMonthComm=thisMonthClients.reduce(function(s,c){return s+(parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0);},0);
-
-  // Overdue follow-ups
-  var overdue=clients.filter(function(c){
-    if(!c.fu||c.status==='closed')return false;
-    var fd=new Date(c.fu);fd.setHours(0,0,0,0);return fd<tod2;
-  });
-  // Due today
-  var dueToday=clients.filter(function(c){
-    if(!c.fu||c.status==='closed')return false;
-    var fd=new Date(c.fu);fd.setHours(0,0,0,0);return fd.getTime()===tod2.getTime();
-  });
-  // Active leads
-  var activeLeads=leads.filter(function(l){return l.status==='active';});
-  var leadsToday=activeLeads.filter(function(l){
-    if(!l.due)return false;
-    var fd=new Date(l.due);fd.setHours(0,0,0,0);return fd<=tod2;
-  });
-
-  // Expected revenue calculations
-  var closedFromFollowup=0.15; // 15% historical close rate from follow-up calls
-  var closedFromLeads=0.12;
-  var expectedFollowup=Math.round((overdue.length+dueToday.length)*closedFromFollowup*avgComm);
-  var expectedLeads=Math.round(leadsToday.length*closedFromLeads*avgComm);
-
-  // Same month last year performance (target)
+  // This month
+  var thisMonth=clients.filter(function(c){if(!c.ds)return false;var d=new Date(c.ds);return d.getFullYear()===curY2&&d.getMonth()+1===curM2;});
+  var thisMonthComm=thisMonth.reduce(function(s,c){return s+(parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0);},0);
   var lastYearSameMonth=D.byYM[curY2-1]&&D.byYM[curY2-1][curM2]?D.byYM[curY2-1][curM2].comm:0;
-  var monthPace=lastYearSameMonth>0?Math.round(thisMonthComm/lastYearSameMonth*100):0;
   var daysInMonth=new Date(curY2,curM2,0).getDate();
   var dayOfMonth=tod2.getDate();
+  var monthPace=lastYearSameMonth>0?Math.round(thisMonthComm/lastYearSameMonth*100):0;
   var dailyTarget=lastYearSameMonth>0?lastYearSameMonth/daysInMonth:avgComm*2;
-  var neededToday=dailyTarget;
-
-  var html='';
-  // Date header
-  var weekdays=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  html+='<div style="margin-bottom:16px">';
-  html+='<div style="font-size:22px;font-weight:800;color:var(--text)">'+weekdays[tod2.getDay()]+', '+MN+' '+dayOfMonth+'</div>';
-  html+='<div style="font-size:13px;color:var(--text3)">Day '+dayOfMonth+' of '+daysInMonth+' in '+MN+' &middot; '+monthPace+'% of last '+MN+'\'s pace</div>';
-  html+='</div>';
-
-  // Revenue plan strip
-  html+='<div style="background:linear-gradient(135deg,#1e293b,#334155);border-radius:var(--r);padding:16px 20px;margin-bottom:16px;color:#fff">';
-  html+='<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;margin-bottom:10px">Today\'s Revenue Plan</div>';
-  html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">';
-  [[overdue.length+dueToday.length,'Follow-up calls',f$(expectedFollowup),'#10b981'],[leadsToday.length,'Leads to contact',f$(expectedLeads),'#6366f1'],[overdue.length,'Overdue — urgent',f$(Math.round(overdue.length*closedFromFollowup*avgComm*1.2)),'#ef4444']].forEach(function(k){
-    html+='<div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:12px">';
-    html+='<div style="font-size:26px;font-weight:800;color:'+k[3]+'">'+k[0]+'</div>';
-    html+='<div style="font-size:11px;color:#94a3b8;margin-bottom:4px">'+k[1]+'</div>';
-    html+='<div style="font-size:13px;font-weight:600;color:#fff">~'+k[2]+' expected</div>';
-    html+='</div>';
-  });
-  html+='</div>';
-  html+='<div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;align-items:center">';
-  html+='<div style="font-size:12px;color:#94a3b8">'+MN+' to date: <strong style="color:#fff">'+f$(thisMonthComm)+'</strong></div>';
-  html+='<div style="font-size:12px;color:#94a3b8">Same month last year: <strong style="color:#fff">'+f$(lastYearSameMonth)+'</strong></div>';
-  html+='<div style="font-size:12px;color:#94a3b8">Daily target to match: <strong style="color:#10b981">'+f$(neededToday)+'/day</strong></div>';
-  html+='</div></div>';
-
-  // PRIORITY CALL LIST - top 15 to call today
-  // Score each overdue/dueToday client
-  var callList=[];
-  overdue.concat(dueToday).forEach(function(c){
+  // Follow-up categories
+  var overdue=clients.filter(function(c){if(!c.fu||c.status==='closed')return false;var fd=new Date(c.fu);fd.setHours(0,0,0,0);return fd<tod2;});
+  var dueToday=clients.filter(function(c){if(!c.fu||c.status==='closed')return false;var fd=new Date(c.fu);fd.setHours(0,0,0,0);return fd.getTime()===tod2.getTime();});
+  var dueThisWeek=clients.filter(function(c){if(!c.fu||c.status==='closed')return false;var fd=new Date(c.fu);fd.setHours(0,0,0,0);var diff=Math.ceil((fd-tod2)/864e5);return diff>0&&diff<=7;});
+  // High-priority with no FU date (follow-up products, active, high value)
+  var noFUHighPriority=clients.filter(function(c){
+    if(c.fu||c.status==='closed')return false;
+    if(!FOLLOWUP_PRODS.has((c.pr||'').toLowerCase().trim()))return false;
     var comm=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;
-    var daysPast=c.fu?Math.ceil((tod2-new Date(c.fu))/864e5):0;
-    var score=comm+daysPast*50;
-    callList.push({c:c,score:score,daysPast:daysPast,isOverdue:new Date(c.fu)<tod2});
+    return comm>200; // Has meaningful commission
+  }).sort(function(a,b){return(parseFloat((b.cm||'0').replace(/[^0-9.-]/g,''))||0)-(parseFloat((a.cm||'0').replace(/[^0-9.-]/g,''))||0);});
+  // Active leads
+  var activeLeads=leads.filter(function(l){return l.status==='active';});
+  var leadsToday=activeLeads.filter(function(l){if(!l.due)return false;var fd=new Date(l.due);fd.setHours(0,0,0,0);return fd<=tod2;});
+  var expectedFollowup=Math.round((overdue.length+dueToday.length)*0.15*avgComm);
+  var expectedLeads=Math.round(leadsToday.length*0.12*avgComm);
+  var weekdays=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var html='';
+  // Header
+  html+='<div style="margin-bottom:16px"><div style="font-size:22px;font-weight:800;color:var(--text)">'+weekdays[tod2.getDay()]+', '+MN+' '+dayOfMonth+'</div>';
+  html+='<div style="font-size:13px;color:var(--text3)">Day '+dayOfMonth+' of '+daysInMonth+' in '+MN+' &middot; '+monthPace+'% of last '+MN+'\'s pace &middot; '+f$(dailyTarget)+'/day target</div>';
+  // Set dates banner if no follow-ups
+  if(overdue.length+dueToday.length===0&&noFUHighPriority.length>0){
+    html+='<div style="background:var(--amber-l);border:1px solid var(--amber);border-radius:var(--r);padding:10px 14px;margin-top:8px;display:flex;align-items:center;gap:10px">';
+    html+='<span style="font-size:18px">&#128276;</span>';
+    html+='<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--amber)">No follow-up dates set yet</div><div style="font-size:11px;color:var(--text2)">'+noFUHighPriority.length+' high-value follow-up products need dates. Use "Set Anniversary Dates" button above to auto-set them all.</div></div>';
+    html+='<button onclick="setAnniversaryFollowups()" style="padding:6px 14px;border:none;border-radius:var(--rs);background:var(--amber);color:#fff;font-family:DM Sans,sans-serif;font-size:12px;cursor:pointer;font-weight:600;flex-shrink:0">Auto-set now</button>';
+    html+='</div>';
+  }
+  html+='</div>';
+  // Revenue plan
+  html+='<div style="background:linear-gradient(135deg,#1e293b,#334155);border-radius:var(--r);padding:16px 20px;margin-bottom:14px;color:#fff">';
+  html+='<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;margin-bottom:10px">Today\'s Revenue Plan</div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">';
+  [[overdue.length,'Overdue follow-ups',f$(Math.round(overdue.length*0.15*avgComm)),'#ef4444'],[dueToday.length,'Due today',f$(Math.round(dueToday.length*0.15*avgComm)),'#10b981'],[leadsToday.length,'Leads to contact',f$(expectedLeads),'#6366f1'],[dueThisWeek.length,'Due this week',f$(Math.round(dueThisWeek.length*0.15*avgComm)),'#f59e0b']].forEach(function(k){
+    html+='<div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:10px 12px"><div style="font-size:26px;font-weight:800;color:'+k[3]+'">'+k[0]+'</div><div style="font-size:10px;color:#94a3b8;margin-bottom:2px">'+k[1]+'</div><div style="font-size:12px;font-weight:600;color:#fff">~'+k[2]+' expected</div></div>';
   });
-  callList.sort(function(a,b){return b.score-a.score;});
-
-  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">';
-
-  // Call priority list
-  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px">';
-  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Priority call list ('+callList.length+' clients)</div>';
-  if(callList.length===0){
-    html+='<div style="font-size:13px;color:var(--accent);font-weight:500;padding:20px 0;text-align:center">All clear! No overdue follow-ups.</div>';
-  } else {
-    callList.slice(0,12).forEach(function(item,i){
-      var c=item.c;
-      var phone=(c.ph||'').split(/[,|]/)[0].trim();
-      var waPhone=phone.replace(/\D/g,'');if(waPhone.length===10)waPhone='1'+waPhone;
-      html+='<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)">';
-      html+='<span style="font-size:12px;font-weight:700;color:'+(item.isOverdue?'var(--red)':'var(--amber)')+';width:20px;flex-shrink:0">'+(i+1)+'</span>';
-      html+='<div style="flex:1;min-width:0">';
-      html+='<div style="font-size:12px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+c.cn+'</div>';
-      html+='<div style="font-size:10px;color:var(--text3)">'+c.pr+(item.isOverdue?' &middot; <span style="color:var(--red)">'+item.daysPast+'d overdue</span>':' &middot; due today')+'</div>';
-      html+='</div>';
-      if(waPhone)html+='<button data-phone="'+waPhone+'" data-name="'+c.cn+'" onclick="hhWA(this)" style="font-size:10px;padding:2px 8px;border:1px solid #25D366;border-radius:4px;color:#25D366;background:none;cursor:pointer;font-family:DM Sans,sans-serif;flex-shrink:0">WA</button>';
-      html+='</div>';
-    });
-  }
   html+='</div>';
-
-  // Lead follow-ups for today
-  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px">';
-  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Leads to contact today ('+leadsToday.length+')</div>';
-  if(leadsToday.length===0){
-    html+='<div style="font-size:13px;color:var(--accent);font-weight:500;padding:20px 0;text-align:center">No leads due today.</div>';
-  } else {
-    leadsToday.slice(0,12).forEach(function(l,i){
-      var waPhone=(l.phone||'').replace(/\D/g,'');if(waPhone.length===10)waPhone='1'+waPhone;
-      html+='<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)">';
-      html+='<span style="font-size:12px;font-weight:700;color:var(--accent);width:20px;flex-shrink:0">'+(i+1)+'</span>';
-      html+='<div style="flex:1;min-width:0">';
-      html+='<div style="font-size:12px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+l.name+'</div>';
-      html+='<div style="font-size:10px;color:var(--text3)">'+l.list+(l.note?' &middot; '+l.note.substring(0,30):'')+'</div>';
-      html+='</div>';
-      if(waPhone)html+='<button data-phone="'+waPhone+'" data-name="'+l.name+'" onclick="hhWA(this)" style="font-size:10px;padding:2px 8px;border:1px solid #25D366;border-radius:4px;color:#25D366;background:none;cursor:pointer;font-family:DM Sans,sans-serif;flex-shrink:0">WA</button>';
-      html+='</div>';
-    });
-  }
-  html+='</div>';
-  html+='</div>';
-
-  // Month progress bar
-  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px">';
-  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">'+MN+' '+curY2+' progress vs last year</div>';
-  var pct=Math.min(100,monthPace);
-  html+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">';
-  html+='<div style="flex:1;background:var(--bg);border-radius:20px;height:16px;overflow:hidden">';
-  html+='<div style="width:'+pct+'%;height:100%;background:'+(pct>=100?'var(--accent)':pct>=70?'#f59e0b':'var(--red)')+';border-radius:20px;transition:width .5s"></div>';
-  html+='</div>';
-  html+='<span style="font-size:14px;font-weight:700;color:'+(pct>=100?'var(--accent)':pct>=70?'#f59e0b':'var(--red)')+'">'+pct+'%</span>';
-  html+='</div>';
-  html+='<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3)">';
-  html+='<span>'+MN+' '+curY2+': <strong style="color:var(--text)">'+f$(thisMonthComm)+'</strong></span>';
-  html+='<span>Day '+dayOfMonth+'/'+daysInMonth+'</span>';
-  html+='<span>'+MN+' '+(curY2-1)+': <strong style="color:var(--text)">'+f$(lastYearSameMonth)+'</strong></span>';
+  html+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;font-size:12px;color:#94a3b8">';
+  html+='<span>'+MN+' to date: <strong style="color:#fff">'+f$(thisMonthComm)+'</strong></span>';
+  html+='<span>Last '+MN+': <strong style="color:#fff">'+f$(lastYearSameMonth)+'</strong></span>';
+  html+='<span>Daily target: <strong style="color:#10b981">'+f$(Math.round(dailyTarget))+'</strong></span>';
   html+='</div></div>';
-
-  // Cross-sell opportunities - quick wins
-  var quickWins=clients.filter(function(c){
-    if(c.status==='closed')return false;
-    var pr=(c.pr||'').toLowerCase();
-    return(pr==='vtc'||pr==='supervisa')&&c.fu&&new Date(c.fu)<=tod2;
-  }).slice(0,5);
-  if(quickWins.length){
+  // Three-column layout: overdue | due today | high priority no date
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px">';
+  // Overdue
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden">';
+  html+='<div style="padding:10px 12px;background:var(--red-l);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px"><span style="font-size:14px">&#128680;</span><span style="font-size:12px;font-weight:600;color:var(--red)">Overdue ('+overdue.length+')</span></div>';
+  if(!overdue.length){html+='<div style="padding:20px;text-align:center;font-size:12px;color:var(--accent)">&#10003; All clear!</div>';}
+  else{overdue.slice(0,10).forEach(function(c,i){var ph=(c.ph||'').split(/[,|]/)[0].replace(/\D/g,'');if(ph.length===10)ph='1'+ph;var days=Math.ceil((tod2-new Date(c.fu))/864e5);html+='<div style="padding:7px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px"><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+c.cn+'</div><div style="font-size:10px;color:var(--red)">'+c.pr+' &middot; '+days+'d overdue</div></div>'+(ph?'<button data-phone="'+ph+'" data-name="'+c.cn+'" onclick="hhWA(this)" style="font-size:9px;padding:2px 6px;border:1px solid #25D366;border-radius:3px;color:#25D366;background:none;cursor:pointer;font-family:DM Sans,sans-serif;flex-shrink:0">WA</button>':'')+'</div>';});}
+  html+='</div>';
+  // Due today
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden">';
+  html+='<div style="padding:10px 12px;background:var(--accent-l);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px"><span style="font-size:14px">&#128197;</span><span style="font-size:12px;font-weight:600;color:var(--accent)">Due today ('+dueToday.length+')</span></div>';
+  if(!dueToday.length){html+='<div style="padding:20px;text-align:center;font-size:12px;color:var(--text3)">None scheduled today</div>';}
+  else{dueToday.slice(0,10).forEach(function(c){var ph=(c.ph||'').split(/[,|]/)[0].replace(/\D/g,'');if(ph.length===10)ph='1'+ph;html+='<div style="padding:7px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px"><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+c.cn+'</div><div style="font-size:10px;color:var(--text3)">'+c.pr+'</div></div>'+(ph?'<button data-phone="'+ph+'" data-name="'+c.cn+'" onclick="hhWA(this)" style="font-size:9px;padding:2px 6px;border:1px solid #25D366;border-radius:3px;color:#25D366;background:none;cursor:pointer;font-family:DM Sans,sans-serif;flex-shrink:0">WA</button>':'')+'</div>';});}
+  html+='</div>';
+  // High priority no date
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden">';
+  html+='<div style="padding:10px 12px;background:var(--amber-l);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px"><span style="font-size:14px">&#9889;</span><span style="font-size:12px;font-weight:600;color:var(--amber)">High priority, no date ('+noFUHighPriority.length+')</span></div>';
+  html+='<div style="padding:6px 12px;font-size:10px;color:var(--text3);border-bottom:1px solid var(--border)">Follow-up products with no date set, sorted by commission</div>';
+  noFUHighPriority.slice(0,10).forEach(function(c){var ph=(c.ph||'').split(/[,|]/)[0].replace(/\D/g,'');if(ph.length===10)ph='1'+ph;var comm=parseFloat((c.cm||'0').replace(/[^0-9.-]/g,''))||0;html+='<div style="padding:7px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px"><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+c.cn+'</div><div style="font-size:10px;color:var(--text3)">'+c.pr+' &middot; $'+Math.round(comm)+'</div></div>'+(ph?'<button data-phone="'+ph+'" data-name="'+c.cn+'" onclick="hhWA(this)" style="font-size:9px;padding:2px 6px;border:1px solid #25D366;border-radius:3px;color:#25D366;background:none;cursor:pointer;font-family:DM Sans,sans-serif;flex-shrink:0">WA</button>':'')+'</div>';});
+  html+='</div>';
+  html+='</div>';
+  // Month progress
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px">';
+  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">'+MN+' '+curY2+' progress</div>';
+  var pct=Math.min(100,monthPace);
+  html+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px"><div style="flex:1;background:var(--bg);border-radius:20px;height:14px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:'+(pct>=100?'var(--accent)':pct>=70?'#f59e0b':'var(--red)')+';border-radius:20px"></div></div>';
+  html+='<span style="font-size:14px;font-weight:700;color:'+(pct>=100?'var(--accent)':pct>=70?'#f59e0b':'var(--red)')+'">'+pct+'%</span></div>';
+  html+='<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3)"><span>'+MN+' '+curY2+': <strong style="color:var(--text)">'+f$(thisMonthComm)+'</strong></span><span>Day '+dayOfMonth+'/'+daysInMonth+'</span><span>'+MN+' '+(curY2-1)+': <strong style="color:var(--text)">'+f$(lastYearSameMonth)+'</strong></span></div>';
+  html+='</div>';
+  // Leads today
+  if(leadsToday.length>0){
     html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px">';
-    html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Quick Win: VTC/SV clients due for life conversation</div>';
-    quickWins.forEach(function(c){
-      html+='<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">';
-      html+='<div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--text)">'+c.cn+'</div><div style="font-size:10px;color:var(--text3)">'+c.pr+' &middot; '+c.cy+'</div></div>';
-      html+='<span style="font-size:11px;padding:2px 8px;border-radius:20px;background:var(--accent-l);color:var(--accent)">Pitch life insurance</span>';
-      html+='</div>';
-    });
+    html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Leads to contact today ('+leadsToday.length+')</div>';
+    leadsToday.slice(0,8).forEach(function(l){var ph=(l.phone||'').replace(/\D/g,'');if(ph.length===10)ph='1'+ph;html+='<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)"><div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--text)">'+l.name+'</div><div style="font-size:10px;color:var(--text3)">'+l.list+(l.note?' &middot; '+l.note.substring(0,30):'')+'</div></div>'+(ph?'<button data-phone="'+ph+'" data-name="'+l.name+'" onclick="hhWA(this)" style="font-size:10px;padding:2px 8px;border:1px solid #25D366;border-radius:4px;color:#25D366;background:none;cursor:pointer;font-family:DM Sans,sans-serif">WA</button>':'')+'</div>';});
     html+='</div>';
   }
   return html;
 }
+
 
 // ================================================================
 // REFERRAL ENGINE
@@ -1121,124 +1053,106 @@ function _anReferralView(D,f$){
 function _anWeeklyReport(D,MONTHS,f$){
   var tod2=new Date();tod2.setHours(0,0,0,0);
   var curY2=D.curYear;var curM2=D.curMonth;
-
-  // Last 7 days
-  var weekAgo=new Date(tod2);weekAgo.setDate(weekAgo.getDate()-7);
-  var last7=clients.filter(function(c){if(!c.ds)return false;var d=new Date(c.ds);return d>=weekAgo&&d<=tod2;});
-  var last7Comm=last7.reduce(function(s,c){return s+(parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0);},0);
-
-  // Prior week
-  var twoWeeksAgo=new Date(tod2);twoWeeksAgo.setDate(twoWeeksAgo.getDate()-14);
-  var prior7=clients.filter(function(c){if(!c.ds)return false;var d=new Date(c.ds);return d>=twoWeeksAgo&&d<weekAgo;});
-  var prior7Comm=prior7.reduce(function(s,c){return s+(parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0);},0);
-  var weekChange=prior7Comm>0?Math.round((last7Comm-prior7Comm)/prior7Comm*100):0;
-
-  // This month
-  var thisMonth=clients.filter(function(c){if(!c.ds)return false;var d=new Date(c.ds);return d.getFullYear()===curY2&&d.getMonth()+1===curM2;});
-  var thisMonthComm=thisMonth.reduce(function(s,c){return s+(parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0);},0);
-
-  // Active leads
-  var activeLeads=leads.filter(function(l){return l.status==='active';});
-  var leadsAddedThisWeek=leads.filter(function(l){if(!l.created)return false;var d=new Date(l.created);return d>=weekAgo;});
-  var convertedThisWeek=leads.filter(function(l){if(!l.convertedDate)return false;var d=new Date(l.convertedDate);return d>=weekAgo;});
-
-  // Overdue
-  var overdue=clients.filter(function(c){if(!c.fu||c.status==='closed')return false;var fd=new Date(c.fu);fd.setHours(0,0,0,0);return fd<tod2;});
-
+  // Build 4-week history
+  var weeks=[];
+  for(var w=0;w<4;w++){
+    var wEnd=new Date(tod2);wEnd.setDate(wEnd.getDate()-w*7);
+    var wStart=new Date(wEnd);wStart.setDate(wStart.getDate()-6);
+    var wPolicies=clients.filter(function(c){if(!c.ds)return false;var d=new Date(c.ds);return d>=wStart&&d<=wEnd;});
+    var wComm=wPolicies.reduce(function(s,c){return s+(parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0);},0);
+    var endMon=MONTHS[wEnd.getMonth()];
+    weeks.push({label:(w===0?'This week':w===1?'Last week':endMon+' '+wEnd.getDate()),comm:wComm,count:wPolicies.length,policies:wPolicies,start:wStart,end:wEnd});
+  }
+  var thisWeek=weeks[0];var lastWeek=weeks[1];
+  var weekChange=lastWeek.comm>0?Math.round((thisWeek.comm-lastWeek.comm)/lastWeek.comm*100):0;
   // YTD
   var ytdComm=D.byYear[curY2]?D.byYear[curY2].comm:0;
   var ytdCount=D.byYear[curY2]?D.byYear[curY2].count:0;
   var prevYtdComm=D.byYear[curY2-1]?D.byYear[curY2-1].comm:0;
   var ytdPace=prevYtdComm>0?Math.round(ytdComm/prevYtdComm*100):0;
-
-  // Top product this week
-  var wkProd={};last7.forEach(function(c){var pr=(c.pr||'').trim();var comm=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;if(!wkProd[pr])wkProd[pr]=0;wkProd[pr]+=comm;});
-  var topWkProd=Object.entries(wkProd).sort(function(a,b){return b[1]-a[1];}).slice(0,3);
-
-  // Best opportunities for next week
-  var nextWeek=new Date(tod2);nextWeek.setDate(nextWeek.getDate()+7);
-  var upcomingFU=clients.filter(function(c){if(!c.fu||c.status==='closed')return false;var fd=new Date(c.fu);fd.setHours(0,0,0,0);return fd>tod2&&fd<=nextWeek;});
-
-  // Report date
-  var reportDays=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  // This month
+  var thisMonthComm=D.byYM[curY2]&&D.byYM[curY2][curM2]?D.byYM[curY2][curM2].comm:0;
+  var lastYMComm=D.byYM[curY2-1]&&D.byYM[curY2-1][curM2]?D.byYM[curY2-1][curM2].comm:0;
+  // Leads
+  var activeLeads=leads.filter(function(l){return l.status==='active';});
+  var weekAgo=new Date(tod2);weekAgo.setDate(weekAgo.getDate()-7);
+  var leadsAdded=leads.filter(function(l){if(!l.created)return false;return new Date(l.created)>=weekAgo;});
+  var leadsConverted=leads.filter(function(l){if(!l.convertedDate)return false;return new Date(l.convertedDate)>=weekAgo;});
+  // Overdue
+  var overdue=clients.filter(function(c){if(!c.fu||c.status==='closed')return false;var fd=new Date(c.fu);fd.setHours(0,0,0,0);return fd<tod2;});
+  // Next week follow-ups
+  var nextWeekEnd=new Date(tod2);nextWeekEnd.setDate(nextWeekEnd.getDate()+7);
+  var nextWeekFU=clients.filter(function(c){if(!c.fu||c.status==='closed')return false;var fd=new Date(c.fu);fd.setHours(0,0,0,0);return fd>tod2&&fd<=nextWeekEnd;});
   var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   var html='';
-
-  html+='<div style="background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:var(--r);padding:20px 24px;margin-bottom:16px;color:#fff">';
+  // Header
+  html+='<div style="background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:var(--r);padding:20px 24px;margin-bottom:14px;color:#fff">';
   html+='<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;margin-bottom:4px">Weekly CEO Report</div>';
   html+='<div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:2px">Week ending '+months[tod2.getMonth()]+' '+tod2.getDate()+', '+curY2+'</div>';
-  html+='<div style="font-size:13px;color:#94a3b8">IBR Insurance &middot; Generated automatically from your book</div>';
+  html+='<div style="font-size:13px;color:#94a3b8">IBR Insurance &middot; Auto-generated from your book of business</div>';
   html+='</div>';
-
-  // This week snapshot
+  // KPI strip
   html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">';
-  [[last7Comm,'Commission this week','color:var(--accent)',f$(last7Comm)],[ last7.length,'Policies sold','',last7.length],[activeLeads.length,'Active leads','color:#6366f1',activeLeads.length],[overdue.length,'Overdue follow-ups','color:'+(overdue.length>5?'var(--red)':'var(--amber)'),overdue.length]].forEach(function(k){
-    html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px">';
-    html+='<div style="font-size:22px;font-weight:700;'+k[2]+'">'+k[3]+'</div>';
-    html+='<div style="font-size:11px;color:var(--text3)">'+k[1]+'</div>';
+  [[f$(thisWeek.comm),'Commission this week','color:var(--accent)'],[thisWeek.count,'Policies this week',''],[activeLeads.length,'Active leads','color:#6366f1'],[overdue.length,'Overdue follow-ups','color:'+(overdue.length>5?'var(--red)':'var(--amber)')]].forEach(function(k){html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px"><div style="font-size:22px;font-weight:700;'+k[2]+'">'+k[0]+'</div><div style="font-size:11px;color:var(--text3)">'+k[1]+'</div></div>';});
+  html+='</div>';
+  // 4-WEEK TREND (the new addition)
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px">';
+  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">4-week commission trend</div>';
+  var maxWeekComm=Math.max.apply(null,weeks.map(function(w){return w.comm;}))||1;
+  html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">';
+  weeks.slice().reverse().forEach(function(w,i){
+    var pct=Math.round(w.comm/maxWeekComm*100);
+    var isCurWeek=(i===3);
+    html+='<div style="text-align:center">';
+    html+='<div style="font-size:10px;color:var(--text3);margin-bottom:6px">'+w.label+'</div>';
+    html+='<div style="background:var(--bg);border-radius:6px;height:80px;display:flex;align-items:flex-end;justify-content:center;padding:0 8px;margin-bottom:6px">';
+    html+='<div style="width:100%;background:'+(isCurWeek?'var(--accent)':'var(--blue)')+';border-radius:4px 4px 0 0;height:'+pct+'%"></div>';
+    html+='</div>';
+    html+='<div style="font-size:14px;font-weight:700;color:'+(isCurWeek?'var(--accent)':'var(--text)')+'">'+f$(w.comm)+'</div>';
+    html+='<div style="font-size:10px;color:var(--text3)">'+w.count+' polic'+(w.count===1?'y':'ies')+'</div>';
     html+='</div>';
   });
   html+='</div>';
-
-  // Week-over-week + YTD
+  // Week-over-week delta
+  html+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px">';
+  html+='<span style="font-size:22px;color:'+(weekChange>=0?'var(--accent)':'var(--red)')+';font-weight:700">'+(weekChange>=0?'&#8593;':'&#8595;')+Math.abs(weekChange)+'%</span>';
+  html+='<div style="font-size:12px;color:var(--text3)">vs last week &middot; <strong style="color:var(--text)">'+f$(thisWeek.comm)+'</strong> this week vs <strong>'+f$(lastWeek.comm)+'</strong> last week</div>';
+  html+='</div></div>';
+  // This week policies + YTD
   html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">';
-
-  // WoW performance
+  // Policies sold this week
   html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px">';
-  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Week-over-week</div>';
-  html+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">';
-  html+='<div style="flex:1"><div style="font-size:12px;color:var(--text3)">This week</div><div style="font-size:20px;font-weight:700;color:var(--text)">'+f$(last7Comm)+'</div></div>';
-  html+='<div style="font-size:24px;color:'+(weekChange>=0?'var(--accent)':'var(--red)')+'">'+( weekChange>=0?'&#8593;':'&#8595;')+weekChange+'%</div>';
-  html+='<div style="flex:1;text-align:right"><div style="font-size:12px;color:var(--text3)">Prior week</div><div style="font-size:20px;font-weight:700;color:var(--text2)">'+f$(prior7Comm)+'</div></div>';
+  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Policies sold this week</div>';
+  if(!thisWeek.policies.length){html+='<div style="font-size:12px;color:var(--text3);padding:10px 0">No policies recorded this week</div>';}
+  else{thisWeek.policies.slice(0,6).forEach(function(c){var cm=parseFloat((c.cm||'0').replace(/[^0-9.-]/g,''))||0;html+='<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--border)"><div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--text)">'+c.cn+'</div><div style="font-size:10px;color:var(--text3)">'+c.pr+'</div></div><div style="font-size:12px;font-weight:600;color:var(--accent)">'+f$(cm)+'</div></div>';});if(thisWeek.policies.length>6)html+='<div style="font-size:10px;color:var(--text3);padding-top:4px">+'+( thisWeek.policies.length-6)+' more</div>';}
   html+='</div>';
-  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Policies sold this week:</div>';
-  last7.slice(0,5).forEach(function(c){html+='<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--border)"><div style="flex:1;font-size:12px;color:var(--text)">'+c.cn+'</div><div style="font-size:11px;color:var(--text3)">'+c.pr+'</div><div style="font-size:11px;font-weight:600;color:var(--accent)">'+f$(parseFloat((c.cm||'0').replace(/[^0-9.-]/g,''))||0)+'</div></div>';});
-  if(last7.length>5)html+='<div style="font-size:11px;color:var(--text3);margin-top:4px">+'+( last7.length-5)+' more policies this week</div>';
-  html+='</div>';
-
-  // YTD vs last year
+  // YTD
   html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px">';
-  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Year-to-date performance</div>';
-  html+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">';
-  html+='<div><div style="font-size:12px;color:var(--text3)">'+curY2+' YTD</div><div style="font-size:22px;font-weight:700;color:var(--accent)">'+f$(ytdComm)+'</div></div>';
-  html+='<div style="font-size:22px;color:var(--text3)">&rarr;</div>';
-  html+='<div><div style="font-size:12px;color:var(--text3)">'+(curY2-1)+' YTD</div><div style="font-size:22px;font-weight:700;color:var(--text2)">'+f$(prevYtdComm)+'</div></div>';
-  html+='<div style="margin-left:auto;font-size:24px;font-weight:800;color:'+(ytdPace>=100?'var(--accent)':'var(--red)')+'">'+ytdPace+'%</div>';
+  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Year-to-date</div>';
+  html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div><div style="font-size:11px;color:var(--text3)">'+curY2+' YTD</div><div style="font-size:22px;font-weight:700;color:var(--accent)">'+f$(ytdComm)+'</div></div><div style="font-size:20px;color:var(--text3)">&rarr;</div><div><div style="font-size:11px;color:var(--text3)">'+(curY2-1)+' same period</div><div style="font-size:22px;font-weight:700;color:var(--text2)">'+f$(prevYtdComm)+'</div></div><div style="margin-left:auto;font-size:24px;font-weight:800;color:'+(ytdPace>=100?'var(--accent)':'var(--red)')+'">'+ytdPace+'%</div></div>';
+  html+='<div style="background:var(--bg);border-radius:20px;height:10px;overflow:hidden;margin-bottom:6px"><div style="width:'+Math.min(100,ytdPace)+'%;height:100%;background:'+(ytdPace>=100?'var(--accent)':'#f59e0b')+';border-radius:20px"></div></div>';
+  html+='<div style="font-size:11px;color:var(--text3)">'+MONTHS[curM2-1]+' '+curY2+': <strong style="color:var(--text)">'+f$(thisMonthComm)+'</strong> vs '+MONTHS[curM2-1]+' '+(curY2-1)+': <strong>'+f$(lastYMComm)+'</strong></div>';
+  html+='<div style="font-size:11px;color:var(--text3);margin-top:3px">Total policies '+curY2+': <strong>'+ytdCount+'</strong></div>';
+  html+='</div></div>';
+  // Pipeline + next week
+  html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">';
+  [[leadsAdded.length,'Leads added this week','var(--blue)'],[leadsConverted.length,'Converted this week','var(--accent)'],[nextWeekFU.length,'Follow-ups next 7 days','#f59e0b']].forEach(function(k){html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;text-align:center"><div style="font-size:24px;font-weight:700;color:'+k[2]+'">'+k[0]+'</div><div style="font-size:11px;color:var(--text3)">'+k[1]+'</div></div>';});
   html+='</div>';
-  html+='<div style="background:var(--bg);border-radius:20px;height:10px;overflow:hidden;margin-bottom:8px">';
-  html+='<div style="width:'+Math.min(100,ytdPace)+'%;height:100%;background:'+(ytdPace>=100?'var(--accent)':'#f59e0b')+';border-radius:20px"></div>';
-  html+='</div>';
-  html+='<div style="font-size:12px;font-weight:600;color:var(--text3)">'+MONTHS[curM2-1]+' progress: '+f$(thisMonthComm)+' sold this month &middot; '+ytdCount+' total policies '+curY2+'</div>';
-  html+='</div>';
-  html+='</div>';
-
-  // Leads pipeline
-  html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">';
-  [[leadsAddedThisWeek.length,'Leads added this week','var(--blue)'],[convertedThisWeek.length,'Leads converted this week','var(--accent)'],[upcomingFU.length,'Follow-ups next 7 days','#f59e0b']].forEach(function(k){
-    html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;text-align:center"><div style="font-size:24px;font-weight:700;color:'+k[2]+'">'+k[0]+'</div><div style="font-size:11px;color:var(--text3)">'+k[1]+'</div></div>';
-  });
-  html+='</div>';
-
-  // 3 Actions for next week
+  // Top 3 actions
   var actions=[];
-  if(overdue.length>0)actions.push({priority:1,action:'Clear '+overdue.length+' overdue follow-ups — these are your most urgent revenue opportunities',color:'var(--red)'});
-  var noFUCount=clients.filter(function(c){return!c.fu&&c.status!=='closed'&&FOLLOWUP_PRODS.has((c.pr||'').toLowerCase().trim());}).length;
-  if(noFUCount>50)actions.push({priority:2,action:'Set follow-up dates on '+noFUCount+' follow-up products — run a batch update session',color:'var(--amber)'});
-  var vtcCount=clients.filter(function(c){return c.status!=='closed'&&((c.pr||'').toLowerCase()==='vtc'||(c.pr||'').toLowerCase()==='supervisa');}).length;
-  actions.push({priority:3,action:'You have '+vtcCount+' active VTC/Supervisa clients — call 10 this week to pitch life insurance. Expected '+f$(10*0.12*200)+' upside',color:'var(--accent)'});
-  if(activeLeads.length>20)actions.push({priority:2,action:activeLeads.length+' active leads — resolve or advance any stale leads older than 30 days',color:'#6366f1'});
-
+  if(overdue.length>0)actions.push({p:1,text:'Clear '+overdue.length+' overdue follow-ups — these are your most urgent revenue opportunities today',color:'var(--red)'});
+  var noFU=clients.filter(function(c){return!c.fu&&c.status!=='closed'&&FOLLOWUP_PRODS.has((c.pr||'').toLowerCase().trim());}).length;
+  if(noFU>50)actions.push({p:2,text:''+noFU+' follow-up products have no date set — click "Set Anniversary Dates" to auto-populate all of them in one click',color:'var(--amber)'});
+  var vtcCount=clients.filter(function(c){return c.status!=='closed'&&['vtc','supervisa'].indexOf((c.pr||'').toLowerCase().trim())>=0;}).length;
+  if(vtcCount>10)actions.push({p:3,text:''+vtcCount+' active VTC/Supervisa clients — contact 10 this week about life insurance. Even 10% conversion = significant revenue',color:'var(--accent)'});
+  actions.push({p:3,text:'Add '+Math.max(0,5-activeLeads.length)+' new leads to your pipeline to maintain momentum for next week',color:'#6366f1'});
   html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px">';
   html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Top '+Math.min(3,actions.length)+' actions for next week</div>';
-  actions.slice(0,3).forEach(function(a,i){
-    html+='<div style="display:flex;gap:10px;padding:10px;background:var(--bg);border-radius:6px;margin-bottom:6px;border-left:3px solid '+a.color+'">';
-    html+='<div style="font-size:18px;font-weight:800;color:'+a.color+';flex-shrink:0">'+(i+1)+'</div>';
-    html+='<div style="font-size:12px;color:var(--text);line-height:1.5">'+a.action+'</div>';
-    html+='</div>';
-  });
+  actions.slice(0,3).forEach(function(a,i){html+='<div style="display:flex;gap:10px;padding:10px;background:var(--bg);border-radius:6px;margin-bottom:6px;border-left:3px solid '+a.color+'"><div style="font-size:18px;font-weight:800;color:'+a.color+';flex-shrink:0">'+(i+1)+'</div><div style="font-size:12px;color:var(--text);line-height:1.5">'+a.text+'</div></div>';});
   html+='</div>';
   return html;
 }
+
 
 
 // ── MISSING FUNCTIONS RESTORED ─────────────────────────────────
@@ -1739,22 +1653,89 @@ function _anCompaniesView(D,YC,f$){
 }
 
 function _anPortfolioView(D,MONTHS,f$){
-  var tod2=new Date();tod2.setHours(0,0,0,0);
-  var cp={};clients.forEach(function(c){var phones=(c.ph||'').split(/[,|]/).map(function(x){return x.trim().toLowerCase();}).filter(Boolean);var key=[c.cn.toLowerCase()].concat(phones).sort().join('|');if(!cp[key])cp[key]={name:c.cn,policies:[],comm:0};cp[key].policies.push(c);cp[key].comm+=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;});
-  var allC=Object.values(cp);var multiP=allC.filter(function(c){return c.policies.length>1;});
-  var avgPPC=allC.length>0?(clients.length/allC.length):0;var crossSell=allC.length>0?(multiP.length/allC.length*100):0;
+  var tod2=new Date();tod2.setHours(0,0,0,0);var curY2=D.curYear;
+  var cp={};
+  clients.forEach(function(c){
+    var phones=(c.ph||'').split(/[,|]/).map(function(x){return x.trim().toLowerCase();}).filter(Boolean);
+    var key=[c.cn.toLowerCase()].concat(phones).sort().join('|');
+    if(!cp[key])cp[key]={name:c.cn,policies:[],comm:0};
+    cp[key].policies.push(c);
+    cp[key].comm+=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;
+  });
+  var allC=Object.values(cp);
+  var multiP=allC.filter(function(c){return c.policies.length>1;});
+  var singleP=allC.filter(function(c){return c.policies.length===1;});
+  var avgPPC=allC.length>0?(clients.length/allC.length):0;
+  var crossSell=allC.length>0?(multiP.length/allC.length*100):0;
   var totalComm=clients.reduce(function(s,c){return s+(parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0);},0);
   var withFU=clients.filter(function(c){return c.fu;}).length;
   var overdueC=clients.filter(function(c){if(!c.fu)return false;var fd=new Date(c.fu);fd.setHours(0,0,0,0);return fd<tod2;}).length;
+  var activeCl=clients.filter(function(c){return c.claim&&c.claim.type;}).length;
+  var noFUFollowup=clients.filter(function(c){return!c.fu&&c.status!=='closed'&&FOLLOWUP_PRODS.has((c.pr||'').toLowerCase().trim());}).length;
+  var firstSale=clients.reduce(function(min,c){if(!c.ds)return min;var d=new Date(c.ds);return d<min?d:min;},new Date());
+  var yearsAct=(tod2-firstSale)/(365*864e5);
+  var avgCommYr=totalComm/Math.max(1,yearsAct);
+  // Sales velocity
+  var mkCnt={};
+  clients.forEach(function(c){if(!c.ds)return;var d=new Date(c.ds);var y=d.getFullYear();var m=d.getMonth()+1;if(y<2022)return;var k=y+'-'+String(m).padStart(2,'0');mkCnt[k]=(mkCnt[k]||0)+1;});
+  var mkKeys=Object.keys(mkCnt).sort();var l12=mkKeys.slice(-12);var p12=mkKeys.slice(-24,-12);
+  var l12T=l12.reduce(function(s,k){return s+(mkCnt[k]||0);},0);
+  var p12T=p12.reduce(function(s,k){return s+(mkCnt[k]||0);},0);
+  var velChg=p12T>0?((l12T-p12T)/p12T*100):0;
+  // Avg commission per product
+  var prodComm={};
+  clients.forEach(function(c){var pr=(c.pr||'').trim()||'Unknown';var cm=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;if(!prodComm[pr])prodComm[pr]={total:0,count:0};prodComm[pr].total+=cm;prodComm[pr].count++;});
+  var prodRanked=Object.entries(prodComm).filter(function(e){return e[1].count>=3;}).map(function(e){return{pr:e[0],avg:e[1].total/e[1].count,total:e[1].total,count:e[1].count};}).sort(function(a,b){return b.avg-a.avg;}).slice(0,12);
+  var maxAvg=prodRanked.length?prodRanked[0].avg:1;
   var html='';
-  html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">';
-  [[allC.length+' clients','Unique clients',''],[avgPPC.toFixed(2),'Avg policies/client','color:var(--accent)'],[crossSell.toFixed(1)+'%','Multi-policy rate',''],[clients.length,'Total policies','']].forEach(function(k){html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px"><div style="font-size:22px;font-weight:700;'+k[2]+'">'+k[0]+'</div><div style="font-size:11px;color:var(--text3)">'+k[1]+'</div></div>';});
+  // KPI row 1
+  html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px">';
+  [[allC.length+' clients','Unique clients in book',''],[avgPPC.toFixed(2),'Avg policies/client','color:var(--accent)'],[crossSell.toFixed(1)+'%','Multi-policy client rate',crossSell>40?'color:var(--accent)':'color:var(--amber)'],[activeCl,'Active claims open',activeCl>0?'color:var(--red)':'']].forEach(function(k){html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px"><div style="font-size:22px;font-weight:700;'+k[2]+'">'+k[0]+'</div><div style="font-size:11px;color:var(--text3)">'+k[1]+'</div></div>';});
   html+='</div>';
-  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px"><div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Book health</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">';
-  [[withFU,'With follow-up',withFU>0?'color:var(--accent)':''],[overdueC,'Overdue',overdueC>0?'color:var(--red)':'color:var(--accent)'],[clients.length-withFU,'No follow-up date','color:var(--amber)'],[clients.filter(function(c){return c.claim;}).length,'Active claims','']].forEach(function(k){html+='<div style="text-align:center;padding:8px"><div style="font-size:26px;font-weight:700;'+k[2]+'">'+k[0]+'</div><div style="font-size:11px;color:var(--text3)">'+k[1]+'</div></div>';});
+  // KPI row 2
+  html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px">';
+  [[clients.length,'Total policies in book',''],[f$(avgCommYr),'Avg commission per year','color:var(--accent)'],[(l12T/12).toFixed(1)+'/mo','Avg policies/mo (last 12)',''],[(velChg>=0?'+':'')+velChg.toFixed(1)+'%','Sales velocity vs prior year',velChg>=0?'color:var(--accent)':'color:var(--red)']].forEach(function(k){html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px"><div style="font-size:22px;font-weight:700;'+k[2]+'">'+k[0]+'</div><div style="font-size:11px;color:var(--text3)">'+k[1]+'</div></div>';});
+  html+='</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">';
+  // Sales velocity chart
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px">';
+  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Sales velocity (last 12 months)</div>';
+  var maxVel=Math.max.apply(null,l12.map(function(k){return mkCnt[k]||0;}))||1;
+  html+='<div style="display:flex;gap:3px;align-items:flex-end;height:80px;margin-bottom:4px">';
+  l12.forEach(function(k){var v=mkCnt[k]||0;var h2=Math.max(2,Math.round(v/maxVel*80));var pts=k.split('-');var isCM=(parseInt(pts[0])===curY2&&parseInt(pts[1])===tod2.getMonth()+1);html+='<div style="display:flex;flex-direction:column;align-items:center;flex:1"><div title="'+MONTHS[parseInt(pts[1])-1]+' '+pts[0]+': '+v+' policies" style="width:100%;background:'+(isCM?'var(--accent)':'var(--blue)')+';border-radius:2px 2px 0 0;height:'+h2+'px"></div><div style="font-size:8px;color:var(--text3);margin-top:2px">'+MONTHS[parseInt(pts[1])-1].charAt(0)+'</div></div>';});
   html+='</div></div>';
+  // Client loyalty
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px">';
+  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Client loyalty distribution</div>';
+  var bkts={'1 policy':0,'2 policies':0,'3 policies':0,'4 policies':0,'5+ policies':0};
+  allC.forEach(function(c){var n=c.policies.length;if(n===1)bkts['1 policy']++;else if(n===2)bkts['2 policies']++;else if(n===3)bkts['3 policies']++;else if(n===4)bkts['4 policies']++;else bkts['5+ policies']++;});
+  var maxB=Math.max.apply(null,Object.values(bkts))||1;var bCols=['#94a3b8','#3b82f6','#10b981','#f59e0b','#6366f1'];
+  Object.entries(bkts).forEach(function(e,i){var pct=Math.round(e[1]/maxB*100);var sp=allC.length>0?(e[1]/allC.length*100).toFixed(0):0;html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><span style="font-size:11px;color:var(--text2);width:80px;flex-shrink:0">'+e[0]+'</span><div style="flex:1;background:var(--bg);border-radius:2px;height:8px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:'+bCols[i]+';border-radius:2px"></div></div><span style="font-size:11px;color:var(--text);width:56px;text-align:right;flex-shrink:0">'+e[1]+' ('+sp+'%)</span></div>';});
+  var mCT=multiP.reduce(function(s,c){return s+c.comm;},0);var sCT=singleP.reduce(function(s,c){return s+c.comm;},0);
+  html+='<div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border);font-size:11px;color:var(--text3)">Multi-policy comm: <strong style="color:var(--accent)">'+f$(mCT)+'</strong> &middot; Single: <strong>'+f$(sCT)+'</strong></div>';
+  html+='</div></div>';
+  // Avg commission per product
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px">';
+  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Avg commission per policy by product (min 3 policies) &mdash; which products pay best?</div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px">';
+  prodRanked.forEach(function(p,i){var pct=Math.round(p.avg/maxAvg*100);var medal=i===0?'#1 ':i===1?'#2 ':i===2?'#3 ':'';html+='<div style="background:var(--bg);border-radius:6px;padding:10px 12px;border:1px solid var(--border)"><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+p.pr+'">'+medal+p.pr+'</div><div style="background:var(--surface);border-radius:2px;height:5px;overflow:hidden;margin-bottom:5px"><div style="width:'+pct+'%;height:100%;background:var(--accent);border-radius:2px"></div></div><div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--text3)">'+p.count+' policies</span><span style="font-weight:600;color:var(--accent)">'+f$(p.avg)+'/policy</span></div></div>';});
+  html+='</div></div>';
+  // Book health
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px">';
+  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Book health</div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">';
+  [[withFU,'With follow-up set',withFU>0?'color:var(--accent)':''],[overdueC,'Overdue follow-ups',overdueC>0?'color:var(--red)':'color:var(--accent)'],[noFUFollowup,'Follow-up products, no date','color:var(--amber)'],[activeCl,'Active claims open',activeCl>0?'color:var(--red)':'']].forEach(function(k){html+='<div style="text-align:center;padding:10px"><div style="font-size:28px;font-weight:700;'+k[2]+'">'+k[0]+'</div><div style="font-size:11px;color:var(--text3);margin-top:2px">'+k[1]+'</div></div>';});
+  html+='</div>';
+  if(noFUFollowup>0){
+    html+='<div style="margin-top:10px;padding:10px 12px;background:var(--amber-l);border-radius:6px;display:flex;align-items:center;gap:10px">';
+    html+='<div style="flex:1;font-size:12px;color:var(--amber)"><strong>'+noFUFollowup+' clients</strong> have follow-up products but no follow-up date set. Auto-set anniversary dates to fix this.</div>';
+    html+='<button onclick="setAnniversaryFollowups()" style="padding:5px 12px;border:none;border-radius:var(--rs);background:var(--amber);color:#fff;font-family:DM Sans,sans-serif;font-size:11px;cursor:pointer;font-weight:600;flex-shrink:0">Auto-set dates</button>';
+    html+='</div>';
+  }
+  html+='</div>';
   return html;
 }
+
 
 function _anGeoView(f$){
   var geoData={};clients.forEach(function(c){var city=(c.cy||'Unknown').trim()||'Unknown';var comm=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;var pr=(c.pr||'').trim()||'Unknown';if(!geoData[city])geoData[city]={comm:0,count:0,clients:new Set(),byProduct:{}};geoData[city].comm+=comm;geoData[city].count++;geoData[city].clients.add(c.cn);if(!geoData[city].byProduct[pr])geoData[city].byProduct[pr]={comm:0,count:0};geoData[city].byProduct[pr].comm+=comm;geoData[city].byProduct[pr].count++;});
@@ -1816,6 +1797,50 @@ function _anDrilldown(y,m){
     +'<div style="text-align:right;margin-top:10px"><button class="bcn" id="dd-close">Close</button></div></div>';
   document.getElementById('modal').innerHTML='';document.getElementById('modal').appendChild(m2);
   document.getElementById('dd-close').onclick=function(){m2.remove();};
+}
+
+
+// ── ANNIVERSARY FOLLOW-UP AUTO-SETTER ────────────────────────────
+async function setAnniversaryFollowups(){
+  if(!confirm('This will set follow-up dates for all follow-up products that have no date set.\n\nRule: Next anniversary of the sold date (e.g. sold Jul 1 2023 → due Jul 1 2026 if that is in the future, else Jul 1 2027).\n\nThis will write to your Google Sheet. Continue?')) return;
+  var today = new Date(); today.setHours(0,0,0,0);
+  var updates = [];
+  var skipped = 0; var set = 0;
+  clients.forEach(function(c){
+    // Only follow-up products with no date and active status
+    if(c.fu || c.status==='closed') return;
+    if(!FOLLOWUP_PRODS.has((c.pr||'').toLowerCase().trim())) return;
+    if(!c.ds) return;
+    // Calculate next anniversary
+    var sold = new Date(c.ds);
+    if(isNaN(sold.getTime())) return;
+    // Find the next anniversary that is in the future (at least today)
+    var anniv = new Date(sold);
+    anniv.setFullYear(today.getFullYear());
+    if(anniv < today) anniv.setFullYear(today.getFullYear() + 1);
+    var fuStr = anniv.getFullYear()+'-'+String(anniv.getMonth()+1).padStart(2,'0')+'-'+String(anniv.getDate()).padStart(2,'0');
+    c.fu = fuStr;
+    updates.push({rowNum: c.rowNum, value: fuStr});
+    set++;
+  });
+  if(updates.length === 0){ alert('No eligible clients found — all follow-up products already have dates set.'); return; }
+  // Show progress
+  var btn = document.getElementById('anniversaryBtn');
+  if(btn){ btn.textContent = 'Writing ' + updates.length + ' dates...'; btn.disabled = true; }
+  // Batch write in chunks of 50
+  var chunkSize = 50; var written = 0;
+  for(var i = 0; i < updates.length; i += chunkSize){
+    var chunk = updates.slice(i, i+chunkSize);
+    try{
+      var params = new URLSearchParams({action:'batchWriteFollowupDates', updates:JSON.stringify(chunk)});
+      await fetch(APPS_SCRIPT_URL+'?'+params.toString());
+      written += chunk.length;
+      if(btn) btn.textContent = 'Writing... '+written+'/'+updates.length;
+    }catch(e){ console.warn('Batch write error:', e); }
+  }
+  if(btn){ btn.textContent = '\u2713 Set '+written+' dates'; setTimeout(function(){if(btn){btn.textContent='Set Anniversary Dates';btn.disabled=false;}},3000); }
+  render();
+  alert('Done! Set ' + written + ' anniversary follow-up dates.\n\nClients will now appear in your follow-up tabs.');
 }
 
 </script>
