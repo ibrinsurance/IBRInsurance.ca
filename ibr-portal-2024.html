@@ -287,16 +287,13 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
         <span class="fl">Show:</span>
         <select class="preset" id="preset" onchange="applyPreset()">
           <option value="all">All products</option>
-          <option value="followups">Follow-ups only</option>
-          <option value="all">All products</option>
+          <option value="followups" selected>Follow-ups only (Term, UL, CI, RRSP, RESP)</option>
           <option value="life">Life insurance (Term, UL, WL)</option>
           <option value="ci">Critical illness</option>
-          <option value="disability">Disability</option>
           <option value="investments">Investments (RRSP / RESP / TFSA / FHSA)</option>
-          <option value="group">Group / H&D / Team</option>
           <option value="travel">Travel / Visitor only</option>
         </select>
-        <button onclick="setAnniversaryFollowups()" id="anniversaryBtn" style="padding:5px 12px;font-size:12px;font-family:DM Sans,sans-serif;border:1px solid var(--accent);border-radius:var(--rs);background:var(--accent-l);cursor:pointer;color:var(--accent);white-space:nowrap">Set Anniversary Dates</button>
+        <button onclick="setAnniversaryFollowups()" id="anniversaryBtn" title="Only sets dates for: Term, UL, Whole Life, CI, RRSP, RESP, and Transfer products — NOT travel or visitor" style="padding:5px 12px;font-size:12px;font-family:DM Sans,sans-serif;border:1px solid var(--accent);border-radius:var(--rs);background:var(--accent-l);cursor:pointer;color:var(--accent);white-space:nowrap">Set Anniversary Dates &#9432;</button>
         <button onclick="showClosed=!showClosed;render()" id="closedToggle" style="padding:5px 12px;font-size:12px;font-family:DM Sans,sans-serif;border:1px solid var(--border);border-radius:var(--rs);background:none;cursor:pointer;color:var(--text2);white-space:nowrap">Show closed</button>
         <span id="closedCount" style="font-size:11px;color:var(--text3)"></span>
       </div>
@@ -329,7 +326,7 @@ const CLAIM_TYPES=['Death Benefit','Critical Illness Payout','Disability Claim',
 const CLAIM_STATUSES=['Submitted','In Review','Approved','Paid','Denied'];
 const DQG=[{l:'Disability variants',i:['Disability','Disability Insurance']},{l:'Truck-Travel variants',i:['Truck-Travel','Truck - Travel','Truck Travel']},{l:'RRSP typos',i:['RRSP','RRP','SRRP']},{l:'Transfer variants',i:['UL Transfer','WL Transfer','Term Transfer','Transfer']},{l:'Likely wrong column',i:['Tiktok','Entity']}];
 
-let isOwner=false, clients=[], nextId=1000, mode='followup', tab='all', sel=null, preset='all', nnt={}, lkp=null, undoStack=[], sheetConnected=false, showClosed=false;
+let isOwner=false, clients=[], nextId=1000, mode='followup', tab='all', sel=null, preset='followups', nnt={}, lkp=null, undoStack=[], sheetConnected=false, showClosed=false;
 
 // ── AUTH ──
 // Google Sign-in configured via data-attributes on g_id_onload div
@@ -413,7 +410,7 @@ const AVC=['av-gr','av-bl','av-am','av-pu','av-rd'];
 function avc(n){let h=0;for(let c of(n||''))h=(h*31+c.charCodeAt(0))&0xffff;return AVC[h%AVC.length];}
 function nc(s){return(s||'').split(/[,|]/).map(x=>x.trim().toLowerCase()).filter(Boolean);}
 function gst(c){if(c.done)return'done';if(!c.fu)return'none';const fd=new Date(c.fu);fd.setHours(0,0,0,0);const d=Math.ceil((fd-tod)/864e5);if(d<0)return'overdue';if(d<=7)return'thisweek';return'upcoming';}
-function vbp(c){const cl=cls(c.pr);if(preset==='followups')return cl!=='travel';if(preset==='all')return true;if(preset==='life')return cl==='life';if(preset==='ci')return cl==='ci';if(preset==='disability')return cl==='dis';if(preset==='investments')return cl==='inv';if(preset==='group')return cl==='grp';if(preset==='travel')return cl==='travel';return true;}
+function vbp(c){const cl=cls(c.pr);if(preset==='followups')return FOLLOWUP_PRODS.has((c.pr||'').toLowerCase().trim());if(preset==='all')return true;if(preset==='life')return cl==='life';if(preset==='ci')return cl==='ci';if(preset==='investments')return cl==='inv';if(preset==='travel')return cl==='travel';return true;}
 function getAllLinked(c){const ap=nc(c.ph),ae=nc(c.em),mh=new Set(c.hh||[]);return clients.filter(o=>{if(o.id===c.id)return false;return mh.has(o.id)||nc(o.ph).some(p=>ap.includes(p))||nc(o.em).some(e=>ae.includes(e));});}
 // Products requiring follow-up (not travel/visitor)
 var FOLLOWUP_PRODS = new Set(['term insurance','ul insurance','whole life','critical illness','rrsp','resp','ul transfer','term transfer','wl transfer']);
@@ -1566,7 +1563,7 @@ function renderAnalytics(){
   else if(_anView==='sources')html+=_anSourcesView(D,f$);
   else if(_anView==='referral')html+=_anReferralView(D,f$);
   else if(_anView==='companies')html+=_anCompaniesView(D,YC,f$);
-  else if(_anView==='portfolio')html+=_anPortfolioView(D,MONTHS,f$);
+  else if(_anView==='portfolio'){try{html+=_anPortfolioView(D,MONTHS,f$);}catch(e){console.error('Portfolio error:',e);html+='<div class="empty">Error: '+e.message+'</div>';}}
   else if(_anView==='geo')html+=_anGeoView(f$);
   else if(_anView==='insights')html+=_anInsightsView(D,MONTHS,f$);
   else if(_anView==='report')html+=_anWeeklyReport(D,MONTHS,f$);
@@ -1802,7 +1799,7 @@ function _anDrilldown(y,m){
 
 // ── ANNIVERSARY FOLLOW-UP AUTO-SETTER ────────────────────────────
 async function setAnniversaryFollowups(){
-  if(!confirm('This will set follow-up dates for all follow-up products that have no date set.\n\nRule: Next anniversary of the sold date (e.g. sold Jul 1 2023 → due Jul 1 2026 if that is in the future, else Jul 1 2027).\n\nThis will write to your Google Sheet. Continue?')) return;
+  if(!confirm('SET ANNIVERSARY FOLLOW-UP DATES\n\nThis will ONLY apply to:\n• Term Insurance, UL Insurance, Whole Life\n• Critical Illness\n• RRSP, RESP\n• UL/Term/WL Transfers\n\nIt will NOT touch travel, VTC, Supervisa, disability, or group policies.\n\nFor each eligible policy with NO follow-up date:\n→ Sets next anniversary of the sold date (future only)\n   e.g. sold July 1 2023 → due July 1 2026\n\nOK to proceed?')) return;
   var today = new Date(); today.setHours(0,0,0,0);
   var updates = [];
   var skipped = 0; var set = 0;
