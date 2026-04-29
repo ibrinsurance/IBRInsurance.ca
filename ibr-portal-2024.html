@@ -266,7 +266,6 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
       <button class="mode-btn" id="modeLookup" onclick="setMode('lookup')">Client lookup</button>
       <button class="mode-btn" id="modeClaims" onclick="setMode('claims')">Claims</button>
       <button class="mode-btn" id="modeLeads" onclick="setMode('leads')">Leads</button>
-      <button class="mode-btn" id="modeCommand" onclick="setMode('command')" style="background:var(--accent);color:#fff;border-radius:var(--rs)">&#9733; Command</button>
       <button class="mode-btn" id="modeAnalytics" onclick="setMode('analytics')">Analytics</button>
       <button class="mode-btn" id="modeDq" onclick="setMode('dq')">Data quality</button>
     </div>
@@ -464,7 +463,7 @@ function onSearch(){
 function applyPreset(){preset=document.getElementById('preset').value;sel=null;render();}
 function setMode(m){
   mode=m;sel=null;lkp=null;
-  ['followup','lookup','claims','leads','analytics','command','dq'].forEach(function(x){
+  ['followup','lookup','claims','leads','analytics','dq'].forEach(function(x){
     var el=document.getElementById('mode'+x.charAt(0).toUpperCase()+x.slice(1));
     if(el)el.classList.toggle('active',x===m);
   });
@@ -483,7 +482,6 @@ function render(){
   else if(mode==='claims')renderClaims();
   else if(mode==='leads')renderLeads();
   else if(mode==='analytics')renderAnalytics();
-  else if(mode==='command')renderCommand();
   else renderDQ();
 }
 function renderFU(){
