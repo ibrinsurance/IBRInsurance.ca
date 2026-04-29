@@ -316,7 +316,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzkVWsYlyzImRxpEbYic0VygiyKnqqlt9tYQzTNWxNeX0ypj4TUqasVNk7jCsQsxS_g/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby1obL48lm9DOHfG3ZqdIkMRvsyTHhxifmJpKDy-kz1tP4UIz3gfF_z44cFU2ZTEC0/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -500,7 +500,7 @@ return`<div class="card${isel?' sel':''}${c.done?' done':''}" onclick="selC(${c.
 <div class="av ${avc(c.cn)}">${ini(c.cn)}</div>
 <div class="ci"><div class="cn">${c.cn}${c.cn!==c.ins?`<span class="ci-ins">insured: ${c.ins}</span>`:''}${lnk.length?`<span class="hh-badge">household ${lnk.length}</span>`:''}${c.claim?`<span class="claim-badge">claim active</span>`:''}</div>
 <div class="cm2"><span>${c.cy}</span><span>${nc(c.ph)[0]||''}</span><span>${c.co}</span></div></div>
-<div class="cr"><span class="sp ${sc}">${sl}</span>${c.fu?`<span class="fd">${fmtD(c.fu)}</span>`:''}<span class="pt">${c.pr}</span></div></div>
+<div class="cr"><span class="sp ${sc}">${sl}</span>${c.fu?`<span class="fd" style="cursor:pointer" title="Click to change date" onclick="event.stopPropagation();openDatePicker(${c.id},this,'${c.fu||''}')">${fmtD(c.fu)}</span>`:`<span class="fd" style="cursor:pointer;color:var(--text3);border:1px dashed var(--border);border-radius:3px;padding:1px 5px;font-size:10px" onclick="event.stopPropagation();openDatePicker(${c.id},this,'')">+ date</span>`}<span class="pt">${c.pr}</span></div></div>
 ${isel?detH(c):''}
 </div>`;}
 
@@ -1838,6 +1838,29 @@ async function setAnniversaryFollowups(){
   if(btn){ btn.textContent = '\u2713 Set '+written+' dates'; setTimeout(function(){if(btn){btn.textContent='Set Anniversary Dates';btn.disabled=false;}},3000); }
   render();
   alert('Done! Set ' + written + ' anniversary follow-up dates.\n\nClients will now appear in your follow-up tabs.');
+}
+
+
+function openDatePicker(id, anchorEl, currentVal){
+  // Remove any existing picker
+  var existing = document.getElementById('quick-date-picker');
+  if(existing){ existing.remove(); return; }
+  var inp = document.createElement('input');
+  inp.type = 'date';
+  inp.id = 'quick-date-picker';
+  inp.value = currentVal || '';
+  inp.style.cssText = 'position:fixed;z-index:9999;font-size:12px;padding:4px 8px;border:2px solid var(--accent);border-radius:6px;background:var(--surface);color:var(--text);font-family:DM Sans,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,.15)';
+  var rect = anchorEl.getBoundingClientRect();
+  inp.style.top = (rect.bottom + 4) + 'px';
+  inp.style.left = rect.left + 'px';
+  inp.onchange = function(){
+    updFU(id, this.value);
+    this.remove();
+  };
+  inp.onblur = function(){ setTimeout(function(){ var el=document.getElementById('quick-date-picker'); if(el)el.remove(); }, 200); };
+  document.body.appendChild(inp);
+  inp.focus();
+  inp.click();
 }
 
 </script>
