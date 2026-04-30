@@ -363,7 +363,7 @@ function initGoogleSignIn(){
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyyJurudHFhDs7JsHXCAs74FNp0kXEA0Z0Kc_nVYb42-YXCc3J5wSKjTMLFy5NT9PG0/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyfgq5_ACyAvVs0CZVwXs-bemPciHF9G_6V77LyyUm8c9P42izlv8NMfWWzRSxmgEAL/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -439,7 +439,7 @@ function parseRows(rows){
     if(r.claimStatus){try{claim=JSON.parse(r.claimStatus);}catch{}}
     let hh=[];
     if(r.householdLinks){try{hh=JSON.parse(r.householdLinks);}catch{}}
-    clients.push({id:nextId++,rowNum:r.rowNum,cn:r.cn,ins:r.ins||r.cn,ds:r.ds,co:r.co,cv:r.cv,pn:r.pn,ph:r.ph,em:r.em,cy:r.cy,ap:r.ap,cm:r.cm,src:r.src,pr:r.pr,fu:r.fu||null,done:false,notes:parsedNotes,hh,claim,status:r.policyStatus||'active',lcc:r.lastClientContact||'',lco:r.lastCoContact||''});
+    clients.push({id:nextId++,rowNum:r.rowNum,cn:r.cn,ins:r.ins||r.cn,ds:r.ds,co:r.co,cv:r.cv,pn:r.pn,ph:r.ph,em:r.em,cy:r.cy,ap:r.ap,cm:r.cm,src:r.src,pr:r.pr,fu:r.fu||null,done:false,notes:parsedNotes,hh,claim,status:r.policyStatus||'active',lcc:_cleanDate(r.lastClientContact),lco:_cleanDate(r.lastCoContact)});
   });
 }
 
@@ -503,6 +503,13 @@ function onSearch(){
 function applyPreset(){preset=document.getElementById('preset').value;sel=null;render();}
 function setMode(m){
   mode=m;sel=null;lkp=null;
+  // Clear list immediately so stale content from previous tab doesn't show
+  var listEl=document.getElementById('list');
+  if(listEl)listEl.innerHTML='';
+  // Reset analytics view to default when switching to analytics
+  if(m==='analytics') _anView='daily';
+  // Reset leads scroll/filter when switching to leads
+  if(m==='leads') _leadFilter='all';
   ['followup','lookup','claims','leads','analytics','dq'].forEach(function(x){
     var el=document.getElementById('mode'+x.charAt(0).toUpperCase()+x.slice(1));
     if(el)el.classList.toggle('active',x===m);
@@ -521,7 +528,12 @@ function render(){
   else if(mode==='lookup')renderLookup();
   else if(mode==='claims')renderClaims();
   else if(mode==='leads')renderLeads();
-  else if(mode==='analytics')renderAnalytics();
+  else if(mode==='analytics'){
+    // Show brief loading state for analytics (heavy computation)
+    var el=document.getElementById('list');
+    if(el&&el.innerHTML==='')el.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:13px">Loading analytics...</div>';
+    setTimeout(renderAnalytics,10);
+  }
   else renderDQ();
 }
 function selC(id){ sel=(sel===id)?null:id; render(); }
@@ -2677,6 +2689,16 @@ function removeClaim(id){
 
 function _saveClaim(c){
   sheetWrite('writeClaimStatus',{rowNum:c.rowNum,claimJson:JSON.stringify(c.claim)});
+}
+
+function _cleanDate(v){
+  if(!v)return'';
+  var s=v.toString().trim();
+  // Already YYYY-MM-DD
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s;
+  // Try to parse any date string
+  try{var d=new Date(s);if(!isNaN(d.getTime())){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}}catch(e){}
+  return s;
 }
 
 </script>
