@@ -441,19 +441,14 @@ function getFiltered(){
 
 // ── SEARCH ──
 function onSearch(){
-  const q=(document.getElementById('searchInput').value||'').trim();
+  var q=(document.getElementById('searchInput').value||'').trim();
   if(q){
-    // Auto-switch to All tab and all products when searching
-    if(tab!=='all'){
-      tab='all';
-      [['ov','overdue'],['tw','thisweek'],['up','upcoming'],['al','all']].forEach(([k,v])=>
-        document.getElementById('t-'+k).classList.toggle('active',v==='all')
-      );
-    }
-    if(preset!=='all'){
-      preset='all';
-      document.getElementById('preset').value='all';
-    }
+    // Switch to lookup mode to show search results
+    if(mode!=='lookup') setMode('lookup');
+  } else {
+    // Clear: if in lookup mode, keep it but show empty state
+    if(mode==='lookup') renderLookup();
+    return;
   }
   render();
 }
@@ -631,13 +626,86 @@ return`<div class="clm-sec"><div class="clm-hdr"><span class="clm-title">Active 
 </div></div>`;}
 
 function renderClaims(){
-const active=clients.filter(c=>c.claim);
-document.getElementById('list').innerHTML=active.length?`<div style="margin-bottom:10px;font-size:13px;font-weight:500;color:var(--text)">${active.length} active claim${active.length===1?'':'s'}</div>`+active.map(c=>{const st=c.claim.status||'Submitted';const sc=csMap[st]||'cs-sub';const days=c.claim.opened?Math.ceil((tod-new Date(c.claim.opened))/864e5):'?';return`<div class="card${sel===c.id?' sel':''}" onclick="selC(${c.id})">
-<div class="ct"><div class="av ${avc(c.cn)}">${ini(c.cn)}</div>
-<div class="ci"><div class="cn">${c.cn}<span class="claim-badge">claim active</span></div><div class="cm2"><span>${c.pr}</span><span>${c.co}</span><span>${c.cy}</span></div></div>
-<div class="cr"><span class="cs-pill ${sc}" style="font-size:10px;padding:2px 8px">${st}</span><span class="fd">${c.claim.type||''}</span><span class="fd">Opened ${fmtD(c.claim.opened)} · ${days}d ago</span></div></div>
-${sel===c.id?`<div class="dp" onclick="event.stopPropagation()">${claimH(c)}</div>`:''}
-</div>`;}).join(''):'<div class="empty">No active claims</div>';}
+  var el=document.getElementById('list');
+  var withClaims=clients.filter(function(c){return c.claim&&c.claim.type;});
+  var html='';
+  // Add new claim section
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px">';
+  html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
+  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">Active claims ('+withClaims.length+')</div>';
+  html+='<button onclick="openNewClaimModal()" style="font-size:12px;padding:5px 14px;border:none;border-radius:var(--rs);background:var(--accent);color:#fff;cursor:pointer;font-family:DM Sans,sans-serif;font-weight:500">+ New claim</button>';
+  html+='</div>';
+  if(!withClaims.length){
+    html+='<div style="text-align:center;padding:30px;color:var(--text3)"><div style="font-size:28px;margin-bottom:6px">&#128196;</div><div style="font-size:13px">No active claims. Click "+ New claim" to start tracking one.</div></div>';
+  } else {
+    withClaims.forEach(function(c){
+      var cl=c.claim;var issel=sel===c.id;
+      var daysSince=cl.date?Math.ceil((new Date()-new Date(cl.date))/864e5):null;
+      html+='<div class="card'+(issel?' sel':'')+'" onclick="selC('+c.id+')">';
+      html+='<div style="display:flex;align-items:center;gap:10px">';
+      html+='<div class="av '+avc(c.cn)+'" style="width:32px;height:32px;font-size:11px;flex-shrink:0">'+ini(c.cn)+'</div>';
+      html+='<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">'+c.cn+'</div>';
+      html+='<div style="font-size:11px;color:var(--text3)">'+c.pr+' &middot; '+c.co+(c.pn?' &middot; '+c.pn:'')+'</div></div>';
+      var stColor=cl.status==='paid'?'var(--accent)':cl.status==='processing'?'#f59e0b':'var(--blue)';
+      html+='<div style="text-align:right"><span style="font-size:11px;padding:2px 8px;border-radius:20px;background:'+stColor+'22;color:'+stColor+';font-weight:500">'+(cl.status||'submitted')+'</span>';
+      if(daysSince!==null)html+='<div style="font-size:10px;color:var(--text3);margin-top:2px">'+daysSince+' days since filed</div>';
+      html+='</div></div>';
+      html+='<div style="margin-top:6px;font-size:11px;color:var(--text3)">Type: '+(cl.type||'')+(cl.note?' &middot; '+cl.note:'')+'</div>';
+      if(issel)html+=detH(c);
+      html+='</div>';
+    });
+  }
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+function openNewClaimModal(){
+  var m=document.createElement('div');m.className='mbg';
+  m.onclick=function(e){if(e.target===m)m.remove();};
+  // Search box for finding client
+  m.innerHTML='<div class="mod" style="max-width:500px"><div class="mtit">New claim</div>'
+    +'<div style="margin-bottom:12px"><label style="font-size:12px;font-weight:500;color:var(--text3);display:block;margin-bottom:4px">Search client / policy</label>'
+    +'<input id="claim-search" placeholder="Name, phone, policy #..." style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-family:DM Sans,sans-serif;font-size:13px;background:var(--surface);color:var(--text);box-sizing:border-box">'
+    +'<div id="claim-results" style="max-height:180px;overflow-y:auto;border:1px solid var(--border);border-radius:6px;margin-top:4px;display:none"></div></div>'
+    +'<div id="claim-selected" style="display:none;background:var(--accent-l);border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:var(--accent)"></div>'
+    +'<div class="fgr">'
+    +'<div class="fg2"><label>Claim type</label><select id="claim-type"><option>Death claim</option><option>Disability</option><option>Critical illness</option><option>Travel medical</option><option>Property damage</option><option>Other</option></select></div>'
+    +'<div class="fg2"><label>Status</label><select id="claim-status"><option value="submitted">Submitted</option><option value="processing">Processing</option><option value="paid">Paid</option><option value="denied">Denied</option></select></div>'
+    +'<div class="fg2"><label>Date filed</label><input id="claim-date" type="date" value="'+new Date().toISOString().split('T')[0]+'"></div>'
+    +'<div class="fg2 full"><label>Notes</label><textarea id="claim-note" placeholder="Claim details, reference numbers, next steps..." style="height:70px"></textarea></div>'
+    +'</div>'
+    +'<div class="fac"><button class="bcn" id="claim-cancel">Cancel</button><button class="bsb" id="claim-submit">Save claim</button></div>'
+    +'</div>';
+  document.getElementById('modal').innerHTML='';
+  document.getElementById('modal').appendChild(m);
+  document.getElementById('claim-cancel').onclick=function(){m.remove();};
+  document.getElementById('claim-submit').onclick=function(){submitNewClaim();m.remove();};
+  // Live search
+  var selId=null;
+  document.getElementById('claim-search').oninput=function(){
+    var q=this.value.toLowerCase().trim();
+    var res=document.getElementById('claim-results');
+    if(!q){res.style.display='none';return;}
+    var matches=clients.filter(function(c){return[c.cn,c.ph,c.pn,c.pr].some(function(x){return(x||'').toLowerCase().includes(q);});}).slice(0,8);
+    if(!matches.length){res.style.display='none';return;}
+    res.style.display='';
+    res.innerHTML=matches.map(function(c){return'<div data-cid="'+c.id+'" data-cn="'+c.cn.replace(/"/g,'')+"'" +' data-pr="'+c.pr+"'" +' onclick="selectClaimClient(this)" style="padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--border);font-size:12px;background:var(--surface)" onmouseover="this.style.background=\"var(--bg)\"" onmouseout="this.style.background=\"\"'+'><strong>'+c.cn+'</strong> &middot; '+c.pr+' &middot; '+c.co+'</div>';}).join('');
+  };
+  setTimeout(function(){document.getElementById('claim-search').focus();},100);
+}
+
+function submitNewClaim(){
+  var btn=document.getElementById('claim-submit');
+  var cid=btn?parseInt(btn.dataset.cid):0;
+  if(!cid){alert('Please select a client first');return;}
+  var c=clients.find(function(x){return x.id===cid;});if(!c)return;
+  var claim={type:document.getElementById('claim-type').value,status:document.getElementById('claim-status').value,date:document.getElementById('claim-date').value,note:(document.getElementById('claim-note').value||'').trim()};
+  pushUndo('New claim: '+c.cn);
+  c.claim=claim;
+  sheetWrite('writeClaimStatus',{rowNum:c.rowNum,claimJson:JSON.stringify(claim)});
+  setMode('claims');
+}
+
 
 function renderLookup(){
   var q=(document.getElementById('searchInput').value||'').toLowerCase().trim();
@@ -779,8 +847,10 @@ function _matchesFilters(c,f){
   // Phone filter
   if(f.phone&&!(lc(c.ph).replace(/\D/g,'')).includes(f.phone))return false;
   // Text terms
+  // If nothing to filter on, don't match (shouldn't happen but safety check)
   if(f.terms.length===0&&!f.city&&!f.product&&!f.phone&&!f.noProduct)return false;
-  if(f.terms.length>0){var searchFields=[c.cn,c.ins,c.ph,c.em,c.cy,c.pn,c.pr,c.src,c.co].join(' ').toLowerCase();return f.terms.every(function(t){return searchFields.includes(t);});}
+  // Check text terms against all fields
+  if(f.terms.length>0){var searchFields=[c.cn,c.ins,c.ph,c.em,c.cy,c.pn,c.pr,c.src,c.co].join(' ').toLowerCase();if(!f.terms.every(function(t){return searchFields.includes(t);}))return false;}
   return true;
 }
 
@@ -938,6 +1008,16 @@ function _anClickHH(el){var k=el.getAttribute('data-hhk');_anExpHH[k]=!_anExpHH[
 function _anOpenPolicy(el){var id=parseInt(el.getAttribute('data-pid'));if(id)jumpTo(id);}
 
 // ── HELPER FUNCTIONS ───────────────────────────────────────────────
+
+function whatsappLead(phone, name){
+  if(!phone) return;
+  var p = phone.toString().replace(/\D/g,'');
+  if(p.length===10) p='1'+p;
+  var msg = encodeURIComponent('Hi ' + (name||'') + ', ');
+  var url = 'https://wa.me/' + p + '?text=' + msg;
+  window.open(url, '_blank');
+}
+
 function hhWA(el){whatsappLead(el.getAttribute('data-phone'),el.getAttribute('data-name'));}
 
 function refreshData(){
@@ -1092,6 +1172,30 @@ function _anDailyView(D,MONTHS,f$){
 // ================================================================
 // REFERRAL ENGINE
 // ================================================================
+
+function _anReferralNurture(sorted, topByLTV, topByVolume, declining, f$){
+  var html='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px">';
+  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Referral nurture priorities</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">';
+  // Top by LTV
+  html+='<div style="background:#eef2ff;border-radius:8px;padding:12px">';
+  html+='<div style="font-size:10px;font-weight:600;color:#6366f1;text-transform:uppercase;margin-bottom:8px">&#11088; Highest LTV — invest most time</div>';
+  topByLTV.forEach(function(e){html+='<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #e0e7ff"><div style="font-size:13px;font-weight:600;color:var(--text)">'+e[0]+'</div><div style="font-size:11px;color:#6366f1">'+f$(e[1].avgLTV)+'/client &middot; '+e[1].count+' policies</div></div>';});
+  html+='</div>';
+  // Top by volume
+  html+='<div style="background:#f0fdf4;border-radius:8px;padding:12px">';
+  html+='<div style="font-size:10px;font-weight:600;color:#10b981;text-transform:uppercase;margin-bottom:8px">&#128200; Most volume — scale these</div>';
+  topByVolume.forEach(function(e){html+='<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #dcfce7"><div style="font-size:13px;font-weight:600;color:var(--text)">'+e[0]+'</div><div style="font-size:11px;color:#10b981">'+e[1].count+' policies &middot; '+f$(e[1].avgPerPolicy)+'/policy</div></div>';});
+  html+='</div>';
+  // Declining
+  html+='<div style="background:#fff7ed;border-radius:8px;padding:12px">';
+  html+='<div style="font-size:10px;font-weight:600;color:#f59e0b;text-transform:uppercase;margin-bottom:8px">&#128679; Declining — re-engage now</div>';
+  if(declining.length){declining.forEach(function(e){var curY=new Date().getFullYear();var thisY=e[1].byYear[curY]?e[1].byYear[curY].count:0;var lastY=e[1].byYear[curY-1]?e[1].byYear[curY-1].count:0;html+='<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #fed7aa"><div style="font-size:13px;font-weight:600;color:var(--text)">'+e[0]+'</div><div style="font-size:11px;color:#f59e0b">'+(curY-1)+': '+lastY+' &#8594; '+curY+': '+thisY+'</div></div>';});}
+  else{html+='<div style="font-size:11px;color:var(--text3)">No declining sources detected</div>';}
+  html+='</div></div></div>';
+  return html;
+}
+
 function _anReferralView(D,f$){
   // Parse referral sources from the src field
   var refData={};
@@ -1125,6 +1229,8 @@ function _anReferralView(D,f$){
   if(sorted.length>=2){var ratio=(sorted[0][1].avgLTV/sorted[sorted.length-1][1].avgLTV).toFixed(1);html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px"><div style="font-size:20px;font-weight:700;color:#6366f1">'+ratio+'x</div><div style="font-size:11px;color:var(--text3)">Best vs lowest LTV source multiplier</div></div>';}
   html+='</div>';
 
+  // ── NURTURE PRIORITIES FIRST ──
+  html+=_anReferralNurture(sorted,topByLTV,topByVolume,declining,f$);
   // Main referral table with LTV focus
   html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px">';
   html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Referral Source Analysis — ranked by lifetime value per client</div>';
@@ -2270,6 +2376,20 @@ function markDoneNextAnniv(id){
   msg.textContent='✓ Next follow-up set to '+fuStr;
   document.body.appendChild(msg);
   setTimeout(function(){msg.remove();},2500);
+}
+
+function selectClaimClient(el){
+  var cid=el.getAttribute('data-cid');
+  var cn=el.getAttribute('data-cn');
+  var pr=el.getAttribute('data-pr');
+  var sel_el=document.getElementById('claim-selected');
+  var sub=document.getElementById('claim-submit');
+  var inp=document.getElementById('claim-search');
+  var res=document.getElementById('claim-results');
+  if(sel_el){sel_el.style.display='';sel_el.textContent='Selected: '+cn+' — '+pr;}
+  if(sub)sub.dataset.cid=cid;
+  if(inp)inp.value=cn;
+  if(res)res.style.display='none';
 }
 
 </script>
