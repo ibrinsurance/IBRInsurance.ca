@@ -392,7 +392,7 @@ function handleCredentialResponse(resp){
   loadData();
 }
 function parseJwt(t){return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));}
-function logout(){google.accounts.id.disableAutoSelect();document.getElementById('appShell').style.display='none';document.getElementById('loginScreen').style.display='flex';clients=[];sel=null;}
+function logout(){stopBackgroundSync();_pendingClients=null;var b=document.getElementById('sync-banner');if(b)b.remove();google.accounts.id.disableAutoSelect();document.getElementById('appShell').style.display='none';document.getElementById('loginScreen').style.display='flex';clients=[];sel=null;}
 
 // ── LOAD FROM APPS SCRIPT ──
 async function loadData(){
@@ -1172,7 +1172,7 @@ function refreshData(){
     parseRows(d.rows);sheetConnected=true;
     document.getElementById('sdot').classList.remove('err');
     document.getElementById('syncStatus').textContent=clients.length+' clients \xb7 live';
-    loadLeads();render();
+    loadLeads();render();startBackgroundSync();
     if(btn){btn.textContent='\u2713 Updated';setTimeout(function(){btn.textContent='\u8635 Refresh';btn.disabled=false;},2000);}
   }).catch(function(e){
     document.getElementById('sdot').classList.add('err');
@@ -2689,6 +2689,136 @@ function _cleanDate(v){
   }catch(e){}
   return s;
 }
+
+// ── BACKGROUND SYNC ─────────────────────────────────────────────
+var _bgSyncInterval = null;
+var _pendingClients = null;   // fresh data waiting to be applied
+var _lastSyncTime = null;
+var _syncPaused = false;
+
+function startBackgroundSync(){
+  if(_bgSyncInterval) return; // already running
+  _bgSyncInterval = setInterval(_bgFetch, 15 * 60 * 1000); // every 15 min
+  console.log('[IBR] Background sync started — every 15 min');
+}
+
+function stopBackgroundSync(){
+  if(_bgSyncInterval){ clearInterval(_bgSyncInterval); _bgSyncInterval = null; }
+}
+
+async function _bgFetch(){
+  // Don't fetch if a modal is open (user is mid-edit)
+  var modal = document.getElementById('modal');
+  if(modal && modal.innerHTML.trim() !== ''){
+    console.log('[IBR] Sync skipped — modal open');
+    return;
+  }
+  // Don't fetch if not connected
+  if(!sheetConnected) return;
+
+  try {
+    var r = await fetch(APPS_SCRIPT_URL + '?action=getData');
+    var d = await r.json();
+    if(d.error) return;
+
+    // Parse into a temp array without touching current clients[]
+    var savedClients = clients;
+    var savedNextId = nextId;
+    clients = []; nextId = 1000;
+    parseRows(d.rows);
+    _pendingClients = clients;    // store fresh data
+    _lastSyncTime = new Date();
+    clients = savedClients;       // restore current data
+    nextId = savedNextId;
+
+    // Count differences
+    var newCount = _pendingClients.length - savedClients.length;
+    _showSyncBanner(newCount);
+
+  } catch(e){
+    console.warn('[IBR] Background sync error:', e);
+  }
+}
+
+function _showSyncBanner(newCount){
+  // Remove any existing banner
+  var old = document.getElementById('sync-banner');
+  if(old) old.remove();
+
+  var banner = document.createElement('div');
+  banner.id = 'sync-banner';
+  var msg = newCount > 0
+    ? '🔄 ' + newCount + ' new record' + (newCount === 1 ? '' : 's') + ' in sheet'
+    : '🔄 Sheet data updated';
+  banner.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#1e293b;color:#fff;'
+    + 'padding:10px 16px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:13px;'
+    + 'z-index:9998;box-shadow:0 4px 16px rgba(0,0,0,.3);display:flex;align-items:center;gap:10px;'
+    + 'cursor:pointer;border:1px solid #334155;animation:slideUp .3s ease';
+  banner.innerHTML = '<span>' + msg + '</span>'
+    + '<button onclick="applySyncNow()" style="padding:4px 12px;border:none;border-radius:4px;'
+    + 'background:#3b82f6;color:#fff;font-family:DM Sans,sans-serif;font-size:12px;cursor:pointer;'
+    + 'font-weight:500">Apply now</button>'
+    + '<button onclick="delaySyncBanner(5)" style="padding:4px 10px;border:none;border-radius:4px;'
+    + 'background:rgba(255,255,255,.1);color:#94a3b8;font-family:DM Sans,sans-serif;font-size:12px;'
+    + 'cursor:pointer">Delay 5 min</button>'
+    + '<span onclick="document.getElementById(\'sync-banner\').remove()" '
+    + 'style="color:#64748b;cursor:pointer;font-size:16px;padding:0 4px">&times;</span>';
+  document.body.appendChild(banner);
+
+  // Auto-dismiss after 30 seconds if not acted on
+  setTimeout(function(){
+    var b = document.getElementById('sync-banner');
+    if(b) b.style.opacity = '0.5';
+  }, 30000);
+}
+
+function applySyncNow(){
+  if(!_pendingClients) return;
+  // Check modal again before applying
+  var modal = document.getElementById('modal');
+  if(modal && modal.innerHTML.trim() !== ''){
+    alert('Please close the current dialog first, then the update will apply automatically.');
+    return;
+  }
+  clients = _pendingClients;
+  _pendingClients = null;
+  var b = document.getElementById('sync-banner');
+  if(b) b.remove();
+  // Update sync status
+  var ss = document.getElementById('syncStatus');
+  if(ss) ss.textContent = clients.length + ' clients · updated ' + _lastSyncTime.toLocaleTimeString();
+  render();
+}
+
+function delaySyncBanner(mins){
+  var b = document.getElementById('sync-banner');
+  if(b) b.remove();
+  // Re-show banner after X minutes without re-fetching
+  setTimeout(function(){
+    if(_pendingClients) _showSyncBanner(0);
+  }, mins * 60 * 1000);
+}
+
+// Auto-apply if user switches to follow-up tab and no modal is open
+var _origSetMode = setMode;
+setMode = function(m){
+  _origSetMode(m);
+  // If pending data and no modal, apply silently on tab switch
+  if(_pendingClients){
+    var modal = document.getElementById('modal');
+    if(!modal || modal.innerHTML.trim() === ''){
+      clients = _pendingClients;
+      _pendingClients = null;
+      var b = document.getElementById('sync-banner');
+      if(b) b.remove();
+    }
+  }
+};
+
+// Add slide-up animation
+var _bgStyle = document.createElement('style');
+_bgStyle.textContent = '@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}';
+document.head.appendChild(_bgStyle);
 
 </script>
 </body>
