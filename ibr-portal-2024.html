@@ -1224,7 +1224,13 @@ function _anDailyView(D,MONTHS,f$){
   // This month
   var thisMonth=clients.filter(function(c){if(!c.ds)return false;var d=new Date(c.ds);return d.getFullYear()===curY2&&d.getMonth()+1===curM2;});
   var thisMonthComm=thisMonth.reduce(function(s,c){return s+(parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0);},0);
-  var lastYearSameMonth=D.byYM[curY2-1]&&D.byYM[curY2-1][curM2]?D.byYM[curY2-1][curM2].comm:0;
+  // Best historical same month across all years
+  var lastYearSameMonth=0; var bestMonthYear=curY2-1;
+  D.allYears.forEach(function(y){
+    if(y>=curY2)return;
+    var v=D.byYM[y]&&D.byYM[y][curM2]?D.byYM[y][curM2].comm:0;
+    if(v>lastYearSameMonth){lastYearSameMonth=v;bestMonthYear=y;}
+  });
   var daysInMonth=new Date(curY2,curM2,0).getDate();
   var dayOfMonth=tod2.getDate();
   var monthPace=lastYearSameMonth>0?Math.round(thisMonthComm/lastYearSameMonth*100):0;
@@ -1249,7 +1255,7 @@ function _anDailyView(D,MONTHS,f$){
   var html='';
   // Header
   html+='<div style="margin-bottom:16px"><div style="font-size:22px;font-weight:800;color:var(--text)">'+weekdays[tod2.getDay()]+', '+MN+' '+dayOfMonth+'</div>';
-  html+='<div style="font-size:13px;color:var(--text3)">Day '+dayOfMonth+' of '+daysInMonth+' in '+MN+' &middot; '+monthPace+'% of last '+MN+'\'s pace &middot; '+f$(dailyTarget)+'/day target</div>';
+  html+='<div style="font-size:13px;color:var(--text3)">Day '+dayOfMonth+' of '+daysInMonth+' in '+MN+' &middot; '+monthPace+'% of best '+MN+' ('+bestMonthYear+') &middot; '+f$(dailyTarget)+'/day target</div>';
   // Set dates banner if no follow-ups
   if(overdue.length+dueToday.length===0&&noFUHighPriority.length>0){
     html+='<div style="background:var(--amber-l);border:1px solid var(--amber);border-radius:var(--r);padding:10px 14px;margin-top:8px;display:flex;align-items:center;gap:10px">';
@@ -1474,7 +1480,14 @@ function _anWeeklyReport(D,MONTHS,f$){
   var ytdPace=prevYtdComm>0?Math.round(ytdComm/prevYtdComm*100):0;
   // This month
   var thisMonthComm=D.byYM[curY2]&&D.byYM[curY2][curM2]?D.byYM[curY2][curM2].comm:0;
-  var lastYMComm=D.byYM[curY2-1]&&D.byYM[curY2-1][curM2]?D.byYM[curY2-1][curM2].comm:0;
+  // Find best historical same-month across ALL years (not just last year)
+  var bestYMComm=0; var bestYMYear=curY2-1;
+  D.allYears.forEach(function(y){
+    if(y>=curY2)return; // skip current year
+    var v=D.byYM[y]&&D.byYM[y][curM2]?D.byYM[y][curM2].comm:0;
+    if(v>bestYMComm){bestYMComm=v;bestYMYear=y;}
+  });
+  var lastYMComm=bestYMComm; // use best year for comparison
   // Leads
   var activeLeads=leads.filter(function(l){return l.status==='active';});
   var weekAgo=new Date(tod2);weekAgo.setDate(weekAgo.getDate()-7);
