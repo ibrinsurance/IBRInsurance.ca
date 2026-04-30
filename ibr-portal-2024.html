@@ -1549,6 +1549,41 @@ function _anWeeklyReport(D,MONTHS,f$){
   html+='<div style="font-size:11px;color:var(--text3)">'+MONTHS[curM2-1]+' '+curY2+': <strong style="color:var(--text)">'+f$(thisMonthComm)+'</strong> vs '+MONTHS[curM2-1]+' '+(curY2-1)+': <strong>'+f$(lastYMComm)+'</strong></div>';
   html+='<div style="font-size:11px;color:var(--text3);margin-top:3px">Total policies '+curY2+': <strong>'+ytdCount+'</strong></div>';
   html+='</div></div>';
+  // ── Product comparison: current month vs best historical month ──
+  var curMonthProd=D.byYM[curY2]&&D.byYM[curY2][curM2]?D.byYM[curY2][curM2].byProd:{};
+  var bestMonthProd=D.byYM[bestYMYear]&&D.byYM[bestYMYear][curM2]?D.byYM[bestYMYear][curM2].byProd:{};
+  var allProds=Array.from(new Set(Object.keys(curMonthProd).concat(Object.keys(bestMonthProd)))).filter(Boolean);
+  var prodRows=allProds.map(function(p){return{p:p,cur:curMonthProd[p]||0,best:bestMonthProd[p]||0};}).sort(function(a,b){return(b.cur+b.best)-(a.cur+a.best);}).slice(0,12);
+  if(prodRows.length>0){
+    var maxVal=Math.max.apply(null,prodRows.map(function(r){return Math.max(r.cur,r.best);}));
+    html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px">';
+    html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
+    html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">'+MONTHS[curM2-1]+' by product: '+curY2+' vs '+bestYMYear+' <span style="color:var(--accent);font-size:9px">(best historical)</span></div>';
+    html+='<div style="display:flex;gap:10px;font-size:11px"><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--accent);margin-right:3px"></span>'+curY2+'</span><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--blue);margin-right:3px"></span>'+bestYMYear+'</span></div>';
+    html+='</div>';
+    prodRows.forEach(function(r){
+      var curPct=maxVal>0?Math.round(r.cur/maxVal*100):0;
+      var bestPct=maxVal>0?Math.round(r.best/maxVal*100):0;
+      var diff=r.cur-r.best;
+      html+='<div style="margin-bottom:8px">';
+      html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">';
+      html+='<span style="font-size:11px;color:var(--text2);width:140px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+r.p+'">'+r.p+'</span>';
+      html+='<div style="flex:1;display:flex;flex-direction:column;gap:2px">';
+      html+='<div style="display:flex;align-items:center;gap:6px"><div style="flex:1;background:var(--bg);border-radius:2px;height:7px;overflow:hidden"><div style="width:'+curPct+'%;height:100%;background:var(--accent);border-radius:2px"></div></div><span style="font-size:11px;font-weight:600;color:var(--accent);width:68px;text-align:right;flex-shrink:0">'+(r.cur?f$(r.cur):'–')+'</span></div>';
+      html+='<div style="display:flex;align-items:center;gap:6px"><div style="flex:1;background:var(--bg);border-radius:2px;height:7px;overflow:hidden"><div style="width:'+bestPct+'%;height:100%;background:var(--blue);border-radius:2px"></div></div><span style="font-size:11px;color:var(--blue);width:68px;text-align:right;flex-shrink:0">'+(r.best?f$(r.best):'–')+'</span></div>';
+      html+='</div>';
+      if(r.cur>0||r.best>0)html+='<span style="font-size:11px;font-weight:600;color:'+(diff>=0?'var(--accent)':'var(--red)')+';width:58px;text-align:right;flex-shrink:0">'+(diff>0?'+':diff<0?'':'')+f$(diff)+'</span>';
+      html+='</div></div>';
+    });
+    // Total row
+    var totalDiff=thisMonthComm-lastYMComm;
+    html+='<div style="border-top:1px solid var(--border);padding-top:8px;margin-top:4px;display:flex;align-items:center;gap:8px"><span style="font-size:12px;font-weight:600;color:var(--text);width:140px;flex-shrink:0">Total</span><div style="flex:1"></div>';
+    html+='<span style="font-size:13px;font-weight:700;color:var(--accent);width:68px;text-align:right;flex-shrink:0">'+f$(thisMonthComm)+'</span>';
+    html+='<span style="width:8px;flex-shrink:0"></span>';
+    html+='<span style="font-size:13px;font-weight:700;color:var(--blue);width:68px;text-align:right;flex-shrink:0">'+f$(lastYMComm)+'</span>';
+    html+='<span style="font-size:13px;font-weight:700;color:'+(totalDiff>=0?'var(--accent)':'var(--red)')+';width:58px;text-align:right;flex-shrink:0">'+(totalDiff>=0?'+':'')+f$(totalDiff)+'</span>';
+    html+='</div></div>';
+  }
   // Pipeline + next week
   html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">';
   [[leadsAdded.length,'Leads added this week','var(--blue)'],[leadsConverted.length,'Converted this week','var(--accent)'],[nextWeekFU.length,'Follow-ups next 7 days','#f59e0b']].forEach(function(k){html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;text-align:center"><div style="font-size:24px;font-weight:700;color:'+k[2]+'">'+k[0]+'</div><div style="font-size:11px;color:var(--text3)">'+k[1]+'</div></div>';});
