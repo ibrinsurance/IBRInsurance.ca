@@ -317,7 +317,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby1okggUACq_qOHFR-eL4I5eZ3J24uNLuaF_ZRDLVBQEzQnw6I3WAtpluajr4n1Xxc/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzB2F70V0OQo2pwocGKL3Y-lgKwz-te9X9u8A1e4p-gsIR418DC-LcHCiph___DpK5W/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -1832,7 +1832,7 @@ function _anPortfolioView(D,MONTHS,f$){
   html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Sales velocity (last 12 months)</div>';
   var maxVel=Math.max.apply(null,l12.map(function(k){return mkCnt[k]||0;}))||1;
   html+='<div style="display:flex;gap:3px;align-items:flex-end;height:80px;margin-bottom:4px">';
-  l12.forEach(function(k){var v=mkCnt[k]||0;var h2=Math.max(2,Math.round(v/maxVel*80));var pts=k.split('-');var isCM=(parseInt(pts[0])===curY2&&parseInt(pts[1])===tod2.getMonth()+1);html+='<div style="display:flex;flex-direction:column;align-items:center;flex:1"><div title="'+MONTHS[parseInt(pts[1])-1]+' '+pts[0]+': '+v+' policies" style="width:100%;background:'+(isCM?'var(--accent)':'var(--blue)')+';border-radius:2px 2px 0 0;height:'+h2+'px"></div><div style="font-size:8px;color:var(--text3);margin-top:2px">'+MONTHS[parseInt(pts[1])-1].charAt(0)+'</div></div>';});
+  l12.forEach(function(k){if(!k||k==='NaN-NaN'||k.indexOf('-')<0)return;var pts=k.split('-');var mIdx=parseInt(pts[1])-1;var mon=(['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'])[mIdx];if(!mon)return;var v=mkCnt[k]||0;var h2=Math.max(2,Math.round(v/maxVel*80));var isCM=(parseInt(pts[0])===curY2&&parseInt(pts[1])===tod2.getMonth()+1);html+='<div style="display:flex;flex-direction:column;align-items:center;flex:1"><div title="'+mon+' '+pts[0]+': '+v+' policies" style="width:100%;background:'+(isCM?'var(--accent)':'var(--blue)')+';border-radius:2px 2px 0 0;height:'+h2+'px"></div><div style="font-size:8px;color:var(--text3);margin-top:2px">'+mon.charAt(0)+'</div></div>';});
   html+='</div></div>';
   // Client loyalty
   html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px">';
@@ -1954,19 +1954,33 @@ async function setAnniversaryFollowups(){
     set++;
   });
   if(updates.length === 0){ alert('No eligible clients found — all follow-up products already have dates set.'); return; }
-  // Show progress
   var btn = document.getElementById('anniversaryBtn');
   if(btn){ btn.textContent = 'Writing ' + updates.length + ' dates...'; btn.disabled = true; }
-  // Batch write in chunks of 50
+  // Send ALL updates in ONE batch call via POST to avoid 3000 individual requests
   var written = 0;
-  for(var i = 0; i < updates.length; i++){
+  var CHUNK = 200; // Apps Script can handle 200 rows per call
+  for(var ci = 0; ci < updates.length; ci += CHUNK){
+    var chunk = updates.slice(ci, ci+CHUNK);
     try{
-      // Use writeFollowupDate - the proven working action
-      var p = new URLSearchParams({action:'writeFollowupDate', rowNum:updates[i].rowNum, value:updates[i].value});
-      await fetch(APPS_SCRIPT_URL+'?'+p.toString());
-      written++;
-      if(btn && written % 25 === 0) btn.textContent = 'Writing... '+written+'/'+updates.length;
-    }catch(e){ console.warn('Write error:', updates[i].rowNum, e); }
+      var resp = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({action:'batchWriteFollowupDates', updates: chunk})
+      });
+      var result = await resp.json();
+      written += chunk.length;
+      if(btn) btn.textContent = 'Writing... '+written+'/'+updates.length;
+    }catch(e){
+      console.warn('Batch POST failed, trying GET fallback for chunk:', e);
+      // Fallback: individual writes for this chunk
+      for(var fi=0; fi<chunk.length; fi++){
+        try{
+          var p=new URLSearchParams({action:'writeFollowupDate',rowNum:chunk[fi].rowNum,value:chunk[fi].value});
+          await fetch(APPS_SCRIPT_URL+'?'+p.toString());
+          written++;
+        }catch(e2){ console.warn('Write failed row', chunk[fi].rowNum); }
+      }
+    }
   }
   if(btn){ btn.textContent = '\u2713 Set '+written+' dates'; setTimeout(function(){if(btn){btn.textContent='Set Anniversary Dates';btn.disabled=false;}},3000); }
   render();
