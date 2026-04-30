@@ -317,7 +317,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzB2F70V0OQo2pwocGKL3Y-lgKwz-te9X9u8A1e4p-gsIR418DC-LcHCiph___DpK5W/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxgaZJI9sxX7LuJhdqWYT51yOOVRcN5gPbXoPbl69j399fJfv8lgWSOewg_LyWNZXpT/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -393,7 +393,7 @@ function parseRows(rows){
     if(r.claimStatus){try{claim=JSON.parse(r.claimStatus);}catch{}}
     let hh=[];
     if(r.householdLinks){try{hh=JSON.parse(r.householdLinks);}catch{}}
-    clients.push({id:nextId++,rowNum:r.rowNum,cn:r.cn,ins:r.ins||r.cn,ds:r.ds,co:r.co,cv:r.cv,pn:r.pn,ph:r.ph,em:r.em,cy:r.cy,ap:r.ap,cm:r.cm,src:r.src,pr:r.pr,fu:r.fu||null,done:false,notes:parsedNotes,hh,claim,status:r.policyStatus||'active'});
+    clients.push({id:nextId++,rowNum:r.rowNum,cn:r.cn,ins:r.ins||r.cn,ds:r.ds,co:r.co,cv:r.cv,pn:r.pn,ph:r.ph,em:r.em,cy:r.cy,ap:r.ap,cm:r.cm,src:r.src,pr:r.pr,fu:r.fu||null,done:false,notes:parsedNotes,hh,claim,status:r.policyStatus||'active',lcc:r.lastClientContact||'',lco:r.lastCoContact||''});
   });
 }
 
@@ -552,7 +552,7 @@ function detH(c){
   html+='<div style="font-size:'+(c.lcc?'13':'11')+'px;font-weight:'+(c.lcc?'600':'400')+';color:'+lccColor+';">'+(c.lcc?lccDays+'d ago ('+fmtD(c.lcc)+')':'Not recorded')+'</div>';
   html+='<div style="display:flex;gap:6px;margin-top:6px">';
   html+='<input type="date" id="lcc-'+c.id+'" value="'+(c.lcc||'')+'" onchange="event.stopPropagation();writeLastClientContact('+c.id+',this.value)" style="font-size:11px;padding:2px 6px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text2);font-family:DM Sans,sans-serif;flex:1">';
-  html+='<button onclick="event.stopPropagation();document.getElementById('lcc-'+c.id+'').value=todayStr();writeLastClientContact('+c.id+',todayStr())" style="font-size:11px;padding:2px 8px;border:none;border-radius:4px;background:var(--accent);color:#fff;cursor:pointer;font-family:DM Sans,sans-serif;white-space:nowrap">Today</button>';
+  html+='<button data-cid="'+c.id+'" onclick="event.stopPropagation();var t=todayStr();var el=document.getElementById(\'lcc-\'+this.dataset.cid);if(el)el.value=t;writeLastClientContact(parseInt(this.dataset.cid),t)" style="font-size:11px;padding:2px 8px;border:none;border-radius:4px;background:var(--accent);color:#fff;cursor:pointer;font-family:DM Sans,sans-serif;white-space:nowrap">Today</button>';
   html+='</div></div>';
   // Last company contact
   var lcoDays=c.lco?Math.ceil((new Date()-new Date(c.lco))/864e5):null;
@@ -562,7 +562,7 @@ function detH(c){
   html+='<div style="font-size:'+(c.lco?'13':'11')+'px;font-weight:'+(c.lco?'600':'400')+';color:'+lcoColor+';">'+(c.lco?lcoDays+'d ago ('+fmtD(c.lco)+')':'Not recorded')+'</div>';
   html+='<div style="display:flex;gap:6px;margin-top:6px">';
   html+='<input type="date" id="lco-'+c.id+'" value="'+(c.lco||'')+'" onchange="event.stopPropagation();writeLastCoContact('+c.id+',this.value)" style="font-size:11px;padding:2px 6px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text2);font-family:DM Sans,sans-serif;flex:1">';
-  html+='<button onclick="event.stopPropagation();document.getElementById('lco-'+c.id+'').value=todayStr();writeLastCoContact('+c.id+',todayStr())" style="font-size:11px;padding:2px 8px;border:none;border-radius:4px;background:var(--blue);color:#fff;cursor:pointer;font-family:DM Sans,sans-serif;white-space:nowrap">Today</button>';
+  html+='<button data-cid="'+c.id+'" onclick="event.stopPropagation();var t=todayStr();var el=document.getElementById(\'lco-\'+this.dataset.cid);if(el)el.value=t;writeLastCoContact(parseInt(this.dataset.cid),t)" style="font-size:11px;padding:2px 8px;border:none;border-radius:4px;background:var(--blue);color:#fff;cursor:pointer;font-family:DM Sans,sans-serif;white-space:nowrap">Today</button>';
   html+='</div></div>';
   html+='</div></div>';
   html+=claimH(c);
@@ -638,21 +638,38 @@ function detH(c){
 }
 
 function claimH(c){
-if(!c.claim)return`<div class="clm-sec"><div class="clm-hdr"><span class="clm-title">Claim</span><button class="clm-open" onclick="openClaim(${c.id})">+ Open claim</button></div><div style="padding:7px 11px;font-size:12px;color:var(--text3)">No active claim on this policy</div></div>`;
-const st=c.claim.status||'Submitted';const sc=csMap[st]||'cs-sub';
-return`<div class="clm-sec"><div class="clm-hdr"><span class="clm-title">Active claim</span><span class="cs-pill ${sc}">${st}</span><button class="clm-close" onclick="closeClaim(${c.id})">Close claim</button></div>
+  const csMap2={'Submitted':'cs-sub','Processing':'cs-proc','Paid':'cs-paid','Denied':'cs-denied'};
+  if(!c.claim){
+    return`<div class="clm-sec"><div class="clm-hdr"><span class="clm-title">Claim</span><button class="clm-open" onclick="openClaim(${c.id})">+ Open claim</button></div><div style="padding:7px 11px;font-size:12px;color:var(--text3)">No active claim on this policy</div></div>`;
+  }
+  const cl=c.claim;
+  const st=cl.status||'Submitted';
+  const sc=csMap2[st]||'cs-sub';
+  const isClosed=cl.closed;
+  if(isClosed){
+    // Closed claim — show summary with option to reopen
+    return`<div class="clm-sec"><div class="clm-hdr"><span class="clm-title">Claim (closed ${cl.closedDate||''})</span><button class="clm-open" onclick="reopenClaim(${c.id})" style="color:var(--amber);border-color:var(--amber)">Reopen</button><button class="clm-open" onclick="openClaim(${c.id})" style="margin-left:4px">+ New claim</button></div>
+<div style="padding:10px 12px;background:var(--bg);margin:6px;border-radius:6px;font-size:12px;color:var(--text3)">
+<strong style="color:var(--text)">${cl.type||'Claim'}</strong>${cl.claimNum?' &middot; #'+cl.claimNum:''} &middot; ${cl.status||''}${cl.opened?' &middot; Opened '+cl.opened:''}${cl.notes?'<br>'+cl.notes:''}
+</div></div>`;
+  }
+  return`<div class="clm-sec"><div class="clm-hdr"><span class="clm-title">Active claim</span><span class="cs-pill ${sc}">${st}</span><button class="clm-close" onclick="closeClaim(${c.id})">Close claim</button></div>
 <div class="clm-body"><div class="clm-grid">
-<div class="cf"><label>Claim type</label><select onchange="updClaim(${c.id},'type',this.value)">${CLAIM_TYPES.map(t=>`<option${t===c.claim.type?' selected':''}>${t}</option>`).join('')}</select></div>
+<div class="cf"><label>Claim type</label><select onchange="updClaim(${c.id},'type',this.value)">${CLAIM_TYPES.map(t=>`<option${t===cl.type?' selected':''}>${t}</option>`).join('')}</select></div>
 <div class="cf"><label>Status</label><select onchange="updClaim(${c.id},'status',this.value)">${CLAIM_STATUSES.map(s=>`<option${s===st?' selected':''}>${s}</option>`).join('')}</select></div>
-<div class="cf"><label>Date opened</label><input type="date" value="${c.claim.opened||''}" onchange="updClaim(${c.id},'opened',this.value)"></div>
-<div class="cf"><label>Follow-up date</label><input type="date" value="${c.claim.followup||''}" onchange="updClaim(${c.id},'followup',this.value)"></div>
+<div class="cf"><label>Claim #</label><input type="text" placeholder="e.g. CLM-2025-001" value="${cl.claimNum||''}" onchange="updClaim(${c.id},'claimNum',this.value)"></div>
+<div class="cf"><label>Date opened</label><input type="date" value="${cl.opened||''}" onchange="updClaim(${c.id},'opened',this.value)"></div>
+<div class="cf"><label>Follow-up date</label><input type="date" value="${cl.followup||''}" onchange="updClaim(${c.id},'followup',this.value)"></div>
 </div>
-<div class="clm-nr"><input type="text" placeholder="Claim notes…" id="cn-${c.id}" value="${c.claim.notes||''}"><button class="btn-sm" onclick="updClaim(${c.id},'notes',document.getElementById('cn-${c.id}').value)">Save</button></div>
-</div></div>`;}
+<div class="clm-nr"><input type="text" placeholder="Claim notes…" id="cn-${c.id}" value="${cl.notes||''}"><button class="btn-sm" onclick="updClaim(${c.id},'notes',document.getElementById('cn-${c.id}').value)">Save</button></div>
+</div></div>`;
+}
+
 
 function renderClaims(){
   var el=document.getElementById('list');
-  var withClaims=clients.filter(function(c){return c.claim&&c.claim.type;});
+  var withClaims=clients.filter(function(c){return c.claim&&(c.claim.type||c.claim.status)&&!c.claim.closed;});
+  var closedClaims=clients.filter(function(c){return c.claim&&c.claim.closed;});
   var html='';
   // Add new claim section
   html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px">';
@@ -684,6 +701,21 @@ function renderClaims(){
     });
   }
   html+='</div>';
+  // Closed claims section
+  if(closedClaims.length){
+    html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-top:12px">';
+    html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Closed claims ('+closedClaims.length+')</div>';
+    closedClaims.forEach(function(c){
+      var cl=c.claim;
+      html+='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">';
+      html+='<div class="av '+avc(c.cn)+'" style="width:28px;height:28px;font-size:10px;flex-shrink:0">'+ini(c.cn)+'</div>';
+      html+='<div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--text2)">'+c.cn+'</div>';
+      html+='<div style="font-size:11px;color:var(--text3)">'+c.pr+' &middot; '+(cl.type||'')+(cl.claimNum?' &middot; #'+cl.claimNum:'')+(cl.closedDate?' &middot; closed '+cl.closedDate:'')+'</div></div>';
+      html+='<button data-cid="'+c.id+'" onclick="reopenClaim(parseInt(this.dataset.cid))" style="font-size:11px;padding:2px 8px;border:1px solid var(--amber);border-radius:4px;color:var(--amber);background:none;cursor:pointer;font-family:DM Sans,sans-serif">Reopen</button>';
+      html+='</div>';
+    });
+    html+='</div>';
+  }
   el.innerHTML=html;
 }
 
@@ -758,7 +790,22 @@ function renderLookup(){
     html+='<div style="font-size:12px">Try: name, phone, city, policy #, product, or source</div>';
     html+='<div style="font-size:11px;margin-top:8px;color:var(--text3)">Smart: "Windsor VTC" &middot; "No CI clients" &middot; "Referral Aman"</div>';
     html+='</div>';
-    el.innerHTML=html;return;
+    // Closed claims section
+  if(closedClaims.length){
+    html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-top:12px">';
+    html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Closed claims ('+closedClaims.length+')</div>';
+    closedClaims.forEach(function(c){
+      var cl=c.claim;
+      html+='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">';
+      html+='<div class="av '+avc(c.cn)+'" style="width:28px;height:28px;font-size:10px;flex-shrink:0">'+ini(c.cn)+'</div>';
+      html+='<div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--text2)">'+c.cn+'</div>';
+      html+='<div style="font-size:11px;color:var(--text3)">'+c.pr+' &middot; '+(cl.type||'')+(cl.claimNum?' &middot; #'+cl.claimNum:'')+(cl.closedDate?' &middot; closed '+cl.closedDate:'')+'</div></div>';
+      html+='<button data-cid="'+c.id+'" onclick="reopenClaim(parseInt(this.dataset.cid))" style="font-size:11px;padding:2px 8px;border:1px solid var(--amber);border-radius:4px;color:var(--amber);background:none;cursor:pointer;font-family:DM Sans,sans-serif">Reopen</button>';
+      html+='</div>';
+    });
+    html+='</div>';
+  }
+  el.innerHTML=html;return;
   }
   // Smart search: parse query for filters
   var filters=_parseSmartQuery(q);
@@ -1809,6 +1856,21 @@ function renderLeads(){
     recent.forEach(function(l){var c=l.status==='converted'?'var(--accent)':'var(--red)';html+='<div style="padding:8px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px"><div style="flex:1"><div style="font-size:12px;color:var(--text)">'+l.name+'</div><div style="font-size:11px;color:var(--text3)">'+l.list+(l.phone?' &middot; '+l.phone:'')+'</div></div><span style="font-size:11px;padding:2px 8px;border-radius:20px;background:'+c+'22;color:'+c+'">'+(l.status==='converted'?'Converted':'Lost')+'</span></div>';});
     html+='</div></div>';
   }
+  // Closed claims section
+  if(closedClaims.length){
+    html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-top:12px">';
+    html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Closed claims ('+closedClaims.length+')</div>';
+    closedClaims.forEach(function(c){
+      var cl=c.claim;
+      html+='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">';
+      html+='<div class="av '+avc(c.cn)+'" style="width:28px;height:28px;font-size:10px;flex-shrink:0">'+ini(c.cn)+'</div>';
+      html+='<div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--text2)">'+c.cn+'</div>';
+      html+='<div style="font-size:11px;color:var(--text3)">'+c.pr+' &middot; '+(cl.type||'')+(cl.claimNum?' &middot; #'+cl.claimNum:'')+(cl.closedDate?' &middot; closed '+cl.closedDate:'')+'</div></div>';
+      html+='<button data-cid="'+c.id+'" onclick="reopenClaim(parseInt(this.dataset.cid))" style="font-size:11px;padding:2px 8px;border:1px solid var(--amber);border-radius:4px;color:var(--amber);background:none;cursor:pointer;font-family:DM Sans,sans-serif">Reopen</button>';
+      html+='</div>';
+    });
+    html+='</div>';
+  }
   el.innerHTML=html;
 }
 
@@ -1994,6 +2056,21 @@ function renderAnalytics(){
   else if(_anView==='insights')html+=_anInsightsView(D,MONTHS,f$);
   else if(_anView==='report')html+=_anWeeklyReport(D,MONTHS,f$);
   else if(_anView==='households')html+=_anHouseholdsView(f$);
+  // Closed claims section
+  if(closedClaims.length){
+    html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-top:12px">';
+    html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Closed claims ('+closedClaims.length+')</div>';
+    closedClaims.forEach(function(c){
+      var cl=c.claim;
+      html+='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">';
+      html+='<div class="av '+avc(c.cn)+'" style="width:28px;height:28px;font-size:10px;flex-shrink:0">'+ini(c.cn)+'</div>';
+      html+='<div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--text2)">'+c.cn+'</div>';
+      html+='<div style="font-size:11px;color:var(--text3)">'+c.pr+' &middot; '+(cl.type||'')+(cl.claimNum?' &middot; #'+cl.claimNum:'')+(cl.closedDate?' &middot; closed '+cl.closedDate:'')+'</div></div>';
+      html+='<button data-cid="'+c.id+'" onclick="reopenClaim(parseInt(this.dataset.cid))" style="font-size:11px;padding:2px 8px;border:1px solid var(--amber);border-radius:4px;color:var(--amber);background:none;cursor:pointer;font-family:DM Sans,sans-serif">Reopen</button>';
+      html+='</div>';
+    });
+    html+='</div>';
+  }
   el.innerHTML=html;
 }
 
@@ -2507,6 +2584,49 @@ function writeLastCoContact(id, val){
 }
 function todayStr(){
   return new Date().toISOString().split('T')[0];
+}
+
+// ── CLAIM FUNCTIONS ────────────────────────────────────────────────
+function openClaim(id){
+  var c=clients.find(function(x){return x.id===id;});if(!c)return;
+  c.claim={type:'',status:'Submitted',opened:new Date().toISOString().split('T')[0],followup:'',notes:'',claimNum:''};
+  _saveClaim(c);render();
+}
+
+function updClaim(id, field, value){
+  var c=clients.find(function(x){return x.id===id;});if(!c||!c.claim)return;
+  c.claim[field]=value;
+  _saveClaim(c);
+  // Don't re-render on every keystroke for notes — only on explicit Save click
+  if(field!=='notes')render();
+}
+
+function closeClaim(id){
+  var c=clients.find(function(x){return x.id===id;});if(!c||!c.claim)return;
+  if(!confirm('Mark this claim as closed? It will be preserved in the history.'))return;
+  // Move to closedClaims array, keep in claim.closed=true
+  c.claim.closed=true;
+  c.claim.closedDate=new Date().toISOString().split('T')[0];
+  _saveClaim(c);render();
+}
+
+function reopenClaim(id){
+  var c=clients.find(function(x){return x.id===id;});if(!c||!c.claim)return;
+  c.claim.closed=false;
+  c.claim.closedDate='';
+  _saveClaim(c);render();
+}
+
+function removeClaim(id){
+  var c=clients.find(function(x){return x.id===id;});if(!c)return;
+  if(!confirm('Permanently remove this claim record?'))return;
+  c.claim=null;
+  sheetWrite('writeClaimStatus',{rowNum:c.rowNum,claimJson:''});
+  render();
+}
+
+function _saveClaim(c){
+  sheetWrite('writeClaimStatus',{rowNum:c.rowNum,claimJson:JSON.stringify(c.claim)});
 }
 
 </script>
