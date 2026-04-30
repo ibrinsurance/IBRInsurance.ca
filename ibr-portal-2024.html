@@ -721,6 +721,7 @@ function claimH(c){
 <div class="cf"><label>Claim #</label><input type="text" placeholder="e.g. CLM-2025-001" value="${cl.claimNum||''}" onchange="updClaim(${c.id},'claimNum',this.value)"></div>
 <div class="cf"><label>Date opened</label><input type="date" value="${cl.opened||''}" onchange="updClaim(${c.id},'opened',this.value)"></div>
 <div class="cf"><label>Follow-up date</label><input type="date" value="${cl.followup||''}" onchange="updClaim(${c.id},'followup',this.value)"></div>
+<div class="cf"><label>Claim amount ($)</label><input type="number" placeholder="e.g. 50000" value="${cl.amount||''}" onchange="updClaim(${c.id},'amount',this.value)" style="width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:4px;font-family:DM Sans,sans-serif;font-size:12px;background:var(--surface);color:var(--text)"></div>
 </div>
 <div class="clm-nr"><input type="text" placeholder="Claim notes…" id="cn-${c.id}" value="${cl.notes||''}"><button class="btn-sm" onclick="updClaim(${c.id},'notes',document.getElementById('cn-${c.id}').value)">Save</button></div>
 </div></div>`;
@@ -754,7 +755,7 @@ function renderClaims(){
       if(daysSince!==null)html+='<div style="font-size:10px;color:var(--text3);margin-top:2px">'+daysSince+' days since filed</div>';
       html+='</div></div>';
       html+='<div style="margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">';
-      html+='<span style="font-size:11px;color:var(--text3)">Type: '+(cl.type||'')+(cl.note?' &middot; '+cl.note:'')+'</span>';
+      html+='<span style="font-size:11px;color:var(--text3)">Type: '+(cl.type||'')+(cl.claimNum?' &middot; #'+cl.claimNum:'')+(cl.amount?' &middot; <strong style="color:var(--accent)">$'+Number(cl.amount).toLocaleString()+'</strong>':'')+(cl.note?' &middot; '+cl.note:'')+'</span>';
       html+='<button data-cid="'+c.id+'" onclick="event.stopPropagation();openEditClaimModal(parseInt(this.dataset.cid))" style="font-size:11px;padding:2px 10px;border:1px solid var(--border2);border-radius:4px;background:none;cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif;margin-left:auto">&#9998; Edit claim</button>';
       html+='</div>';
       if(issel)html+=detH(c);
@@ -794,6 +795,7 @@ function openNewClaimModal(){
     +'<div class="fg2"><label>Claim type</label><select id="claim-type"><option>Death claim</option><option>Disability</option><option>Critical illness</option><option>Travel medical</option><option>Property damage</option><option>Other</option></select></div>'
     +'<div class="fg2"><label>Status</label><select id="claim-status"><option value="submitted">Submitted</option><option value="processing">Processing</option><option value="paid">Paid</option><option value="denied">Denied</option></select></div>'
     +'<div class="fg2"><label>Date filed</label><input id="claim-date" type="date" value="'+new Date().toISOString().split('T')[0]+'"></div>'
+    +'<div class="fg2"><label>Claim amount ($)</label><input id="claim-amount" type="number" placeholder="e.g. 50000"></div>'
     +'<div class="fg2 full"><label>Notes</label><textarea id="claim-note" placeholder="Claim details, reference numbers, next steps..." style="height:70px"></textarea></div>'
     +'</div>'
     +'<div class="fac"><button class="bcn" id="claim-cancel">Cancel</button><button class="bsb" id="claim-submit">Save claim</button></div>'
@@ -2537,6 +2539,7 @@ function openEditClaimModal(cid){
     +'<div class="fg2"><label>Claim type</label><select id="eclaim-type">'+typeOpts.map(function(t){return'<option'+(t===cl.type?' selected':'')+'>'+t+'</option>';}).join('')+'</select></div>'
     +'<div class="fg2"><label>Status</label><select id="eclaim-status">'+statOpts.map(function(s){return'<option value="'+s[0]+'"'+(s[0]===cl.status?' selected':'')+'>'+s[1]+'</option>';}).join('')+'</select></div>'
     +'<div class="fg2"><label>Date filed</label><input id="eclaim-date" type="date" value="'+(cl.date||new Date().toISOString().split('T')[0])+'"></div>'
+    +'<div class="fg2"><label>Claim amount ($)</label><input id="eclaim-amount" type="number" placeholder="e.g. 50000" value="'+(cl.amount||'')+'"></div>'
     +'<div class="fg2 full"><label>Notes</label><textarea id="eclaim-note" style="height:70px">'+(cl.note||'')+'</textarea></div>'
     +'</div>'
     +'<div class="fac"><button class="bcn" id="eclaim-cancel">Cancel</button><button class="bsb" id="eclaim-save">Save changes</button></div>'
@@ -2579,11 +2582,16 @@ function submitEditClaim(){
   var cid=parseInt(btn?btn.dataset.cid:0);
   if(!cid)return;
   var c=clients.find(function(x){return x.id===cid;});if(!c)return;
+  var _amtEl=document.getElementById('eclaim-amount');
   var claim={
     type:document.getElementById('eclaim-type').value,
     status:document.getElementById('eclaim-status').value,
     date:document.getElementById('eclaim-date').value,
-    note:(document.getElementById('eclaim-note').value||'').trim()
+    note:(document.getElementById('eclaim-note').value||'').trim(),
+    amount:_amtEl?_amtEl.value:'',
+    claimNum:c.claim?c.claim.claimNum||'':'',
+    opened:c.claim?c.claim.opened||'':'',
+    followup:c.claim?c.claim.followup||'':''
   };
   pushUndo('Edit claim: '+c.cn);
   c.claim=claim;
