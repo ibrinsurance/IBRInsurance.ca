@@ -765,7 +765,7 @@ function _anHouseholdsView(f$){
       html+='<div style="padding:6px 0 10px 34px">';
       var sorted2=g.policies.slice().sort(function(a,b){return(parseFloat((b.cm||'').toString().replace(/[^0-9.-]/g,''))||0)-(parseFloat((a.cm||'').toString().replace(/[^0-9.-]/g,''))||0);});
       sorted2.forEach(function(p){var pc=parseFloat((p.cm||'').toString().replace(/[^0-9.-]/g,''))||0;html+='<div data-pid="'+p.id+'" onclick="_anOpenPolicy(this)" style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--bg);border-radius:6px;margin-bottom:3px;cursor:pointer;border:1px solid var(--border)"><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--text)">'+p.pr+(p.ins&&p.ins!==p.cn?' <span style="font-weight:400;font-size:11px;color:var(--text3)">/ '+p.ins+'</span>':'')+'</div><div style="font-size:11px;color:var(--text3)">'+p.co+' \xb7 '+(p.pn||'\u2014')+' \xb7 '+(p.ds?fmtD(p.ds):'\u2014')+(p.cv?' \xb7 '+p.cv:'')+'</div>'+(p.fu?'<div style="font-size:10px;color:var(--amber)">Follow-up: '+fmtD(p.fu)+'</div>':'')+'</div>'+(pc?'<span style="font-size:12px;font-weight:600;color:var(--accent);flex-shrink:0">'+f$(pc)+'</span>':'')+'<span style="font-size:11px;color:var(--text3);flex-shrink:0;padding:2px 7px;border:1px solid var(--border);border-radius:4px">Open</span></div>';});
-      if(g.phones[0]){var cl=g.phones[0].replace(/\D/g,'');if(cl.length===10)cl='1'+cl;html+='<button data-phone="'+cl+'" data-name="'+g.name+'" onclick="hhWA(this)" style="margin-top:4px;font-size:11px;padding:4px 12px;border:1px solid #25D366;border-radius:4px;background:none;cursor:pointer;color:#25D366;font-family:DM Sans,sans-serif">WhatsApp follow-up</button>';}
+      if(g.phones[0]){var cl=g.phones[0].replace(/\D/g,'');if(cl.length===10)cl='1'+cl;html+='<button data-phone="'+cl+'" data-name="'+g.name.replace(/"/g,'').replace(/'/g,'')+'" onclick="hhWA(this)" style="margin-top:4px;font-size:11px;padding:4px 12px;border:1px solid #25D366;border-radius:4px;background:none;cursor:pointer;color:#25D366;font-family:DM Sans,sans-serif">WhatsApp follow-up</button>';}
       html+='</div>';
     }
     html+='</div>';
@@ -1336,6 +1336,7 @@ function openAddLeadModal(defaultList){
     +'<div class="fg2"><label>List</label><select id="l-list">'+listOpts+'</select></div>'
     +'<div class="fg2"><label>Due date</label><input id="l-due" type="date" value="'+today+'"></div>'
     +'<div class="fg2"><label>Travel date (SV/VTC)</label><input id="l-travel" type="date" placeholder="For urgency scoring"></div>'
+    +'<div class="fg2"><label>Expected commission ($)</label><input id="l-comm" type="number" placeholder="Auto if blank  (Term~$900, UL~$3500, VTC~$120)"></div>'
     +'<div class="fg2 full"><label>Notes</label><textarea id="l-note" placeholder="Any context..." style="height:60px"></textarea></div>'
     +'<div class="fg2 full"><label>Quick notes</label><div style="display:flex;gap:6px;flex-wrap:wrap">'
     +'<div id="qnote-wrap" style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px"><span style="font-size:10px;color:var(--text3)">Quick:</span></div>'
@@ -1384,7 +1385,8 @@ function openEditLeadModal(id){
     +'<div class="fg2"><label>Phone</label><input id="el-phone" value="'+(l.phone||'')+'"></div>'
     +'<div class="fg2"><label>Source</label><input id="el-src" value="'+(l.src||'')+'" placeholder="Referral, TikTok..."></div>'
     +'<div class="fg2"><label>List</label><select id="el-list">'+listOpts+'</select></div>'
-    +'<div class="fg2"><label>Due date</label><input id="el-due" type="date" value="'+(l.due||'')+'"></div>'
+    +'<div class="fg2"><label>Due date</label><input id="el-due" type="date" value="'+(l.due||'')+'">'+'</div>'
+    +'<div class="fg2"><label>Expected commission ($)</label><input id="el-comm" type="number" value="'+(l.comm||'')+'" placeholder="Auto if blank"></div>'
     +'<div class="fg2"><label>Travel date (SV/VTC)</label><input id="el-travel" type="date" value="'+(l.travelDate||'')+'"></div>'
     +'<div class="fg2 full"><label>Notes</label><textarea id="el-note" style="height:80px">'+(l.note||'')+'</textarea></div>'
     +'</div>'
@@ -1548,8 +1550,10 @@ function renderLeadCards(leadList){
     return Math.max(0,Math.min(100,score));
   }
   function getExpectedComm(l){
+    // Use manually entered commission if set
+    if(l.comm&&l.comm>0)return l.comm;
     var name=(l.name||'').toLowerCase();var src=(l.src||'').toLowerCase();
-    // Try to detect product from name
+    // Auto-detect from name keywords
     var comm=200; // default
     if(name.includes('ul ')||name.includes('universal life'))comm=3500;
     else if(name.includes('whole life')||name.includes('wl '))comm=2500;
@@ -1618,7 +1622,7 @@ function renderLeadCards(leadList){
     html+='<input type="date" value="'+(l.due||'')+'" data-lid="'+l.id+'" onchange="updateLeadDate(parseInt(this.dataset.lid),this.value)" style="font-size:10px;padding:1px 4px;border:1px solid var(--border);border-radius:3px;background:var(--surface);color:var(--text2);font-family:DM Sans,sans-serif;cursor:pointer"></div>';
     // Actions row
     html+='<div style="display:flex;gap:4px;flex-wrap:wrap">';
-    if(l.phone){var ph=(l.phone||'').replace(/\D/g,'');if(ph.length===10)ph='1'+ph;html+='<button data-phone="'+ph+'" data-name="'+l.name+'" onclick="hhWA(this)" style="font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid #25D366;color:#25D366;background:none;cursor:pointer;font-family:DM Sans,sans-serif">WA</button>';}
+    if(l.phone){var ph=(l.phone||'').replace(/\D/g,'');if(ph.length===10)ph='1'+ph;html+='<button data-phone="'+ph+'" data-name="'+l.name.replace(/"/g,'').replace(/'/g,'')+'" onclick="hhWA(this)" style="font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid #25D366;color:#25D366;background:none;cursor:pointer;font-family:DM Sans,sans-serif">WA</button>';}
     html+='<button data-lid="'+l.id+'" onclick="markContacted(parseInt(this.dataset.lid))" style="font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid var(--blue);color:var(--blue);background:none;cursor:pointer;font-family:DM Sans,sans-serif">&#10003; Contacted</button>';
     html+='<button data-lid="'+l.id+'" onclick="convertLead(parseInt(this.dataset.lid))" style="font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid var(--accent);color:var(--accent);background:none;cursor:pointer;font-family:DM Sans,sans-serif">Convert</button>';
     html+='<button data-lid="'+l.id+'" onclick="openEditLeadModal(parseInt(this.dataset.lid))" style="font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid var(--border2);color:var(--text2);background:none;cursor:pointer;font-family:DM Sans,sans-serif">Edit</button>';
@@ -2043,7 +2047,8 @@ function openEditLeadModal(id){
     +'<div class="fg2"><label>Phone</label><input id="el-phone" value="'+(l.phone||'')+'"></div>'
     +'<div class="fg2"><label>Source</label><input id="el-src" value="'+(l.src||'')+'" placeholder="Referral, TikTok..."></div>'
     +'<div class="fg2"><label>List</label><select id="el-list">'+listOpts+'</select></div>'
-    +'<div class="fg2"><label>Due date</label><input id="el-due" type="date" value="'+(l.due||'')+'"></div>'
+    +'<div class="fg2"><label>Due date</label><input id="el-due" type="date" value="'+(l.due||'')+'">'+'</div>'
+    +'<div class="fg2"><label>Expected commission ($)</label><input id="el-comm" type="number" value="'+(l.comm||'')+'" placeholder="Auto if blank"></div>'
     +'<div class="fg2 full"><label>Notes</label><textarea id="el-note" style="height:80px">'+(l.note||'')+'</textarea></div>'
     +'</div>'
     +'<div class="fac"><button class="bcn" id="el-cancel">Cancel</button><button class="bsb" id="el-save">Save changes</button></div>'
@@ -2063,6 +2068,7 @@ function submitEditLead(id){
   l.list=g('el-list')||l.list;
   l.due=g('el-due');
   l.note=g('el-note');
+  var commInput=document.getElementById('el-comm');if(commInput&&commInput.value!=='')l.comm=parseFloat(commInput.value)||0;
   saveLead(l);render();
 }
 
