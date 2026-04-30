@@ -474,7 +474,7 @@ function setTab(t){tab=t;sel=null;[['ov','overdue'],['tw','thisweek'],['up','upc
 function markAllDone(){pushUndo('Mark all complete');getFiltered().forEach(c=>c.done=true);render();}
 function ubdg(){const base=clients.filter(vbp);const q=(document.getElementById('searchInput').value||'').toLowerCase();const qf=q?base.filter(c=>[c.cn,c.cy,c.pn].some(x=>(x||'').toLowerCase().includes(q))):base;[['ov','overdue'],['tw','thisweek'],['up','upcoming']].forEach(([k,v])=>document.getElementById('b-'+k).textContent=qf.filter(c=>gst(c)===v).length);document.getElementById('b-al').textContent=qf.length;}
 
-// ── RENDER ──
+
 function render(){
   if(mode==='followup')renderFU();
   else if(mode==='lookup')renderLookup();
@@ -483,6 +483,7 @@ function render(){
   else if(mode==='analytics')renderAnalytics();
   else renderDQ();
 }
+function selC(id){ sel=(sel===id)?null:id; render(); }
 function renderFU(){
   // Update closed toggle button state
   var ct = document.getElementById('closedToggle');
@@ -535,6 +536,11 @@ function detH(c){
   html+='</div>';
   html+='<div class="fu-row"><label>Next follow-up date</label>';
   html+='<input type="date" value="'+(c.fu||'')+'" onchange="updFU('+c.id+',this.value)"></div>';
+  // Mark Complete + calendar
+  html+='<div style="display:flex;gap:6px;margin-top:6px;align-items:center">';
+  html+='<button onclick="event.stopPropagation();markDoneNextAnniv('+c.id+')" style="font-size:11px;padding:5px 12px;border:none;border-radius:var(--rs);background:var(--accent);color:#fff;cursor:pointer;font-family:DM Sans,sans-serif;font-weight:500">&#10003; Mark complete → next year</button>';
+  html+='<button onclick="event.stopPropagation();openDatePicker('+c.id+',this,\''+( c.fu||'')+'\')" style="font-size:11px;padding:5px 10px;border:1px solid var(--border2);border-radius:var(--rs);background:none;cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif">&#128197; Change date</button>';
+  html+='</div>';
   html+=claimH(c);
   // Household
   html+='<div class="hhs">';
@@ -1840,7 +1846,23 @@ function _anPortfolioView(D,MONTHS,f$){
   var bkts={'1 policy':0,'2 policies':0,'3 policies':0,'4 policies':0,'5+ policies':0};
   allC.forEach(function(c){var n=c.policies.length;if(n===1)bkts['1 policy']++;else if(n===2)bkts['2 policies']++;else if(n===3)bkts['3 policies']++;else if(n===4)bkts['4 policies']++;else bkts['5+ policies']++;});
   var maxB=Math.max.apply(null,Object.values(bkts))||1;var bCols=['#94a3b8','#3b82f6','#10b981','#f59e0b','#6366f1'];
-  Object.entries(bkts).forEach(function(e,i){var pct=Math.round(e[1]/maxB*100);var sp=allC.length>0?(e[1]/allC.length*100).toFixed(0):0;html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><span style="font-size:11px;color:var(--text2);width:80px;flex-shrink:0">'+e[0]+'</span><div style="flex:1;background:var(--bg);border-radius:2px;height:8px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:'+bCols[i]+';border-radius:2px"></div></div><span style="font-size:11px;color:var(--text);width:56px;text-align:right;flex-shrink:0">'+e[1]+' ('+sp+'%)</span></div>';});
+  
+  // Build avg commission by policy count bucket
+  var bktComm={'1 policy':[],'2 policies':[],'3 policies':[],'4 policies':[],'5+ policies':[]};
+  allC.forEach(function(c){var n=c.policies.length;var k=n===1?'1 policy':n===2?'2 policies':n===3?'3 policies':n===4?'4 policies':'5+ policies';bktComm[k].push(c.comm);});
+  Object.entries(bkts).forEach(function(e,i){
+    var pct=Math.round(e[1]/maxB*100);var sp=allC.length>0?(e[1]/allC.length*100).toFixed(0):0;
+    var comms=bktComm[e[0]]||[];var avgC=comms.length>0?comms.reduce(function(s,v){return s+v;},0)/comms.length:0;
+    html+='<div style="margin-bottom:8px">';
+    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">';
+    html+='<span style="font-size:11px;color:var(--text2);width:80px;flex-shrink:0">'+e[0]+'</span>';
+    html+='<div style="flex:1;background:var(--bg);border-radius:2px;height:10px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:'+bCols[i]+';border-radius:2px"></div></div>';
+    html+='<span style="font-size:11px;color:var(--text);width:42px;text-align:right;flex-shrink:0">'+e[1]+'</span>';
+    html+='<span style="font-size:10px;color:var(--text3);width:30px;text-align:right;flex-shrink:0">'+(sp)+'%</span>';
+    html+='</div>';
+    if(avgC>0)html+='<div style="padding-left:88px;font-size:10px;color:var(--text3)">avg lifetime value: <strong style="color:'+bCols[i]+'">'+f$(avgC)+'</strong></div>';
+    html+='</div>';
+  });
   var mCT=multiP.reduce(function(s,c){return s+c.comm;},0);var sCT=singleP.reduce(function(s,c){return s+c.comm;},0);
   html+='<div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border);font-size:11px;color:var(--text3)">Multi-policy comm: <strong style="color:var(--accent)">'+f$(mCT)+'</strong> &middot; Single: <strong>'+f$(sCT)+'</strong></div>';
   html+='</div></div>';
@@ -2074,6 +2096,25 @@ function markContacted(id){
   l.attempts=(l.attempts||0)+1;
   l.lastContact=new Date().toISOString().split('T')[0];
   saveLead(l);render();
+}
+
+function markDoneNextAnniv(id){
+  var c=clients.find(function(x){return x.id===id;});if(!c)return;
+  var base=c.ds?new Date(c.ds):new Date();
+  if(isNaN(base.getTime()))base=new Date();
+  var today=new Date();today.setHours(0,0,0,0);
+  var next=new Date(base);
+  next.setFullYear(today.getFullYear()+1);
+  var fuStr=next.getFullYear()+'-'+String(next.getMonth()+1).padStart(2,'0')+'-'+String(next.getDate()).padStart(2,'0');
+  pushUndo('Complete+anniv: '+c.cn);
+  c.fu=fuStr;
+  sheetWrite('writeFollowupDate',{rowNum:c.rowNum,value:fuStr});
+  render();
+  var msg=document.createElement('div');
+  msg.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:13px;font-weight:500;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.2)';
+  msg.textContent='✓ Next follow-up set to '+fuStr;
+  document.body.appendChild(msg);
+  setTimeout(function(){msg.remove();},2500);
 }
 
 </script>
