@@ -497,7 +497,7 @@ return`<div class="card${isel?' sel':''}${c.done?' done':''}" onclick="selC(${c.
 <div class="av ${avc(c.cn)}">${ini(c.cn)}</div>
 <div class="ci"><div class="cn">${c.cn}${c.cn!==c.ins?`<span class="ci-ins">insured: ${c.ins}</span>`:''}${lnk.length?`<span class="hh-badge">household ${lnk.length}</span>`:''}${c.claim?`<span class="claim-badge">claim active</span>`:''}</div>
 <div class="cm2"><span>${c.cy}</span><span>${nc(c.ph)[0]||''}</span><span>${c.co}</span></div></div>
-<div class="cr"><span class="sp ${sc}">${sl}</span>${c.fu?`<span class="fd" style="cursor:pointer" title="Click to change date" onclick="event.stopPropagation();openDatePicker(${c.id},this,'${c.fu||''}')">${fmtD(c.fu)}</span>`:`<span class="fd" style="cursor:pointer;color:var(--text3);border:1px dashed var(--border);border-radius:3px;padding:1px 5px;font-size:10px" onclick="event.stopPropagation();openDatePicker(${c.id},this,'')">+ date</span>`}<span class="pt">${c.pr}</span>${(function(){var cm=parseFloat((c.cm||'0').replace(/[^0-9.-]/g,''))||0;var potl=cm>0?Math.round(cm*0.15):0;return potl>0?`<span style="font-size:10px;color:var(--accent);margin-left:4px">~$${ potl} upside</span>`:'';}())}</div></div>
+<div class="cr"><span class="sp ${sc}">${sl}</span>${c.fu?`<span class="fd" style="cursor:pointer" title="Click to change date" onclick="event.stopPropagation();openDatePicker(${c.id},this,'${c.fu||''}')">${fmtD(c.fu)}</span>`:`<span class="fd" style="cursor:pointer;color:var(--text3);border:1px dashed var(--border);border-radius:3px;padding:1px 5px;font-size:10px" onclick="event.stopPropagation();openDatePicker(${c.id},this,'')">+ date</span>`}<span class="pt">${c.pr}</span>${(function(){if(!c.lcc)return'';var d=Math.ceil((tod-new Date(c.lcc))/864e5);if(d>30)return`<span style="font-size:9px;color:var(--red);margin-left:3px" title="Last client contact: ${d}d ago">${d}d since contact</span>`;return'';}())}${(function(){var cm=parseFloat((c.cm||'0').replace(/[^0-9.-]/g,''))||0;var potl=cm>0?Math.round(cm*0.15):0;return potl>0?`<span style="font-size:10px;color:var(--accent);margin-left:4px">~$${ potl} upside</span>`:'';}())}</div></div>
 ${isel?detH(c):''}
 </div>`;}
 
@@ -540,6 +540,31 @@ function detH(c){
   html+='<button onclick="event.stopPropagation();markDoneNextAnniv('+c.id+')" style="font-size:11px;padding:5px 12px;border:none;border-radius:var(--rs);background:var(--accent);color:#fff;cursor:pointer;font-family:DM Sans,sans-serif;font-weight:500">&#10003; Mark complete → next year</button>';
   html+='<button onclick="event.stopPropagation();openDatePicker('+c.id+',this,\''+( c.fu||'')+'\')" style="font-size:11px;padding:5px 10px;border:1px solid var(--border2);border-radius:var(--rs);background:none;cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif">&#128197; Change date</button>';
   html+='</div>';
+  // ── LAST CONTACT SECTION ──────────────────────────────────────
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-top:10px">';
+  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Last contact</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
+  // Last client contact
+  var lccDays=c.lcc?Math.ceil((new Date()-new Date(c.lcc))/864e5):null;
+  var lccColor=lccDays===null?'var(--text3)':lccDays<=7?'var(--accent)':lccDays<=30?'#f59e0b':'var(--red)';
+  html+='<div style="background:var(--bg);border-radius:6px;padding:10px 12px">';
+  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:4px">&#128222; Client</div>';
+  html+='<div style="font-size:'+(c.lcc?'13':'11')+'px;font-weight:'+(c.lcc?'600':'400')+';color:'+lccColor+';">'+(c.lcc?lccDays+'d ago ('+fmtD(c.lcc)+')':'Not recorded')+'</div>';
+  html+='<div style="display:flex;gap:6px;margin-top:6px">';
+  html+='<input type="date" id="lcc-'+c.id+'" value="'+(c.lcc||'')+'" onchange="event.stopPropagation();writeLastClientContact('+c.id+',this.value)" style="font-size:11px;padding:2px 6px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text2);font-family:DM Sans,sans-serif;flex:1">';
+  html+='<button onclick="event.stopPropagation();document.getElementById('lcc-'+c.id+'').value=todayStr();writeLastClientContact('+c.id+',todayStr())" style="font-size:11px;padding:2px 8px;border:none;border-radius:4px;background:var(--accent);color:#fff;cursor:pointer;font-family:DM Sans,sans-serif;white-space:nowrap">Today</button>';
+  html+='</div></div>';
+  // Last company contact
+  var lcoDays=c.lco?Math.ceil((new Date()-new Date(c.lco))/864e5):null;
+  var lcoColor=lcoDays===null?'var(--text3)':lcoDays<=7?'var(--accent)':lcoDays<=30?'#f59e0b':'var(--red)';
+  html+='<div style="background:var(--bg);border-radius:6px;padding:10px 12px">';
+  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:4px">&#127970; Carrier</div>';
+  html+='<div style="font-size:'+(c.lco?'13':'11')+'px;font-weight:'+(c.lco?'600':'400')+';color:'+lcoColor+';">'+(c.lco?lcoDays+'d ago ('+fmtD(c.lco)+')':'Not recorded')+'</div>';
+  html+='<div style="display:flex;gap:6px;margin-top:6px">';
+  html+='<input type="date" id="lco-'+c.id+'" value="'+(c.lco||'')+'" onchange="event.stopPropagation();writeLastCoContact('+c.id+',this.value)" style="font-size:11px;padding:2px 6px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text2);font-family:DM Sans,sans-serif;flex:1">';
+  html+='<button onclick="event.stopPropagation();document.getElementById('lco-'+c.id+'').value=todayStr();writeLastCoContact('+c.id+',todayStr())" style="font-size:11px;padding:2px 8px;border:none;border-radius:4px;background:var(--blue);color:#fff;cursor:pointer;font-family:DM Sans,sans-serif;white-space:nowrap">Today</button>';
+  html+='</div></div>';
+  html+='</div></div>';
   html+=claimH(c);
   // Household
   html+='<div class="hhs">';
@@ -650,7 +675,10 @@ function renderClaims(){
       html+='<div style="text-align:right"><span style="font-size:11px;padding:2px 8px;border-radius:20px;background:'+stColor+'22;color:'+stColor+';font-weight:500">'+(cl.status||'submitted')+'</span>';
       if(daysSince!==null)html+='<div style="font-size:10px;color:var(--text3);margin-top:2px">'+daysSince+' days since filed</div>';
       html+='</div></div>';
-      html+='<div style="margin-top:6px;font-size:11px;color:var(--text3)">Type: '+(cl.type||'')+(cl.note?' &middot; '+cl.note:'')+'</div>';
+      html+='<div style="margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">';
+      html+='<span style="font-size:11px;color:var(--text3)">Type: '+(cl.type||'')+(cl.note?' &middot; '+cl.note:'')+'</span>';
+      html+='<button data-cid="'+c.id+'" onclick="event.stopPropagation();openEditClaimModal(parseInt(this.dataset.cid))" style="font-size:11px;padding:2px 10px;border:1px solid var(--border2);border-radius:4px;background:none;cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif;margin-left:auto">&#9998; Edit claim</button>';
+      html+='</div>';
       if(issel)html+=detH(c);
       html+='</div>';
     });
@@ -689,7 +717,7 @@ function openNewClaimModal(){
     var matches=clients.filter(function(c){return[c.cn,c.ph,c.pn,c.pr].some(function(x){return(x||'').toLowerCase().includes(q);});}).slice(0,8);
     if(!matches.length){res.style.display='none';return;}
     res.style.display='';
-    res.innerHTML=matches.map(function(c){return'<div data-cid="'+c.id+'" data-cn="'+c.cn.replace(/"/g,'')+"'" +' data-pr="'+c.pr+"'" +' onclick="selectClaimClient(this)" style="padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--border);font-size:12px;background:var(--surface)" onmouseover="this.style.background=\"var(--bg)\"" onmouseout="this.style.background=\"\"'+'><strong>'+c.cn+'</strong> &middot; '+c.pr+' &middot; '+c.co+'</div>';}).join('');
+    res.innerHTML=matches.map(function(c){return'<div data-cid="'+c.id+'" data-cn="'+c.cn.replace(/"/g,'')+"'" +' data-pr="'+c.pr+"'" +' onclick="selectClaimClient(this)" style="padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--border);font-size:12px;background:var(--surface)" onmouseover="this.style.background=\"var(--bg)\"" onmouseout="this.style.background=\"\"'+'><strong>'+c.cn+'</strong> &middot; '+c.pr+' &middot; '+c.co+(c.pn?' &middot; <span style="color:var(--text3)">Policy #'+c.pn+'</span>':'')+'</div>';}).join('');
   };
   setTimeout(function(){document.getElementById('claim-search').focus();},100);
 }
@@ -2390,6 +2418,95 @@ function selectClaimClient(el){
   if(sub)sub.dataset.cid=cid;
   if(inp)inp.value=cn;
   if(res)res.style.display='none';
+}
+
+function openEditClaimModal(cid){
+  var c=clients.find(function(x){return x.id===cid;});if(!c)return;
+  var cl=c.claim||{};
+  var typeOpts=['Death claim','Disability','Critical illness','Travel medical','Property damage','Other'];
+  var statOpts=[['submitted','Submitted'],['processing','Processing'],['paid','Paid'],['denied','Denied']];
+  var m=document.createElement('div');m.className='mbg';
+  m.onclick=function(e){if(e.target===m)m.remove();};
+  m.innerHTML='<div class="mod" style="max-width:500px"><div class="mtit">Edit claim &mdash; '+c.cn+'</div>'
+    // Current policy info + option to reassign
+    +'<div style="background:var(--accent-l);border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:var(--accent)">Current policy: <strong>'+c.pr+'</strong>'+(c.pn?' &middot; #'+c.pn:'')+'</div>'
+    // Reassign to different policy search
+    +'<div style="margin-bottom:12px"><label style="font-size:12px;font-weight:500;color:var(--text3);display:block;margin-bottom:4px">Reassign to different policy (optional)</label>'
+    +'<input id="eclaim-search" placeholder="Search by name, phone, policy #..." style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-family:DM Sans,sans-serif;font-size:13px;background:var(--surface);color:var(--text);box-sizing:border-box">'
+    +'<div id="eclaim-results" style="max-height:160px;overflow-y:auto;border:1px solid var(--border);border-radius:6px;margin-top:4px;display:none"></div></div>'
+    +'<div id="eclaim-selected" style="'+(c.id?'':'display:none;')+'background:var(--bg);border-radius:6px;padding:6px 12px;margin-bottom:10px;font-size:12px;color:var(--text3)">Keeping on: '+c.cn+' &mdash; '+c.pr+'</div>'
+    +'<div class="fgr">'
+    +'<div class="fg2"><label>Claim type</label><select id="eclaim-type">'+typeOpts.map(function(t){return'<option'+(t===cl.type?' selected':'')+'>'+t+'</option>';}).join('')+'</select></div>'
+    +'<div class="fg2"><label>Status</label><select id="eclaim-status">'+statOpts.map(function(s){return'<option value="'+s[0]+'"'+(s[0]===cl.status?' selected':'')+'>'+s[1]+'</option>';}).join('')+'</select></div>'
+    +'<div class="fg2"><label>Date filed</label><input id="eclaim-date" type="date" value="'+(cl.date||new Date().toISOString().split('T')[0])+'"></div>'
+    +'<div class="fg2 full"><label>Notes</label><textarea id="eclaim-note" style="height:70px">'+(cl.note||'')+'</textarea></div>'
+    +'</div>'
+    +'<div class="fac"><button class="bcn" id="eclaim-cancel">Cancel</button><button class="bsb" id="eclaim-save">Save changes</button></div>'
+    +'</div>';
+  document.getElementById('modal').innerHTML='';
+  document.getElementById('modal').appendChild(m);
+  document.getElementById('eclaim-cancel').onclick=function(){m.remove();};
+  // Store current target id (can be changed by reassign)
+  document.getElementById('eclaim-save').dataset.cid=cid;
+  document.getElementById('eclaim-save').onclick=function(){submitEditClaim();m.remove();};
+  // Live search for reassign
+  document.getElementById('eclaim-search').oninput=function(){
+    var q=this.value.toLowerCase().trim();
+    var res=document.getElementById('eclaim-results');
+    if(!q){res.style.display='none';return;}
+    var matches=clients.filter(function(cx){return[cx.cn,cx.ph,cx.pn,cx.pr].some(function(x){return(x||'').toLowerCase().includes(q);});}).slice(0,8);
+    if(!matches.length){res.style.display='none';return;}
+    res.style.display='';
+    res.innerHTML=matches.map(function(cx){
+      return'<div data-cid="'+cx.id+'" data-cn="'+cx.cn.replace(/"/g,'')+'" data-pr="'+cx.pr+'" onclick="selectEditClaimClient(this)" style="padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--border);font-size:12px;background:var(--surface)">'
+        +'<strong>'+cx.cn+'</strong> &middot; '+cx.pr+' &middot; '+cx.co+(cx.pn?' &middot; <span style="color:var(--text3)">Policy #'+cx.pn+'</span>':'')+'</div>';
+    }).join('');
+  };
+  setTimeout(function(){document.getElementById('eclaim-search').focus();},100);
+}
+
+function selectEditClaimClient(el){
+  var newCid=el.getAttribute('data-cid');
+  var cn=el.getAttribute('data-cn');
+  var pr=el.getAttribute('data-pr');
+  document.getElementById('eclaim-save').dataset.cid=newCid;
+  var sel=document.getElementById('eclaim-selected');
+  if(sel){sel.style.display='';sel.textContent='Reassigning to: '+cn+' — '+pr;sel.style.color='var(--accent)';}
+  document.getElementById('eclaim-search').value=cn;
+  document.getElementById('eclaim-results').style.display='none';
+}
+
+function submitEditClaim(){
+  var btn=document.getElementById('eclaim-save');
+  var cid=parseInt(btn?btn.dataset.cid:0);
+  if(!cid)return;
+  var c=clients.find(function(x){return x.id===cid;});if(!c)return;
+  var claim={
+    type:document.getElementById('eclaim-type').value,
+    status:document.getElementById('eclaim-status').value,
+    date:document.getElementById('eclaim-date').value,
+    note:(document.getElementById('eclaim-note').value||'').trim()
+  };
+  pushUndo('Edit claim: '+c.cn);
+  c.claim=claim;
+  sheetWrite('writeClaimStatus',{rowNum:c.rowNum,claimJson:JSON.stringify(claim)});
+  setMode('claims');
+}
+
+function writeLastClientContact(id, val){
+  var c=clients.find(function(x){return x.id===id;});if(!c)return;
+  c.lcc=val;
+  sheetWrite('writeLastClientContact',{rowNum:c.rowNum,value:val});
+  render();
+}
+function writeLastCoContact(id, val){
+  var c=clients.find(function(x){return x.id===id;});if(!c)return;
+  c.lco=val;
+  sheetWrite('writeLastCoContact',{rowNum:c.rowNum,value:val});
+  render();
+}
+function todayStr(){
+  return new Date().toISOString().split('T')[0];
 }
 
 </script>
