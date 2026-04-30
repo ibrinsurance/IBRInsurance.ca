@@ -363,7 +363,7 @@ function initGoogleSignIn(){
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxgaZJI9sxX7LuJhdqWYT51yOOVRcN5gPbXoPbl69j399fJfv8lgWSOewg_LyWNZXpT/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyyJurudHFhDs7JsHXCAs74FNp0kXEA0Z0Kc_nVYb42-YXCc3J5wSKjTMLFy5NT9PG0/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -694,12 +694,12 @@ function claimH(c){
   const isClosed=cl.closed;
   if(isClosed){
     // Closed claim — show summary with option to reopen
-    return`<div class="clm-sec"><div class="clm-hdr"><span class="clm-title">Claim (closed ${cl.closedDate||''})</span><button class="clm-open" onclick="reopenClaim(${c.id})" style="color:var(--amber);border-color:var(--amber)">Reopen</button><button class="clm-open" onclick="openClaim(${c.id})" style="margin-left:4px">+ New claim</button></div>
+    return`<div class="clm-sec"><div class="clm-hdr"><span class="clm-title">Claim (closed ${cl.closedDate||''})</span><button class="clm-open" onclick="reopenClaim(${c.id})" style="color:var(--amber);border-color:var(--amber)">Reopen</button><button class="clm-open" onclick="openClaim(${c.id})" style="margin-left:4px">+ New claim</button><button class="clm-open" onclick="removeClaim(${c.id})" style="margin-left:4px;color:var(--red);border-color:var(--red)">Delete</button></div>
 <div style="padding:10px 12px;background:var(--bg);margin:6px;border-radius:6px;font-size:12px;color:var(--text3)">
 <strong style="color:var(--text)">${cl.type||'Claim'}</strong>${cl.claimNum?' &middot; #'+cl.claimNum:''} &middot; ${cl.status||''}${cl.opened?' &middot; Opened '+cl.opened:''}${cl.notes?'<br>'+cl.notes:''}
 </div></div>`;
   }
-  return`<div class="clm-sec"><div class="clm-hdr"><span class="clm-title">Active claim</span><span class="cs-pill ${sc}">${st}</span><button class="clm-close" onclick="closeClaim(${c.id})">Close claim</button></div>
+  return`<div class="clm-sec"><div class="clm-hdr"><span class="clm-title">Active claim</span><span class="cs-pill ${sc}">${st}</span><button class="clm-close" onclick="closeClaim(${c.id})">Close claim</button><button class="clm-close" onclick="removeClaim(${c.id})" style="margin-left:4px;border-color:var(--red);color:var(--red)">Delete</button></div>
 <div class="clm-body"><div class="clm-grid">
 <div class="cf"><label>Claim type</label><select onchange="updClaim(${c.id},'type',this.value)">${CLAIM_TYPES.map(t=>`<option${t===cl.type?' selected':''}>${t}</option>`).join('')}</select></div>
 <div class="cf"><label>Status</label><select onchange="updClaim(${c.id},'status',this.value)">${CLAIM_STATUSES.map(s=>`<option${s===st?' selected':''}>${s}</option>`).join('')}</select></div>
@@ -758,6 +758,7 @@ function renderClaims(){
       html+='<div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--text2)">'+c.cn+'</div>';
       html+='<div style="font-size:11px;color:var(--text3)">'+c.pr+' &middot; '+(cl.type||'')+(cl.claimNum?' &middot; #'+cl.claimNum:'')+(cl.closedDate?' &middot; closed '+cl.closedDate:'')+'</div></div>';
       html+='<button data-cid="'+c.id+'" onclick="reopenClaim(parseInt(this.dataset.cid))" style="font-size:11px;padding:2px 8px;border:1px solid var(--amber);border-radius:4px;color:var(--amber);background:none;cursor:pointer;font-family:DM Sans,sans-serif">Reopen</button>';
+      html+='<button data-cid="'+c.id+'" onclick="removeClaim(parseInt(this.dataset.cid))" style="font-size:11px;padding:2px 8px;border:1px solid var(--red);border-radius:4px;color:var(--red);background:none;cursor:pointer;font-family:DM Sans,sans-serif;margin-left:4px">Delete</button>';
       html+='</div>';
     });
     html+='</div>';
@@ -847,6 +848,7 @@ function renderLookup(){
       html+='<div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--text2)">'+c.cn+'</div>';
       html+='<div style="font-size:11px;color:var(--text3)">'+c.pr+' &middot; '+(cl.type||'')+(cl.claimNum?' &middot; #'+cl.claimNum:'')+(cl.closedDate?' &middot; closed '+cl.closedDate:'')+'</div></div>';
       html+='<button data-cid="'+c.id+'" onclick="reopenClaim(parseInt(this.dataset.cid))" style="font-size:11px;padding:2px 8px;border:1px solid var(--amber);border-radius:4px;color:var(--amber);background:none;cursor:pointer;font-family:DM Sans,sans-serif">Reopen</button>';
+      html+='<button data-cid="'+c.id+'" onclick="removeClaim(parseInt(this.dataset.cid))" style="font-size:11px;padding:2px 8px;border:1px solid var(--red);border-radius:4px;color:var(--red);background:none;cursor:pointer;font-family:DM Sans,sans-serif;margin-left:4px">Delete</button>';
       html+='</div>';
     });
     html+='</div>';
@@ -1913,6 +1915,7 @@ function renderLeads(){
       html+='<div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--text2)">'+c.cn+'</div>';
       html+='<div style="font-size:11px;color:var(--text3)">'+c.pr+' &middot; '+(cl.type||'')+(cl.claimNum?' &middot; #'+cl.claimNum:'')+(cl.closedDate?' &middot; closed '+cl.closedDate:'')+'</div></div>';
       html+='<button data-cid="'+c.id+'" onclick="reopenClaim(parseInt(this.dataset.cid))" style="font-size:11px;padding:2px 8px;border:1px solid var(--amber);border-radius:4px;color:var(--amber);background:none;cursor:pointer;font-family:DM Sans,sans-serif">Reopen</button>';
+      html+='<button data-cid="'+c.id+'" onclick="removeClaim(parseInt(this.dataset.cid))" style="font-size:11px;padding:2px 8px;border:1px solid var(--red);border-radius:4px;color:var(--red);background:none;cursor:pointer;font-family:DM Sans,sans-serif;margin-left:4px">Delete</button>';
       html+='</div>';
     });
     html+='</div>';
@@ -2113,6 +2116,7 @@ function renderAnalytics(){
       html+='<div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--text2)">'+c.cn+'</div>';
       html+='<div style="font-size:11px;color:var(--text3)">'+c.pr+' &middot; '+(cl.type||'')+(cl.claimNum?' &middot; #'+cl.claimNum:'')+(cl.closedDate?' &middot; closed '+cl.closedDate:'')+'</div></div>';
       html+='<button data-cid="'+c.id+'" onclick="reopenClaim(parseInt(this.dataset.cid))" style="font-size:11px;padding:2px 8px;border:1px solid var(--amber);border-radius:4px;color:var(--amber);background:none;cursor:pointer;font-family:DM Sans,sans-serif">Reopen</button>';
+      html+='<button data-cid="'+c.id+'" onclick="removeClaim(parseInt(this.dataset.cid))" style="font-size:11px;padding:2px 8px;border:1px solid var(--red);border-radius:4px;color:var(--red);background:none;cursor:pointer;font-family:DM Sans,sans-serif;margin-left:4px">Delete</button>';
       html+='</div>';
     });
     html+='</div>';
