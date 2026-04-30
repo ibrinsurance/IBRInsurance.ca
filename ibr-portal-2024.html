@@ -486,17 +486,20 @@ function getFiltered(){
 }
 
 // ── SEARCH ──
+var _searchTimer = null;
 function onSearch(){
+  // Debounce: wait 400ms after user stops typing before searching
+  clearTimeout(_searchTimer);
   var q=(document.getElementById('searchInput').value||'').trim();
-  if(q){
-    // Switch to lookup mode to show search results
-    if(mode!=='lookup') setMode('lookup');
-  } else {
-    // Clear: if in lookup mode, keep it but show empty state
+  if(!q){
+    // Instant clear — no delay needed
     if(mode==='lookup') renderLookup();
     return;
   }
-  render();
+  _searchTimer = setTimeout(function(){
+    if(mode!=='lookup') setMode('lookup');
+    render();
+  }, 400);
 }
 
 // ── CONTROLS ──
@@ -869,10 +872,14 @@ function renderLookup(){
   }
   // Smart search: parse query for filters
   var filters=_parseSmartQuery(q);
+  // Limit to first 800 clients checked for speed, show top 40 results
+  var checked=0;
   var res=clients.filter(function(c){
+    if(checked>2000)return false; // hard limit for speed
+    checked++;
     if(c.status==='closed'&&!showClosed)return false;
     return _matchesFilters(c,filters);
-  });
+  }).slice(0,40);
   if(!res.length){el.innerHTML='<div class="empty">No clients found for "'+q+'" &mdash; try name, phone, city, product or source</div>';return;}
   // Group by household
   var seen=new Set();var groups=[];
