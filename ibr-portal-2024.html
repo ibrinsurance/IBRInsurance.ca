@@ -456,7 +456,7 @@ function ini(n){return(n||'?').split(' ').filter(Boolean).slice(0,2).map(x=>x[0]
 const AVC=['av-gr','av-bl','av-am','av-pu','av-rd'];
 function avc(n){let h=0;for(let c of(n||''))h=(h*31+c.charCodeAt(0))&0xffff;return AVC[h%AVC.length];}
 function nc(s){return(s||'').split(/[,|]/).map(x=>x.trim().toLowerCase()).filter(Boolean);}
-function gst(c){if(c.done)return'done';if(!c.fu)return'none';const fd=new Date(c.fu);fd.setHours(0,0,0,0);const d=Math.ceil((fd-tod)/864e5);if(d<0)return'overdue';if(d<=7)return'thisweek';return'upcoming';}
+function gst(c){if(c.done)return'done';if(!c.fu)return'none';const fd=new Date(c.fu);fd.setHours(0,0,0,0);const d=Math.ceil((fd-tod)/864e5);if(d<0)return'overdue';if(d===0)return'today';if(d<=7)return'thisweek';return'upcoming';}
 function vbp(c){const cl=cls(c.pr);if(preset==='followups')return FOLLOWUP_PRODS.has((c.pr||'').toLowerCase().trim());if(preset==='all')return true;if(preset==='life')return cl==='life';if(preset==='ci')return cl==='ci';if(preset==='investments')return cl==='inv';if(preset==='travel')return cl==='travel';return true;}
 function getAllLinked(c){const ap=nc(c.ph),ae=nc(c.em),mh=new Set(c.hh||[]);return clients.filter(o=>{if(o.id===c.id)return false;return mh.has(o.id)||nc(o.ph).some(p=>ap.includes(p))||nc(o.em).some(e=>ae.includes(e));});}
 // Products requiring follow-up (not travel/visitor)
@@ -479,7 +479,8 @@ function getFiltered(){
     if(q) return true;
     const s=gst(c);
     if(tab==='overdue') return s==='overdue';
-    if(tab==='thisweek') return s==='thisweek';
+    if(tab==='today') return s==='today';
+    if(tab==='thisweek') return s==='thisweek'||s==='today';
     if(tab==='upcoming') return s==='upcoming';
     return true;
   });
@@ -523,7 +524,7 @@ function setMode(m){
 }
 function setTab(t){tab=t;sel=null;[['ov','overdue'],['tw','thisweek'],['up','upcoming'],['al','all']].forEach(([k,v])=>document.getElementById('t-'+k).classList.toggle('active',v===t));render();}
 function markAllDone(){pushUndo('Mark all complete');getFiltered().forEach(c=>c.done=true);render();}
-function ubdg(){const base=clients.filter(vbp);const q=(document.getElementById('searchInput').value||'').toLowerCase();const qf=q?base.filter(c=>[c.cn,c.cy,c.pn].some(x=>(x||'').toLowerCase().includes(q))):base;[['ov','overdue'],['tw','thisweek'],['up','upcoming']].forEach(([k,v])=>document.getElementById('b-'+k).textContent=qf.filter(c=>gst(c)===v).length);document.getElementById('b-al').textContent=qf.length;}
+function ubdg(){const base=clients.filter(vbp);const q=(document.getElementById('searchInput').value||'').toLowerCase();const qf=q?base.filter(c=>[c.cn,c.cy,c.pn].some(x=>(x||'').toLowerCase().includes(q))):base;[['ov','overdue'],['td','today'],['tw','thisweek'],['up','upcoming']].forEach(([k,v])=>{var el=document.getElementById('b-'+k);if(el)el.textContent=qf.filter(c=>gst(c)===v).length;});document.getElementById('b-al').textContent=qf.length;}
 
 
 function render(){
@@ -1307,39 +1308,83 @@ function _anDailyView(D,MONTHS,f$){
   html+='<span style="font-size:14px;font-weight:700;color:'+(pct>=100?'var(--accent)':pct>=70?'#f59e0b':'var(--red)')+'">'+pct+'%</span></div>';
   html+='<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3)"><span>'+MN+' '+curY2+': <strong style="color:var(--text)">'+f$(thisMonthComm)+'</strong></span><span>Day '+dayOfMonth+'/'+daysInMonth+'</span><span>'+MN+' '+(curY2-1)+': <strong style="color:var(--text)">'+f$(lastYearSameMonth)+'</strong></span></div>';
   html+='</div>';
-  // ── Product breakdown: current month vs best historical ──────────
+  // ── Product performance vs BEST April ever (per product) ──────────
+  var MONTHS2=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  // For each product, find its best-ever same month across all years
   var curProd=D.byYM[curY2]&&D.byYM[curY2][curM2]?D.byYM[curY2][curM2].byProd:{};
-  var bestProd=D.byYM[bestMonthYear]&&D.byYM[bestMonthYear][curM2]?D.byYM[bestMonthYear][curM2].byProd:{};
-  var allP=Array.from(new Set(Object.keys(curProd).concat(Object.keys(bestProd)))).filter(Boolean);
-  var pRows=allP.map(function(p){return{p:p,cur:curProd[p]||0,best:bestProd[p]||0};}).sort(function(a,b){return(b.cur+b.best)-(a.cur+a.best);}).slice(0,12);
-  if(pRows.length>0){
-    var mxV=Math.max.apply(null,pRows.map(function(r){return Math.max(r.cur,r.best);}));
+  var allProdNames=new Set(Object.keys(curProd));
+  // Scan all historical years for this month's products
+  D.allYears.forEach(function(y){
+    if(y>=curY2)return;
+    var mdata=D.byYM[y]&&D.byYM[y][curM2]?D.byYM[y][curM2].byProd:{};
+    Object.keys(mdata).forEach(function(p){allProdNames.add(p);});
+  });
+  var pRows2=Array.from(allProdNames).filter(Boolean).map(function(p){
+    var cur=curProd[p]||0;
+    // Find best historical same-month for THIS product specifically
+    var bestVal=0,bestYr=curY2-1,sampleCount=0,totalHist=0,histMonths=0;
+    D.allYears.forEach(function(y){
+      if(y>=curY2)return;
+      var v=D.byYM[y]&&D.byYM[y][curM2]&&D.byYM[y][curM2].byProd[p]?D.byYM[y][curM2].byProd[p]:0;
+      if(v>0){totalHist+=v;histMonths++;}
+      if(v>bestVal){bestVal=v;bestYr=y;}
+    });
+    var avgHist=histMonths>0?totalHist/histMonths:0;
+    // Confidence: if best year is 1.5x the average, it's an outlier
+    var isOutlier=histMonths>=2&&bestVal>avgHist*1.8;
+    return{p:p,cur:cur,best:bestVal,bestYr:bestYr,avg:avgHist,isOutlier:isOutlier,gap:cur-bestVal};
+  }).filter(function(r){return r.cur>0||r.best>0;}).sort(function(a,b){return(b.cur+b.best)-(a.cur+a.best);}).slice(0,12);
+
+  if(pRows2.length>0){
+    var mxV2=Math.max.apply(null,pRows2.map(function(r){return Math.max(r.cur,r.best);}));
     var f$=function(n){return '$'+Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');};
     html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px">';
     html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
-    html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">'+MN+' by product: '+curY2+' vs '+bestMonthYear+' <span style="color:var(--accent);font-size:9px">(best)</span></div>';
-    html+='<div style="display:flex;gap:10px;font-size:11px"><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--accent);margin-right:3px"></span>'+curY2+'</span><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--blue);margin-right:3px"></span>'+bestMonthYear+'</span></div>';
+    html+='<div><div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">'+MN+' product performance vs best-ever '+MN+'</div>';
+    html+='<div style="font-size:10px;color:var(--text3);margin-top:1px">Each product compared to its own best historical '+MN+'</div></div>';
+    html+='<div style="display:flex;gap:10px;font-size:11px"><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--accent);margin-right:3px"></span>'+curY2+'</span><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--blue);margin-right:3px"></span>Best ever</span></div>';
     html+='</div>';
-    pRows.forEach(function(r){
-      var cp=mxV>0?Math.round(r.cur/mxV*100):0;
-      var bp=mxV>0?Math.round(r.best/mxV*100):0;
-      var df=r.cur-r.best;
-      html+='<div style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">';
-      html+='<span style="font-size:11px;color:var(--text2);width:140px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+r.p+'">'+r.p+'</span>';
-      html+='<div style="flex:1;display:flex;flex-direction:column;gap:2px">';
-      html+='<div style="display:flex;align-items:center;gap:6px"><div style="flex:1;background:var(--bg);border-radius:2px;height:7px;overflow:hidden"><div style="width:'+cp+'%;height:100%;background:var(--accent);border-radius:2px"></div></div><span style="font-size:11px;font-weight:600;color:var(--accent);width:68px;text-align:right;flex-shrink:0">'+(r.cur?f$(r.cur):'–')+'</span></div>';
-      html+='<div style="display:flex;align-items:center;gap:6px"><div style="flex:1;background:var(--bg);border-radius:2px;height:7px;overflow:hidden"><div style="width:'+bp+'%;height:100%;background:var(--blue);border-radius:2px"></div></div><span style="font-size:11px;color:var(--blue);width:68px;text-align:right;flex-shrink:0">'+(r.best?f$(r.best):'–')+'</span></div>';
+    pRows2.forEach(function(r){
+      var cp=mxV2>0?Math.round(r.cur/mxV2*100):0;
+      var bp=mxV2>0?Math.round(r.best/mxV2*100):0;
+      var abovePeak=r.cur>=r.best&&r.best>0;
+      var gapPct=r.best>0?Math.round((r.cur-r.best)/r.best*100):0;
+      html+='<div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)">';
+      html+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">';
+      html+='<span style="font-size:12px;font-weight:500;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+r.p+'">'+r.p+'</span>';
+      // Status badge
+      if(abovePeak)html+='<span style="font-size:10px;padding:1px 6px;border-radius:20px;background:#f0fdf4;color:#10b981;font-weight:600">&#10003; Above peak</span>';
+      else if(r.isOutlier)html+='<span style="font-size:10px;padding:1px 6px;border-radius:20px;background:#fff7ed;color:#f59e0b" title="Best year may be an outlier">&#9888; Outlier peak</span>';
+      else html+='<span style="font-size:10px;padding:1px 6px;border-radius:20px;background:var(--red-l);color:var(--red)">&#8595; Gap</span>';
+      html+='<span style="font-size:10px;color:var(--text3);margin-left:2px">Best: '+r.bestYr+'</span>';
       html+='</div>';
-      if(r.cur>0||r.best>0)html+='<span style="font-size:11px;font-weight:600;color:'+(df>=0?'var(--accent)':'var(--red)')+';width:58px;text-align:right;flex-shrink:0">'+(df>0?'+':'')+f$(df)+'</span>';
-      html+='</div></div>';
+      // Bars
+      html+='<div style="display:flex;flex-direction:column;gap:2px;margin-bottom:4px">';
+      html+='<div style="display:flex;align-items:center;gap:6px"><div style="flex:1;background:var(--bg);border-radius:2px;height:8px;overflow:hidden"><div style="width:'+cp+'%;height:100%;background:var(--accent);border-radius:2px"></div></div><span style="font-size:12px;font-weight:700;color:var(--accent);width:72px;text-align:right;flex-shrink:0">'+(r.cur?f$(r.cur):'–')+'</span></div>';
+      html+='<div style="display:flex;align-items:center;gap:6px"><div style="flex:1;background:var(--bg);border-radius:2px;height:8px;overflow:hidden"><div style="width:'+bp+'%;height:100%;background:var(--blue);border-radius:2px"></div></div><span style="font-size:12px;color:var(--blue);width:72px;text-align:right;flex-shrink:0">'+(r.best?f$(r.best):'–')+'</span></div>';
+      html+='</div>';
+      // Action line
+      if(!abovePeak&&r.best>0){
+        var avgComm2=r.avg>0?r.avg:r.best;
+        var casesNeeded=avgComm2>0?Math.ceil((r.best-r.cur)/avgComm2):0;
+        html+='<div style="font-size:11px;color:'+(abovePeak?'#10b981':'var(--red)')+'">';
+        html+=(abovePeak?'&#10003; Above peak by '+f$(r.cur-r.best):'Gap: <strong>'+f$(r.best-r.cur)+'</strong>');
+        if(casesNeeded>0&&!abovePeak)html+=' &middot; ~'+casesNeeded+' more case'+(casesNeeded===1?'':'s');
+        html+='</div>';
+      }
+      html+='</div>';
     });
-    var tDiff=thisMonthComm-lastYearSameMonth;
-    html+='<div style="border-top:1px solid var(--border);padding-top:8px;margin-top:4px;display:flex;align-items:center;gap:8px"><span style="font-size:12px;font-weight:600;color:var(--text);width:140px;flex-shrink:0">Total</span><div style="flex:1"></div>';
-    html+='<span style="font-size:13px;font-weight:700;color:var(--accent);width:68px;text-align:right;flex-shrink:0">'+f$(thisMonthComm)+'</span><span style="width:8px;flex-shrink:0"></span>';
-    html+='<span style="font-size:13px;font-weight:700;color:var(--blue);width:68px;text-align:right;flex-shrink:0">'+f$(lastYearSameMonth)+'</span>';
-    html+='<span style="font-size:13px;font-weight:700;color:'+(tDiff>=0?'var(--accent)':'var(--red)')+';width:58px;text-align:right;flex-shrink:0">'+(tDiff>=0?'+':'')+f$(tDiff)+'</span>';
-    html+='</div></div>';
+    // Biggest opportunity callout
+    var biggestGap=pRows2.filter(function(r){return r.gap<0&&!r.isOutlier;}).sort(function(a,b){return a.gap-b.gap;})[0];
+    if(biggestGap){
+      html+='<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:10px 12px;margin-top:6px">';
+      html+='<div style="font-size:11px;font-weight:600;color:var(--red)">Biggest missed opportunity: '+biggestGap.p+'</div>';
+      html+='<div style="font-size:11px;color:var(--text2);margin-top:2px">'+f$(Math.abs(biggestGap.gap))+' below peak '+biggestGap.bestYr+' performance</div>';
+      html+='</div>';
+    }
+    html+='</div>';
   }
+
   // Leads today
   if(leadsToday.length>0){
     html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px">';
@@ -1562,41 +1607,6 @@ function _anWeeklyReport(D,MONTHS,f$){
   html+='<div style="font-size:11px;color:var(--text3)">'+MONTHS[curM2-1]+' '+curY2+': <strong style="color:var(--text)">'+f$(thisMonthComm)+'</strong> vs '+MONTHS[curM2-1]+' '+(curY2-1)+': <strong>'+f$(lastYMComm)+'</strong></div>';
   html+='<div style="font-size:11px;color:var(--text3);margin-top:3px">Total policies '+curY2+': <strong>'+ytdCount+'</strong></div>';
   html+='</div></div>';
-  // ── Product comparison: current month vs best historical month ──
-  var curMonthProd=D.byYM[curY2]&&D.byYM[curY2][curM2]?D.byYM[curY2][curM2].byProd:{};
-  var bestMonthProd=D.byYM[bestYMYear]&&D.byYM[bestYMYear][curM2]?D.byYM[bestYMYear][curM2].byProd:{};
-  var allProds=Array.from(new Set(Object.keys(curMonthProd).concat(Object.keys(bestMonthProd)))).filter(Boolean);
-  var prodRows=allProds.map(function(p){return{p:p,cur:curMonthProd[p]||0,best:bestMonthProd[p]||0};}).sort(function(a,b){return(b.cur+b.best)-(a.cur+a.best);}).slice(0,12);
-  if(prodRows.length>0){
-    var maxVal=Math.max.apply(null,prodRows.map(function(r){return Math.max(r.cur,r.best);}));
-    html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px">';
-    html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
-    html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">'+MONTHS[curM2-1]+' by product: '+curY2+' vs '+bestYMYear+' <span style="color:var(--accent);font-size:9px">(best historical)</span></div>';
-    html+='<div style="display:flex;gap:10px;font-size:11px"><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--accent);margin-right:3px"></span>'+curY2+'</span><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--blue);margin-right:3px"></span>'+bestYMYear+'</span></div>';
-    html+='</div>';
-    prodRows.forEach(function(r){
-      var curPct=maxVal>0?Math.round(r.cur/maxVal*100):0;
-      var bestPct=maxVal>0?Math.round(r.best/maxVal*100):0;
-      var diff=r.cur-r.best;
-      html+='<div style="margin-bottom:8px">';
-      html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">';
-      html+='<span style="font-size:11px;color:var(--text2);width:140px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+r.p+'">'+r.p+'</span>';
-      html+='<div style="flex:1;display:flex;flex-direction:column;gap:2px">';
-      html+='<div style="display:flex;align-items:center;gap:6px"><div style="flex:1;background:var(--bg);border-radius:2px;height:7px;overflow:hidden"><div style="width:'+curPct+'%;height:100%;background:var(--accent);border-radius:2px"></div></div><span style="font-size:11px;font-weight:600;color:var(--accent);width:68px;text-align:right;flex-shrink:0">'+(r.cur?f$(r.cur):'–')+'</span></div>';
-      html+='<div style="display:flex;align-items:center;gap:6px"><div style="flex:1;background:var(--bg);border-radius:2px;height:7px;overflow:hidden"><div style="width:'+bestPct+'%;height:100%;background:var(--blue);border-radius:2px"></div></div><span style="font-size:11px;color:var(--blue);width:68px;text-align:right;flex-shrink:0">'+(r.best?f$(r.best):'–')+'</span></div>';
-      html+='</div>';
-      if(r.cur>0||r.best>0)html+='<span style="font-size:11px;font-weight:600;color:'+(diff>=0?'var(--accent)':'var(--red)')+';width:58px;text-align:right;flex-shrink:0">'+(diff>0?'+':diff<0?'':'')+f$(diff)+'</span>';
-      html+='</div></div>';
-    });
-    // Total row
-    var totalDiff=thisMonthComm-lastYMComm;
-    html+='<div style="border-top:1px solid var(--border);padding-top:8px;margin-top:4px;display:flex;align-items:center;gap:8px"><span style="font-size:12px;font-weight:600;color:var(--text);width:140px;flex-shrink:0">Total</span><div style="flex:1"></div>';
-    html+='<span style="font-size:13px;font-weight:700;color:var(--accent);width:68px;text-align:right;flex-shrink:0">'+f$(thisMonthComm)+'</span>';
-    html+='<span style="width:8px;flex-shrink:0"></span>';
-    html+='<span style="font-size:13px;font-weight:700;color:var(--blue);width:68px;text-align:right;flex-shrink:0">'+f$(lastYMComm)+'</span>';
-    html+='<span style="font-size:13px;font-weight:700;color:'+(totalDiff>=0?'var(--accent)':'var(--red)')+';width:58px;text-align:right;flex-shrink:0">'+(totalDiff>=0?'+':'')+f$(totalDiff)+'</span>';
-    html+='</div></div>';
-  }
   // Pipeline + next week
   html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">';
   [[leadsAdded.length,'Leads added this week','var(--blue)'],[leadsConverted.length,'Converted this week','var(--accent)'],[nextWeekFU.length,'Follow-ups next 7 days','#f59e0b']].forEach(function(k){html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;text-align:center"><div style="font-size:24px;font-weight:700;color:'+k[2]+'">'+k[0]+'</div><div style="font-size:11px;color:var(--text3)">'+k[1]+'</div></div>';});
