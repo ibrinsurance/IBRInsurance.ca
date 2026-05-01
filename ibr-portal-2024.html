@@ -228,104 +228,109 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 .an-pos{background:var(--accent-l);color:var(--accent)}
 .an-neg{background:var(--red-l);color:var(--red)}
 
-/* ── MOBILE RESPONSIVE (≤768px) ─────────────────────────────── */
+
+/* ── MOBILE NAV (hamburger) ── */
+.ham-btn {
+  display: none;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 18px;
+  cursor: pointer;
+  color: var(--text);
+  line-height: 1;
+  margin-left: auto;
+}
+.mob-nav-btn {
+  display: block;
+  width: 100%;
+  padding: 14px 20px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-family: DM Sans, sans-serif;
+  font-size: 15px;
+  color: var(--text);
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background .15s;
+}
+.mob-nav-btn:hover, .mob-nav-btn.active { background: var(--bg); color: var(--accent); font-weight: 600; }
+#mob-drawer { display: none; flex-direction: column; }
+
 @media (max-width: 768px) {
+  /* Show hamburger, hide desktop nav tabs */
+  .ham-btn { display: block !important; }
+  .mode-toggle { display: none !important; }
 
-  /* Nav bar - stack vertically, smaller buttons */
-  .topnav { flex-wrap: wrap; gap: 6px; padding: 8px 10px; }
-  .nav-brand { font-size: 14px; }
-  .mode-btn { font-size: 11px; padding: 5px 8px; }
-  .sync { font-size: 10px; }
-  #syncStatus { display: none; }
+  /* Nav bar: just brand + right controls */
+  .topnav {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+    padding: 8px 12px !important;
+    overflow: visible !important;
+  }
+  .nav-brand { font-size: 14px; flex-shrink: 0; }
+  .ndiv { flex: 1 !important; }
 
-  /* Filter controls */
-  #fctrl { flex-wrap: wrap; gap: 6px; padding: 8px 10px; }
-  #preset { font-size: 12px; }
-  .tab { font-size: 11px; padding: 5px 8px; }
+  /* Hide desktop-only elements */
+  #syncStatus { display: none !important; }
+  .nsp { display: none !important; }
+  .sync { display: none !important; }
 
-  /* Main list area */
-  #app { padding: 0; }
-  #list { padding: 8px 10px; }
+  /* Right controls: smaller */
+  .topnav > button:not(.ham-btn) { font-size: 11px !important; padding: 5px 8px !important; }
 
   /* Cards */
-  .card { padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; }
-  .ct { gap: 8px; }
-  .av { width: 32px !important; height: 32px !important; font-size: 11px !important; }
+  #list { padding: 8px 10px !important; }
+  .card { padding: 10px 12px !important; margin-bottom: 8px !important; }
+
+  /* Card header: stack vertically */
+  .ct { flex-wrap: wrap; gap: 6px; }
   .cn { font-size: 13px; }
-  .cr { flex-wrap: wrap; gap: 4px; }
 
-  /* Detail panel */
-  .dp { padding: 12px; }
-  .fg { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .fi label { font-size: 10px; }
-  .fi .n { font-size: 12px; }
+  /* Detail panel grid: 2 col */
+  .fg { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
 
-  /* Modal */
-  .mbg { align-items: flex-end; padding: 0; }
+  /* Forms: single column */
+  .fgr { grid-template-columns: 1fr !important; }
+  .fg2 { grid-column: span 1 !important; }
+  .fg2.full { grid-column: span 1 !important; }
+
+  /* Modal: bottom sheet */
+  .mbg { align-items: flex-end !important; padding: 0 !important; }
   .mod {
     width: 100% !important;
     max-width: 100% !important;
     border-radius: 16px 16px 0 0 !important;
-    max-height: 90vh;
-    overflow-y: auto;
-    padding: 16px 16px 24px;
-  }
-  .fgr { grid-template-columns: 1fr !important; gap: 10px; }
-  .fg2 { grid-column: span 1 !important; }
-  .fg2.full { grid-column: span 1 !important; }
-
-  /* Analytics */
-  #list > div[style*="grid-template-columns:repeat(4"] {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-  #list > div[style*="grid-template-columns:repeat(3"] {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-  #list > div[style*="grid-template-columns:1fr 1fr;"] {
-    grid-template-columns: 1fr !important;
+    max-height: 88vh !important;
+    overflow-y: auto !important;
+    padding: 20px 16px 32px !important;
+    margin: 0 !important;
   }
 
-  /* Leads board - single column on mobile */
-  #list > div[style*="grid-template-columns:repeat(auto-fit"] {
-    grid-template-columns: 1fr !important;
-  }
+  /* Analytics: 2-col KPI grid */
+  .kpi-grid { grid-template-columns: repeat(2,1fr) !important; }
 
-  /* Claim grid */
-  .clm-grid { grid-template-columns: 1fr 1fr !important; }
+  /* Follow-up filter bar */
+  #fctrl { flex-wrap: wrap; gap: 6px; padding: 8px 10px; }
 
-  /* Buttons in detail panel */
-  .fac { flex-wrap: wrap; gap: 8px; }
-  .fac button { flex: 1; min-width: 100px; }
+  /* Ensure list always shows */
+  #list { display: block !important; min-height: 60px; }
+  .card { display: block !important; }
 
-  /* Hide less critical columns in tables */
-  .hide-mobile { display: none !important; }
-
-  /* Follow-up date input - bigger touch target */
+  /* Date inputs */
   input[type="date"] { min-height: 36px; font-size: 14px; }
-
-  /* Action buttons - bigger touch targets */
-  button { min-height: 32px; }
-
-  /* Last contact boxes */
-  div[style*="grid-template-columns:1fr 1fr"] > div[style*="background:var(--bg)"] {
-    padding: 10px !important;
-  }
+  input, select, textarea { font-size: 16px !important; } /* prevent iOS zoom */
 }
 
 @media (max-width: 480px) {
-  /* Extra small phones */
-  .topnav { padding: 6px 8px; }
-  .mode-btn { font-size: 10px; padding: 4px 6px; }
-  .tab { font-size: 10px; padding: 4px 6px; }
-  .fg { grid-template-columns: 1fr; }
+  .topnav { padding: 6px 10px !important; }
+  .fg { grid-template-columns: 1fr !important; }
 }
-
-/* Ensure list is always visible on mobile */
-@media (max-width: 768px) {
-  #list { display: block !important; overflow-y: auto; min-height: 100px; }
-  .card { display: block !important; }
-}
-
 </style>
 </head>
 <body>
@@ -358,7 +363,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 <!-- APP -->
 <div id="appShell">
   <nav class="topnav">
-    <span class="nav-brand">IBR Portal</span>
+    <span class="nav-brand">IBR Portal</span><button class="ham-btn" onclick="toggleMobileMenu()" aria-label="Menu">&#9776;</button>
     <div class="ndiv"></div>
     <div class="mode-toggle">
       <button class="mode-btn active" id="modeFollowup" onclick="setMode('followup')">Follow-ups</button>
@@ -2041,6 +2046,7 @@ function _addList(){var n=prompt('New list name:');if(n&&n.trim()&&LEADS_LISTS.i
 
 function renderLeads(){
   var el=document.getElementById('list');
+  if(!el)return;
   var active=leads.filter(function(l){return l.status==='active';});
   var converted=leads.filter(function(l){return l.status==='converted';});
   var lost=leads.filter(function(l){return l.status==='lost';});
@@ -2068,7 +2074,7 @@ function renderLeads(){
   // Toolbar
   html+='<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:8px 12px">';
   html+='<div style="display:flex;gap:4px">';
-  var filters=[['all','All'],['today','Due today']].concat(LEADS_LISTS.map(function(l){return[l,l];}));
+  var filters=[['all','All'],['today','Due today']].concat((LEADS_LISTS||[]).map(function(l){return[l,l];}));
   filters.forEach(function(f){
     html+='<button data-fv="'+f[0]+'" onclick="_lf(this)" style="padding:4px 10px;font-size:11px;border-radius:20px;border:1px solid '+(_leadFilter===f[0]?'var(--accent)':'var(--border)')+';background:'+(_leadFilter===f[0]?'var(--accent)':'none')+';color:'+(_leadFilter===f[0]?'#fff':'var(--text2)')+';cursor:pointer;font-family:DM Sans,sans-serif;white-space:nowrap">'+f[1]+'</button>';
   });
@@ -3021,6 +3027,51 @@ var _bgStyle = document.createElement('style');
 _bgStyle.textContent = '@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}';
 document.head.appendChild(_bgStyle);
 
+function toggleMobileMenu(){
+  var d=document.getElementById('mob-drawer');
+  var o=document.getElementById('mob-overlay');
+  var open=d.style.display==='flex';
+  d.style.display=open?'none':'flex';
+  o.style.display=open?'none':'block';
+  if(!open){
+    // Update active state in drawer
+    var modeMap={followup:'mob-followup',lookup:'mob-lookup',claims:'mob-claims',leads:'mob-leads',analytics:'mob-analytics',dq:'mob-dq'};
+    Object.values(modeMap).forEach(function(id){var el=document.getElementById(id);if(el)el.classList.remove('active');});
+    var activeId=modeMap[mode];
+    if(activeId){var el=document.getElementById(activeId);if(el)el.classList.add('active');}
+    // Update sync status in drawer
+    var ss=document.getElementById('mob-sync-status');
+    var main=document.getElementById('syncStatus');
+    if(ss&&main)ss.textContent=main.textContent;
+  }
+}
+function closeMobileMenu(){
+  document.getElementById('mob-drawer').style.display='none';
+  document.getElementById('mob-overlay').style.display='none';
+}
+
 </script>
+
+<!-- MOBILE NAV DRAWER -->
+<div id="mob-overlay" onclick="closeMobileMenu()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9990"></div>
+<div id="mob-drawer" style="display:none;position:fixed;top:0;right:0;width:75%;max-width:280px;height:100%;background:var(--surface);z-index:9991;flex-direction:column;box-shadow:-4px 0 20px rgba(0,0,0,.15);overflow-y:auto">
+  <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <span style="font-weight:700;font-size:16px;color:var(--text)">IBR Portal</span>
+    <button onclick="closeMobileMenu()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text2);padding:4px">&times;</button>
+  </div>
+  <div style="padding:12px 0">
+    <button onclick="setMode('followup');closeMobileMenu()" class="mob-nav-btn" id="mob-followup">Follow-ups</button>
+    <button onclick="setMode('lookup');closeMobileMenu()" class="mob-nav-btn" id="mob-lookup">Client lookup</button>
+    <button onclick="setMode('claims');closeMobileMenu()" class="mob-nav-btn" id="mob-claims">Claims</button>
+    <button onclick="setMode('leads');closeMobileMenu()" class="mob-nav-btn" id="mob-leads">Leads</button>
+    <button onclick="setMode('analytics');closeMobileMenu()" class="mob-nav-btn" id="mob-analytics">Analytics</button>
+    <button onclick="setMode('dq');closeMobileMenu()" class="mob-nav-btn" id="mob-dq">Data quality</button>
+  </div>
+  <div style="padding:12px 20px;border-top:1px solid var(--border);margin-top:auto">
+    <div id="mob-sync-status" style="font-size:11px;color:var(--text3);margin-bottom:10px"></div>
+    <button onclick="logout();closeMobileMenu()" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:none;cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif;font-size:13px">Sign out</button>
+  </div>
+</div>
+
 </body>
 </html>
