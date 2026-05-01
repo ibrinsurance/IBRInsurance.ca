@@ -1411,6 +1411,7 @@ function _anReferralView(D,f$){
   if(sorted.length>=2){var ratio=(sorted[0][1].avgLTV/sorted[sorted.length-1][1].avgLTV).toFixed(1);html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px"><div style="font-size:20px;font-weight:700;color:#6366f1">'+ratio+'x</div><div style="font-size:11px;color:var(--text3)">Best vs lowest LTV source multiplier</div></div>';}
   html+='</div>';
 
+  var declining=sorted.filter(function(e){var thisY=e[1].byYear[curY2]?e[1].byYear[curY2].count:0;var lastY=e[1].byYear[curY2-1]?e[1].byYear[curY2-1].count:0;return lastY>2&&thisY<lastY;}).slice(0,3);
   // ── NURTURE PRIORITIES FIRST ──
   html+=_anReferralNurture(sorted,topByLTV,topByVolume,declining,f$);
   // Main referral table with LTV focus
@@ -1444,27 +1445,6 @@ function _anReferralView(D,f$){
   });
   html+='</tbody></table></div></div>';
 
-  // Nurture recommendations
-  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px">';
-  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Referral nurture priorities</div>';
-  html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">';
-  // Top by LTV
-  html+='<div style="background:#eef2ff;border-radius:8px;padding:12px">';
-  html+='<div style="font-size:10px;font-weight:600;color:#6366f1;text-transform:uppercase;margin-bottom:6px">Highest LTV — invest most time</div>';
-  topByLTV.forEach(function(e){html+='<div style="font-size:12px;color:var(--text);margin-bottom:3px;font-weight:500">&#11088; '+e[0]+'</div><div style="font-size:10px;color:var(--text3);margin-bottom:6px">'+f$(e[1].avgLTV)+'/client &middot; '+e[1].count+' policies</div>';});
-  html+='</div>';
-  // Top by volume
-  html+='<div style="background:#f0fdf4;border-radius:8px;padding:12px">';
-  html+='<div style="font-size:10px;font-weight:600;color:#10b981;text-transform:uppercase;margin-bottom:6px">Most volume — scale these</div>';
-  topByVolume.forEach(function(e){html+='<div style="font-size:12px;color:var(--text);margin-bottom:3px;font-weight:500">&#128200; '+e[0]+'</div><div style="font-size:10px;color:var(--text3);margin-bottom:6px">'+e[1].count+' policies &middot; '+f$(e[1].avgPerPolicy)+'/policy</div>';});
-  html+='</div>';
-  // Declining sources
-  var declining=sorted.filter(function(e){var thisY=e[1].byYear[curY2]?e[1].byYear[curY2].count:0;var lastY=e[1].byYear[curY2-1]?e[1].byYear[curY2-1].count:0;return lastY>2&&thisY<lastY;}).slice(0,3);
-  html+='<div style="background:#fff7ed;border-radius:8px;padding:12px">';
-  html+='<div style="font-size:10px;font-weight:600;color:#f59e0b;text-transform:uppercase;margin-bottom:6px">Declining — re-engage now</div>';
-  if(declining.length){declining.forEach(function(e){var thisY=e[1].byYear[curY2]?e[1].byYear[curY2].count:0;var lastY=e[1].byYear[curY2-1]?e[1].byYear[curY2-1].count:0;html+='<div style="font-size:12px;color:var(--text);margin-bottom:3px;font-weight:500">&#128679; '+e[0]+'</div><div style="font-size:10px;color:var(--text3);margin-bottom:6px">'+(curY2-1)+': '+lastY+' &rarr; '+curY2+': '+thisY+'</div>';});}
-  else{html+='<div style="font-size:11px;color:var(--text3)">No declining sources detected</div>';}
-  html+='</div></div></div>';
 
   // Source comparison chart
   html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px">';
