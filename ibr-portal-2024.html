@@ -319,6 +319,13 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
   .tab { font-size: 10px; padding: 4px 6px; }
   .fg { grid-template-columns: 1fr; }
 }
+
+/* Ensure list is always visible on mobile */
+@media (max-width: 768px) {
+  #list { display: block !important; overflow-y: auto; min-height: 100px; }
+  .card { display: block !important; }
+}
+
 </style>
 </head>
 <body>
@@ -455,7 +462,7 @@ function initGoogleSignIn(){
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyfgq5_ACyAvVs0CZVwXs-bemPciHF9G_6V77LyyUm8c9P42izlv8NMfWWzRSxmgEAL/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxRD7h2aw_wrDAJr_0NNwfJJrQvcILrvvLmn_OdRIO_IjVszUt7tQQycch0ABfBnIUd/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -951,7 +958,7 @@ function renderLookup(){
       html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Recently opened</div>';
       _recentOpened.slice(0,5).forEach(function(id){
         var c=clients.find(function(x){return x.id===id;});if(!c)return;
-        var comm=parseFloat((c.cm||'0').replace(/[^0-9.-]/g,''))||0;
+        var cm_raw=(c.cm||'0').toString().replace(/[$,\s]/g,'').replace(/[^0-9.-]/g,'');var comm=parseFloat(cm_raw)||0;
         html+=_snapshotCard(c);
       });
       html+='</div>';
@@ -1199,6 +1206,31 @@ function renderDQ(){
   });
   html+='<div class="dqi"><div class="dqil">All unique product values in your sheet</div><div class="dqtags">'+ap.map(function(p){return'<span class="dqt" style="background:var(--bg);color:var(--text3);border-color:var(--border)">'+p+'</span>';}).join('')+'</div></div>';
   html+='</div>';
+  // Commission audit
+  var auditYear = new Date().getFullYear();
+  var yearRows = clients.filter(function(c){ if(!c.ds)return false; var d=new Date(c.ds); return d.getFullYear()===auditYear; });
+  var totalCm = yearRows.reduce(function(s,c){ return s+(parseFloat((c.cm||'0').replace(/[^0-9.-]/g,''))||0); }, 0);
+  var zeroCm = yearRows.filter(function(c){ return !(parseFloat((c.cm||'0').replace(/[^0-9.-]/g,''))||0); });
+  var negCm = yearRows.filter(function(c){ return (parseFloat((c.cm||'0').replace(/[^0-9.-]/g,''))||0)<0; });
+  var missingDs = clients.filter(function(c){ return !c.ds||isNaN(new Date(c.ds).getTime()); });
+  var f$2=function(n){return '$'+Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');};
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px">';
+  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Commission audit '+auditYear+' (diagnostic)</div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px">';
+  html+='<div style="background:var(--bg);border-radius:6px;padding:10px"><div style="font-size:18px;font-weight:700;color:var(--accent)">'+f$2(totalCm)+'</div><div style="font-size:11px;color:var(--text3)">CRM total '+auditYear+' commission</div></div>';
+  html+='<div style="background:var(--bg);border-radius:6px;padding:10px"><div style="font-size:18px;font-weight:700;color:'+(zeroCm.length>10?'var(--amber)':'var(--text)')+'">'+zeroCm.length+'</div><div style="font-size:11px;color:var(--text3)">Policies with $0 commission in '+auditYear+'</div></div>';
+  html+='<div style="background:var(--bg);border-radius:6px;padding:10px"><div style="font-size:18px;font-weight:700;color:'+(negCm.length>0?'var(--red)':'var(--text)')+'">'+negCm.length+'</div><div style="font-size:11px;color:var(--text3)">Negative commission (chargebacks)</div></div>';
+  html+='</div>';
+  html+='<div style="font-size:11px;color:var(--text3);margin-bottom:8px">Total '+auditYear+' rows: '+yearRows.length+' &middot; Missing sale date: '+missingDs.length+'</div>';
+  if(zeroCm.length>0){
+    html+='<div style="font-size:11px;font-weight:600;color:var(--amber);margin-bottom:4px">Policies with no commission recorded (not counted in analytics):</div>';
+    html+='<div style="display:flex;flex-wrap:wrap;gap:4px">';
+    zeroCm.slice(0,20).forEach(function(c){html+='<span style="font-size:10px;padding:2px 7px;background:var(--amber-l);color:var(--amber);border-radius:4px">'+c.cn+' &middot; '+c.pr+'</span>';});
+    if(zeroCm.length>20)html+='<span style="font-size:10px;color:var(--text3)">+'+( zeroCm.length-20)+' more</span>';
+    html+='</div>';
+  }
+  html+='<div style="font-size:11px;color:var(--text3);margin-top:8px">If your manual count is higher, check: 1) Zero-commission rows above 2) Commission entered in wrong column in sheet 3) Rows with no client name (skipped by CRM)</div>';
+  html+='</div>';
   document.getElementById('list').innerHTML=html;
 }
 function _anHouseholdsView(f$){
@@ -1262,7 +1294,7 @@ function refreshData(){
   clients=[];sel=null;
   fetch(APPS_SCRIPT_URL+'?action=getData').then(function(r){return r.json();}).then(function(d){
     if(d.error)throw new Error(d.error);
-    parseRows(d.rows);sheetConnected=true;
+    if(!d.rows){throw new Error(d.error||'No data returned from sheet');}parseRows(d.rows);sheetConnected=true;
     document.getElementById('sdot').classList.remove('err');
     document.getElementById('syncStatus').textContent=clients.length+' clients \xb7 live';
     loadLeads();render();startBackgroundSync();
@@ -1389,7 +1421,7 @@ function _anDailyView(D,MONTHS,f$){
   html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden">';
   html+='<div style="padding:10px 12px;background:var(--amber-l);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px"><span style="font-size:14px">&#9889;</span><span style="font-size:12px;font-weight:600;color:var(--amber)">High priority, no date ('+noFUHighPriority.length+')</span></div>';
   html+='<div style="padding:6px 12px;font-size:10px;color:var(--text3);border-bottom:1px solid var(--border)">Follow-up products with no date set, sorted by commission</div>';
-  noFUHighPriority.slice(0,10).forEach(function(c){var ph=(c.ph||'').split(/[,|]/)[0].replace(/\D/g,'');if(ph.length===10)ph='1'+ph;var comm=parseFloat((c.cm||'0').replace(/[^0-9.-]/g,''))||0;html+='<div style="padding:7px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px"><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+c.cn+'</div><div style="font-size:10px;color:var(--text3)">'+c.pr+' &middot; $'+Math.round(comm)+'</div></div>'+(ph?'<button data-phone="'+ph+'" data-name="'+c.cn+'" onclick="hhWA(this)" style="font-size:9px;padding:2px 6px;border:1px solid #25D366;border-radius:3px;color:#25D366;background:none;cursor:pointer;font-family:DM Sans,sans-serif;flex-shrink:0">WA</button>':'')+'</div>';});
+  noFUHighPriority.slice(0,10).forEach(function(c){var ph=(c.ph||'').split(/[,|]/)[0].replace(/\D/g,'');if(ph.length===10)ph='1'+ph;var cm_raw=(c.cm||'0').toString().replace(/[$,\s]/g,'').replace(/[^0-9.-]/g,'');var comm=parseFloat(cm_raw)||0;html+='<div style="padding:7px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px"><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+c.cn+'</div><div style="font-size:10px;color:var(--text3)">'+c.pr+' &middot; $'+Math.round(comm)+'</div></div>'+(ph?'<button data-phone="'+ph+'" data-name="'+c.cn+'" onclick="hhWA(this)" style="font-size:9px;padding:2px 6px;border:1px solid #25D366;border-radius:3px;color:#25D366;background:none;cursor:pointer;font-family:DM Sans,sans-serif;flex-shrink:0">WA</button>':'')+'</div>';});
   html+='</div>';
   html+='</div>';
   // Month progress
@@ -1404,7 +1436,7 @@ function _anDailyView(D,MONTHS,f$){
   var MONTHS2=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   // For each product, find its best-ever same month across all years
   var curProd=D.byYM[curY2]&&D.byYM[curY2][curM2]?D.byYM[curY2][curM2].byProd:{};
-  var allProdNames=new Set(Object.keys(curProd));
+  var allProdNames=new Set(Object.keys(curProd||{}));
   // Scan all historical years for this month's products
   D.allYears.forEach(function(y){
     if(y>=curY2)return;
@@ -2022,7 +2054,7 @@ function renderLeads(){
   html+='</div>';
   // Per-list stats
   html+='<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">';
-  LEADS_LISTS.forEach(function(listName){
+  (LEADS_LISTS||[]).forEach(function(listName){
     var ll=leads.filter(function(l){return l.list===listName;});
     var lc=ll.filter(function(l){return l.status==='converted';}).length;
     var la=ll.filter(function(l){return l.status==='active';}).length;
@@ -2065,7 +2097,7 @@ function renderLeads(){
     html+='<div style="text-align:center;padding:40px;color:var(--text3);font-size:13px">No active leads'+(_leadFilter==='today'?' due today':'')+' &mdash; <button onclick="openAddLeadModal(LEADS_LISTS[0])" style="border:none;background:none;cursor:pointer;color:var(--accent);font-family:DM Sans,sans-serif;font-size:13px">+ Add one</button></div>';
   } else if(_leadView==='board'&&_leadGroup==='list'){
     html+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px">';
-    LEADS_LISTS.forEach(function(listName){
+    (LEADS_LISTS||[]).forEach(function(listName){
       if(_leadFilter!=='all'&&_leadFilter!==listName&&_leadFilter!=='today')return;
       var listLeads=filtered.filter(function(l){return l.list===listName;});
       html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden">';
@@ -2081,7 +2113,7 @@ function renderLeads(){
   }
   // Quick add
   html+='<div style="display:flex;gap:8px;margin-top:12px">';
-  LEADS_LISTS.forEach(function(l){html+='<button data-list="'+l+'" onclick="openAddLeadModal(this.dataset.list)" style="padding:6px 14px;font-size:12px;border:1px dashed var(--border2);border-radius:var(--rs);background:none;cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif">+ Add to '+l+'</button>';});
+  (LEADS_LISTS||[]).forEach(function(l){html+='<button data-list="'+l+'" onclick="openAddLeadModal(this.dataset.list)" style="padding:6px 14px;font-size:12px;border:1px dashed var(--border2);border-radius:var(--rs);background:none;cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif">+ Add to '+l+'</button>';});
   html+='</div>';
   // Recent closed
   var recent=leads.filter(function(l){return l.status==='converted'||l.status==='lost';}).slice(0,8);
@@ -2100,6 +2132,7 @@ function renderLeadCards(leadList){
   var PROD_COMM={'term insurance':900,'ul insurance':3500,'whole life':2500,'critical illness':600,'rrsp':300,'resp':200,'vtc':120,'supervisa':150,'truck-travel':200,'travel insurance':100,'disability':400};
   var DEFAULT_COMM={'life':900,'ci':600,'investment':300,'travel':120};
   function getLeadScore(l){
+    if(!l)return 50;
     var score=50;
     // Source
     var src=(l.src||'').toLowerCase();
@@ -2115,6 +2148,7 @@ function renderLeadCards(leadList){
     return Math.max(0,Math.min(100,score));
   }
   function getExpectedComm(l){
+    if(!l)return 200;
     // Use manually entered commission if set
     if(l.comm&&l.comm>0)return l.comm;
     var name=(l.name||'').toLowerCase();var src=(l.src||'').toLowerCase();
