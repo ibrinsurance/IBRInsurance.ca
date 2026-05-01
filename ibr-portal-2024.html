@@ -611,9 +611,7 @@ function onSearch(){
 function applyPreset(){preset=document.getElementById('preset').value;sel=null;render();}
 function setMode(m){
   mode=m;sel=null;lkp=null;
-  // Clear list immediately so stale content from previous tab doesn't show
-  var listEl=document.getElementById('list');
-  if(listEl)listEl.innerHTML='';
+  // Don't clear list here — render() will overwrite it, avoids blank flash
   // Reset analytics view to default when switching to analytics
   if(m==='analytics') _anView='daily';
   // Reset leads scroll/filter when switching to leads
@@ -899,7 +897,9 @@ function renderClaims(){
     });
     html+='</div>';
   }
-  el.innerHTML=html;
+  // Re-fetch el in case DOM changed during render
+  var el2=document.getElementById('list');
+  if(el2)el2.innerHTML=html;
 }
 
 function openNewClaimModal(){
@@ -1913,9 +1913,18 @@ var leads=[];var leadNextId=5000;
 var LEADS_LISTS=['Life & CI Leads','VTC & SV'];
 var _leadFilter='all';var _leadSort='due';var _leadGroup='list';var _leadView='board';
 
-async function loadLeads(){
+async function loadLeads(force){
   if(!sheetConnected)return;
-  try{var r=await fetch(APPS_SCRIPT_URL+'?action=getLeads');var d=await r.json();if(d.leads)leads=d.leads.filter(function(l){return l.status!=='deleted';});}catch(e){console.warn('Leads:',e);}
+  if(!force && leads && leads.length>0)return; // already loaded, skip
+  try{
+    var r=await fetch(APPS_SCRIPT_URL+'?action=getLeads');
+    var d=await r.json();
+    if(d.leads){
+      leads=d.leads.filter(function(l){return l.status!=='deleted';});
+      // Re-render leads tab if currently showing it
+      if(mode==='leads')render();
+    }
+  }catch(e){console.warn('Leads:',e);}
 }
 async function saveLead(lead){
   if(!sheetConnected)return;
@@ -2095,10 +2104,7 @@ function renderLeads(){
     if(!a.due&&!b.due)return 0;if(!a.due)return 1;if(!b.due)return-1;
     return new Date(a.due)-new Date(b.due);
   });
-  if(!sheetConnected){
-    html+='<div style="text-align:center;padding:40px;color:var(--text3);font-size:13px"><div style="font-size:24px;margin-bottom:8px">&#128274;</div>Sign in to view leads</div>';
-    el.innerHTML=html;return;
-  }
+
   if(filtered.length===0){
     html+='<div style="text-align:center;padding:40px;color:var(--text3);font-size:13px">No active leads'+(_leadFilter==='today'?' due today':'')+' &mdash; <button onclick="openAddLeadModal(LEADS_LISTS[0])" style="border:none;background:none;cursor:pointer;color:var(--accent);font-family:DM Sans,sans-serif;font-size:13px">+ Add one</button></div>';
   } else if(_leadView==='board'&&_leadGroup==='list'){
