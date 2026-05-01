@@ -91,7 +91,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 .cm2{font-size:11px;color:var(--text3);margin-top:2px;display:flex;gap:5px;flex-wrap:wrap}
 .cr{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
 .sp{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500}
-.sp-ov{background:var(--red-l);color:var(--red)}.sp-tw{background:var(--amber-l);color:var(--amber)}.sp-up{background:var(--accent-l);color:var(--accent)}.sp-no{background:var(--bg);color:var(--text3)}.sp-dn{background:var(--accent-l);color:var(--accent)}
+.sp-ov{background:var(--red-l);color:var(--red)}.sp-td{background:#fff7ed;color:#f59e0b}.sp-tw{background:var(--amber-l);color:var(--amber)}.sp-up{background:var(--accent-l);color:var(--accent)}.sp-no{background:var(--bg);color:var(--text3)}.sp-dn{background:var(--accent-l);color:var(--accent)}
 .pt{font-size:10px;padding:2px 5px;border-radius:20px;background:var(--bg);color:var(--text3);border:1px solid var(--border)}
 .fd{font-size:10px;color:var(--text3)}
 .chk{width:15px;height:15px;border-radius:50%;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;background:var(--surface);margin-top:2px;transition:all .15s}
@@ -651,7 +651,7 @@ function renderFU(){
   var ccEl = document.getElementById('closedCount');
   if(ccEl) ccEl.textContent = closedCount > 0 ? closedCount+' closed' : '';
   ubdg();const f=getFiltered();document.getElementById('rc').textContent=f.length+' client'+(f.length===1?'':'s');document.getElementById('list').innerHTML=f.length?f.map(cardH).join(''):'<div class="empty">No clients in this view</div>';}
-const SP={overdue:['sp-ov','Overdue'],thisweek:['sp-tw','Due this week'],upcoming:['sp-up','Upcoming'],none:['sp-no','No follow-up'],done:['sp-dn','Complete']};
+const SP={overdue:['sp-ov','Overdue'],today:['sp-td','Due today'],thisweek:['sp-tw','Due this week'],upcoming:['sp-up','Upcoming'],none:['sp-no','No follow-up'],done:['sp-dn','Complete']};
 const csMap={Submitted:'cs-sub','In Review':'cs-rev',Approved:'cs-app',Paid:'cs-paid',Denied:'cs-den'};
 
 function cardH(c){const s=gst(c);const[sc,sl]=SP[s];const lnk=getAllLinked(c);const isel=sel===c.id;
