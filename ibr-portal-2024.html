@@ -227,6 +227,98 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 .an-yrchange{font-size:11px;padding:1px 6px;border-radius:20px}
 .an-pos{background:var(--accent-l);color:var(--accent)}
 .an-neg{background:var(--red-l);color:var(--red)}
+
+/* ── MOBILE RESPONSIVE (≤768px) ─────────────────────────────── */
+@media (max-width: 768px) {
+
+  /* Nav bar - stack vertically, smaller buttons */
+  .topnav { flex-wrap: wrap; gap: 6px; padding: 8px 10px; }
+  .nav-brand { font-size: 14px; }
+  .mode-btn { font-size: 11px; padding: 5px 8px; }
+  .sync { font-size: 10px; }
+  #syncStatus { display: none; }
+
+  /* Filter controls */
+  #fctrl { flex-wrap: wrap; gap: 6px; padding: 8px 10px; }
+  #preset { font-size: 12px; }
+  .tab { font-size: 11px; padding: 5px 8px; }
+
+  /* Main list area */
+  #app { padding: 0; }
+  #list { padding: 8px 10px; }
+
+  /* Cards */
+  .card { padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; }
+  .ct { gap: 8px; }
+  .av { width: 32px !important; height: 32px !important; font-size: 11px !important; }
+  .cn { font-size: 13px; }
+  .cr { flex-wrap: wrap; gap: 4px; }
+
+  /* Detail panel */
+  .dp { padding: 12px; }
+  .fg { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .fi label { font-size: 10px; }
+  .fi .n { font-size: 12px; }
+
+  /* Modal */
+  .mbg { align-items: flex-end; padding: 0; }
+  .mod {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 16px 16px 0 0 !important;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 16px 16px 24px;
+  }
+  .fgr { grid-template-columns: 1fr !important; gap: 10px; }
+  .fg2 { grid-column: span 1 !important; }
+  .fg2.full { grid-column: span 1 !important; }
+
+  /* Analytics */
+  #list > div[style*="grid-template-columns:repeat(4"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  #list > div[style*="grid-template-columns:repeat(3"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  #list > div[style*="grid-template-columns:1fr 1fr;"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Leads board - single column on mobile */
+  #list > div[style*="grid-template-columns:repeat(auto-fit"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Claim grid */
+  .clm-grid { grid-template-columns: 1fr 1fr !important; }
+
+  /* Buttons in detail panel */
+  .fac { flex-wrap: wrap; gap: 8px; }
+  .fac button { flex: 1; min-width: 100px; }
+
+  /* Hide less critical columns in tables */
+  .hide-mobile { display: none !important; }
+
+  /* Follow-up date input - bigger touch target */
+  input[type="date"] { min-height: 36px; font-size: 14px; }
+
+  /* Action buttons - bigger touch targets */
+  button { min-height: 32px; }
+
+  /* Last contact boxes */
+  div[style*="grid-template-columns:1fr 1fr"] > div[style*="background:var(--bg)"] {
+    padding: 10px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra small phones */
+  .topnav { padding: 6px 8px; }
+  .mode-btn { font-size: 10px; padding: 4px 6px; }
+  .tab { font-size: 10px; padding: 4px 6px; }
+  .fg { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -1965,6 +2057,10 @@ function renderLeads(){
     if(!a.due&&!b.due)return 0;if(!a.due)return 1;if(!b.due)return-1;
     return new Date(a.due)-new Date(b.due);
   });
+  if(!sheetConnected){
+    html+='<div style="text-align:center;padding:40px;color:var(--text3);font-size:13px"><div style="font-size:24px;margin-bottom:8px">&#128274;</div>Sign in to view leads</div>';
+    el.innerHTML=html;return;
+  }
   if(filtered.length===0){
     html+='<div style="text-align:center;padding:40px;color:var(--text3);font-size:13px">No active leads'+(_leadFilter==='today'?' due today':'')+' &mdash; <button onclick="openAddLeadModal(LEADS_LISTS[0])" style="border:none;background:none;cursor:pointer;color:var(--accent);font-family:DM Sans,sans-serif;font-size:13px">+ Add one</button></div>';
   } else if(_leadView==='board'&&_leadGroup==='list'){
@@ -2163,7 +2259,7 @@ function renderAnalytics(){
   if(_anMonths.length>0)html+='<button onclick="_anMonths=[];renderAnalytics()" style="padding:2px 8px;border-radius:4px;border:1px solid var(--red);color:var(--red);background:none;font-size:11px;font-family:DM Sans,sans-serif;cursor:pointer">Clear</button>';
   html+='</div></div>';
   // View toggle
-  html+='<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">';
+  html+='<div style="display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none">';
   [['daily','Daily Actions'],['monthly','Monthly totals'],['products','By product'],['sources','Lead sources'],['referral','Referral Engine'],['companies','By company'],['portfolio','Book of business'],['geo','Geography'],['insights','AI Insights'],['report','Weekly Report'],['households','Top 50 clients']].forEach(function(v){
     html+='<button onclick="_anView=\''+v[0]+'\';renderAnalytics()" style="padding:6px 14px;border-radius:var(--rs);border:1px solid '+(_anView===v[0]?'var(--accent)':'var(--border)')+';background:'+(_anView===v[0]?'var(--accent)':'var(--surface)')+';color:'+(_anView===v[0]?'#fff':'var(--text2)')+';font-size:12px;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:'+(_anView===v[0]?'600':'400')+'">'+v[1]+'</button>';
   });
