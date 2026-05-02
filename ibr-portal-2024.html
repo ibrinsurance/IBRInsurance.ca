@@ -396,6 +396,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
           <option value="ci">Critical illness</option>
           <option value="investments">Investments (RRSP / RESP / TFSA / FHSA)</option>
           <option value="travel">Travel / Visitor only</option>
+          <option value="review">&#11088; Needs review ask</option>
         </select>
         <button onclick="setAnniversaryFollowups()" id="anniversaryBtn" title="Only sets dates for: Term, UL, Whole Life, CI, RRSP, RESP, and Transfer products — NOT travel or visitor" style="padding:5px 12px;font-size:12px;font-family:DM Sans,sans-serif;border:1px solid var(--accent);border-radius:var(--rs);background:var(--accent-l);cursor:pointer;color:var(--accent);white-space:nowrap">Set Anniversary Dates &#9432;</button>
         <button onclick="showClosed=!showClosed;render()" id="closedToggle" style="padding:5px 12px;font-size:12px;font-family:DM Sans,sans-serif;border:1px solid var(--border);border-radius:var(--rs);background:none;cursor:pointer;color:var(--text2);white-space:nowrap">Show closed</button>
@@ -467,7 +468,7 @@ function initGoogleSignIn(){
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwS9P1V_HPVX167brpHMuXTcUKcFxrHxHknMUMiKD8dL-hQ9nv_Wob9Z4__SRnvqCMi/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwJH-Qbfid9OwwcpAaY4Db5linCW6nOQahS22HQEOpa4JV2Pv38pOlpH9OlZXVQ2VMD/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -543,7 +544,7 @@ function parseRows(rows){
     if(r.claimStatus){try{claim=JSON.parse(r.claimStatus);}catch{}}
     let hh=[];
     if(r.householdLinks){try{hh=JSON.parse(r.householdLinks);}catch{}}
-    clients.push({id:nextId++,rowNum:r.rowNum,cn:r.cn,ins:r.ins||r.cn,ds:r.ds,co:r.co,cv:r.cv,pn:r.pn,ph:r.ph?r.ph.toString():'',em:r.em,cy:r.cy,ap:r.ap,cm:r.cm,src:r.src,pr:r.pr,fu:r.fu||null,done:false,notes:parsedNotes,hh,claim,status:r.policyStatus||'active',lcc:_cleanDate(r.lastClientContact),lco:_cleanDate(r.lastCoContact)});
+    clients.push({id:nextId++,rowNum:r.rowNum,cn:r.cn,ins:r.ins||r.cn,ds:r.ds,co:r.co,cv:r.cv,pn:r.pn,ph:r.ph?r.ph.toString():'',em:r.em,cy:r.cy,ap:r.ap,cm:r.cm,src:r.src,pr:r.pr,fu:r.fu||null,done:false,notes:parsedNotes,hh,claim,status:r.policyStatus||'active',lcc:_cleanDate(r.lastClientContact),lco:_cleanDate(r.lastCoContact),ar:r.askReview||'N'});
   });
 }
 
@@ -561,7 +562,7 @@ const AVC=['av-gr','av-bl','av-am','av-pu','av-rd'];
 function avc(n){let h=0;for(let c of(n||''))h=(h*31+c.charCodeAt(0))&0xffff;return AVC[h%AVC.length];}
 function nc(s){return(s||'').split(/[,|]/).map(x=>x.trim().toLowerCase()).filter(Boolean);}
 function gst(c){if(c.done)return'done';if(!c.fu)return'none';const fd=new Date(c.fu);fd.setHours(0,0,0,0);const d=Math.ceil((fd-tod)/864e5);if(d<0)return'overdue';if(d===0)return'today';if(d<=7)return'thisweek';return'upcoming';}
-function vbp(c){const cl=cls(c.pr);if(preset==='followups')return FOLLOWUP_PRODS.has((c.pr||'').toLowerCase().trim());if(preset==='all')return true;if(preset==='life')return cl==='life';if(preset==='ci')return cl==='ci';if(preset==='investments')return cl==='inv';if(preset==='travel')return cl==='travel';return true;}
+function vbp(c){const cl=cls(c.pr);if(preset==='followups')return FOLLOWUP_PRODS.has((c.pr||'').toLowerCase().trim());if(preset==='all')return true;if(preset==='life')return cl==='life';if(preset==='ci')return cl==='ci';if(preset==='investments')return cl==='inv';if(preset==='travel')return cl==='travel';if(preset==='review')return c.ar!=='Y';return true;}
 function getAllLinked(c){const ap=nc(c.ph),ae=nc(c.em),mh=new Set(c.hh||[]);return clients.filter(o=>{if(o.id===c.id)return false;return mh.has(o.id)||nc(o.ph).some(p=>ap.includes(p))||nc(o.em).some(e=>ae.includes(e));});}
 // Products requiring follow-up (not travel/visitor)
 var FOLLOWUP_PRODS = new Set(['term insurance','ul insurance','whole life','critical illness','rrsp','resp','ul transfer','term transfer','wl transfer']);
@@ -654,7 +655,7 @@ function renderFU(){
 const SP={overdue:['sp-ov','Overdue'],today:['sp-td','Due today'],thisweek:['sp-tw','Due this week'],upcoming:['sp-up','Upcoming'],none:['sp-no','No follow-up'],done:['sp-dn','Complete']};
 const csMap={Submitted:'cs-sub','In Review':'cs-rev',Approved:'cs-app',Paid:'cs-paid',Denied:'cs-den'};
 
-function cardH(c){const s=gst(c);const[sc,sl]=SP[s];const lnk=getAllLinked(c);const isel=sel===c.id;
+function cardH(c){const s=gst(c);const[sc,sl]=SP[s]||['',''];const lnk=getAllLinked(c);const isel=sel===c.id;
 return`<div class="card${isel?' sel':''}${c.done?' done':''}" onclick="selC(${c.id})">
 <div class="ct">
 <div class="chk${c.done?' on':''}" onclick="event.stopPropagation();togDone(${c.id})">${c.done?`<svg viewBox="0 0 10 10" fill="none" width="9" height="9"><path d="M2 5l2.5 2.5L8 3" stroke="#1B4332" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div>
@@ -675,6 +676,9 @@ function detH(c){
   html+='<div style="flex:1"><div class="dn">'+c.cn+'</div><div class="ds2">Insured: '+c.ins+' \xb7 '+c.pr+'</div></div>';
   html+='<div style="display:flex;gap:6px;margin-left:auto;flex-shrink:0">';
   html+='<button onclick="event.stopPropagation();openEditModal('+c.id+')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border2);border-radius:4px;background:none;cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif">Edit policy</button>';
+  // Ask for review button
+  var arDone=c.ar==='Y';
+  html+='<button onclick="event.stopPropagation();toggleReview('+c.id+')" title="Mark that you have asked this client for a Google/referral review" style="font-size:11px;padding:4px 10px;border:1px solid '+(arDone?'#10b981':'#f59e0b')+';border-radius:4px;background:'+(arDone?'#f0fdf4':'#fff7ed')+';cursor:pointer;color:'+(arDone?'#10b981':'#f59e0b')+';font-family:DM Sans,sans-serif">'+(arDone?'&#10003; Review asked':'&#11088; Ask for review')+'</button>';
   if(c.status==='closed'){
     html+='<button onclick="event.stopPropagation();togglePolicyClosed('+c.id+')" style="font-size:11px;padding:4px 10px;border:1px solid var(--accent);border-radius:4px;background:var(--accent-l);cursor:pointer;color:var(--accent);font-family:DM Sans,sans-serif">&#8634; Reopen policy</button>';
   } else {
@@ -1268,14 +1272,15 @@ function _anHouseholdsView(f$){
 function _anDrilldown(y,m){
   var MONTHS2=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   var f$=function(n){return '$'+Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');};
-  var D=_buildAnalyticsData();var md=D.byYM[y]&&D.byYM[y][m]?D.byYM[y][m]:{comm:0,byProd:{}};
+  var D=_buildAnalyticsData();
+  _anAllYears=D.allYears.slice(); // cache for All buttonvar md=D.byYM[y]&&D.byYM[y][m]?D.byYM[y][m]:{comm:0,byProd:{}};
   var prods=Object.entries(md.byProd).sort(function(a,b){return b[1]-a[1];});var maxP=prods.length?prods[0][1]:1;
   var html='<div class="mbg" onclick="if(event.target===this)document.getElementById(\'modal\').innerHTML=\'\'"><div class="mod"><div class="mtit">'+MONTHS2[m-1]+' '+y+' \u2014 '+f$(md.comm)+'</div><div style="font-size:12px;color:var(--text3);margin-bottom:12px">'+md.count+' policies sold</div>';
   prods.forEach(function(e){var pct=Math.round(e[1]/maxP*100);html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:12px;color:var(--text2);width:140px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+e[0]+'</span><div style="flex:1;background:var(--bg);border-radius:3px;height:10px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:var(--accent);border-radius:3px"></div></div><span style="font-size:12px;font-weight:600;color:var(--text);width:70px;text-align:right;flex-shrink:0">'+f$(e[1])+'</span></div>';});
   html+='<div style="text-align:right;margin-top:10px"><button class="bcn" onclick="document.getElementById(\'modal\').innerHTML=\'\'">Close</button></div></div></div>';
   document.getElementById('modal').innerHTML=html;
 }
-function _anToggleYear(y){var i=_anYears.indexOf(y);if(i>=0){if(_anYears.length>1)_anYears.splice(i,1);}else _anYears.push(y);renderAnalytics();}
+function _anToggleYear(y){_anNoneYears=false;var i=_anYears.indexOf(y);if(i>=0){if(_anYears.length>1)_anYears.splice(i,1);}else _anYears.push(y);renderAnalytics();}
 function _anToggleMo(m){if(_anMonths.length===0)_anMonths=[1,2,3,4,5,6,7,8,9,10,11,12];var i=_anMonths.indexOf(m);if(i>=0){if(_anMonths.length>1)_anMonths.splice(i,1);}else _anMonths.push(m);renderAnalytics();}
 function _anClickHH(el){var k=el.getAttribute('data-hhk');_anExpHH[k]=!_anExpHH[k];renderAnalytics();}
 function _anOpenPolicy(el){var id=parseInt(el.getAttribute('data-pid'));if(id)jumpTo(id);}
@@ -2246,6 +2251,7 @@ function renderLeadCards(leadList){
 
 // ── ANALYTICS MODULE ──────────────────────────────────────────────
 var _anYears=[];var _anMonths=[];var _anExpHH={};var _anView='monthly';
+var _anAllYears=[];var _anNoneYears=false;
 
 function _buildAnalyticsData(){
   var tod=new Date();var curYear=tod.getFullYear();
@@ -2269,7 +2275,7 @@ function _buildAnalyticsData(){
     data.bySrc[src].comm+=comm;data.bySrc[src].count++;
   });
   data.allYears=Object.keys(data.byYear).map(Number).sort(function(a,b){return a-b;});
-  if(_anYears.length===0)_anYears=data.allYears.slice(-4).slice();
+  if(_anYears.length===0&&!_anNoneYears)_anYears=(_anAllYears.length?_anAllYears:data.allYears).slice(-4);
   return data;
 }
 
@@ -2285,7 +2291,7 @@ function renderAnalytics(){
   var projected=D.yearProgress>0?curYComm/D.yearProgress:0;
   var prevY=curY-1;var prevYComm=D.byYear[prevY]?D.byYear[prevY].comm:0;
   var pct=prevYComm>0?((projected-prevYComm)/prevYComm*100):0;
-  var displayYears=D.allYears.filter(function(y){return _anYears.indexOf(y)>=0;});
+  var displayYears=_anNoneYears?[]:D.allYears.filter(function(y){return _anYears.indexOf(y)>=0;});
   var showMonths=_anMonths.length>0?_anMonths:[1,2,3,4,5,6,7,8,9,10,11,12];
   var html='';
   // KPI strip
@@ -2300,8 +2306,8 @@ function renderAnalytics(){
   html+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">';
   D.allYears.forEach(function(y){var sel2=_anYears.indexOf(y)>=0;var c=YC[y]||'#64748b';html+='<button onclick="_anToggleYear('+y+')" style="padding:5px 14px;border-radius:20px;border:2px solid '+c+';background:'+(sel2?c:'transparent')+';color:'+(sel2?'#fff':c)+';font-size:12px;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:600">'+y+'</button>';});
   // All years + Clear year buttons
-  html+='<button onclick="_anYears=D.allYears.slice();renderAnalytics()" style="padding:5px 12px;border-radius:20px;border:2px solid var(--accent);background:var(--accent-l);color:var(--accent);font-size:12px;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:600">All</button>';
-  html+='<button onclick="_anYears=[];renderAnalytics()" style="padding:5px 12px;border-radius:20px;border:2px solid var(--border2);background:transparent;color:var(--text3);font-size:12px;font-family:DM Sans,sans-serif;cursor:pointer">None</button>';
+  html+='<button onclick="_anNoneYears=false;_anYears=(_anAllYears.length?_anAllYears:_buildAnalyticsData().allYears).slice();renderAnalytics()" style="padding:5px 12px;border-radius:20px;border:2px solid var(--accent);background:var(--accent-l);color:var(--accent);font-size:12px;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:600">All</button>';
+  html+='<button onclick="_anNoneYears=true;_anYears=[];renderAnalytics()" style="padding:5px 12px;border-radius:20px;border:2px solid var(--border2);background:transparent;color:var(--text3);font-size:12px;font-family:DM Sans,sans-serif;cursor:pointer">None</button>';
   html+='</div><div style="display:flex;gap:6px;flex-wrap:wrap">';
   html+='<span style="font-size:11px;color:var(--text3);line-height:22px;margin-right:2px">Filter months:</span>';
   MONTHS.forEach(function(mn,i){var sel2=_anMonths.length===0||_anMonths.indexOf(i+1)>=0;html+='<button onclick="_anToggleMo('+(i+1)+')" style="padding:2px 8px;border-radius:4px;border:1px solid var(--border);background:'+(sel2?'var(--text)':'transparent')+';color:'+(sel2?'#fff':'var(--text3)')+';font-size:11px;font-family:DM Sans,sans-serif;cursor:pointer">'+mn+'</button>';});
@@ -2330,7 +2336,7 @@ function renderAnalytics(){
   el.innerHTML=html;
 }
 
-function _anToggleYear(y){var i=_anYears.indexOf(y);if(i>=0){if(_anYears.length>1)_anYears.splice(i,1);}else _anYears.push(y);renderAnalytics();}
+function _anToggleYear(y){_anNoneYears=false;var i=_anYears.indexOf(y);if(i>=0){if(_anYears.length>1)_anYears.splice(i,1);}else _anYears.push(y);renderAnalytics();}
 function _anToggleMo(m){if(_anMonths.length===0)_anMonths=[1,2,3,4,5,6,7,8,9,10,11,12];var i=_anMonths.indexOf(m);if(i>=0){if(_anMonths.length>1)_anMonths.splice(i,1);}else _anMonths.push(m);renderAnalytics();}
 function _anClickHH(el){var k=el.getAttribute('data-hhk');_anExpHH[k]=!_anExpHH[k];renderAnalytics();}
 function _anOpenPolicy(el){var id=parseInt(el.getAttribute('data-pid'));if(id)jumpTo(id);}
@@ -3059,6 +3065,15 @@ function toggleMobileMenu(){
 function closeMobileMenu(){
   document.getElementById('mob-drawer').style.display='none';
   document.getElementById('mob-overlay').style.display='none';
+}
+
+function toggleReview(id){
+  var c=clients.find(function(x){return x.id===id;});if(!c)return;
+  var newVal=c.ar==='Y'?'N':'Y';
+  pushUndo((newVal==='Y'?'Marked':'Unmarked')+' ask for review: '+c.cn);
+  c.ar=newVal;
+  sheetWrite('writeAskReview',{rowNum:c.rowNum,value:newVal});
+  render();
 }
 
 </script>
