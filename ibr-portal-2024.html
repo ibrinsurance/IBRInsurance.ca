@@ -350,9 +350,9 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
         data-text="sign_in_with"
         data-size="large"
         data-width="300">
-      </div>
-      <div style="margin-top:14px;text-align:center">
-        <div style="font-size:11px;color:#94a3b8;margin-bottom:8px">— or enter your email —</div>
+      </div></div>
+      <div style="margin-top:16px;text-align:center;border-top:1px solid #e2e8f0;padding-top:16px">
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:10px;letter-spacing:.03em">— or enter your email directly —</div>
         <input id="manualEmail" type="email" placeholder="your@gmail.com"
           style="width:280px;padding:9px 12px;border:1px solid #e2e8f0;border-radius:6px;font-family:DM Sans,sans-serif;font-size:13px;box-sizing:border-box;margin-bottom:8px;display:block;margin-left:auto;margin-right:auto"
           onkeydown="if(event.key==='Enter')manualLogin()">
@@ -463,16 +463,12 @@ function initGoogleSignIn(){
         text:'sign_in_with', size:'large', width:300
       });
     }
-    console.log('[IBR] Google Sign-In initialized');
-  } catch(e){ console.error('GSI init error:', e); }
-}
-</script>
-<script>
+    console.log('[IBR] Google Sign-In initi
 // ══ CONFIG ══
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw6eYiWNfqLFgOJ3YtndXQkG6MCL3DOJbj74ggyvyqXdefgCbwBbiozmkm_1fkIPIU/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzH7COctxbNctUUe4wpasmFypaur9MFpS_D1j9zP2O5NSpBlT093JZIoziRfZMGl2ju/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -2007,7 +2003,7 @@ function openEditLeadModal(id){
     +'<div class="fg2"><label>Due date</label><input id="el-due" type="date" value="'+(l.due||'')+'">'+'</div>'
     +'<div class="fg2"><label>Expected commission ($)</label><input id="el-comm" type="number" value="'+(l.comm||'')+'" placeholder="Auto if blank"></div>'
     +'<div class="fg2"><label>Travel date (SV/VTC)</label><input id="el-travel" type="date" value="'+(l.travelDate||'')+'"></div>'
-    +'<div class="fg2 full"><label>Notes</label><textarea id="el-note" style="height:80px">'+(l.note||'')+'</textarea></div>'
+    +'<div class="fg2 full"><label>Notes</label><textarea id="el-note" style="height:80px">'+(l.note||'')+'</textarea>'    +'<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:5px">'    +['Interested, call later','Price sensitive','Travel date confirmed','Wants cheapest','Call back 1 week','Medical pending'].map(function(q){return'<button type="button" onclick="var el=document.getElementById(\'el-note\');el.value=(el.value?el.value+\', \':\'\')+\''+q+'\'" style="font-size:10px;padding:2px 7px;border:1px solid var(--border);border-radius:4px;background:var(--bg);cursor:pointer;font-family:DM Sans,sans-serif">'+q+'</button>';}).join('')    +'</div></div>'
     +'</div>'
     +'<div class="fac"><button class="bcn" id="el-cancel">Cancel</button><button class="bsb" id="el-save">Save changes</button></div></div>';
   document.getElementById('modal').innerHTML='';
@@ -2101,7 +2097,7 @@ function renderLeads(){
   });
   html+='</div>';
   html+='<div style="margin-left:auto;display:flex;gap:6px;align-items:center">';
-  html+='<select onchange="_leadSort=this.value;renderLeads()" style="font-size:11px;padding:3px 6px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text2);font-family:DM Sans,sans-serif"><option value="due"'+(_leadSort==='due'?' selected':'')+'>Sort: Due date</option><option value="added"'+(_leadSort==='added'?' selected':'')+'>Sort: Added</option><option value="name"'+(_leadSort==='name'?' selected':'')+'>Sort: Name</option></select>';
+  html+='<select onchange="_leadSort=this.value;renderLeads()" style="font-size:11px;padding:3px 6px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text2);font-family:DM Sans,sans-serif"><option value="due"'+(_leadSort==='due'?' selected':'')+'>Sort: Due date</option><option value="added"'+(_leadSort==='added'?' selected':'')+'>Sort: Added</option><option value="name"'+(_leadSort==='name'?' selected':'')+'>Sort: Name</option><option value="comm"'+(_leadSort==='comm'?' selected':'')+'>Sort: Commission</option></select>';
   html+='<select onchange="_leadGroup=this.value;renderLeads()" style="font-size:11px;padding:3px 6px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text2);font-family:DM Sans,sans-serif"><option value="list"'+(_leadGroup==='list'?' selected':'')+'>Group: By list</option><option value="date"'+(_leadGroup==='date'?' selected':'')+'>Group: By date</option><option value="none"'+(_leadGroup==='none'?' selected':'')+'>None</option></select>';
   html+='<button onclick="_lv()" style="padding:4px 8px;font-size:11px;border:1px solid var(--border);border-radius:4px;background:none;cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif">'+(_leadView==='board'?'List':'Board')+'</button>';
   html+='<button onclick="_addList()" style="padding:4px 8px;font-size:11px;border:1px solid var(--border2);border-radius:4px;background:none;cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif">+ List</button>';
@@ -2112,6 +2108,7 @@ function renderLeads(){
   else if(_leadFilter!=='all')filtered=active.filter(function(l){return l.list===_leadFilter;});
   filtered=filtered.slice().sort(function(a,b){
     if(_leadSort==='name')return a.name.localeCompare(b.name);
+    if(_leadSort==='comm')return getExpectedComm(b)-getExpectedComm(a);
     if(_leadSort==='added')return new Date(b.created)-new Date(a.created);
     if(!a.due&&!b.due)return 0;if(!a.due)return 1;if(!b.due)return-1;
     return new Date(a.due)-new Date(b.due);
@@ -2192,6 +2189,7 @@ function renderLeadCards(leadList){
   function getLeadAge(l){
     if(!l.created)return null;
     var days=Math.ceil((new Date()-new Date(l.created))/864e5);
+    if(isNaN(days)||days<0)return null;
     if(days<=2)return{label:'New',color:'var(--accent)',days:days};
     if(days<=7)return{label:'Warm',color:'#f59e0b',days:days};
     if(days<=30)return{label:'Cold',color:'var(--red)',days:days};
@@ -2678,7 +2676,7 @@ function openEditLeadModal(id){
     +'<div class="fg2"><label>List</label><select id="el-list">'+listOpts+'</select></div>'
     +'<div class="fg2"><label>Due date</label><input id="el-due" type="date" value="'+(l.due||'')+'">'+'</div>'
     +'<div class="fg2"><label>Expected commission ($)</label><input id="el-comm" type="number" value="'+(l.comm||'')+'" placeholder="Auto if blank"></div>'
-    +'<div class="fg2 full"><label>Notes</label><textarea id="el-note" style="height:80px">'+(l.note||'')+'</textarea></div>'
+    +'<div class="fg2 full"><label>Notes</label><textarea id="el-note" style="height:80px">'+(l.note||'')+'</textarea>'    +'<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:5px">'    +['Interested, call later','Price sensitive','Travel date confirmed','Wants cheapest','Call back 1 week','Medical pending'].map(function(q){return'<button type="button" onclick="var el=document.getElementById(\'el-note\');el.value=(el.value?el.value+\', \':\'\')+\''+q+'\'" style="font-size:10px;padding:2px 7px;border:1px solid var(--border);border-radius:4px;background:var(--bg);cursor:pointer;font-family:DM Sans,sans-serif">'+q+'</button>';}).join('')    +'</div></div>'
     +'</div>'
     +'<div class="fac"><button class="bcn" id="el-cancel">Cancel</button><button class="bsb" id="el-save">Save changes</button></div>'
     +'</div>';
@@ -3165,6 +3163,10 @@ function manualLogin(){
   document.getElementById('userAvatar').textContent=email.substring(0,2).toUpperCase();
   document.getElementById('userName').textContent=email.split('@')[0];
   document.getElementById('userRole').textContent=isOwner?'Owner':'Assistant';
+  loadData();
+}
+
+tElementById('userRole').textContent=isOwner?'Owner':'Assistant';
   loadData();
 }
 
