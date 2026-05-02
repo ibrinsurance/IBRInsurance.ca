@@ -342,11 +342,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
     <div class="ltitle">Advisor Portal</div>
     <div class="lsub">Sign in with your authorized Google account</div>
     <div class="signin-wrap">
-      <div id="g_id_onload"
-        data-client_id="49708486624-1ct34k1ur759otklcd2cnlgbaa2vggd1.apps.googleusercontent.com"
-        data-callback="_gsiCallback"
-        data-auto_prompt="false">
-      </div>
+      
       <div class="g_id_signin"
         data-type="standard"
         data-shape="rectangular"
@@ -416,20 +412,19 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 </div>
 <div id="modal"></div>
 
-<script src="https://accounts.google.com/gsi/client" async></script>
+<script src="https://accounts.google.com/gsi/client" async defer onload="initGoogleSignIn()"></script>
 <script>
-// GSI callback wrapper — defined early so GSI library can call it immediately
-// Stores credential until handleCredentialResponse is defined in main script
+// GSI wrapper - defined early, called by GSI library onload
 var _pendingCredential = null;
+
 function _gsiCallback(resp){
   if(typeof handleCredentialResponse === 'function'){
     handleCredentialResponse(resp);
   } else {
     _pendingCredential = resp;
-    // Poll until main script defines handleCredentialResponse
-    var wait = setInterval(function(){
+    var t = setInterval(function(){
       if(typeof handleCredentialResponse === 'function'){
-        clearInterval(wait);
+        clearInterval(t);
         handleCredentialResponse(_pendingCredential);
         _pendingCredential = null;
       }
@@ -437,34 +432,30 @@ function _gsiCallback(resp){
   }
 }
 
-window.addEventListener('load', function(){
-  function tryInit(){
-    if(typeof google === 'undefined' || !google.accounts){
-      setTimeout(tryInit, 200); return;
-    }
-    try {
-      google.accounts.id.initialize({
-        client_id: '49708486624-1ct34k1ur759otklcd2cnlgbaa2vggd1.apps.googleusercontent.com',
-        callback: _gsiCallback,
-        auto_select: false,
-        cancel_on_tap_outside: true,
-        use_fedcm_for_prompt: false,
-        error_callback: function(err){
-          var el = document.getElementById('loginError');
-          if(el){ el.textContent = 'Sign-in error: ' + (err.type||JSON.stringify(err)); el.style.display='block'; }
-        }
-      });
-      var btnDiv = document.querySelector('.g_id_signin');
-      if(btnDiv){
-        google.accounts.id.renderButton(btnDiv, {
-          type:'standard', shape:'rectangular', theme:'outline',
-          text:'sign_in_with', size:'large', width:300
-        });
+function initGoogleSignIn(){
+  try {
+    google.accounts.id.initialize({
+      client_id: '49708486624-1ct34k1ur759otklcd2cnlgbaa2vggd1.apps.googleusercontent.com',
+      callback: _gsiCallback,
+      auto_select: false,
+      cancel_on_tap_outside: true,
+      use_fedcm_for_prompt: false,
+      error_callback: function(err){
+        console.error('GSI error:', err);
+        var el = document.getElementById('loginError');
+        if(el){ el.textContent = 'Sign-in error: ' + (err.type||JSON.stringify(err)); el.style.display='block'; }
       }
-    } catch(e){ console.error('GSI init error:', e); }
-  }
-  tryInit();
-});
+    });
+    var btnDiv = document.querySelector('.g_id_signin');
+    if(btnDiv){
+      google.accounts.id.renderButton(btnDiv, {
+        type:'standard', shape:'rectangular', theme:'outline',
+        text:'sign_in_with', size:'large', width:300
+      });
+    }
+    console.log('[IBR] Google Sign-In initialized');
+  } catch(e){ console.error('GSI init error:', e); }
+}
 </script>
 <script>
 // ══ CONFIG ══
