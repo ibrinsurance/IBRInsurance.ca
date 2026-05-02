@@ -422,7 +422,6 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 </div>
 <div id="modal"></div>
 
-<script src="https://accounts.google.com/gsi/client" async defer onload="initGoogleSignIn()"></script>
 <script>
 // GSI wrapper - defined early, called by GSI library onload
 var _pendingCredential = null;
@@ -3171,6 +3170,19 @@ tElementById('userRole').textContent=isOwner?'Owner':'Assistant';
 }
 
 </script>
+<script src="https://accounts.google.com/gsi/client" async defer>
+// Start GSI after page loads - polls until google.accounts is available
+window.addEventListener('load', function(){
+  var t = setInterval(function(){
+    if(typeof google !== 'undefined' && google.accounts && typeof initGoogleSignIn === 'function'){
+      clearInterval(t);
+      initGoogleSignIn();
+    }
+  }, 100);
+  setTimeout(function(){ clearInterval(t); }, 10000); // give up after 10s
+});
+</script>
+
 
 <!-- MOBILE NAV DRAWER -->
 <div id="mob-overlay" onclick="closeMobileMenu()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9990"></div>
