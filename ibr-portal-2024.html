@@ -2299,10 +2299,14 @@ function renderAnalytics(){
   html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Compare years:</div>';
   html+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">';
   D.allYears.forEach(function(y){var sel2=_anYears.indexOf(y)>=0;var c=YC[y]||'#64748b';html+='<button onclick="_anToggleYear('+y+')" style="padding:5px 14px;border-radius:20px;border:2px solid '+c+';background:'+(sel2?c:'transparent')+';color:'+(sel2?'#fff':c)+';font-size:12px;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:600">'+y+'</button>';});
+  // All years + Clear year buttons
+  html+='<button onclick="_anYears=D.allYears.slice();renderAnalytics()" style="padding:5px 12px;border-radius:20px;border:2px solid var(--accent);background:var(--accent-l);color:var(--accent);font-size:12px;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:600">All</button>';
+  html+='<button onclick="_anYears=[];renderAnalytics()" style="padding:5px 12px;border-radius:20px;border:2px solid var(--border2);background:transparent;color:var(--text3);font-size:12px;font-family:DM Sans,sans-serif;cursor:pointer">None</button>';
   html+='</div><div style="display:flex;gap:6px;flex-wrap:wrap">';
   html+='<span style="font-size:11px;color:var(--text3);line-height:22px;margin-right:2px">Filter months:</span>';
   MONTHS.forEach(function(mn,i){var sel2=_anMonths.length===0||_anMonths.indexOf(i+1)>=0;html+='<button onclick="_anToggleMo('+(i+1)+')" style="padding:2px 8px;border-radius:4px;border:1px solid var(--border);background:'+(sel2?'var(--text)':'transparent')+';color:'+(sel2?'#fff':'var(--text3)')+';font-size:11px;font-family:DM Sans,sans-serif;cursor:pointer">'+mn+'</button>';});
-  html+='<button onclick="_anMonths=[];renderAnalytics()" style="padding:2px 8px;border-radius:4px;border:1px solid var(--accent);background:var(--accent-l);color:var(--accent);font-size:11px;font-family:DM Sans,sans-serif;cursor:pointer">All</button>';
+  html+='<button onclick="_anMonths=[];renderAnalytics()" style="padding:2px 8px;border-radius:4px;border:1px solid var(--accent);background:var(--accent-l);color:var(--accent);font-size:11px;font-family:DM Sans,sans-serif;cursor:pointer">All months</button>';
+  html+='<button onclick="var cy=new Date().getFullYear(),cm=new Date().getMonth()+1;_anYears=[cy];_anMonths=[cm];renderAnalytics()" style="padding:2px 8px;border-radius:4px;border:1px solid #6366f1;background:#eef2ff;color:#6366f1;font-size:11px;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:500">&#127981; This month</button>';
   if(_anMonths.length>0)html+='<button onclick="_anMonths=[];renderAnalytics()" style="padding:2px 8px;border-radius:4px;border:1px solid var(--red);color:var(--red);background:none;font-size:11px;font-family:DM Sans,sans-serif;cursor:pointer">Clear</button>';
   html+='</div></div>';
   // View toggle
