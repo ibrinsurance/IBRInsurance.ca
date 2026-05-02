@@ -678,7 +678,10 @@ function detH(c){
   html+='<button onclick="event.stopPropagation();openEditModal('+c.id+')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border2);border-radius:4px;background:none;cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif">Edit policy</button>';
   // Ask for review button
   var arDone=c.ar==='Y';
-  html+='<button onclick="event.stopPropagation();toggleReview('+c.id+')" title="Mark that you have asked this client for a Google/referral review" style="font-size:11px;padding:4px 10px;border:1px solid '+(arDone?'#10b981':'#f59e0b')+';border-radius:4px;background:'+(arDone?'#f0fdf4':'#fff7ed')+';cursor:pointer;color:'+(arDone?'#10b981':'#f59e0b')+';font-family:DM Sans,sans-serif">'+(arDone?'&#10003; Review asked':'&#11088; Ask for review')+'</button>';
+  // WhatsApp review button with smart template
+  html+='<button onclick="event.stopPropagation();openReviewWA('+c.id+')" title="Send WhatsApp message asking for Google review" style="font-size:11px;padding:4px 10px;border:1px solid #25D366;border-radius:4px;background:'+(arDone?'#f0fdf4':'#fff7ed')+';cursor:pointer;color:#25D366;font-family:DM Sans,sans-serif;font-weight:500">&#11088; '+(arDone?'WA Review (asked)':'WA Review')+'</button>';
+  // Manual toggle (if sent via other channel)
+  html+='<button onclick="event.stopPropagation();toggleReview('+c.id+')" title="'+(arDone?'Mark as not yet asked':'Mark as asked without sending WA')+'" style="font-size:11px;padding:4px 8px;border:1px solid '+(arDone?'#10b981':'var(--border2)')+';border-radius:4px;background:'+(arDone?'#f0fdf4':'none')+';cursor:pointer;color:'+(arDone?'#10b981':'var(--text3)')+';font-family:DM Sans,sans-serif">'+(arDone?'&#10003;':'&#9711;')+'</button>';
   if(c.status==='closed'){
     html+='<button onclick="event.stopPropagation();togglePolicyClosed('+c.id+')" style="font-size:11px;padding:4px 10px;border:1px solid var(--accent);border-radius:4px;background:var(--accent-l);cursor:pointer;color:var(--accent);font-family:DM Sans,sans-serif">&#8634; Reopen policy</button>';
   } else {
@@ -3074,6 +3077,48 @@ function toggleReview(id){
   c.ar=newVal;
   sheetWrite('writeAskReview',{rowNum:c.rowNum,value:newVal});
   render();
+}
+
+var REVIEW_LINK = 'https://share.google/yohwg3uVPmVa7bk37';
+
+function getReviewMsg(c){
+  // Find last transaction date across household
+  var lnk = getAllLinked(c);
+  var allP = [c].concat(lnk);
+  var lastSold = allP.reduce(function(max,p){
+    if(!p.ds) return max;
+    var d = new Date(p.ds);
+    return (!isNaN(d.getTime()) && d > max) ? d : max;
+  }, new Date(0));
+  var daysSince = lastSold.getTime() > 0 ? Math.ceil((new Date() - lastSold) / 864e5) : 999;
+  var first = (c.cn||'').split(' ')[0];
+
+  if(daysSince <= 3){
+    // Fresh client - casual add-on
+    return 'Hi ' + first + ', by the way, if you get a chance please do leave a review for my services. I\u2019d really appreciate it. \uD83D\uDE4F\n\nI also offer a range of services, including Life Insurance, Critical Illness and Disability Insurance, Visitor\u2019s Insurance, TFSA, RESP, and RRSPs.\n\nHere\u2019s the direct link to leave a review: ' + REVIEW_LINK + '\n\nThank you so much for your support!';
+  } else if(daysSince <= 90){
+    // Recent client - warm follow-up
+    return 'Hi ' + first + ', hope you\u2019re doing well! I wanted to quickly follow up and if you\u2019ve had a good experience working with me, I\u2019d be very grateful if you could leave a review. It really helps! \uD83D\uDE4F\n\nHere\u2019s the direct link: ' + REVIEW_LINK + '\n\nAlso, just a reminder that I offer Life Insurance, Critical Illness and Disability Insurance, Visitor\u2019s Insurance, TFSA, RESP, and RRSPs \u2014 happy to help with any of these.\n\nThank you so much!';
+  } else {
+    // Older client - re-engagement
+    return 'Hi ' + first + ', hope you and the family are doing well! It\u2019s been a while since we connected. I\u2019d love to reconnect and if you\u2019ve been happy with my services, I\u2019d really appreciate it if you could leave a review when you get a chance. \uD83D\uDE4F\n\nHere\u2019s the direct link: ' + REVIEW_LINK + '\n\nAlso, I\u2019m still here for all your insurance and investment needs \u2014 Life, Critical Illness, Disability, Visitor\u2019s Insurance, TFSA, RESP, RRSPs, and more.\n\nThank you so much for your continued support!';
+  }
+}
+
+function openReviewWA(id){
+  var c = clients.find(function(x){return x.id===id;});
+  if(!c) return;
+  var ph = (c.ph?c.ph.toString():'').replace(/\D/g,'');
+  if(ph.length===10) ph='1'+ph;
+  if(!ph){ alert('No phone number on file for ' + c.cn); return; }
+  var msg = getReviewMsg(c);
+  window.open('https://wa.me/'+ph+'?text='+encodeURIComponent(msg), '_blank');
+  // Mark as asked for review
+  if(c.ar !== 'Y'){
+    c.ar='Y';
+    sheetWrite('writeAskReview',{rowNum:c.rowNum,value:'Y'});
+    render();
+  }
 }
 
 </script>
