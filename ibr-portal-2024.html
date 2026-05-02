@@ -624,7 +624,7 @@ function setMode(m){
   document.getElementById('searchInput').placeholder=m==='lookup'?'Type phone, email, or name…':'Search name, phone, email, city…';
   render();
 }
-function setTab(t){tab=t;sel=null;[['ov','overdue'],['tw','thisweek'],['up','upcoming'],['al','all']].forEach(([k,v])=>document.getElementById('t-'+k).classList.toggle('active',v===t));render();}
+function setTab(t){tab=t;sel=null;[['ov','overdue'],['td','today'],['tw','thisweek'],['up','upcoming'],['al','all']].forEach(([k,v])=>{var el=document.getElementById('t-'+k);if(el)el.classList.toggle('active',v===t);});render();}
 function markAllDone(){pushUndo('Mark all complete');getFiltered().forEach(c=>c.done=true);render();}
 function ubdg(){const base=clients.filter(vbp);const q=(document.getElementById('searchInput').value||'').toLowerCase();const qf=q?base.filter(c=>[c.cn,c.cy,c.pn].some(x=>(x||'').toLowerCase().includes(q))):base;[['ov','overdue'],['td','today'],['tw','thisweek'],['up','upcoming']].forEach(([k,v])=>{var el=document.getElementById('b-'+k);if(el)el.textContent=qf.filter(c=>gst(c)===v).length;});document.getElementById('b-al').textContent=qf.length;}
 
@@ -2302,6 +2302,7 @@ function renderAnalytics(){
   html+='</div><div style="display:flex;gap:6px;flex-wrap:wrap">';
   html+='<span style="font-size:11px;color:var(--text3);line-height:22px;margin-right:2px">Filter months:</span>';
   MONTHS.forEach(function(mn,i){var sel2=_anMonths.length===0||_anMonths.indexOf(i+1)>=0;html+='<button onclick="_anToggleMo('+(i+1)+')" style="padding:2px 8px;border-radius:4px;border:1px solid var(--border);background:'+(sel2?'var(--text)':'transparent')+';color:'+(sel2?'#fff':'var(--text3)')+';font-size:11px;font-family:DM Sans,sans-serif;cursor:pointer">'+mn+'</button>';});
+  html+='<button onclick="_anMonths=[];renderAnalytics()" style="padding:2px 8px;border-radius:4px;border:1px solid var(--accent);background:var(--accent-l);color:var(--accent);font-size:11px;font-family:DM Sans,sans-serif;cursor:pointer">All</button>';
   if(_anMonths.length>0)html+='<button onclick="_anMonths=[];renderAnalytics()" style="padding:2px 8px;border-radius:4px;border:1px solid var(--red);color:var(--red);background:none;font-size:11px;font-family:DM Sans,sans-serif;cursor:pointer">Clear</button>';
   html+='</div></div>';
   // View toggle
