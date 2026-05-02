@@ -342,7 +342,11 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
     <div class="ltitle">Advisor Portal</div>
     <div class="lsub">Sign in with your authorized Google account</div>
     <div class="signin-wrap">
-      
+      <div id="g_id_onload"
+        data-client_id="49708486624-1ct34k1ur759otklcd2cnlgbaa2vggd1.apps.googleusercontent.com"
+        data-callback="handleCredentialResponse"
+        data-auto_prompt="false">
+      </div>
       <div class="g_id_signin"
         data-type="standard"
         data-shape="rectangular"
@@ -350,7 +354,8 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
         data-text="sign_in_with"
         data-size="large"
         data-width="300">
-      </div></div>
+      </div>
+      </div>
       <div style="margin-top:16px;text-align:center;border-top:1px solid #e2e8f0;padding-top:16px">
         <div style="font-size:11px;color:#94a3b8;margin-bottom:10px;letter-spacing:.03em">— or enter your email directly —</div>
         <input id="manualEmail" type="email" placeholder="your@gmail.com"
@@ -422,48 +427,8 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 </div>
 <div id="modal"></div>
 
-<script>
-// GSI wrapper - defined early, called by GSI library onload
-var _pendingCredential = null;
-
-function _gsiCallback(resp){
-  if(typeof handleCredentialResponse === 'function'){
-    handleCredentialResponse(resp);
-  } else {
-    _pendingCredential = resp;
-    var t = setInterval(function(){
-      if(typeof handleCredentialResponse === 'function'){
-        clearInterval(t);
-        handleCredentialResponse(_pendingCredential);
-        _pendingCredential = null;
-      }
-    }, 50);
-  }
-}
-
-function initGoogleSignIn(){
-  try {
-    google.accounts.id.initialize({
-      client_id: '49708486624-1ct34k1ur759otklcd2cnlgbaa2vggd1.apps.googleusercontent.com',
-      callback: _gsiCallback,
-      auto_select: false,
-      cancel_on_tap_outside: true,
-      use_fedcm_for_prompt: false,
-      error_callback: function(err){
-        console.error('GSI error:', err);
-        var el = document.getElementById('loginError');
-        if(el){ el.textContent = 'Sign-in error: ' + (err.type||JSON.stringify(err)); el.style.display='block'; }
-      }
-    });
-    var btnDiv = document.querySelector('.g_id_signin');
-    if(btnDiv){
-      google.accounts.id.renderButton(btnDiv, {
-        type:'standard', shape:'rectangular', theme:'outline',
-        text:'sign_in_with', size:'large', width:300
-      });
-    }
-    console.log('[IBR] Google Sign-In initi
-// ══ CONFIG ══
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>// ══ CONFIG ══
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
@@ -3164,24 +3129,8 @@ function manualLogin(){
   document.getElementById('userRole').textContent=isOwner?'Owner':'Assistant';
   loadData();
 }
-
-tElementById('userRole').textContent=isOwner?'Owner':'Assistant';
-  loadData();
-}
-
 </script>
-<script src="https://accounts.google.com/gsi/client" async defer>
-// Start GSI after page loads - polls until google.accounts is available
-window.addEventListener('load', function(){
-  var t = setInterval(function(){
-    if(typeof google !== 'undefined' && google.accounts && typeof initGoogleSignIn === 'function'){
-      clearInterval(t);
-      initGoogleSignIn();
-    }
-  }, 100);
-  setTimeout(function(){ clearInterval(t); }, 10000); // give up after 10s
-});
-</script>
+
 
 
 <!-- MOBILE NAV DRAWER -->
