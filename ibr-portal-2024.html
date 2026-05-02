@@ -468,7 +468,7 @@ function initGoogleSignIn(){
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwJH-Qbfid9OwwcpAaY4Db5linCW6nOQahS22HQEOpa4JV2Pv38pOlpH9OlZXVQ2VMD/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw6eYiWNfqLFgOJ3YtndXQkG6MCL3DOJbj74ggyvyqXdefgCbwBbiozmkm_1fkIPIU/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -3113,12 +3113,17 @@ function openReviewWA(id){
   if(!ph){ alert('No phone number on file for ' + c.cn); return; }
   var msg = getReviewMsg(c);
   window.open('https://wa.me/'+ph+'?text='+encodeURIComponent(msg), '_blank');
-  // Mark as asked for review
-  if(c.ar !== 'Y'){
-    c.ar='Y';
-    sheetWrite('writeAskReview',{rowNum:c.rowNum,value:'Y'});
-    render();
-  }
+  // Ask user if they actually sent it — don't auto-mark
+  setTimeout(function(){
+    var banner = document.createElement('div');
+    banner.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:12px 18px;border-radius:10px;font-family:DM Sans,sans-serif;font-size:13px;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.3);display:flex;align-items:center;gap:12px;white-space:nowrap';
+    banner.innerHTML = '<span>Did you send the review message to <strong>' + c.cn + '</strong>?</span>'
+      + '<button onclick="(function(){var cc=clients.find(function(x){return x.id==='+id+';});if(cc){cc.ar='Y';sheetWrite('writeAskReview',{rowNum:cc.rowNum,value:'Y'});render();}this.closest('div').remove();})()" style="padding:5px 14px;border:none;border-radius:6px;background:#10b981;color:#fff;font-family:DM Sans,sans-serif;font-size:12px;cursor:pointer;font-weight:500">Yes, mark done</button>'
+      + '<button onclick="this.closest('div').remove()" style="padding:5px 14px;border:none;border-radius:6px;background:rgba(255,255,255,.12);color:#94a3b8;font-family:DM Sans,sans-serif;font-size:12px;cursor:pointer">Not yet</button>';
+    document.body.appendChild(banner);
+    // Auto-dismiss after 20s
+    setTimeout(function(){ if(banner.parentNode) banner.remove(); }, 20000);
+  }, 1500);
 }
 
 </script>
