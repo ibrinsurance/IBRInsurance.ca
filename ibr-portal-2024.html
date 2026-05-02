@@ -351,6 +351,16 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
         data-size="large"
         data-width="300">
       </div>
+      <div style="margin-top:14px;text-align:center">
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:8px">— or enter your email —</div>
+        <input id="manualEmail" type="email" placeholder="your@gmail.com"
+          style="width:280px;padding:9px 12px;border:1px solid #e2e8f0;border-radius:6px;font-family:DM Sans,sans-serif;font-size:13px;box-sizing:border-box;margin-bottom:8px;display:block;margin-left:auto;margin-right:auto"
+          onkeydown="if(event.key==='Enter')manualLogin()">
+        <button onclick="manualLogin()"
+          style="width:280px;padding:10px;background:#1a2e22;color:#fff;border:none;border-radius:6px;font-family:DM Sans,sans-serif;font-size:13px;cursor:pointer;font-weight:500">
+          Sign in
+        </button>
+      </div>
     </div>
     <div class="lerror" id="loginError">Access denied. Only authorized accounts can access this portal.</div>
   </div>
@@ -2967,24 +2977,24 @@ function _showSyncBanner(newCount){
   if(old) old.remove();
 
   var banner = document.createElement('div');
-  banner.id = 'sync-banner';
-  var msg = newCount > 0
-    ? '🔄 ' + newCount + ' new record' + (newCount === 1 ? '' : 's') + ' in sheet'
-    : '🔄 Sheet data updated';
-  banner.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#1e293b;color:#fff;'
-    + 'padding:10px 16px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:13px;'
-    + 'z-index:9998;box-shadow:0 4px 16px rgba(0,0,0,.3);display:flex;align-items:center;gap:10px;'
-    + 'cursor:pointer;border:1px solid #334155;animation:slideUp .3s ease';
-  banner.innerHTML = '<span>' + msg + '</span>'
-    + '<button onclick="applySyncNow()" style="padding:4px 12px;border:none;border-radius:4px;'
-    + 'background:#3b82f6;color:#fff;font-family:DM Sans,sans-serif;font-size:12px;cursor:pointer;'
-    + 'font-weight:500">Apply now</button>'
-    + '<button onclick="delaySyncBanner(5)" style="padding:4px 10px;border:none;border-radius:4px;'
-    + 'background:rgba(255,255,255,.1);color:#94a3b8;font-family:DM Sans,sans-serif;font-size:12px;'
-    + 'cursor:pointer">Delay 5 min</button>'
-    + '<span onclick="document.getElementById(\'sync-banner\').remove()" '
-    + 'style="color:#64748b;cursor:pointer;font-size:16px;padding:0 4px">&times;</span>';
-  document.body.appendChild(banner);
+    banner.id='review-banner-'+id;
+    banner.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:12px 18px;border-radius:10px;font-family:DM Sans,sans-serif;font-size:13px;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.3);display:flex;align-items:center;gap:12px;white-space:nowrap';
+    // content built via createElement;
+    var yesBtn = document.createElement('button');
+    yesBtn.textContent = 'Yes, mark done';
+    yesBtn.style.cssText = 'padding:5px 14px;border:none;border-radius:6px;background:#10b981;color:#fff;font-family:DM Sans,sans-serif;font-size:12px;cursor:pointer;font-weight:500';
+    yesBtn.onclick = function(){
+      var cc=clients.find(function(x){return x.id===id;});
+      if(cc){cc.ar='Y';sheetWrite('writeAskReview',{rowNum:cc.rowNum,value:'Y'});render();}
+      banner.remove();
+    };
+    var noBtn = document.createElement('button');
+    noBtn.textContent = 'Not yet';
+    noBtn.style.cssText = 'padding:5px 14px;border:none;border-radius:6px;background:rgba(255,255,255,.12);color:#94a3b8;font-family:DM Sans,sans-serif;font-size:12px;cursor:pointer';
+    noBtn.onclick = function(){ banner.remove(); };
+    banner.appendChild(yesBtn);
+    banner.appendChild(noBtn);
+    document.body.appendChild(banner);;
 
   // Auto-dismiss after 30 seconds if not acted on
   setTimeout(function(){
@@ -3111,13 +3121,51 @@ function openReviewWA(id){
   setTimeout(function(){
     var banner = document.createElement('div');
     banner.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:12px 18px;border-radius:10px;font-family:DM Sans,sans-serif;font-size:13px;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.3);display:flex;align-items:center;gap:12px;white-space:nowrap';
-    banner.innerHTML = '<span>Did you send the review message to <strong>' + c.cn + '</strong>?</span>'
-      + '<button onclick="(function(){var cc=clients.find(function(x){return x.id==='+id+';});if(cc){cc.ar='Y';sheetWrite('writeAskReview',{rowNum:cc.rowNum,value:'Y'});render();}this.closest('div').remove();})()" style="padding:5px 14px;border:none;border-radius:6px;background:#10b981;color:#fff;font-family:DM Sans,sans-serif;font-size:12px;cursor:pointer;font-weight:500">Yes, mark done</button>'
-      + '<button onclick="this.closest('div').remove()" style="padding:5px 14px;border:none;border-radius:6px;background:rgba(255,255,255,.12);color:#94a3b8;font-family:DM Sans,sans-serif;font-size:12px;cursor:pointer">Not yet</button>';
+    // content built via createElement
+      // yes button built via createElement above
+      // not yet button built via createElement above
     document.body.appendChild(banner);
     // Auto-dismiss after 20s
     setTimeout(function(){ if(banner.parentNode) banner.remove(); }, 20000);
   }, 1500);
+}
+
+function manualLogin(){
+  var email = (document.getElementById('manualEmail').value||'').trim().toLowerCase();
+  if(!email){ document.getElementById('manualEmail').focus(); return; }
+  var owner = OWNER.toLowerCase();
+  var assistants = ASSISTANTS.map(function(a){return a.toLowerCase();});
+  if(email !== owner && assistants.indexOf(email) < 0){
+    document.getElementById('loginError').textContent = 'Access denied. Only authorized accounts can access this portal.';
+    document.getElementById('loginError').style.display = 'block';
+    return;
+  }
+  // Authorized - log in
+  isOwner = (email === owner);
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appShell').style.display = 'block';
+  document.getElementById('userAvatar').textContent = email.substring(0,2).toUpperCase();
+  document.getElementById('userName').textContent = email.split('@')[0];
+  document.getElementById('userRole').textContent = isOwner ? 'Owner' : 'Assistant';
+  loadData();
+}
+
+function manualLogin(){
+  var email=(document.getElementById('manualEmail').value||'').trim().toLowerCase();
+  if(!email){document.getElementById('manualEmail').focus();return;}
+  var ok=(email===OWNER.toLowerCase())||ASSISTANTS.some(function(a){return a.toLowerCase()===email;});
+  if(!ok){
+    var el=document.getElementById('loginError');
+    el.textContent='Access denied. Only authorized accounts can access this portal.';
+    el.style.display='block';return;
+  }
+  isOwner=(email===OWNER.toLowerCase());
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appShell').style.display='block';
+  document.getElementById('userAvatar').textContent=email.substring(0,2).toUpperCase();
+  document.getElementById('userName').textContent=email.split('@')[0];
+  document.getElementById('userRole').textContent=isOwner?'Owner':'Assistant';
+  loadData();
 }
 
 </script>
