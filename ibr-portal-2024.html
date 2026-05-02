@@ -418,50 +418,39 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 
 <script src="https://accounts.google.com/gsi/client" async></script>
 <script>
-// Initialize Google Sign-In explicitly with FedCM disabled (Chrome 2025 compatibility)
+// Defer GSI init until after main script has parsed (handleCredentialResponse will exist)
 window.addEventListener('load', function(){
-  if(typeof google === 'undefined' || !google.accounts) {
-    // GSI not loaded yet - retry
-    setTimeout(function(){
-      if(typeof google !== 'undefined' && google.accounts){
-        initGoogleSignIn();
-      }
-    }, 1000);
-    return;
-  }
-  initGoogleSignIn();
-});
-
-function initGoogleSignIn(){
-  try {
-    google.accounts.id.initialize({
-      client_id: '49708486624-1ct34k1ur759otklcd2cnlgbaa2vggd1.apps.googleusercontent.com',
-      callback: handleCredentialResponse,
-      auto_select: false,
-      cancel_on_tap_outside: true,
-      use_fedcm_for_prompt: false,
-      error_callback: function(err){
-        console.error('Google Sign-In error:', JSON.stringify(err));
-        var el = document.getElementById('loginError');
-        if(el){ el.textContent = 'Sign-in error: ' + (err.type || JSON.stringify(err)) + ' — try refreshing or use a different browser.'; el.style.display = 'block'; }
-      }
-    });
-    // Render the sign-in button explicitly
-    var btnDiv = document.querySelector('.g_id_signin');
-    if(btnDiv){
-      google.accounts.id.renderButton(btnDiv, {
-        type: 'standard',
-        shape: 'rectangular',
-        theme: 'outline',
-        text: 'sign_in_with',
-        size: 'large',
-        width: 300
-      });
+  function tryInit(){
+    if(typeof google === 'undefined' || !google.accounts) {
+      setTimeout(tryInit, 300); return;
     }
-  } catch(e){
-    console.error('GSI init error:', e);
+    if(typeof handleCredentialResponse === 'undefined') {
+      setTimeout(tryInit, 300); return;
+    }
+    try {
+      google.accounts.id.initialize({
+        client_id: '49708486624-1ct34k1ur759otklcd2cnlgbaa2vggd1.apps.googleusercontent.com',
+        callback: handleCredentialResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true,
+        use_fedcm_for_prompt: false,
+        error_callback: function(err){
+          console.error('Google Sign-In error:', JSON.stringify(err));
+          var el = document.getElementById('loginError');
+          if(el){ el.textContent = 'Sign-in error: ' + (err.type || JSON.stringify(err)) + ' — try refreshing or use a different browser.'; el.style.display = 'block'; }
+        }
+      });
+      var btnDiv = document.querySelector('.g_id_signin');
+      if(btnDiv){
+        google.accounts.id.renderButton(btnDiv, {
+          type: 'standard', shape: 'rectangular', theme: 'outline',
+          text: 'sign_in_with', size: 'large', width: 300
+        });
+      }
+    } catch(e){ console.error('GSI init error:', e); }
   }
-}
+  tryInit();
+});
 </script>
 <script>
 // ══ CONFIG ══
