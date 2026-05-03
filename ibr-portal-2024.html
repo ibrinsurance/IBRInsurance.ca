@@ -1049,7 +1049,7 @@ function _parseSmartQuery(q){
     // Check partial product
     var matched=Object.entries(prodKw).find(function(e){return e[0].startsWith(w)&&w.length>=3;});
     if(matched){f.product=matched[1];return;}
-    if(/^\d{3,}$/.test(w)){f.phone=w;return;}
+    if(/^\d{3,}$/.test(w)){f.phone=w;f.terms.push(w);return;}
     f.terms.push(w);
   });
   return f;
@@ -1063,13 +1063,17 @@ function _matchesFilters(c,f){
   if(f.city&&!lc(c.cy).includes(f.city))return false;
   // Product filter
   if(f.product&&!lc(c.pr).includes(f.product))return false;
-  // Phone filter
-  if(f.phone&&!(lc((c.ph||'').toString()).replace(/\D/g,'')).includes(f.phone))return false;
+  // Phone filter - also check policy number for numeric searches
+  if(f.phone){
+    var phoneMatch=(lc((c.ph||'').toString()).replace(/\D/g,'')).includes(f.phone);
+    var pnMatch=(c.pn||'').toString().replace(/\D/g,'').includes(f.phone);
+    if(!phoneMatch&&!pnMatch)return false;
+  }
   // Text terms
   // If nothing to filter on, don't match (shouldn't happen but safety check)
   if(f.terms.length===0&&!f.city&&!f.product&&!f.phone&&!f.noProduct)return false;
   // Check text terms against all fields
-  if(f.terms.length>0){var searchFields=[c.cn,c.ins,c.ph,c.em,c.cy,c.pn,c.pr,c.src,c.co].join(' ').toLowerCase();if(!f.terms.every(function(t){return searchFields.includes(t);}))return false;}
+  if(f.terms.length>0){var searchFields=[c.cn,c.ins,(c.ph||'').toString(),c.em,c.cy,(c.pn||'').toString(),c.pr,c.src,c.co].join(' ').toLowerCase();if(!f.terms.every(function(t){return searchFields.includes(t);}))return false;}
   return true;
 }
 
@@ -1910,7 +1914,7 @@ function openAddLeadModal(defaultList){
   m.onclick=function(e){if(e.target===m)m.remove();};
   m.innerHTML='<div class="mod" style="max-width:480px"><div class="mtit">Add lead</div><div class="fgr">'
     +'<div class="fg2 full"><label>Name / note *</label><input id="l-name" placeholder="e.g. Harjinder Singh - Term Insurance"></div>'
-    +'<div class="fg2"><label>Phone</label><input id="l-phone" placeholder="+1 416-555-0000"></div>'
+    +'<div class="fg2"><label>Phone</label><input id="l-phone" placeholder="+1 416-555-0000" onblur="this.value=fmtPhone(this.value)"></div>'
     +'<div class="fg2"><label>Source</label><input id="l-src" placeholder="Referral, TikTok, Instagram..."></div>'
     +'<div class="fg2"><label>List</label><select id="l-list">'+listOpts+'</select></div>'
     +'<div class="fg2"><label>Due date</label><input id="l-due" type="date" value="'+today+'"></div>'
@@ -1940,7 +1944,7 @@ function submitAddLead(){
     id:leadNextId++,
     list:document.getElementById('l-list').value,
     name:name,
-    phone:(document.getElementById('l-phone').value||'').trim(),
+    phone:fmtPhone(document.getElementById('l-phone').value||''),
     src:(document.getElementById('l-src').value||'').trim(),
     note:(document.getElementById('l-note').value||'').trim(),
     due:(document.getElementById('l-due').value||today).trim(),
@@ -1961,7 +1965,7 @@ function openEditLeadModal(id){
   m.onclick=function(e){if(e.target===m)m.remove();};
   m.innerHTML='<div class="mod" style="max-width:480px"><div class="mtit">Edit lead</div><div class="fgr">'
     +'<div class="fg2 full"><label>Name / note *</label><input id="el-name" value="'+( l.name||'').replace(/"/g,'&quot;')+'"></div>'
-    +'<div class="fg2"><label>Phone</label><input id="el-phone" value="'+(l.phone||'')+'"></div>'
+    +'<div class="fg2"><label>Phone</label><input id="el-phone" value="'+fmtPhone(l.phone||'')+'" onblur="this.value=fmtPhone(this.value)"></div>'
     +'<div class="fg2"><label>Source</label><input id="el-src" value="'+(l.src||'')+'" placeholder="Referral, TikTok..."></div>'
     +'<div class="fg2"><label>List</label><select id="el-list">'+listOpts+'</select></div>'
     +'<div class="fg2"><label>Due date</label><input id="el-due" type="date" value="'+(l.due||'')+'">'+'</div>'
@@ -1975,7 +1979,7 @@ function openEditLeadModal(id){
   document.getElementById('el-cancel').onclick=function(){m.remove();};
   document.getElementById('el-save').onclick=function(){
     l.name=(document.getElementById('el-name').value||'').trim()||l.name;
-    l.phone=(document.getElementById('el-phone').value||'').trim();
+    l.phone=fmtPhone(document.getElementById('el-phone').value||'');
     l.src=(document.getElementById('el-src').value||'').trim();
     l.list=document.getElementById('el-list').value;
     l.due=(document.getElementById('el-due').value||'').trim();
@@ -2635,7 +2639,7 @@ function openEditLeadModal(id){
   m.onclick=function(e){if(e.target===m)m.remove();};
   m.innerHTML='<div class="mod" style="max-width:460px"><div class="mtit">Edit lead</div><div class="fgr">'
     +'<div class="fg2 full"><label>Name / note *</label><input id="el-name" value="'+( l.name||'').replace(/"/g,'&quot;')+'"></div>'
-    +'<div class="fg2"><label>Phone</label><input id="el-phone" value="'+(l.phone||'')+'"></div>'
+    +'<div class="fg2"><label>Phone</label><input id="el-phone" value="'+fmtPhone(l.phone||'')+'" onblur="this.value=fmtPhone(this.value)"></div>'
     +'<div class="fg2"><label>Source</label><input id="el-src" value="'+(l.src||'')+'" placeholder="Referral, TikTok..."></div>'
     +'<div class="fg2"><label>List</label><select id="el-list">'+listOpts+'</select></div>'
     +'<div class="fg2"><label>Due date</label><input id="el-due" type="date" value="'+(l.due||'')+'">'+'</div>'
@@ -2654,7 +2658,7 @@ function submitEditLead(id){
   var l=leads.find(function(x){return x.id===id;});if(!l)return;
   var g=function(eid){var el=document.getElementById(eid);return el?(el.value||'').trim():'';};
   l.name=g('el-name')||l.name;
-  l.phone=g('el-phone');
+  l.phone=fmtPhone(g('el-phone'));
   l.src=g('el-src');
   l.list=g('el-list')||l.list;
   l.due=g('el-due');
@@ -3129,6 +3133,25 @@ function manualLogin(){
   document.getElementById('userRole').textContent=isOwner?'Owner':'Assistant';
   loadData();
 }
+
+function fmtPhone(raw){
+  if(!raw) return '';
+  var s = raw.toString().trim();
+  // Strip everything except digits and leading +
+  var digits = s.replace(/\D/g,'');
+  // Remove country code: +1, +91, +92, +44 etc.
+  // If 11 digits starting with 1 → North American → strip the 1
+  if(digits.length === 11 && digits[0] === '1') digits = digits.slice(1);
+  // If 12+ digits (international with country code like +91...) strip down to last 10
+  if(digits.length > 10) digits = digits.slice(-10);
+  // Format as NXX-NXX-XXXX if 10 digits
+  if(digits.length === 10){
+    return digits.slice(0,3) + '-' + digits.slice(3,6) + '-' + digits.slice(6);
+  }
+  // If fewer than 10 digits just return cleaned digits
+  return digits;
+}
+
 </script>
 
 
