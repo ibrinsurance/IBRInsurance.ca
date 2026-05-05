@@ -442,7 +442,7 @@ const CLAIM_TYPES=['Death Benefit','Critical Illness Payout','Disability Claim',
 const CLAIM_STATUSES=['Submitted','In Review','Approved','Paid','Denied'];
 const DQG=[{l:'Disability variants',i:['Disability','Disability Insurance']},{l:'Truck-Travel variants',i:['Truck-Travel','Truck - Travel','Truck Travel']},{l:'RRSP typos',i:['RRSP','RRP','SRRP']},{l:'Transfer variants',i:['UL Transfer','WL Transfer','Term Transfer','Transfer']},{l:'Likely wrong column',i:['Tiktok','Entity']}];
 
-let isOwner=false, clients=[], nextId=1000, mode='followup', tab='all', sel=null, preset='followups', nnt={}, lkp=null, undoStack=[], sheetConnected=false, showClosed=false;
+let isOwner=false, clients=[], nextId=1000, mode='followup', tab='all', sel=null, _selSet=new Set(), preset='followups', nnt={}, lkp=null, undoStack=[], sheetConnected=false, showClosed=false;
 
 // ── AUTH ──
 // Google Sign-in configured via data-attributes on g_id_onload div
@@ -973,7 +973,7 @@ function renderLookup(){
 var _recentOpened=[];
 
 function _snapshotCard(c){
-  var isel=(sel===c.id);
+  var isel=_selSet.has(c.id);
   // Track recent
   if(isel){if(_recentOpened.indexOf(c.id)<0)_recentOpened.unshift(c.id);if(_recentOpened.length>10)_recentOpened.pop();}
   var lnk=getAllLinked(c);
@@ -995,7 +995,7 @@ function _snapshotCard(c){
   if((hasProds.has('vtc')||hasProds.has('supervisa'))&&!hasProds.has('term insurance')&&!hasProds.has('ul insurance'))tags.push({t:'Life opportunity',c:'var(--accent)'});
   if((hasProds.has('term insurance')||hasProds.has('ul insurance'))&&!hasProds.has('critical illness'))tags.push({t:'CI opportunity',c:'#10b981'});
   var ph=((c.ph||'').toString()).split(/[,|]/)[0].trim();var waPhone=ph.replace(/\D/g,'');if(waPhone.length===10)waPhone='1'+waPhone;
-  var html='<div class="card'+(isel?' sel':'')+'" onclick="sel=(sel==='+c.id+'?null:'+c.id+');renderLookup()">';
+  var html='<div class="card'+(isel?' sel':'')+'" onclick="if(_selSet.has('+c.id+')){_selSet.delete('+c.id+');}else{_selSet.add('+c.id+');}renderLookup()">';
   // Card header
   html+='<div style="display:flex;align-items:center;gap:10px;padding-bottom:8px">';
   html+='<div class="av '+avc(c.cn)+'" style="width:36px;height:36px;font-size:13px;flex-shrink:0">'+ini(c.cn)+'</div>';
@@ -1023,9 +1023,10 @@ function _snapshotCard(c){
   // Quick action buttons — always visible
   html+='<div style="display:flex;gap:5px;flex-wrap:wrap" onclick="event.stopPropagation()">';
   if(waPhone)html+='<button data-phone="'+waPhone+'" data-name="'+c.cn.replace(/"/g,'')+'" onclick="hhWA(this)" style="font-size:11px;padding:3px 10px;border:1px solid #25D366;border-radius:4px;color:#25D366;background:none;cursor:pointer;font-family:DM Sans,sans-serif">WA</button>';
-  html+='<button onclick="openEditModal('+c.id+')" style="font-size:11px;padding:3px 10px;border:1px solid var(--border2);border-radius:4px;color:var(--text2);background:none;cursor:pointer;font-family:DM Sans,sans-serif">&#43; Sale</button>';
+  html+='<button onclick="event.stopPropagation();openNewSaleModal(\''+c.cn+'\',\''+c.ph+'\',\''+c.em+'\',\''+c.cy+'\',\''+c.src+'\')" style="font-size:11px;padding:3px 10px;border:1px solid var(--accent);border-radius:4px;color:var(--accent);background:none;cursor:pointer;font-family:DM Sans,sans-serif">&#43; New sale</button>';
   html+='<button onclick="openDatePicker('+c.id+',this,\''+(c.fu||'\'')+'\')" style="font-size:11px;padding:3px 10px;border:1px solid var(--border2);border-radius:4px;color:var(--text2);background:none;cursor:pointer;font-family:DM Sans,sans-serif">&#128197; Follow-up</button>';
   html+='<button onclick="jumpTo('+c.id+')" style="font-size:11px;padding:3px 10px;border:1px solid var(--border2);border-radius:4px;color:var(--text2);background:none;cursor:pointer;font-family:DM Sans,sans-serif">Open in F/U</button>';
+  html+='<button onclick="event.stopPropagation();addLeadFromClient('+c.id+')" style="font-size:11px;padding:3px 10px;border:1px solid #6366f1;border-radius:4px;color:#6366f1;background:none;cursor:pointer;font-family:DM Sans,sans-serif">&#43; Add as lead</button>';
   html+='</div>';
   // Expanded detail panel
   if(isel)html+=detH(c);
@@ -1065,7 +1066,9 @@ function _matchesFilters(c,f){
   if(f.product&&!lc(c.pr).includes(f.product))return false;
   // Phone filter - also check policy number for numeric searches
   if(f.phone){
-    var phoneMatch=(lc((c.ph||'').toString()).replace(/\D/g,'')).includes(f.phone);
+    var phDigits=(c.ph||'').toString().replace(/\D/g,'');
+    var searchDigits=f.phone.replace(/\D/g,'');
+    var phoneMatch=phDigits.includes(searchDigits)||searchDigits.includes(phDigits.slice(-7));
     var pnMatch=(c.pn||'').toString().replace(/\D/g,'').includes(f.phone);
     if(!phoneMatch&&!pnMatch)return false;
   }
@@ -1307,7 +1310,7 @@ async function submitEdit(id){
   pushUndo('Edit: '+c.cn);
   var g=function(eid){var el=document.getElementById(eid);return el&&!el.disabled?(el.value||'').trim():'';};
   c.cn=g('e-cn')||c.cn;c.ins=g('e-ins')||c.ins;c.ds=g('e-ds')||c.ds;c.co=g('e-co')||c.co;
-  c.pr=g('e-pr')||c.pr;c.pn=g('e-pn')||c.pn;c.cv=g('e-cv')||c.cv;c.ap=g('e-ap')||c.ap;
+  c.pr=g('e-pr')||c.pr;var _pn=g('e-pn')||c.pn;if(_pn&&_pn[0]==='0'&&!_pn.startsWith("'"))_pn="'"+_pn;c.pn=_pn;c.cv=g('e-cv')||c.cv;c.ap=g('e-ap')||c.ap;
   if(isOwner)c.cm=g('e-cm')||c.cm;c.src=g('e-src')||c.src;c.ph=g('e-ph')||c.ph;
   c.em=g('e-em')||c.em;c.cy=g('e-cy')||c.cy;c.fu=g('e-fu')||null;
   var cols=[[3,c.cn],[4,c.ins],[5,c.ds],[6,c.co],[7,c.cv],[8,c.pn],[14,c.ph],[15,c.em],[16,c.cy],[17,c.ap],[20,c.src],[21,c.pr],[22,c.fu||'']];
@@ -1904,7 +1907,12 @@ async function loadLeads(force){
 }
 async function saveLead(lead){
   if(!sheetConnected)return;
-  try{var p=new URLSearchParams({action:'saveLead',leadJson:JSON.stringify(lead)});await fetch(APPS_SCRIPT_URL+'?'+p.toString());}catch(e){console.warn('Lead save:',e);}
+  try{
+    var p=new URLSearchParams({action:'saveLead',leadJson:JSON.stringify(lead)});
+    var resp=await fetch(APPS_SCRIPT_URL+'?'+p.toString());
+    var d=await resp.json();
+    if(d.error)console.warn('Lead save error:',d.error);
+  }catch(e){console.warn('Lead save:',e);}
 }
 
 function openAddLeadModal(defaultList){
@@ -2194,9 +2202,9 @@ function renderLeadCards(leadList){
     html+='<div style="text-align:center;background:var(--bg);border-radius:6px;padding:3px 8px;border:1px solid var(--border)">';
     html+='<div style="font-size:14px;font-weight:800;color:'+scoreColor+'">'+score+'</div>';
     html+='<div style="font-size:9px;color:var(--text3)">score</div></div>';
-    html+='<div style="text-align:center;background:var(--accent-l);border-radius:6px;padding:3px 8px">';
+    if(isOwner){html+='<div style="text-align:center;background:var(--accent-l);border-radius:6px;padding:3px 8px">';
     html+='<div style="font-size:11px;font-weight:700;color:var(--accent)">$'+expComm+'</div>';
-    html+='<div style="font-size:9px;color:var(--accent)">expected</div></div>';
+    html+='<div style="font-size:9px;color:var(--accent)">expected</div></div>';}
     if(ds)html+='<span style="font-size:10px;padding:2px 7px;border-radius:20px;'+DSTYLE[ds]+'">'+( DLABEL[ds]||l.due)+'</span>';
     html+='</div></div>';
     // Meta row: age + next action
@@ -3156,6 +3164,78 @@ function fmtPhone(raw){
   }
   // If fewer than 10 digits just return cleaned digits
   return digits;
+}
+
+function openNewSaleModal(cn, ph, em, cy, src){
+  // Pre-fill from existing client data
+  var today = new Date().toISOString().split('T')[0];
+  var modal = document.getElementById('modal');
+  modal.innerHTML = '<div class="mbg" onclick="if(event.target===this)document.getElementById(\'modal\').innerHTML=\'\'">'
+    + '<div class="mod"><div class="mtit">Add new sale</div>'
+    + '<div class="fgr">'
+    + '<div class="fg2"><label>Client name</label><input id="ns-cn" value="'+(cn||'')+'" placeholder="Full name"></div>'
+    + '<div class="fg2"><label>Date sold</label><input id="ns-ds" type="date" value="'+today+'"></div>'
+    + '<div class="fg2"><label>Company</label><input id="ns-co" placeholder="Sun Life, iA..."></div>'
+    + '<div class="fg2"><label>Product sold</label><select id="ns-pr">'+PRODUCTS.map(function(p){return'<option>'+p+'</option>';}).join('')+'</select></div>'
+    + '<div class="fg2"><label>Policy #</label><input id="ns-pn" placeholder="e.g. SL001234"></div>'
+    + '<div class="fg2"><label>Coverage</label><input id="ns-cv" placeholder="$500,000"></div>'
+    + '<div class="fg2"><label>Amount paid</label><input id="ns-ap" type="number" placeholder="0"></div>'
+    + (isOwner ? '<div class="fg2"><label>Commission</label><input id="ns-cm" type="number" placeholder="0"></div>' : '')
+    + '<div class="fg2"><label>Source</label><input id="ns-src" value="'+(src||'')+'" placeholder="Referral, TikTok..."></div>'
+    + '<div class="fg2"><label>Phone</label><input id="ns-ph" value="'+(ph||'')+'" placeholder="647-000-0000"></div>'
+    + '<div class="fg2"><label>Email</label><input id="ns-em" value="'+(em||'')+'" placeholder="client@email.com"></div>'
+    + '<div class="fg2"><label>City</label><input id="ns-cy" value="'+(cy||'')+'" placeholder="Toronto"></div>'
+    + '<div class="fg2"><label>Follow-up date</label><input id="ns-fu" type="date"></div>'
+    + '</div>'
+    + '<div class="fac"><button class="bcn" onclick="document.getElementById(\'modal\').innerHTML=\'\'" >Cancel</button>'
+    + '<button class="bsb" onclick="submitNewSale()">Save new sale</button></div>'
+    + '</div></div>';
+}
+
+function submitNewSale(){
+  var pn = (document.getElementById('ns-pn').value||'').trim();
+  // Auto-prefix policy numbers starting with 0 (Google Sheets strips leading zeros)
+  if(pn && pn[0]==='0' && !pn.startsWith("'")) pn = "'" + pn;
+  var rowData = {
+    cn:  (document.getElementById('ns-cn').value||'').trim(),
+    ds:  document.getElementById('ns-ds').value||'',
+    co:  (document.getElementById('ns-co').value||'').trim(),
+    pr:  document.getElementById('ns-pr').value||'',
+    pn:  pn,
+    cv:  (document.getElementById('ns-cv').value||'').trim(),
+    ap:  document.getElementById('ns-ap').value||'',
+    cm:  isOwner ? (document.getElementById('ns-cm').value||'') : '',
+    src: (document.getElementById('ns-src').value||'').trim(),
+    ph:  (document.getElementById('ns-ph').value||'').trim(),
+    em:  (document.getElementById('ns-em').value||'').trim(),
+    cy:  (document.getElementById('ns-cy').value||'').trim(),
+    fu:  document.getElementById('ns-fu').value||'',
+    ins: (document.getElementById('ns-cn').value||'').trim(),
+    crmNotes: ''
+  };
+  if(!rowData.cn){ alert('Client name is required'); return; }
+  sheetWrite('appendNewSale', {rowData: rowData});
+  document.getElementById('modal').innerHTML='';
+  // Show confirmation
+  var msg=document.createElement('div');
+  msg.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:13px;z-index:9999';
+  msg.textContent='✓ New sale added — refresh to see in list';
+  document.body.appendChild(msg);
+  setTimeout(function(){msg.remove();},3000);
+}
+
+function addLeadFromClient(id){
+  var c=clients.find(function(x){return x.id===id;});if(!c)return;
+  openAddLeadModal();
+  setTimeout(function(){
+    var nm=document.getElementById('l-name');var ph=document.getElementById('l-phone');var src=document.getElementById('l-src');
+    if(nm)nm.value=c.cn;
+    if(ph)ph.value=c.ph||'';
+    if(src)src.value=c.src||'';
+    // Pre-fill note with existing product context
+    var note=document.getElementById('l-note');
+    if(note)note.value='Existing client ('+c.pr+'). Interested in new product.';
+  },100);
 }
 
 </script>
