@@ -445,10 +445,7 @@ const DQG=[{l:'Disability variants',i:['Disability','Disability Insurance']},{l:
 
 let isOwner=false, clients=[], nextId=1000, mode='followup', tab='all', sel=null, _selSet=new Set(), preset='followups';
 var _lkpHas=[], _lkpMissing=[], _lkpHideMessaged=false;
-var LKP_CATS; // initialized after hasLife/hasCI/hasInv/hasVTC are defined
-function _initLkpCats(){
-  LKP_CATS={'Life insurance':hasLife,'Critical illness':hasCI,'Investments (RRSP/TFSA/RESP)':hasInv,'VTC / Supervisa':hasVTC};
-}
+// LKP_CATS initialized at bottom of script after helper fns are defined
 let nnt={}, lkp=null, undoStack=[], sheetConnected=false, showClosed=false;
 
 // ── AUTH ──
@@ -482,7 +479,6 @@ function logout(){stopBackgroundSync();_pendingClients=null;var b=document.getEl
 
 // ── LOAD FROM APPS SCRIPT ──
 async function loadData(){
-  _initLkpCats(); // init after helper functions defined
   document.getElementById('syncStatus').textContent='Loading…';
   document.getElementById('list').innerHTML='<div class="loading"><div class="spinner"></div><span>Connecting to your sheet…</span></div>';
   try{
@@ -664,14 +660,18 @@ function detH(c){
   html+='<div style="flex:1"><div class="dn">'+c.cn+'</div><div class="ds2">Insured: '+c.ins+' \xb7 '+c.pr+'</div></div>';
   html+='<div style="display:flex;gap:6px;margin-left:auto;flex-shrink:0">';
   html+='<button onclick="event.stopPropagation();openEditModal('+c.id+')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border2);border-radius:4px;background:none;cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif">Edit policy</button>';
-  // Ask for review button
-  var arDone=c.ar==='Y';
-  // WhatsApp review button with smart template
-  html+='<button onclick="event.stopPropagation();openReviewWA('+c.id+')" title="Send WhatsApp message asking for Google review" style="font-size:11px;padding:4px 10px;border:1px solid #25D366;border-radius:4px;background:'+(arDone?'#f0fdf4':'#fff7ed')+';cursor:pointer;color:#25D366;font-family:DM Sans,sans-serif;font-weight:500">&#11088; '+(arDone?'WA Review (asked)':'WA Review')+'</button>';
-  var msgdDone=c.msgd;html+='<button onclick="event.stopPropagation();toggleMessaged('+c.id+')" title="Mark that you have already messaged this client about missing products" style="font-size:11px;padding:4px 10px;border:1px solid '+(msgdDone?'#6366f1':'var(--border2)')+';border-radius:4px;background:'+(msgdDone?'#eef2ff':'none')+';cursor:pointer;color:'+(msgdDone?'#6366f1':'var(--text3)')+';font-family:DM Sans,sans-serif">'+(msgdDone?'&#10003; Messaged':'&#128172; Mark messaged')+'</button>';
-  // Manual toggle (if sent via other channel)
-  html+='<button onclick="event.stopPropagation();toggleReview('+c.id+')" title="'+(arDone?'Mark as not yet asked':'Mark as asked without sending WA')+'" style="font-size:11px;padding:4px 8px;border:1px solid '+(arDone?'#10b981':'var(--border2)')+';border-radius:4px;background:'+(arDone?'#f0fdf4':'none')+';cursor:pointer;color:'+(arDone?'#10b981':'var(--text3)')+';font-family:DM Sans,sans-serif">'+(arDone?'&#10003;':'&#9711;')+'</button>';
-  var maDone=c.ma==='Y';html+='<button onclick="event.stopPropagation();toggleMarketAlert('+c.id+')" title="Client wants to be called when market drops" style="font-size:11px;padding:4px 10px;border:1px solid '+(maDone?'#6366f1':'var(--border2)')+';border-radius:4px;background:'+(maDone?'#eef2ff':'none')+';cursor:pointer;color:'+(maDone?'#6366f1':'var(--text3)')+';font-family:DM Sans,sans-serif">'+(maDone?'&#128200; Market alert ON':'&#128200; Market alert')+'</button>';
+  // Button row: WA Review | ✓ Review | Mark messaged | Market alert (all household-wide)
+  var arDone=c.ar==='Y'; var maDone=c.ma==='Y'; var msgdDone=c.msgd;
+  var hhLinked=getAllLinked(c).filter(function(l){return l.status!=='closed';});
+  var hhTip=hhLinked.length>0?' (all '+(hhLinked.length+1)+' household policies)':'';
+  // WA Review
+  html+='<button onclick="event.stopPropagation();openReviewWA('+c.id+')" title="Send WhatsApp asking for Google review'+hhTip+'" style="font-size:11px;padding:4px 10px;border:1px solid #25D366;border-radius:4px;background:'+(arDone?'#f0fdf4':'#fff7ed')+';cursor:pointer;color:#25D366;font-family:DM Sans,sans-serif;font-weight:500">&#11088; '+(arDone?'WA Review (asked)':'WA Review')+'</button>';
+  // ✓ Review asked toggle (household-wide)
+  html+='<button onclick="event.stopPropagation();toggleReviewHH('+c.id+')" title="'+(arDone?'Unmark review asked':'Mark review asked'+hhTip)+'" style="font-size:11px;padding:4px 8px;border:1px solid '+(arDone?'#10b981':'var(--border2)')+';border-radius:4px;background:'+(arDone?'#f0fdf4':'none')+';cursor:pointer;color:'+(arDone?'#10b981':'var(--text3)')+';font-family:DM Sans,sans-serif">'+(arDone?'&#10003; Review asked':'&#9711; Review')+'</button>';
+  // Mark messaged (right of review, household-wide)
+  html+='<button onclick="event.stopPropagation();toggleMessaged('+c.id+')" title="Mark as messaged about missing products'+hhTip+'" style="font-size:11px;padding:4px 10px;border:1px solid '+(msgdDone?'#6366f1':'var(--border2)')+';border-radius:4px;background:'+(msgdDone?'#eef2ff':'none')+';cursor:pointer;color:'+(msgdDone?'#6366f1':'var(--text3)')+';font-family:DM Sans,sans-serif">'+(msgdDone?'&#10003; Messaged':'&#128172; Mark messaged')+'</button>';
+  // Market alert (household-wide)
+  html+='<button onclick="event.stopPropagation();toggleMarketAlert('+c.id+')" title="Toggle market dip alert'+hhTip+'" style="font-size:11px;padding:4px 10px;border:1px solid '+(maDone?'#6366f1':'var(--border2)')+';border-radius:4px;background:'+(maDone?'#eef2ff':'none')+';cursor:pointer;color:'+(maDone?'#6366f1':'var(--text3)')+';font-family:DM Sans,sans-serif">'+(maDone?'&#128200; Market alert ON':'&#128200; Market alert')+'</button>';
   if(c.status==='closed'){
     html+='<button onclick="event.stopPropagation();togglePolicyClosed('+c.id+')" style="font-size:11px;padding:4px 10px;border:1px solid var(--accent);border-radius:4px;background:var(--accent-l);cursor:pointer;color:var(--accent);font-family:DM Sans,sans-serif">&#8634; Reopen policy</button>';
   } else {
@@ -3207,6 +3207,25 @@ function toggleReview(id){
   render();
 }
 
+function toggleReviewHH(id){
+  // Apply review toggle to entire household
+  var c=clients.find(function(x){return x.id===id;});if(!c)return;
+  var newVal=c.ar==='Y'?'N':'Y';
+  var linked=getAllLinked(c).filter(function(l){return l.status!=='closed';});
+  var all=[c].concat(linked);
+  all.forEach(function(p){
+    p.ar=newVal;
+    sheetWrite('writeAskReview',{rowNum:p.rowNum,value:newVal});
+  });
+  render();
+  if(all.length>1){
+    var msg=document.createElement('div');
+    msg.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:13px;z-index:9999';
+    msg.textContent='&#10003; Review '+(newVal==='Y'?'marked':'unmarked')+' for '+all.length+' household policies';
+    document.body.appendChild(msg);setTimeout(function(){msg.remove();},2000);
+  }
+}
+
 var REVIEW_LINK = 'https://share.google/yohwg3uVPmVa7bk37';
 
 function getReviewMsg(c){
@@ -3390,12 +3409,17 @@ function addLeadFromClient(id){
 
 function toggleMarketAlert(id){
   var c=clients.find(function(x){return x.id===id;});if(!c)return;
-  c.ma=(c.ma==='Y'?'N':'Y');
-  sheetWrite('writeMarketAlert',{rowNum:c.rowNum,value:c.ma});
+  var newVal=c.ma==='Y'?'N':'Y';
+  var linked=getAllLinked(c).filter(function(l){return l.status!=='closed';});
+  var all=[c].concat(linked);
+  all.forEach(function(p){
+    p.ma=newVal;
+    sheetWrite('writeMarketAlert',{rowNum:p.rowNum,value:newVal});
+  });
   render();
   var msg=document.createElement('div');
-  msg.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:'+(c.ma==='Y'?'#6366f1':'#64748b')+';color:#fff;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:13px;z-index:9999';
-  msg.textContent=(c.ma==='Y'?'Added to market alert list':'Removed from market alert list');
+  msg.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:'+(newVal==='Y'?'#6366f1':'#64748b')+';color:#fff;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:13px;z-index:9999';
+  msg.textContent=(newVal==='Y'?'&#128200; Market alert ON':'Removed from market alert list')+(all.length>1?' ('+all.length+' policies)':'');
   document.body.appendChild(msg);
   setTimeout(function(){msg.remove();},2000);
 }
@@ -3517,7 +3541,7 @@ function hasVTC(c){
 }
 
 function _buildFilterBar(q){
-  var cats=Object.keys(LKP_CATS);
+  var cats=LKP_CATS?Object.keys(LKP_CATS):[];
   var count=_lkpFilteredClients(q||'').length;
   var hasAny=_lkpHas.length>0||_lkpMissing.length>0||_lkpHideMessaged;
   var html='<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border)">';
@@ -3562,13 +3586,17 @@ function _lkpToggle(type, cat, btn){
 
 function toggleMessaged(id){
   var c=clients.find(function(x){return x.id===id;});if(!c)return;
-  c.msgd=!c.msgd;
-  // Store in CRM notes with [MSGD] tag
-  var notes=(c.notes||[]).map(function(n){return n.t;}).join(' ');
-  var crmNotes=c.msgd
-    ? '[MSGD] '+new Date().toISOString().split('T')[0]+' | '+(notes||'')
-    : (notes||'').replace(/\[MSGD\][^|]*\|?/g,'').trim();
-  sheetWrite('writeCrmNotes',{rowNum:c.rowNum,value:crmNotes});
+  var newMsgd=!c.msgd;
+  var linked=getAllLinked(c).filter(function(l){return l.status!=='closed';});
+  var all=[c].concat(linked);
+  var tag='[MSGD] '+new Date().toISOString().split('T')[0]+' | ';
+  all.forEach(function(p){
+    p.msgd=newMsgd;
+    var crmNotes=newMsgd
+      ? tag+(p.notes&&p.notes.length?p.notes.map(function(n){return n.t;}).join(' '):'')
+      : (p.notes&&p.notes.length?p.notes.map(function(n){return n.t;}).join(' '):'').replace(/\[MSGD\][^|]*\|?/g,'').trim();
+    sheetWrite('writeCrmNotes',{rowNum:p.rowNum,value:crmNotes});
+  });
   render();
   var msg=document.createElement('div');
   msg.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:'+(c.msgd?'#6366f1':'#64748b')+';color:#fff;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:13px;z-index:9999';
@@ -3576,6 +3604,14 @@ function toggleMessaged(id){
   document.body.appendChild(msg);
   setTimeout(function(){msg.remove();},2000);
 }
+
+// Initialize LKP_CATS here — after hasLife/CI/Inv/VTC are all defined above
+var LKP_CATS = {
+  'Life insurance': hasLife,
+  'Critical illness': hasCI,
+  'Investments (RRSP/TFSA/RESP)': hasInv,
+  'VTC / Supervisa': hasVTC
+};
 
 </script>
 
