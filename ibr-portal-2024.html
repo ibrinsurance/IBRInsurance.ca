@@ -760,7 +760,7 @@ function detH(c){
       html+='</div>';
       html+='<div style="padding:0 12px 9px 46px">';
       html+='<button style="font-size:11px;padding:3px 10px;border:1px solid var(--border2);border-radius:4px;background:var(--surface);cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif" ';
-      html+='onclick="event.stopPropagation();jumpTo('+l.id+')">Open file</button>';
+      html+='onclick="event.stopPropagation();openLinkedPolicy('+l.id+')">Open file</button>';
       // Per-policy close button for each linked policy
       if(l.status==='closed'){
         html+='<button onclick="event.stopPropagation();togglePolicyClosed('+l.id+')" style="font-size:11px;padding:3px 8px;border:1px solid var(--accent);border-radius:4px;background:var(--accent-l);cursor:pointer;color:var(--accent);font-family:DM Sans,sans-serif">&#8634; Reopen</button>';
@@ -3357,6 +3357,65 @@ function toggleMarketAlert(id){
   msg.textContent=(c.ma==='Y'?'Added to market alert list':'Removed from market alert list');
   document.body.appendChild(msg);
   setTimeout(function(){msg.remove();},2000);
+}
+
+function openLinkedPolicy(id){
+  var c=clients.find(function(x){return x.id===id;});
+  if(!c)return;
+  var modal=document.getElementById('modal');
+  // Build a full policy detail modal
+  var html='<div class="mbg" onclick="if(event.target===this)document.getElementById(\'modal\').innerHTML=\'\'"><div class="mod" style="max-width:700px;max-height:85vh;overflow-y:auto">';
+  html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">';
+  html+='<div class="mtit" style="margin-bottom:0">'+c.cn+' — '+c.pr+'</div>';
+  html+='<button onclick="document.getElementById(\'modal\').innerHTML=\'\'" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text3);padding:0 4px">&times;</button>';
+  html+='</div>';
+  // Policy details grid
+  html+='<div class="fgr" style="margin-bottom:12px">';
+  var fields=[
+    ['Company',c.co],['Policy #',c.pn],
+    ['Coverage',c.cv],['Date sold',c.ds],
+    ['Phone',c.ph],['Email',c.em],
+    ['Amount paid',c.ap],['City',c.cy],
+    ['Source',c.src],['Insured',c.ins]
+  ];
+  fields.forEach(function(f){
+    if(f[1])html+='<div class="fg2"><label>'+f[0].toUpperCase()+'</label><div class="n" style="font-size:13px;padding:6px 0">'+f[1]+'</div></div>';
+  });
+  if(isOwner&&c.cm)html+='<div class="fg2"><label>COMMISSION</label><div class="n" style="font-size:13px;padding:6px 0">'+c.cm+'</div></div>';
+  html+='</div>';
+  // Notes
+  if(c.notes&&c.notes.length){
+    html+='<div style="margin-bottom:12px"><label style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">Notes</label>';
+    c.notes.forEach(function(n){html+='<div style="font-size:12px;color:var(--text2);padding:4px 0;border-bottom:1px solid var(--border)">'+n.t+'</div>';});
+    html+='</div>';
+  }
+  // Follow-up section
+  html+='<div style="background:var(--bg);border-radius:8px;padding:12px;margin-bottom:12px">';
+  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Follow-up</div>';
+  html+='<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">';
+  html+='<input type="date" id="lp-fu-'+c.id+'" value="'+(c.fu||'')+'" onchange="event.stopPropagation();updFU('+c.id+',this.value);document.getElementById(\'modal\').innerHTML=\'\';" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-family:DM Sans,sans-serif;font-size:13px">';
+  html+='<button onclick="_markAnnivOne('+c.id+');document.getElementById(\'modal\').innerHTML=\'\';" style="padding:6px 14px;border:none;border-radius:6px;background:var(--accent);color:#fff;font-family:DM Sans,sans-serif;font-size:12px;cursor:pointer;font-weight:500">&#10003; Mark complete &rarr; next year</button>';
+  html+='</div></div>';
+  // Last contact
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">';
+  var lccDays=c.lcc?Math.ceil((new Date()-new Date(c.lcc))/864e5):null;
+  var lcoDays=c.lco?Math.ceil((new Date()-new Date(c.lco))/864e5):null;
+  html+='<div style="background:var(--bg);border-radius:6px;padding:10px"><div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:4px">&#128222; Client</div>';
+  html+='<div style="font-size:12px;color:'+(lccDays===null?'var(--text3)':lccDays<=7?'var(--accent)':lccDays<=30?'#f59e0b':'var(--red)')+';">'+(c.lcc?lccDays+'d ago':'Not recorded')+'</div>';
+  html+='<div style="display:flex;gap:6px;margin-top:6px"><input type="date" value="'+(c.lcc||'')+'" onchange="event.stopPropagation();writeLastClientContact('+c.id+',this.value)" style="flex:1;font-size:11px;padding:3px 6px;border:1px solid var(--border);border-radius:4px"><button onclick="event.stopPropagation();writeLastClientContact('+c.id+',todayStr());this.previousSibling.value=todayStr()" style="font-size:11px;padding:3px 8px;border:none;border-radius:4px;background:var(--accent);color:#fff;cursor:pointer">Today</button></div></div>';
+  html+='<div style="background:var(--bg);border-radius:6px;padding:10px"><div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:4px">&#127970; Carrier</div>';
+  html+='<div style="font-size:12px;color:'+(lcoDays===null?'var(--text3)':lcoDays<=7?'var(--accent)':lcoDays<=30?'#f59e0b':'var(--red)')+';">'+(c.lco?lcoDays+'d ago':'Not recorded')+'</div>';
+  html+='<div style="display:flex;gap:6px;margin-top:6px"><input type="date" value="'+(c.lco||'')+'" onchange="event.stopPropagation();writeLastCoContact('+c.id+',this.value)" style="flex:1;font-size:11px;padding:3px 6px;border:1px solid var(--border);border-radius:4px"><button onclick="event.stopPropagation();writeLastCoContact('+c.id+',todayStr());this.previousSibling.value=todayStr()" style="font-size:11px;padding:3px 8px;border:none;border-radius:4px;background:var(--blue);color:#fff;cursor:pointer">Today</button></div></div>';
+  html+='</div>';
+  // Action buttons
+  html+='<div class="fac">';
+  html+='<button onclick="document.getElementById(\'modal\').innerHTML=\'\'" class="bcn">Close</button>';
+  html+='<button onclick="openEditModal('+c.id+');document.getElementById(\'modal\').innerHTML=\'\';" class="bsb">Edit policy</button>';
+  // Close/reopen button
+  if(c.status!=='closed'){html+='<button onclick="event.stopPropagation();togglePolicyClosed('+c.id+');document.getElementById(\'modal\').innerHTML=\'\'" style="font-size:12px;padding:8px 16px;border:1px solid var(--red);border-radius:var(--rs);background:none;cursor:pointer;color:var(--red);font-family:DM Sans,sans-serif">&#10005; Close policy</button>';}
+  else{html+='<button onclick="event.stopPropagation();togglePolicyClosed('+c.id+');document.getElementById(\'modal\').innerHTML=\'\'" style="font-size:12px;padding:8px 16px;border:1px solid var(--accent);border-radius:var(--rs);background:var(--accent-l);cursor:pointer;color:var(--accent);font-family:DM Sans,sans-serif">&#8634; Reopen</button>';}
+  html+='</div></div>';
+  modal.innerHTML=html;
 }
 
 </script>
