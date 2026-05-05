@@ -1045,6 +1045,17 @@ function _snapshotCard(c){
 function _parseSmartQuery(q){
   // Returns {terms:[], city:'', product:'', source:'', noProduct:''}
   var f={terms:[],city:'',product:'',source:'',noProduct:'',phone:''};
+  // Check if entire query is a phone number (handles "+1 (289) 968-8649" etc)
+  var qAllDig=q.replace(/\D/g,'');
+  if(qAllDig.length>=7){
+    var phoneChars=q.replace(/[\d()\-\+\s]/g,'').length;
+    if(phoneChars===0||(phoneChars<=1&&qAllDig.length>=7)){
+      var sd2=qAllDig;
+      if(sd2.length===11&&sd2[0]==='1')sd2=sd2.slice(1);
+      else if(sd2.length>10)sd2=sd2.slice(-10);
+      f.phone=sd2;f.terms.push(sd2);return f;
+    }
+  }
   var words=q.split(/\s+/);
   var cityKw=['windsor','brampton','toronto','mississauga','london','hamilton','calgary','edmonton','ottawa','vancouver','kitchener','waterloo','guelph','barrie','ajax','oshawa','markham','vaughan','oakville','burlington'];
   var prodKw={term:'term insurance',ul:'ul insurance','whole life':'whole life','whole':'whole life',ci:'critical illness','critical':'critical illness',vtc:'vtc',supervisa:'supervisa',rrsp:'rrsp',resp:'resp',tfsa:'tfsa',disability:'disability',travel:'travel insurance',hisa:'hisa',fhsa:'fhsa'};
@@ -1058,7 +1069,16 @@ function _parseSmartQuery(q){
     // Check partial product
     var matched=Object.entries(prodKw).find(function(e){return e[0].startsWith(w)&&w.length>=3;});
     if(matched){f.product=matched[1];return;}
-    if(/^\d{3,}$/.test(w)){f.phone=w;f.terms.push(w);return;}
+    // Detect phones: pure digits OR formatted (hyphens, parens, +country)
+    var wClean=w.replace(/[()\-\+\s]/g,'');
+    if(/^\d{7,}$/.test(wClean)){
+      var sd=wClean;
+      if(sd.length===11&&sd[0]==='1')sd=sd.slice(1);
+      else if(sd.length>10)sd=sd.slice(-10);
+      f.phone=sd;f.terms.push(sd);return;
+    }
+    // Also add digits from partial phone words to terms
+    if(/\d{4,}/.test(w)){var digs=w.replace(/\D/g,'');if(digs.length>=4)f.terms.push(digs);return;}
     f.terms.push(w);
   });
   return f;
@@ -1084,7 +1104,16 @@ function _matchesFilters(c,f){
   // If nothing to filter on, don't match (shouldn't happen but safety check)
   if(f.terms.length===0&&!f.city&&!f.product&&!f.phone&&!f.noProduct)return false;
   // Check text terms against all fields
-  if(f.terms.length>0){var searchFields=[c.cn,c.ins,(c.ph||'').toString(),c.em,c.cy,(c.pn||'').toString(),c.pr,c.src,c.co].join(' ').toLowerCase();if(!f.terms.every(function(t){return searchFields.includes(t);}))return false;}
+  if(f.terms.length>0){
+    var phAllDig=(c.ph||'').toString().replace(/\D/g,'');
+    var searchFields=[c.cn,c.ins,(c.ph||'').toString(),c.em,c.cy,(c.pn||'').toString(),c.pr,c.src,c.co,phAllDig].join(' ').toLowerCase();
+    if(!f.terms.every(function(t){
+      if(searchFields.includes(t))return true;
+      // Also try matching digits only (partial phone)
+      var tDig=t.replace(/\D/g,'');
+      return tDig.length>=4&&phAllDig.includes(tDig);
+    }))return false;
+  }
   return true;
 }
 
