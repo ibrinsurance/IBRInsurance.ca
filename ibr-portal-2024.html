@@ -515,7 +515,7 @@ async function sheetWrite(action, data){
   }catch(e){console.warn('Write error:',e);}
 }
 
-function parseRows(rows){
+function parseRows(rows){_lkpClearCache();
   clients=[];
   rows.forEach((r,i)=>{
     let parsedNotes=[];
@@ -3460,6 +3460,8 @@ function openLinkedPolicy(id){
 }
 
 // Lookup product filter
+var _lkpCache={};
+function _lkpClearCache(){ _lkpCache={}; }
 function _lkpFilteredClients(q){
   var base;
   if(q){
@@ -3496,10 +3498,23 @@ var CI_PRODS = new Set(['ci','critical illness','critical illness insurance']);
 var INV_PRODS = new Set(['rrsp','tfsa','resp','fhsa','investment','investments','inv']);
 var VTC_PRODS_SET = new Set(['vtc','supervisa','visitor','visitors','travel']);
 
-function hasLife(c){ return [c].concat(getAllLinked(c)).some(function(p){ var pr=(p.pr||'').toLowerCase().trim(); return LIFE_PRODS.has(pr)||pr.includes('term')||pr.includes('universal')||pr.includes('whole life'); }); }
-function hasCI(c){ return [c].concat(getAllLinked(c)).some(function(p){ var pr=(p.pr||'').toLowerCase().trim(); return CI_PRODS.has(pr)||pr.includes('critical'); }); }
-function hasInv(c){ return [c].concat(getAllLinked(c)).some(function(p){ var pr=(p.pr||'').toLowerCase().trim(); return INV_PRODS.has(pr)||pr.includes('rrsp')||pr.includes('tfsa')||pr.includes('resp'); }); }
-function hasVTC(c){ return [c].concat(getAllLinked(c)).some(function(p){ var pr=(p.pr||'').toLowerCase().trim(); return VTC_PRODS_SET.has(pr)||pr.includes('vtc')||pr.includes('supervis')||pr.includes('visitor'); }); }
+function _catKey(c,cat){ return c.id+'_'+cat; }
+function hasLife(c){
+  var k=_catKey(c,'life'); if(_lkpCache[k]!==undefined)return _lkpCache[k];
+  return _lkpCache[k]=[c].concat(getAllLinked(c)).some(function(p){var pr=(p.pr||'').toLowerCase().trim();return LIFE_PRODS.has(pr)||pr.includes('term')||pr.includes('universal')||pr.includes('whole life');});
+}
+function hasCI(c){
+  var k=_catKey(c,'ci'); if(_lkpCache[k]!==undefined)return _lkpCache[k];
+  return _lkpCache[k]=[c].concat(getAllLinked(c)).some(function(p){var pr=(p.pr||'').toLowerCase().trim();return CI_PRODS.has(pr)||pr.includes('critical');});
+}
+function hasInv(c){
+  var k=_catKey(c,'inv'); if(_lkpCache[k]!==undefined)return _lkpCache[k];
+  return _lkpCache[k]=[c].concat(getAllLinked(c)).some(function(p){var pr=(p.pr||'').toLowerCase().trim();return INV_PRODS.has(pr)||pr.includes('rrsp')||pr.includes('tfsa')||pr.includes('resp');});
+}
+function hasVTC(c){
+  var k=_catKey(c,'vtc'); if(_lkpCache[k]!==undefined)return _lkpCache[k];
+  return _lkpCache[k]=[c].concat(getAllLinked(c)).some(function(p){var pr=(p.pr||'').toLowerCase().trim();return VTC_PRODS_SET.has(pr)||pr.includes('vtc')||pr.includes('supervis')||pr.includes('visitor');});
+}
 
 function _buildFilterBar(q){
   var cats=Object.keys(LKP_CATS);
@@ -3530,11 +3545,19 @@ function _buildFilterBar(q){
   return html;
 }
 
+var _lkpDebounce=null;
 function _lkpToggle(type, cat, btn){
   var arr = type==='has'?_lkpHas:_lkpMissing;
   var idx = arr.indexOf(cat);
   if(idx>=0) arr.splice(idx,1); else arr.push(cat);
-  renderLookup();
+  // Update button style immediately for instant feedback
+  btn.style.fontWeight = arr.indexOf(cat)>=0 ? '600' : '400';
+  btn.style.background = arr.indexOf(cat)>=0 ? (type==='has'?'var(--accent-l)':'#fef2f2') : 'none';
+  btn.style.borderColor = arr.indexOf(cat)>=0 ? (type==='has'?'var(--accent)':'#ef4444') : 'var(--border)';
+  btn.style.color = arr.indexOf(cat)>=0 ? (type==='has'?'var(--accent)':'#ef4444') : 'var(--text3)';
+  // Debounce the heavy renderLookup call
+  clearTimeout(_lkpDebounce);
+  _lkpDebounce = setTimeout(function(){ renderLookup(); }, 350);
 }
 
 function toggleMessaged(id){
