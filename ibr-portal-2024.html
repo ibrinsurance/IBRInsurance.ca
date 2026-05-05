@@ -433,7 +433,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx94xtJQJ4A834rsiBWQuCQw4pD4Jo0KOSzvthw6x_lJvGFdHj5ZW4liyVImGTCN3XR/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzBV-TONVES2krqjw9FxAMOCxCetzcPTF0jY_iih-5lUJSoypzYRLM1riSzCBn2KveD/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -443,7 +443,7 @@ const CLAIM_TYPES=['Death Benefit','Critical Illness Payout','Disability Claim',
 const CLAIM_STATUSES=['Submitted','In Review','Approved','Paid','Denied'];
 const DQG=[{l:'Disability variants',i:['Disability','Disability Insurance']},{l:'Truck-Travel variants',i:['Truck-Travel','Truck - Travel','Truck Travel']},{l:'RRSP typos',i:['RRSP','RRP','SRRP']},{l:'Transfer variants',i:['UL Transfer','WL Transfer','Term Transfer','Transfer']},{l:'Likely wrong column',i:['Tiktok','Entity']}];
 
-let isOwner=false, clients=[], nextId=1000, mode='followup', tab='all', sel=null, _selSet=new Set(), preset='followups', nnt={}, lkp=null, undoStack=[], sheetConnected=false, showClosed=false;
+let isOwner=false, clients=[], nextId=1000, mode='followup', tab='all', sel=null, _selSet=new Set(), preset='followups', _lookupHasFilter='', _lookupMissingFilter='', nnt={}, lkp=null, undoStack=[], sheetConnected=false, showClosed=false;
 
 // ── AUTH ──
 // Google Sign-in configured via data-attributes on g_id_onload div
@@ -943,7 +943,30 @@ function submitNewClaim(){
 function renderLookup(){
   var q=(document.getElementById('searchInput').value||'').toLowerCase().trim();
   var el=document.getElementById('list');
-  if(!q){
+  // Product filter UI
+  var filterBar=document.getElementById('lookup-filter-bar');
+  if(!filterBar){
+    filterBar=document.createElement('div');
+    filterBar.id='lookup-filter-bar';
+    filterBar.style.cssText='padding:8px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap;align-items:center';
+    filterBar.innerHTML='<span style="font-size:11px;color:var(--text3);font-weight:500">FILTER:</span>'
+      +'<select onchange="_lkpHas=this.value;renderLookup()" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;font-family:DM Sans,sans-serif"><option value="">Has any product</option>'
+      +['Term Insurance','Universal Life','Whole Life','Critical Illness','RESP','RRSP','TFSA','FHSA','VTC','Supervisa','Disability','Group'].map(function(p){return'<option value="'+p+'"'+(p===_lkpHas?' selected':'')+'>Has: '+p+'</option>';}).join('')+'</select>'
+      +'<select onchange="_lkpMissing=this.value;renderLookup()" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;font-family:DM Sans,sans-serif"><option value="">Missing any product</option>'
+      +['Term Insurance','Universal Life','Whole Life','Critical Illness','RESP','RRSP','TFSA','FHSA','VTC','Supervisa','Disability','Group'].map(function(p){return'<option value="'+p+'"'+(p===_lkpMissing?' selected':'')+'>Missing: '+p+'</option>';}).join('')+'</select>'
+      +(_lkpHas||_lkpMissing?'<button onclick="_lkpHas=\'\';_lkpMissing=\'\';document.querySelectorAll(\'#lookup-filter-bar select\').forEach(function(s){s.value=\'\';});renderLookup()" style="font-size:11px;padding:3px 8px;border:1px solid var(--red);border-radius:5px;color:var(--red);background:none;cursor:pointer;font-family:DM Sans,sans-serif">&#10005; Clear filter</button>':'')
+      +(_lkpHas||_lkpMissing?'<span style="font-size:11px;color:var(--accent);font-weight:600">'+_lkpFilteredClients(q).length+' clients</span>':'');
+    el.parentNode.insertBefore(filterBar,el);
+  } else {
+    filterBar.innerHTML='<span style="font-size:11px;color:var(--text3);font-weight:500">FILTER:</span>'
+      +'<select onchange="_lkpHas=this.value;renderLookup()" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;font-family:DM Sans,sans-serif"><option value="">Has any product</option>'
+      +['Term Insurance','Universal Life','Whole Life','Critical Illness','RESP','RRSP','TFSA','FHSA','VTC','Supervisa','Disability','Group'].map(function(p){return'<option value="'+p+'"'+(p===_lkpHas?' selected':'')+'>Has: '+p+'</option>';}).join('')+'</select>'
+      +'<select onchange="_lkpMissing=this.value;renderLookup()" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;font-family:DM Sans,sans-serif"><option value="">Missing any product</option>'
+      +['Term Insurance','Universal Life','Whole Life','Critical Illness','RESP','RRSP','TFSA','FHSA','VTC','Supervisa','Disability','Group'].map(function(p){return'<option value="'+p+'"'+(p===_lkpMissing?' selected':'')+'>Missing: '+p+'</option>';}).join('')+'</select>'
+      +(_lkpHas||_lkpMissing?'<button onclick="_lkpHas=\'\';_lkpMissing=\'\';document.querySelectorAll(\'#lookup-filter-bar select\').forEach(function(s){s.value=\'\';});renderLookup()" style="font-size:11px;padding:3px 8px;border:1px solid var(--red);border-radius:5px;color:var(--red);background:none;cursor:pointer;font-family:DM Sans,sans-serif">&#10005; Clear filter</button>':'')
+      +(_lkpHas||_lkpMissing?'<span style="font-size:11px;color:var(--accent);font-weight:600">'+_lkpFilteredClients(q).length+' clients</span>':'');
+  }
+  if(!q&&!_lkpHas&&!_lkpMissing){
     // Default: show recent activity + smart empty state
     var html='';
     // Recent 5 opened (tracked in _recentOpened)
@@ -1951,6 +1974,10 @@ async function loadLeads(force){
     var r=await fetch(APPS_SCRIPT_URL+'?action=getLeads');
     var d=await r.json();
     leads=(d.leads||[]).filter(function(l){return l.status!=='deleted';});
+    // Auto-add any unknown lists from sheet data
+    leads.forEach(function(l){
+      if(l.list&&LEADS_LISTS.indexOf(l.list)<0)LEADS_LISTS.push(l.list);
+    });
     // Set leadNextId above max existing id to avoid overwrites
     if(leads.length>0){
       var maxId=leads.reduce(function(m,l){return Math.max(m,parseInt(l.id)||0);},0);
@@ -1962,11 +1989,26 @@ async function loadLeads(force){
 async function saveLead(lead){
   if(!sheetConnected)return;
   try{
-    var p=new URLSearchParams({action:'saveLead',leadJson:JSON.stringify(lead)});
-    var resp=await fetch(APPS_SCRIPT_URL+'?'+p.toString());
+    // Sanitise date fields - ensure YYYY-MM-DD strings, not Date objects or long strings
+    var l=Object.assign({},lead);
+    ['due','created','lastContact','travelDate','convertedDate','lostDate'].forEach(function(k){
+      if(!l[k])return;
+      if(l[k]instanceof Date){
+        var d=l[k];
+        l[k]=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      } else if(typeof l[k]==='string'&&l[k].length>10){
+        l[k]=l[k].substring(0,10); // trim datetime to date only
+      }
+    });
+    var resp=await fetch(APPS_SCRIPT_URL,{
+      method:'POST',
+      body:JSON.stringify({action:'saveLead',leadJson:JSON.stringify(l)}),
+      headers:{'Content-Type':'text/plain'}
+    });
     var d=await resp.json();
-    if(d.error)console.warn('Lead save error:',d.error);
-  }catch(e){console.warn('Lead save:',e);}
+    if(d.error)console.warn('[IBR] Lead save error:',d.error);
+    else console.log('[IBR] Lead saved:',l.name,'list:',l.list,'due:',l.due);
+  }catch(e){console.warn('[IBR] Lead save error:',e);}
 }
 
 function openAddLeadModal(defaultList){
@@ -3426,6 +3468,46 @@ function openLinkedPolicy(id){
   else{html+='<button onclick="event.stopPropagation();togglePolicyClosed('+c.id+');document.getElementById(\'modal\').innerHTML=\'\'" style="font-size:12px;padding:8px 16px;border:1px solid var(--accent);border-radius:var(--rs);background:var(--accent-l);cursor:pointer;color:var(--accent);font-family:DM Sans,sans-serif">&#8634; Reopen</button>';}
   html+='</div></div>';
   modal.innerHTML=html;
+}
+
+// Lookup product filter
+var _lkpHas='', _lkpMissing='';
+function _lkpFilteredClients(q){
+  // Start from all clients (or searched subset)
+  var base;
+  if(q){
+    // Full text search
+    var f=_parseSmartQuery(q);
+    base=clients.filter(function(c){return _matchesFilters(c,f);});
+  } else {
+    base=clients.filter(function(c){return c.status!=='closed';});
+  }
+  // Apply "has product" filter
+  if(_lkpHas){
+    var h=_lkpHas.toLowerCase();
+    // Group by household: include client if ANY household member has the product
+    base=base.filter(function(c){
+      var all=[c].concat(getAllLinked(c));
+      return all.some(function(p){return (p.pr||'').toLowerCase().includes(h);});
+    });
+  }
+  // Apply "missing product" filter
+  if(_lkpMissing){
+    var m=_lkpMissing.toLowerCase();
+    // Include client if NO household member has this product
+    base=base.filter(function(c){
+      var all=[c].concat(getAllLinked(c));
+      return !all.some(function(p){return (p.pr||'').toLowerCase().includes(m);});
+    });
+  }
+  // Deduplicate by primary client (first in household)
+  var seen={};
+  return base.filter(function(c){
+    var key=nc(c.ph)||nc(c.em)||c.cn;
+    if(seen[key])return false;
+    seen[key]=true;
+    return true;
+  });
 }
 
 </script>
