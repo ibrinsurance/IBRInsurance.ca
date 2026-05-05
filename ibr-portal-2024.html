@@ -408,6 +408,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
           <option value="investments">Investments (RRSP / RESP / TFSA / FHSA)</option>
           <option value="travel">Travel / Visitor only</option>
           <option value="review">&#11088; Needs review ask</option>
+          <option value="market">&#128200; Market dip alerts</option>
         </select>
         <button onclick="setAnniversaryFollowups()" id="anniversaryBtn" title="Only sets dates for: Term, UL, Whole Life, CI, RRSP, RESP, and Transfer products — NOT travel or visitor" style="padding:5px 12px;font-size:12px;font-family:DM Sans,sans-serif;border:1px solid var(--accent);border-radius:var(--rs);background:var(--accent-l);cursor:pointer;color:var(--accent);white-space:nowrap">Set Anniversary Dates &#9432;</button>
         <button onclick="showClosed=!showClosed;render()" id="closedToggle" style="padding:5px 12px;font-size:12px;font-family:DM Sans,sans-serif;border:1px solid var(--border);border-radius:var(--rs);background:none;cursor:pointer;color:var(--text2);white-space:nowrap">Show closed</button>
@@ -508,7 +509,7 @@ function parseRows(rows){
     if(r.claimStatus){try{claim=JSON.parse(r.claimStatus);}catch{}}
     let hh=[];
     if(r.householdLinks){try{hh=JSON.parse(r.householdLinks);}catch{}}
-    clients.push({id:nextId++,rowNum:r.rowNum,cn:r.cn,ins:r.ins||r.cn,ds:r.ds,co:r.co,cv:r.cv,pn:r.pn,ph:r.ph?r.ph.toString():'',em:r.em,cy:r.cy,ap:r.ap,cm:r.cm,src:r.src,pr:r.pr,fu:r.fu||null,done:false,notes:parsedNotes,hh,claim,status:r.policyStatus||'active',lcc:_cleanDate(r.lastClientContact),lco:_cleanDate(r.lastCoContact),ar:r.askReview||'N'});
+    clients.push({id:nextId++,rowNum:r.rowNum,cn:r.cn,ins:r.ins||r.cn,ds:r.ds,co:r.co,cv:r.cv,pn:r.pn,ph:r.ph?r.ph.toString():'',em:r.em,cy:r.cy,ap:r.ap,cm:r.cm,src:r.src,pr:r.pr,fu:r.fu||null,done:false,notes:parsedNotes,hh,claim,status:r.policyStatus||'active',lcc:_cleanDate(r.lastClientContact),lco:_cleanDate(r.lastCoContact),ar:r.askReview||'N',ma:r.marketAlert||'N'});
   });
 }
 
@@ -526,7 +527,7 @@ const AVC=['av-gr','av-bl','av-am','av-pu','av-rd'];
 function avc(n){let h=0;for(let c of(n||''))h=(h*31+c.charCodeAt(0))&0xffff;return AVC[h%AVC.length];}
 function nc(s){return(s||'').split(/[,|]/).map(x=>x.trim().toLowerCase()).filter(Boolean);}
 function gst(c){if(c.done)return'done';if(!c.fu)return'none';const fd=new Date(c.fu);fd.setHours(0,0,0,0);const d=Math.ceil((fd-tod)/864e5);if(d<0)return'overdue';if(d===0)return'today';if(d<=7)return'thisweek';return'upcoming';}
-function vbp(c){const cl=cls(c.pr);if(preset==='followups')return FOLLOWUP_PRODS.has((c.pr||'').toLowerCase().trim());if(preset==='all')return true;if(preset==='life')return cl==='life';if(preset==='ci')return cl==='ci';if(preset==='investments')return cl==='inv';if(preset==='travel')return cl==='travel';if(preset==='review')return c.ar!=='Y';return true;}
+function vbp(c){const cl=cls(c.pr);if(preset==='followups')return FOLLOWUP_PRODS.has((c.pr||'').toLowerCase().trim());if(preset==='all')return true;if(preset==='life')return cl==='life';if(preset==='ci')return cl==='ci';if(preset==='investments')return cl==='inv';if(preset==='travel')return cl==='travel';if(preset==='review')return c.ar!=='Y';if(preset==='market')return c.ma==='Y';return true;}
 function getAllLinked(c){const ap=nc(c.ph),ae=nc(c.em),mh=new Set(c.hh||[]);return clients.filter(o=>{if(o.id===c.id)return false;return mh.has(o.id)||nc(o.ph).some(p=>ap.includes(p))||nc(o.em).some(e=>ae.includes(e));});}
 // Products requiring follow-up (not travel/visitor)
 var FOLLOWUP_PRODS = new Set(['term insurance','ul insurance','whole life','critical illness','rrsp','resp','ul transfer','term transfer','wl transfer']);
@@ -543,7 +544,13 @@ function getFiltered(){
       if(c.status==='closed') return false;
     }
     if(!vbp(c)) return false;
-    const mq=!q||[c.cn,c.ins,c.cy,c.pn,c.ph,c.em,c.co,c.pr,c.src].some(x=>(x||'').toLowerCase().includes(q));
+    // Normalize query for phone matching: strip non-digits and country codes
+    var qDigits=q.replace(/\D/g,'');
+    if(qDigits.length===11&&qDigits[0]==='1')qDigits=qDigits.slice(1);
+    else if(qDigits.length>10)qDigits=qDigits.slice(-10);
+    var phAllDigits=(c.ph||'').toString().replace(/\D/g,'');
+    const mq=!q||[c.cn,c.ins,c.cy,c.pn,c.ph,c.em,c.co,c.pr,c.src].some(x=>(x||'').toLowerCase().includes(q))
+      ||(qDigits.length>=7&&phAllDigits.includes(qDigits));
     if(!mq) return false;
     if(q) return true;
     const s=gst(c);
@@ -646,6 +653,7 @@ function detH(c){
   html+='<button onclick="event.stopPropagation();openReviewWA('+c.id+')" title="Send WhatsApp message asking for Google review" style="font-size:11px;padding:4px 10px;border:1px solid #25D366;border-radius:4px;background:'+(arDone?'#f0fdf4':'#fff7ed')+';cursor:pointer;color:#25D366;font-family:DM Sans,sans-serif;font-weight:500">&#11088; '+(arDone?'WA Review (asked)':'WA Review')+'</button>';
   // Manual toggle (if sent via other channel)
   html+='<button onclick="event.stopPropagation();toggleReview('+c.id+')" title="'+(arDone?'Mark as not yet asked':'Mark as asked without sending WA')+'" style="font-size:11px;padding:4px 8px;border:1px solid '+(arDone?'#10b981':'var(--border2)')+';border-radius:4px;background:'+(arDone?'#f0fdf4':'none')+';cursor:pointer;color:'+(arDone?'#10b981':'var(--text3)')+';font-family:DM Sans,sans-serif">'+(arDone?'&#10003;':'&#9711;')+'</button>';
+  var maDone=c.ma==='Y';html+='<button onclick="event.stopPropagation();toggleMarketAlert('+c.id+')" title="Client wants to be called when market drops" style="font-size:11px;padding:4px 10px;border:1px solid '+(maDone?'#6366f1':'var(--border2)')+';border-radius:4px;background:'+(maDone?'#eef2ff':'none')+';cursor:pointer;color:'+(maDone?'#6366f1':'var(--text3)')+';font-family:DM Sans,sans-serif">'+(maDone?'&#128200; Market alert ON':'&#128200; Market alert')+'</button>';
   if(c.status==='closed'){
     html+='<button onclick="event.stopPropagation();togglePolicyClosed('+c.id+')" style="font-size:11px;padding:4px 10px;border:1px solid var(--accent);border-radius:4px;background:var(--accent-l);cursor:pointer;color:var(--accent);font-family:DM Sans,sans-serif">&#8634; Reopen policy</button>';
   } else {
@@ -3234,6 +3242,18 @@ function addLeadFromClient(id){
     var note=document.getElementById('l-note');
     if(note)note.value='Existing client ('+c.pr+'). Interested in new product.';
   },100);
+}
+
+function toggleMarketAlert(id){
+  var c=clients.find(function(x){return x.id===id;});if(!c)return;
+  c.ma=(c.ma==='Y'?'N':'Y');
+  sheetWrite('writeMarketAlert',{rowNum:c.rowNum,value:c.ma});
+  render();
+  var msg=document.createElement('div');
+  msg.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:'+(c.ma==='Y'?'#6366f1':'#64748b')+';color:#fff;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:13px;z-index:9999';
+  msg.textContent=(c.ma==='Y'?'Added to market alert list':'Removed from market alert list');
+  document.body.appendChild(msg);
+  setTimeout(function(){msg.remove();},2000);
 }
 
 </script>
