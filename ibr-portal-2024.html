@@ -453,12 +453,22 @@ function handleCredentialResponse(resp){
   const email=p.email;
   if(![OWNER,...ASSISTANTS].includes(email)){document.getElementById('loginError').style.display='block';return;}
   isOwner=(email===OWNER);
+  const name=(p.name||email).split(' ')[0];
+  const initials=(p.name||email).split(' ').filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('');
+  _applyLogin(name, initials);
+}
+
+function _applyLogin(name, initials){
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('appShell').style.display='block';
-  const i=(p.name||email).split(' ').filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('');
-  document.getElementById('uav').textContent=i;
-  document.getElementById('uname').textContent=(p.name||email).split(' ')[0];
+  document.getElementById('uav').textContent=initials||name.substring(0,2).toUpperCase();
+  document.getElementById('uname').textContent=name;
   document.getElementById('roleLabel').textContent=isOwner?'Owner':'Assistant';
+  // Show/hide analytics based on role
+  var anBtn=document.getElementById('modeAnalytics');
+  var mobAn=document.getElementById('mob-analytics');
+  if(anBtn)anBtn.style.display=isOwner?'':'none';
+  if(mobAn)mobAn.style.display=isOwner?'':'none';
   loadData();
 }
 function parseJwt(t){return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));}
@@ -3410,7 +3420,7 @@ function openLinkedPolicy(id){
   // Action buttons
   html+='<div class="fac">';
   html+='<button onclick="document.getElementById(\'modal\').innerHTML=\'\'" class="bcn">Close</button>';
-  html+='<button onclick="openEditModal('+c.id+');document.getElementById(\'modal\').innerHTML=\'\';" class="bsb">Edit policy</button>';
+  html+='<button onclick="openEditModal('+c.id+')" class="bsb">Edit policy</button>';
   // Close/reopen button
   if(c.status!=='closed'){html+='<button onclick="event.stopPropagation();togglePolicyClosed('+c.id+');document.getElementById(\'modal\').innerHTML=\'\'" style="font-size:12px;padding:8px 16px;border:1px solid var(--red);border-radius:var(--rs);background:none;cursor:pointer;color:var(--red);font-family:DM Sans,sans-serif">&#10005; Close policy</button>';}
   else{html+='<button onclick="event.stopPropagation();togglePolicyClosed('+c.id+');document.getElementById(\'modal\').innerHTML=\'\'" style="font-size:12px;padding:8px 16px;border:1px solid var(--accent);border-radius:var(--rs);background:var(--accent-l);cursor:pointer;color:var(--accent);font-family:DM Sans,sans-serif">&#8634; Reopen</button>';}
