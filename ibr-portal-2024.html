@@ -1281,7 +1281,7 @@ function refreshData(){
     if(!d.rows){throw new Error(d.error||'No data returned from sheet');}parseRows(d.rows);sheetConnected=true;
     document.getElementById('sdot').classList.remove('err');
     document.getElementById('syncStatus').textContent=clients.length+' clients \xb7 live';
-    loadLeads();render();startBackgroundSync();
+    leads=[];loadLeads(true);render();startBackgroundSync(); // force reload leads on manual refresh
     if(btn){btn.textContent='\u2713 Updated';setTimeout(function(){btn.textContent='\u8635 Refresh';btn.disabled=false;},2000);}
   }).catch(function(e){
     document.getElementById('sdot').classList.add('err');
@@ -1898,11 +1898,9 @@ async function loadLeads(force){
   try{
     var r=await fetch(APPS_SCRIPT_URL+'?action=getLeads');
     var d=await r.json();
-    if(d.leads){
-      leads=d.leads.filter(function(l){return l.status!=='deleted';});
-      // Re-render leads tab if currently showing it
-      if(mode==='leads')render();
-    }
+    // Always update leads array (even if empty)
+    leads=(d.leads||[]).filter(function(l){return l.status!=='deleted';});
+    if(mode==='leads')render();
   }catch(e){console.warn('Leads:',e);}
 }
 async function saveLead(lead){
