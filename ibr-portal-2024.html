@@ -443,7 +443,13 @@ const CLAIM_TYPES=['Death Benefit','Critical Illness Payout','Disability Claim',
 const CLAIM_STATUSES=['Submitted','In Review','Approved','Paid','Denied'];
 const DQG=[{l:'Disability variants',i:['Disability','Disability Insurance']},{l:'Truck-Travel variants',i:['Truck-Travel','Truck - Travel','Truck Travel']},{l:'RRSP typos',i:['RRSP','RRP','SRRP']},{l:'Transfer variants',i:['UL Transfer','WL Transfer','Term Transfer','Transfer']},{l:'Likely wrong column',i:['Tiktok','Entity']}];
 
-let isOwner=false, clients=[], nextId=1000, mode='followup', tab='all', sel=null, _selSet=new Set(), preset='followups', _lookupHasFilter='', _lookupMissingFilter='', nnt={}, lkp=null, undoStack=[], sheetConnected=false, showClosed=false;
+let isOwner=false, clients=[], nextId=1000, mode='followup', tab='all', sel=null, _selSet=new Set(), preset='followups';
+var _lkpHas=[], _lkpMissing=[], _lkpHideMessaged=false;
+var LKP_CATS; // initialized after hasLife/hasCI/hasInv/hasVTC are defined
+function _initLkpCats(){
+  LKP_CATS={'Life insurance':hasLife,'Critical illness':hasCI,'Investments (RRSP/TFSA/RESP)':hasInv,'VTC / Supervisa':hasVTC};
+}
+let nnt={}, lkp=null, undoStack=[], sheetConnected=false, showClosed=false;
 
 // ── AUTH ──
 // Google Sign-in configured via data-attributes on g_id_onload div
@@ -476,6 +482,7 @@ function logout(){stopBackgroundSync();_pendingClients=null;var b=document.getEl
 
 // ── LOAD FROM APPS SCRIPT ──
 async function loadData(){
+  _initLkpCats(); // init after helper functions defined
   document.getElementById('syncStatus').textContent='Loading…';
   document.getElementById('list').innerHTML='<div class="loading"><div class="spinner"></div><span>Connecting to your sheet…</span></div>';
   try{
@@ -3471,8 +3478,8 @@ function _lkpFilteredClients(q){
     var fn=LKP_CATS[cat];
     if(fn) base=base.filter(function(c){return !fn(c);});
   });
-  // Hide messaged clients
-  if(_lkpHideMessaged) base=base.filter(function(c){return !c.msgd;});
+  // Hide messaged clients — only when product filters are active (not regular search)
+  if(_lkpHideMessaged && (_lkpHas.length>0||_lkpMissing.length>0)) base=base.filter(function(c){return !c.msgd;});
   // Deduplicate by household
   var seen={};
   return base.filter(function(c){
