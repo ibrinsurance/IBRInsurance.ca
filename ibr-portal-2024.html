@@ -1925,20 +1925,29 @@ async function submitSale(){
 // ── CLAIMS VIEW ──
 
 // ── LEADS MODULE ──
-var leads=[];var leadNextId=5000;
+var leads=[];var leadNextId=Date.now(); // timestamp avoids ID collisions on refresh
 var LEADS_LISTS=['Life & CI Leads','VTC & SV'];
 var _leadFilter='all';var _leadSort='due';var _leadGroup='list';var _leadView='board';
 
 async function loadLeads(force){
   if(!sheetConnected)return;
-  if(!force && leads && leads.length>0)return; // already loaded, skip
+  if(!force && leads && leads.length>0)return;
   try{
+    // Load custom lists first
+    var lr=await fetch(APPS_SCRIPT_URL+'?action=getLists');
+    var ld=await lr.json();
+    if(ld.lists&&ld.lists.length>0)LEADS_LISTS=ld.lists;
+    // Load leads
     var r=await fetch(APPS_SCRIPT_URL+'?action=getLeads');
     var d=await r.json();
-    // Always update leads array (even if empty)
     leads=(d.leads||[]).filter(function(l){return l.status!=='deleted';});
+    // Set leadNextId above max existing id to avoid overwrites
+    if(leads.length>0){
+      var maxId=leads.reduce(function(m,l){return Math.max(m,parseInt(l.id)||0);},0);
+      if(maxId>=leadNextId)leadNextId=maxId+1;
+    }
     if(mode==='leads')render();
-  }catch(e){console.warn('Leads:',e);}
+  }catch(e){console.warn('[IBR] Leads load error:',e);}
 }
 async function saveLead(lead){
   if(!sheetConnected)return;
@@ -2070,7 +2079,14 @@ function getDueStatus(due){
 
 function _lf(el){_leadFilter=el.getAttribute('data-fv');renderLeads();}
 function _lv(){_leadView=_leadView==='board'?'list':'board';renderLeads();}
-function _addList(){var n=prompt('New list name:');if(n&&n.trim()&&LEADS_LISTS.indexOf(n.trim())<0){LEADS_LISTS.push(n.trim());renderLeads();}}
+function _addList(){
+  var n=prompt('New list name:');
+  if(n&&n.trim()&&LEADS_LISTS.indexOf(n.trim())<0){
+    LEADS_LISTS.push(n.trim());
+    sheetWrite('saveLists',{lists:LEADS_LISTS});
+    renderLeads();
+  }
+}
 
 function renderLeads(){
   var el=document.getElementById('list');
@@ -2744,19 +2760,77 @@ function markContacted(id){
 
 function markDoneNextAnniv(id){
   var c=clients.find(function(x){return x.id===id;});if(!c)return;
+  // Check if client has household policies
+  var linked=getAllLinked(c).filter(function(l){return l.status!=='closed';});
+  var hasHousehold=linked.length>0;
+
+  // Ask user: this policy only, or all household policies?
+  var choice='one';
+  if(hasHousehold){
+    // Show inline prompt instead of system confirm
+    var existing=document.getElementById('hu-prompt-'+c.id);
+    if(existing){existing.remove();return;}
+    var promptDiv=document.createElement('div');
+    promptDiv.id='hu-prompt-'+c.id;
+    promptDiv.style.cssText='background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:12px;margin-top:8px;font-family:DM Sans,sans-serif';
+    promptDiv.innerHTML='<div style="font-size:12px;font-weight:600;color:#166534;margin-bottom:8px">Mark complete → next year for:</div>'
+      +'<div style="display:flex;gap:8px;flex-wrap:wrap">'
+      +'<button onclick="_markAnnivOne('+id+')" style="font-size:12px;padding:6px 14px;border:none;border-radius:6px;background:#16a34a;color:#fff;cursor:pointer;font-family:DM Sans,sans-serif;font-weight:500">This policy only</button>'
+      +'<button onclick="_markAnnivAll('+id+')" style="font-size:12px;padding:6px 14px;border:none;border-radius:6px;background:#6366f1;color:#fff;cursor:pointer;font-family:DM Sans,sans-serif;font-weight:500">All '+( linked.length+1)+' household policies</button>'
+      +'<button onclick="document.getElementById(\'hu-prompt-'+c.id+'\').remove()" style="font-size:12px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:none;cursor:pointer;color:var(--text3);font-family:DM Sans,sans-serif">Cancel</button>'
+      +'</div>'
+      +'<div style="font-size:11px;color:#166534;margin-top:6px">'+linked.map(function(l){return l.pr;}).join(', ')+'</div>';
+    // Insert after the button that triggered this
+    var btn=event.target;
+    btn.parentNode.insertBefore(promptDiv, btn.nextSibling);
+    event.stopPropagation();
+    return;
+  }
+  _markAnnivOne(id);
+}
+
+function _calcNextAnniv(c){
   var base=c.ds?new Date(c.ds):new Date();
   if(isNaN(base.getTime()))base=new Date();
   var today=new Date();today.setHours(0,0,0,0);
   var next=new Date(base);
   next.setFullYear(today.getFullYear()+1);
-  var fuStr=next.getFullYear()+'-'+String(next.getMonth()+1).padStart(2,'0')+'-'+String(next.getDate()).padStart(2,'0');
+  return next.getFullYear()+'-'+String(next.getMonth()+1).padStart(2,'0')+'-'+String(next.getDate()).padStart(2,'0');
+}
+
+function _markAnnivOne(id){
+  var c=clients.find(function(x){return x.id===id;});if(!c)return;
+  var fuStr=_calcNextAnniv(c);
   pushUndo('Complete+anniv: '+c.cn);
   c.fu=fuStr;
   sheetWrite('writeFollowupDate',{rowNum:c.rowNum,value:fuStr});
+  var p=document.getElementById('hu-prompt-'+id);if(p)p.remove();
   render();
+  _showAnnivToast(fuStr,1);
+}
+
+function _markAnnivAll(id){
+  var c=clients.find(function(x){return x.id===id;});if(!c)return;
+  var linked=getAllLinked(c).filter(function(l){return l.status!=='closed';});
+  var all=[c].concat(linked);
+  var updates=[];
+  all.forEach(function(p){
+    var fuStr=_calcNextAnniv(p);
+    pushUndo('Complete+anniv: '+p.cn+' '+p.pr);
+    p.fu=fuStr;
+    updates.push({rowNum:p.rowNum,value:fuStr});
+  });
+  // Batch write all at once
+  sheetWrite('batchWriteFollowupDates',{updates:updates});
+  var p=document.getElementById('hu-prompt-'+id);if(p)p.remove();
+  render();
+  _showAnnivToast(null,all.length);
+}
+
+function _showAnnivToast(fuStr,count){
   var msg=document.createElement('div');
   msg.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:13px;font-weight:500;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.2)';
-  msg.textContent='✓ Next follow-up set to '+fuStr;
+  msg.textContent=count===1?'\u2713 Next follow-up set to '+fuStr:'\u2713 '+count+' policies updated to next anniversary';
   document.body.appendChild(msg);
   setTimeout(function(){msg.remove();},2500);
 }
