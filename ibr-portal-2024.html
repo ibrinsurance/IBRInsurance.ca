@@ -519,7 +519,7 @@ function parseRows(rows){
     if(r.claimStatus){try{claim=JSON.parse(r.claimStatus);}catch{}}
     let hh=[];
     if(r.householdLinks){try{hh=JSON.parse(r.householdLinks);}catch{}}
-    clients.push({id:nextId++,rowNum:r.rowNum,cn:r.cn,ins:r.ins||r.cn,ds:r.ds,co:r.co,cv:r.cv,pn:r.pn,ph:r.ph?r.ph.toString():'',em:r.em,cy:r.cy,ap:r.ap,cm:r.cm,src:r.src,pr:r.pr,fu:r.fu||null,done:false,notes:parsedNotes,hh,claim,status:r.policyStatus||'active',lcc:_cleanDate(r.lastClientContact),lco:_cleanDate(r.lastCoContact),ar:r.askReview||'N',ma:r.marketAlert||'N'});
+    clients.push({id:nextId++,rowNum:r.rowNum,cn:r.cn,ins:r.ins||r.cn,ds:r.ds,co:r.co,cv:r.cv,pn:r.pn,ph:r.ph?r.ph.toString():'',em:r.em,cy:r.cy,ap:r.ap,cm:r.cm,src:r.src,pr:r.pr,fu:r.fu||null,done:false,notes:parsedNotes,hh,claim,status:r.policyStatus||'active',lcc:_cleanDate(r.lastClientContact),lco:_cleanDate(r.lastCoContact),ar:r.askReview||'N',ma:r.marketAlert||'N',msgd:(r.crmNotes||'').includes('[MSGD]')});
   });
 }
 
@@ -661,6 +661,7 @@ function detH(c){
   var arDone=c.ar==='Y';
   // WhatsApp review button with smart template
   html+='<button onclick="event.stopPropagation();openReviewWA('+c.id+')" title="Send WhatsApp message asking for Google review" style="font-size:11px;padding:4px 10px;border:1px solid #25D366;border-radius:4px;background:'+(arDone?'#f0fdf4':'#fff7ed')+';cursor:pointer;color:#25D366;font-family:DM Sans,sans-serif;font-weight:500">&#11088; '+(arDone?'WA Review (asked)':'WA Review')+'</button>';
+  var msgdDone=c.msgd;html+='<button onclick="event.stopPropagation();toggleMessaged('+c.id+')" title="Mark that you have already messaged this client about missing products" style="font-size:11px;padding:4px 10px;border:1px solid '+(msgdDone?'#6366f1':'var(--border2)')+';border-radius:4px;background:'+(msgdDone?'#eef2ff':'none')+';cursor:pointer;color:'+(msgdDone?'#6366f1':'var(--text3)')+';font-family:DM Sans,sans-serif">'+(msgdDone?'&#10003; Messaged':'&#128172; Mark messaged')+'</button>';
   // Manual toggle (if sent via other channel)
   html+='<button onclick="event.stopPropagation();toggleReview('+c.id+')" title="'+(arDone?'Mark as not yet asked':'Mark as asked without sending WA')+'" style="font-size:11px;padding:4px 8px;border:1px solid '+(arDone?'#10b981':'var(--border2)')+';border-radius:4px;background:'+(arDone?'#f0fdf4':'none')+';cursor:pointer;color:'+(arDone?'#10b981':'var(--text3)')+';font-family:DM Sans,sans-serif">'+(arDone?'&#10003;':'&#9711;')+'</button>';
   var maDone=c.ma==='Y';html+='<button onclick="event.stopPropagation();toggleMarketAlert('+c.id+')" title="Client wants to be called when market drops" style="font-size:11px;padding:4px 10px;border:1px solid '+(maDone?'#6366f1':'var(--border2)')+';border-radius:4px;background:'+(maDone?'#eef2ff':'none')+';cursor:pointer;color:'+(maDone?'#6366f1':'var(--text3)')+';font-family:DM Sans,sans-serif">'+(maDone?'&#128200; Market alert ON':'&#128200; Market alert')+'</button>';
@@ -944,29 +945,18 @@ function renderLookup(){
   var q=(document.getElementById('searchInput').value||'').toLowerCase().trim();
   var el=document.getElementById('list');
   // Product filter UI
+  // Build/update filter bar
   var filterBar=document.getElementById('lookup-filter-bar');
+  var barHtml=_buildFilterBar(q);
   if(!filterBar){
     filterBar=document.createElement('div');
     filterBar.id='lookup-filter-bar';
-    filterBar.style.cssText='padding:8px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap;align-items:center';
-    filterBar.innerHTML='<span style="font-size:11px;color:var(--text3);font-weight:500">FILTER:</span>'
-      +'<select onchange="_lkpHas=this.value;renderLookup()" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;font-family:DM Sans,sans-serif"><option value="">Has any product</option>'
-      +['Term Insurance','Universal Life','Whole Life','Critical Illness','RESP','RRSP','TFSA','FHSA','VTC','Supervisa','Disability','Group'].map(function(p){return'<option value="'+p+'"'+(p===_lkpHas?' selected':'')+'>Has: '+p+'</option>';}).join('')+'</select>'
-      +'<select onchange="_lkpMissing=this.value;renderLookup()" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;font-family:DM Sans,sans-serif"><option value="">Missing any product</option>'
-      +['Term Insurance','Universal Life','Whole Life','Critical Illness','RESP','RRSP','TFSA','FHSA','VTC','Supervisa','Disability','Group'].map(function(p){return'<option value="'+p+'"'+(p===_lkpMissing?' selected':'')+'>Missing: '+p+'</option>';}).join('')+'</select>'
-      +(_lkpHas||_lkpMissing?'<button onclick="_lkpHas=\'\';_lkpMissing=\'\';document.querySelectorAll(\'#lookup-filter-bar select\').forEach(function(s){s.value=\'\';});renderLookup()" style="font-size:11px;padding:3px 8px;border:1px solid var(--red);border-radius:5px;color:var(--red);background:none;cursor:pointer;font-family:DM Sans,sans-serif">&#10005; Clear filter</button>':'')
-      +(_lkpHas||_lkpMissing?'<span style="font-size:11px;color:var(--accent);font-weight:600">'+_lkpFilteredClients(q).length+' clients</span>':'');
+    filterBar.innerHTML=barHtml;
     el.parentNode.insertBefore(filterBar,el);
   } else {
-    filterBar.innerHTML='<span style="font-size:11px;color:var(--text3);font-weight:500">FILTER:</span>'
-      +'<select onchange="_lkpHas=this.value;renderLookup()" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;font-family:DM Sans,sans-serif"><option value="">Has any product</option>'
-      +['Term Insurance','Universal Life','Whole Life','Critical Illness','RESP','RRSP','TFSA','FHSA','VTC','Supervisa','Disability','Group'].map(function(p){return'<option value="'+p+'"'+(p===_lkpHas?' selected':'')+'>Has: '+p+'</option>';}).join('')+'</select>'
-      +'<select onchange="_lkpMissing=this.value;renderLookup()" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;font-family:DM Sans,sans-serif"><option value="">Missing any product</option>'
-      +['Term Insurance','Universal Life','Whole Life','Critical Illness','RESP','RRSP','TFSA','FHSA','VTC','Supervisa','Disability','Group'].map(function(p){return'<option value="'+p+'"'+(p===_lkpMissing?' selected':'')+'>Missing: '+p+'</option>';}).join('')+'</select>'
-      +(_lkpHas||_lkpMissing?'<button onclick="_lkpHas=\'\';_lkpMissing=\'\';document.querySelectorAll(\'#lookup-filter-bar select\').forEach(function(s){s.value=\'\';});renderLookup()" style="font-size:11px;padding:3px 8px;border:1px solid var(--red);border-radius:5px;color:var(--red);background:none;cursor:pointer;font-family:DM Sans,sans-serif">&#10005; Clear filter</button>':'')
-      +(_lkpHas||_lkpMissing?'<span style="font-size:11px;color:var(--accent);font-weight:600">'+_lkpFilteredClients(q).length+' clients</span>':'');
+    filterBar.innerHTML=barHtml;
   }
-  if(!q&&!_lkpHas&&!_lkpMissing){
+  if(!q&&!_lkpHas.length&&!_lkpMissing.length&&!_lkpHideMessaged){
     // Default: show recent activity + smart empty state
     var html='';
     // Recent 5 opened (tracked in _recentOpened)
@@ -988,16 +978,8 @@ function renderLookup(){
     html+='</div>';
   el.innerHTML=html;return;
   }
-  // Smart search: parse query for filters
-  var filters=_parseSmartQuery(q);
-  // Limit to first 800 clients checked for speed, show top 40 results
-  var checked=0;
-  var res=clients.filter(function(c){
-    if(checked>2000)return false; // hard limit for speed
-    checked++;
-    if(c.status==='closed'&&!showClosed)return false;
-    return _matchesFilters(c,filters);
-  }).slice(0,40);
+  // Smart search: parse query, apply product filters too
+  var res=_lkpFilteredClients(q).slice(0,40);
   if(!res.length){el.innerHTML='<div class="empty">No clients found for "'+q+'" &mdash; try name, phone, city, product or source</div>';return;}
   // Group by household
   var seen=new Set();var groups=[];
@@ -3471,43 +3453,98 @@ function openLinkedPolicy(id){
 }
 
 // Lookup product filter
-var _lkpHas='', _lkpMissing='';
 function _lkpFilteredClients(q){
-  // Start from all clients (or searched subset)
   var base;
   if(q){
-    // Full text search
     var f=_parseSmartQuery(q);
     base=clients.filter(function(c){return _matchesFilters(c,f);});
   } else {
     base=clients.filter(function(c){return c.status!=='closed';});
   }
-  // Apply "has product" filter
-  if(_lkpHas){
-    var h=_lkpHas.toLowerCase();
-    // Group by household: include client if ANY household member has the product
-    base=base.filter(function(c){
-      var all=[c].concat(getAllLinked(c));
-      return all.some(function(p){return (p.pr||'').toLowerCase().includes(h);});
-    });
-  }
-  // Apply "missing product" filter
-  if(_lkpMissing){
-    var m=_lkpMissing.toLowerCase();
-    // Include client if NO household member has this product
-    base=base.filter(function(c){
-      var all=[c].concat(getAllLinked(c));
-      return !all.some(function(p){return (p.pr||'').toLowerCase().includes(m);});
-    });
-  }
-  // Deduplicate by primary client (first in household)
+  // "Has" filters (AND logic - must have ALL selected)
+  _lkpHas.forEach(function(cat){
+    var fn=LKP_CATS[cat];
+    if(fn) base=base.filter(function(c){return fn(c);});
+  });
+  // "Missing" filters (AND logic - must be missing ALL selected)
+  _lkpMissing.forEach(function(cat){
+    var fn=LKP_CATS[cat];
+    if(fn) base=base.filter(function(c){return !fn(c);});
+  });
+  // Hide messaged clients
+  if(_lkpHideMessaged) base=base.filter(function(c){return !c.msgd;});
+  // Deduplicate by household
   var seen={};
   return base.filter(function(c){
-    var key=nc(c.ph)||nc(c.em)||c.cn;
+    var key=nc(c.ph)||nc(c.em)||c.id;
     if(seen[key])return false;
     seen[key]=true;
     return true;
   });
+}
+
+// Smart product category detection
+var LIFE_PRODS = new Set(['term','term insurance','ul','universal life','whole life','wl','life insurance','term life']);
+var CI_PRODS = new Set(['ci','critical illness','critical illness insurance']);
+var INV_PRODS = new Set(['rrsp','tfsa','resp','fhsa','investment','investments','inv']);
+var VTC_PRODS_SET = new Set(['vtc','supervisa','visitor','visitors','travel']);
+
+function hasLife(c){ return [c].concat(getAllLinked(c)).some(function(p){ var pr=(p.pr||'').toLowerCase().trim(); return LIFE_PRODS.has(pr)||pr.includes('term')||pr.includes('universal')||pr.includes('whole life'); }); }
+function hasCI(c){ return [c].concat(getAllLinked(c)).some(function(p){ var pr=(p.pr||'').toLowerCase().trim(); return CI_PRODS.has(pr)||pr.includes('critical'); }); }
+function hasInv(c){ return [c].concat(getAllLinked(c)).some(function(p){ var pr=(p.pr||'').toLowerCase().trim(); return INV_PRODS.has(pr)||pr.includes('rrsp')||pr.includes('tfsa')||pr.includes('resp'); }); }
+function hasVTC(c){ return [c].concat(getAllLinked(c)).some(function(p){ var pr=(p.pr||'').toLowerCase().trim(); return VTC_PRODS_SET.has(pr)||pr.includes('vtc')||pr.includes('supervis')||pr.includes('visitor'); }); }
+
+function _buildFilterBar(q){
+  var cats=Object.keys(LKP_CATS);
+  var count=_lkpFilteredClients(q||'').length;
+  var hasAny=_lkpHas.length>0||_lkpMissing.length>0||_lkpHideMessaged;
+  var html='<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border)">';
+  // Has group
+  html+='<div><div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Has (household)</div><div style="display:flex;flex-wrap:wrap;gap:4px">';
+  cats.forEach(function(cat){
+    var on=_lkpHas.indexOf(cat)>=0;
+    html+='<button onclick="_lkpToggle(\'has\',\''+cat+'\',this)" style="font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid '+(on?'var(--accent)':'var(--border)')+';background:'+(on?'var(--accent-l)':'none')+';color:'+(on?'var(--accent)':'var(--text3)')+';cursor:pointer;font-family:DM Sans,sans-serif;font-weight:'+(on?'600':'400')+'">'+cat+'</button>';
+  });
+  html+='</div></div>';
+  // Missing group
+  html+='<div><div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Missing (no one in household has)</div><div style="display:flex;flex-wrap:wrap;gap:4px">';
+  cats.forEach(function(cat){
+    var on=_lkpMissing.indexOf(cat)>=0;
+    html+='<button onclick="_lkpToggle(\'missing\',\''+cat+'\',this)" style="font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid '+(on?'#ef4444':'var(--border)')+';background:'+(on?'#fef2f2':'none')+';color:'+(on?'#ef4444':'var(--text3)')+';cursor:pointer;font-family:DM Sans,sans-serif;font-weight:'+(on?'600':'400')+'">'+cat+'</button>';
+  });
+  html+='</div></div>';
+  // Messaged + count row
+  html+='<div style="display:flex;align-items:center;gap:10px;margin-top:2px">';
+  html+='<label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:11px;color:var(--text2)"><input type="checkbox"'+(_lkpHideMessaged?' checked':'')+' onchange="_lkpHideMessaged=this.checked;renderLookup()"> Hide messaged clients</label>';
+  if(hasAny) html+='<button onclick="_lkpHas=[];_lkpMissing=[];_lkpHideMessaged=false;renderLookup()" style="font-size:11px;padding:2px 10px;border:1px solid var(--border);border-radius:20px;background:none;cursor:pointer;color:var(--text3);font-family:DM Sans,sans-serif">Clear all</button>';
+  if(hasAny) html+='<span style="font-size:11px;font-weight:700;color:var(--accent)">'+count+' clients</span>';
+  html+='</div>';
+  html+='</div>';
+  return html;
+}
+
+function _lkpToggle(type, cat, btn){
+  var arr = type==='has'?_lkpHas:_lkpMissing;
+  var idx = arr.indexOf(cat);
+  if(idx>=0) arr.splice(idx,1); else arr.push(cat);
+  renderLookup();
+}
+
+function toggleMessaged(id){
+  var c=clients.find(function(x){return x.id===id;});if(!c)return;
+  c.msgd=!c.msgd;
+  // Store in CRM notes with [MSGD] tag
+  var notes=(c.notes||[]).map(function(n){return n.t;}).join(' ');
+  var crmNotes=c.msgd
+    ? '[MSGD] '+new Date().toISOString().split('T')[0]+' | '+(notes||'')
+    : (notes||'').replace(/\[MSGD\][^|]*\|?/g,'').trim();
+  sheetWrite('writeCrmNotes',{rowNum:c.rowNum,value:crmNotes});
+  render();
+  var msg=document.createElement('div');
+  msg.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:'+(c.msgd?'#6366f1':'#64748b')+';color:#fff;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:13px;z-index:9999';
+  msg.textContent=c.msgd?'Marked as messaged — will be hidden from filter':'Removed messaged tag';
+  document.body.appendChild(msg);
+  setTimeout(function(){msg.remove();},2000);
 }
 
 </script>
