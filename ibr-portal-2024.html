@@ -988,12 +988,20 @@ function renderLookup(){
   // Smart search: parse query, apply product filters too
   var res=_lkpFilteredClients(q).slice(0,40);
   if(!res.length){el.innerHTML='<div class="empty">No clients found for "'+q+'" &mdash; try name, phone, city, product or source</div>';return;}
-  // Group by household
-  var seen=new Set();var groups=[];
+  // Group by household - dedup by phone+name to avoid showing same person twice
+  var seen={};var groups=[];
   res.forEach(function(c){
-    if(seen.has(c.id))return;seen.add(c.id);
-    var lnk=getAllLinked(c).filter(function(l){return !seen.has(l.id);});
-    // Don't add linked separately since they have their own cards
+    // Use normalised phone as primary key, fall back to name
+    var ph=nc(c.ph);
+    var key=ph&&ph.length>=7 ? ph : nc(c.cn)+'_'+nc(c.cy||'');
+    if(seen[key])return;
+    seen[key]=true;
+    // Also mark all linked policies as seen so they don't appear as separate cards
+    getAllLinked(c).forEach(function(l){
+      var lph=nc(l.ph);
+      var lkey=lph&&lph.length>=7 ? lph : nc(l.cn)+'_'+nc(l.cy||'');
+      seen[lkey]=true;
+    });
     groups.push(c);
   });
   el.innerHTML='<div style="font-size:11px;color:var(--text3);margin-bottom:8px">'+res.length+' result'+(res.length===1?'':'s')+' for "'+q+'"</div>'+
@@ -3506,12 +3514,18 @@ function _lkpFilteredClients(q){
   });
   // Hide messaged clients — only when product filters are active (not regular search)
   if(_lkpHideMessaged && (_lkpHas.length>0||_lkpMissing.length>0)) base=base.filter(function(c){return !c.msgd;});
-  // Deduplicate by household
-  var seen={};
+  // Deduplicate by household - same logic as renderLookup
+  var seen2={};
   return base.filter(function(c){
-    var key=nc(c.ph)||nc(c.em)||c.id;
-    if(seen[key])return false;
-    seen[key]=true;
+    var ph=nc(c.ph);
+    var key=ph&&ph.length>=7 ? ph : nc(c.cn)+'_'+nc(c.cy||'');
+    if(seen2[key])return false;
+    seen2[key]=true;
+    // Mark linked as seen too
+    getAllLinked(c).forEach(function(l){
+      var lph=nc(l.ph);
+      seen2[lph&&lph.length>=7?lph:nc(l.cn)+'_'+nc(l.cy||'')]=true;
+    });
     return true;
   });
 }
