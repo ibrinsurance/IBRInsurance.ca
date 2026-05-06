@@ -433,7 +433,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzBV-TONVES2krqjw9FxAMOCxCetzcPTF0jY_iih-5lUJSoypzYRLM1riSzCBn2KveD/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxth2SvkbfBRwiFcEKFzNpvwv56nbDuRt57TkZOKzxhkw1vHhApxZplldiXgxNSpuvK/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -2286,7 +2286,7 @@ function renderLeadCards(leadList){
     // Header row
     html+='<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:5px">';
     html+='<div style="flex:1;min-width:0">';
-    html+='<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:1px">'+l.name+'</div>';
+    var safeName=(l.name&&!l.name.startsWith('#'))?l.name:'(unnamed lead)';html+='<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:1px">'+safeName+'</div>';
     if(l.phone)html+='<div style="font-size:11px;color:var(--text3)">'+l.phone+(l.src?' &middot; '+l.src:'')+'</div>';
     html+='</div>';
     // Score + expected value
