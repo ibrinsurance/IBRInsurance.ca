@@ -433,7 +433,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxth2SvkbfBRwiFcEKFzNpvwv56nbDuRt57TkZOKzxhkw1vHhApxZplldiXgxNSpuvK/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyJMcfwV0hLabwSdUWLlcNcJrAxjI2pVXm8TFjJZc4dFTgYeKXTfxJ50q6uEzu-mEqZ/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -1419,7 +1419,8 @@ function _anDailyView(D,MONTHS,f$){
   var noFUHighPriority=clients.filter(function(c){
     if(c.fu||c.status==='closed')return false;
     if(!FOLLOWUP_PRODS.has((c.pr||'').toLowerCase().trim()))return false;
-    var comm=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;
+    var cm_str=(c.cm||'').toString().replace(/[$,\s]/g,'').replace(/[^0-9.-]/g,'');
+    var comm=parseFloat(cm_str)||0;
     return comm>200; // Has meaningful commission
   }).sort(function(a,b){return(parseFloat((b.cm||'0').replace(/[^0-9.-]/g,''))||0)-(parseFloat((a.cm||'0').replace(/[^0-9.-]/g,''))||0);});
   // Active leads
@@ -1603,7 +1604,8 @@ function _anReferralView(D,f$){
   var refData={};
   clients.forEach(function(c){
     var src=(c.src||'Unknown').trim();
-    var comm=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;
+    var cm_str=(c.cm||'').toString().replace(/[$,\s]/g,'').replace(/[^0-9.-]/g,'');
+    var comm=parseFloat(cm_str)||0;
     var d=new Date(c.ds);
     if(!refData[src])refData[src]={comm:0,count:0,clients:new Set(),policies:[],byYear:{}};
     refData[src].comm+=comm;refData[src].count++;refData[src].clients.add(c.cn);refData[src].policies.push(c);
@@ -2342,8 +2344,9 @@ function _buildAnalyticsData(){
   clients.forEach(function(c){
     if(!c.ds)return;var d=new Date(c.ds);var y=d.getFullYear();var m=d.getMonth()+1;
     if(!y||isNaN(y)||y<2019||y>2030)return;
-    var comm=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;
-    var pr=(c.pr||'').trim()||'Unknown';var src=(c.src||'Unknown').trim();
+    var cm_str=(c.cm||'').toString().replace(/[$,\s]/g,'').replace(/[^0-9.-]/g,'');
+    var comm=parseFloat(cm_str)||0;
+    var pr=(c.pr||'').trim();pr=pr?pr.replace(/\b\w/g,function(l){return l.toUpperCase();}):'Unknown';var src=(c.src||'Unknown').trim();
     if(!data.byYM[y])data.byYM[y]={};
     if(!data.byYM[y][m])data.byYM[y][m]={comm:0,count:0,byProd:{}};
     if(!data.byYear[y])data.byYear[y]={comm:0,count:0};
