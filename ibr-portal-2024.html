@@ -2392,6 +2392,39 @@ function renderAnalytics(){
     html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px"><div style="font-size:20px;font-weight:700;'+k[2]+'">'+k[0]+'</div><div style="font-size:11px;color:var(--text3);margin-top:2px">'+k[1]+'</div></div>';
   });
   html+='</div>';
+  // Monthly KPI widgets
+  var curM=D.curMonth;var MNow=MONTHS[curM-1];
+  var curMData=D.byYM[curY]&&D.byYM[curY][curM]?D.byYM[curY][curM]:{comm:0,count:0};
+  var thisMonthComm2=curMData.comm;
+  var thisMonthCount=curMData.count;
+  var daysInMonth2=new Date(curY,curM,0).getDate();
+  var dayOfMonth2=new Date().getDate();
+  var projectedMonth2=dayOfMonth2>0?Math.round(thisMonthComm2/dayOfMonth2*daysInMonth2):0;
+  var prevMData=D.byYM[prevY]&&D.byYM[prevY][curM]?D.byYM[prevY][curM]:{comm:0,count:0};
+  var prevMonthComm=prevMData.comm;
+  var mPct=prevMonthComm>0?Math.round((thisMonthComm2/prevMonthComm)*100):0;
+  var projPct=prevMonthComm>0?Math.round((projectedMonth2/prevMonthComm)*100):0;
+  var mColor=projPct>=100?'var(--accent)':projPct>=80?'#f59e0b':'var(--red)';
+  html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">';
+  // Month total
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px">';
+  html+='<div style="font-size:20px;font-weight:700">'+f$(thisMonthComm2)+'</div>';
+  html+='<div style="font-size:11px;color:var(--text3);margin-top:2px">'+MNow+' '+curY+' total</div>';
+  html+='<div style="font-size:11px;color:var(--text3)">Day '+dayOfMonth2+'/'+daysInMonth2+'</div>';
+  html+='</div>';
+  // Month projected
+  html+='<div style="background:var(--surface);border:2px solid '+mColor+';border-radius:var(--r);padding:12px 14px">';
+  html+='<div style="font-size:20px;font-weight:700;color:'+mColor+'">'+f$(projectedMonth2)+'</div>';
+  html+='<div style="font-size:11px;color:var(--text3);margin-top:2px">'+MNow+' projected (at this pace)</div>';
+  html+='<div style="font-size:11px;color:'+mColor+';font-weight:600">'+projPct+'% of '+MNow+' '+prevY+'</div>';
+  html+='</div>';
+  // Month policies + vs last year
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px">';
+  html+='<div style="font-size:20px;font-weight:700">'+thisMonthCount+'</div>';
+  html+='<div style="font-size:11px;color:var(--text3);margin-top:2px">Policies in '+MNow+' '+curY+'</div>';
+  html+='<div style="font-size:11px;color:'+(mPct>=100?'var(--accent)':mPct>=80?'#f59e0b':'var(--red)')+';font-weight:600">'+mPct+'% vs '+MNow+' '+prevY+'</div>';
+  html+='</div>';
+  html+='</div>';
   // Year selector
   html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:14px">';
   html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Compare years:</div>';
