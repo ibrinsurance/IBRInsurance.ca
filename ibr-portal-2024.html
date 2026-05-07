@@ -2347,7 +2347,7 @@ function _buildAnalyticsData(){
     yearProgress:Math.ceil((tod-new Date(curYear,0,1))/864e5)/(365+(curYear%4===0?1:0)),
     byYM:{},byYear:{},byProd:{},bySrc:{},allYears:[]};
   clients.forEach(function(c){
-    if(!c.ds)return;var d=new Date(c.ds);var y=d.getFullYear();var m=d.getMonth()+1;
+    if(!c.ds)return;var _dp=c.ds.toString().split('-');var y=parseInt(_dp[0]);var m=parseInt(_dp[1]);
     if(!y||isNaN(y)||y<2019||y>2030)return;
     var cm_str=(c.cm||'').toString().replace(/[$,\s]/g,'').replace(/[^0-9.-]/g,'');
     var comm=parseFloat(cm_str)||0;
@@ -2528,7 +2528,7 @@ function _anPortfolioView(D,MONTHS,f$){
   var avgCommYr=totalComm/Math.max(1,yearsAct);
   // Sales velocity
   var mkCnt={};
-  clients.forEach(function(c){if(!c.ds)return;var d=new Date(c.ds);var y=d.getFullYear();var m=d.getMonth()+1;if(y<2022)return;var k=y+'-'+String(m).padStart(2,'0');mkCnt[k]=(mkCnt[k]||0)+1;});
+  clients.forEach(function(c){if(!c.ds)return;var _dp=c.ds.toString().split('-');var y=parseInt(_dp[0]);var m=parseInt(_dp[1]);if(y<2022)return;var k=y+'-'+String(m).padStart(2,'0');mkCnt[k]=(mkCnt[k]||0)+1;});
   var mkKeys=Object.keys(mkCnt).sort();var l12=mkKeys.slice(-12);var p12=mkKeys.slice(-24,-12);
   var l12T=l12.reduce(function(s,k){return s+(mkCnt[k]||0);},0);
   var p12T=p12.reduce(function(s,k){return s+(mkCnt[k]||0);},0);
