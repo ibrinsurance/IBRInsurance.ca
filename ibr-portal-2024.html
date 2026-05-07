@@ -433,7 +433,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwkxDc-jaBycvJzgp069yWaPk5w6aLLhPdeoy6aachTytVR-0xYPTUKiacEu_ndRB9l/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzC6l59GZSjvzPDS-5aHE_7QbPjSJSPDh0uENQLLOtCGxsBRGB0c0JhXVaZuYElt8-5/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -1399,9 +1399,7 @@ function _anDailyView(D,MONTHS,f$){
   var tod2=new Date();tod2.setHours(0,0,0,0);
   var curY2=D.curYear;var curM2=D.curMonth;
   var MN=MONTHS[curM2-1];
-  // Debug: log May 2026 data
-  var _dbgMay=D.byYM[curY2]&&D.byYM[curY2][curM2];
-  console.log('[ANALYTICS_DEBUG] curY2='+curY2+' curM2='+curM2+' may_exists='+!!_dbgMay+' byProd='+JSON.stringify(_dbgMay?_dbgMay.byProd:null)+' totalClients='+clients.length);
+
   var totalComm=clients.reduce(function(s,c){return s+(parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0);},0);
   var avgComm=clients.length>0?totalComm/clients.length:0;
   // This month
