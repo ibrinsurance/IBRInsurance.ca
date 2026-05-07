@@ -2387,7 +2387,7 @@ function renderAnalytics(){
   var showMonths=_anMonths.length>0?_anMonths:[1,2,3,4,5,6,7,8,9,10,11,12];
   var html='';
   // KPI strip
-  html+='<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px">';
+  html+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px">';
   [[f$(curYComm),curY+' YTD',''],[f$(projected),'Full year projected','color:var(--accent)'],[(pct>=0?'+':'')+pct.toFixed(1)+'%','vs '+prevY,'color:'+(pct>=0?'var(--accent)':'var(--red)')],[(D.byYear[curY]?D.byYear[curY].count:0)+' sold','Policies in '+curY,'']].forEach(function(k){
     html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px"><div style="font-size:20px;font-weight:700;'+k[2]+'">'+k[0]+'</div><div style="font-size:11px;color:var(--text3);margin-top:2px">'+k[1]+'</div></div>';
   });
@@ -2405,7 +2405,7 @@ function renderAnalytics(){
   var mPct=prevMonthComm>0?Math.round((thisMonthComm2/prevMonthComm)*100):0;
   var projPct=prevMonthComm>0?Math.round((projectedMonth2/prevMonthComm)*100):0;
   var mColor=projPct>=100?'var(--accent)':projPct>=80?'#f59e0b':'var(--red)';
-  html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">';
+  html+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px">';
   // Month total
   html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px">';
   html+='<div style="font-size:20px;font-weight:700">'+f$(thisMonthComm2)+'</div>';
