@@ -1404,7 +1404,7 @@ function _anDailyView(D,MONTHS,f$){
   var totalComm=clients.reduce(function(s,c){return s+(parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0);},0);
   var avgComm=clients.length>0?totalComm/clients.length:0;
   // This month
-  var thisMonth=clients.filter(function(c){if(!c.ds)return false;var d=new Date(c.ds);return d.getFullYear()===curY2&&d.getMonth()+1===curM2;});
+  var thisMonth=clients.filter(function(c){if(!c.ds)return false;var _p=c.ds.toString().split('-');return parseInt(_p[0])===curY2&&parseInt(_p[1])===curM2;});
   var thisMonthComm=thisMonth.reduce(function(s,c){return s+(parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0);},0);
   // Best historical same month across all years
   var lastYearSameMonth=0; var bestMonthYear=curY2-1;
@@ -1504,7 +1504,7 @@ function _anDailyView(D,MONTHS,f$){
   var pRows2=Array.from(allProdNames).filter(Boolean).map(function(p){
     var cur=curProd[p]||0;
     // Find best historical same-month for THIS product specifically
-    var bestVal=0,bestYr=curY2-1,sampleCount=0,totalHist=0,histMonths=0;
+    var bestVal=0,bestYr=0,sampleCount=0,totalHist=0,histMonths=0;
     D.allYears.forEach(function(y){
       if(y>=curY2)return;
       var v=D.byYM[y]&&D.byYM[y][curM2]&&D.byYM[y][curM2].byProd[p]?D.byYM[y][curM2].byProd[p]:0;
@@ -1537,8 +1537,9 @@ function _anDailyView(D,MONTHS,f$){
       // Status badge
       if(abovePeak)html+='<span style="font-size:10px;padding:1px 6px;border-radius:20px;background:#f0fdf4;color:#10b981;font-weight:600">&#10003; Above peak</span>';
       else if(r.isOutlier)html+='<span style="font-size:10px;padding:1px 6px;border-radius:20px;background:#fff7ed;color:#f59e0b" title="Best year may be an outlier">&#9888; Outlier peak</span>';
+      else if(r.best===0&&r.cur>0)html+='<span style="font-size:10px;padding:1px 6px;border-radius:20px;background:#f0fdf4;color:#10b981">&#9733; First sale</span>';
       else html+='<span style="font-size:10px;padding:1px 6px;border-radius:20px;background:var(--red-l);color:var(--red)">&#8595; Gap</span>';
-      html+='<span style="font-size:10px;color:var(--text3);margin-left:2px">Best: '+r.bestYr+'</span>';
+      if(r.best>0)html+='<span style="font-size:10px;color:var(--text3);margin-left:2px">Best: '+r.bestYr+'</span>';
       html+='</div>';
       // Bars
       html+='<div style="display:flex;flex-direction:column;gap:2px;margin-bottom:4px">';
