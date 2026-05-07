@@ -522,7 +522,7 @@ function parseRows(rows){_lkpClearCache();
     if(r.claimStatus){try{claim=JSON.parse(r.claimStatus);}catch{}}
     let hh=[];
     if(r.householdLinks){try{hh=JSON.parse(r.householdLinks);}catch{}}
-    clients.push({id:nextId++,rowNum:r.rowNum,cn:r.cn,ins:r.ins||r.cn,ds:r.ds,co:r.co,cv:r.cv,pn:r.pn,ph:r.ph?r.ph.toString():'',em:r.em,cy:r.cy,ap:r.ap,cm:r.cm,src:r.src,pr:r.pr,fu:r.fu||null,done:false,notes:parsedNotes,hh,claim,status:r.policyStatus||'active',lcc:_cleanDate(r.lastClientContact),lco:_cleanDate(r.lastCoContact),ar:r.askReview||'N',ma:r.marketAlert||'N',msgd:(r.crmNotes||'').includes('[MSGD]')});
+    clients.push({id:nextId++,rowNum:r.rowNum,cn:r.cn,ins:r.ins||r.cn,ds:r.ds,co:r.co,cv:r.cv,pn:r.pn,ph:r.ph?r.ph.toString():'',em:r.em,cy:r.cy,ap:r.ap,cm:r.cm!==undefined&&r.cm!==''?r.cm.toString():'',src:r.src,pr:r.pr,fu:r.fu||null,done:false,notes:parsedNotes,hh,claim,status:r.policyStatus||'active',lcc:_cleanDate(r.lastClientContact),lco:_cleanDate(r.lastCoContact),ar:r.askReview||'N',ma:r.marketAlert||'N',msgd:(r.crmNotes||'').includes('[MSGD]')});
   });
 }
 
@@ -595,7 +595,9 @@ function onSearch(){
 // ── CONTROLS ──
 function applyPreset(){preset=document.getElementById('preset').value;sel=null;render();}
 function setMode(m){
-  mode=m;sel=null;lkp=null;
+  mode=m;sel=null;
+  // Remove lookup filter bar when leaving lookup tab
+  if(m!=='lookup'){var fb=document.getElementById('lookup-filter-bar');if(fb)fb.remove();}lkp=null;
   // Don't clear list here — render() will overwrite it, avoids blank flash
   // Reset analytics view to default when switching to analytics
   if(m==='analytics') _anView='daily';
