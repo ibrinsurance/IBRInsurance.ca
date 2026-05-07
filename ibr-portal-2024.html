@@ -433,7 +433,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz_eo2illoPpoTZE_Bra1oi8JcDoFF4TFwAacsGEA5rIyIorTkfG7-2_zuSFmZXkr6P/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxvVTsKsvzEUKikziBGBCyggvBisSdu24CX2nVIEEgWl4L3zyeB2m3JKyViEOIX8ct_/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -538,7 +538,7 @@ function fmtD(d){if(!d)return'—';try{return new Date(d).toLocaleDateString('en
 function ini(n){return(n||'?').split(' ').filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('');}
 const AVC=['av-gr','av-bl','av-am','av-pu','av-rd'];
 function avc(n){let h=0;for(let c of(n||''))h=(h*31+c.charCodeAt(0))&0xffff;return AVC[h%AVC.length];}
-function nc(s){return(s||'').split(/[,|]/).map(x=>x.trim().toLowerCase()).filter(Boolean);}
+function nc(s){return((s===null||s===undefined)?'':String(s)).split(/[,|]/).map(x=>x.trim().toLowerCase()).filter(Boolean);}
 function gst(c){if(c.done)return'done';if(!c.fu)return'none';const fd=new Date(c.fu);fd.setHours(0,0,0,0);const d=Math.ceil((fd-tod)/864e5);if(d<0)return'overdue';if(d===0)return'today';if(d<=7)return'thisweek';return'upcoming';}
 function vbp(c){const cl=cls(c.pr);if(preset==='followups')return FOLLOWUP_PRODS.has((c.pr||'').toLowerCase().trim());if(preset==='all')return true;if(preset==='life')return cl==='life';if(preset==='ci')return cl==='ci';if(preset==='investments')return cl==='inv';if(preset==='travel')return cl==='travel';if(preset==='review')return c.ar!=='Y';if(preset==='market')return c.ma==='Y';return true;}
 function getAllLinked(c){const ap=nc(c.ph),ae=nc(c.em),mh=new Set(c.hh||[]);return clients.filter(o=>{if(o.id===c.id)return false;return mh.has(o.id)||nc(o.ph).some(p=>ap.includes(p))||nc(o.em).some(e=>ae.includes(e));});}
