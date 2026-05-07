@@ -615,17 +615,19 @@ function ubdg(){const base=clients.filter(vbp);const q=(document.getElementById(
 
 
 function render(){
-  if(mode==='followup')renderFU();
-  else if(mode==='lookup')renderLookup();
-  else if(mode==='claims')renderClaims();
-  else if(mode==='leads')renderLeads();
-  else if(mode==='analytics'){
-    // Show brief loading state for analytics (heavy computation)
-    var el=document.getElementById('list');
-    if(el&&el.innerHTML==='')el.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:13px">Loading analytics...</div>';
-    setTimeout(renderAnalytics,10);
-  }
-  else renderDQ();
+  var el=document.getElementById('list');
+  function showErr(e){if(el)el.innerHTML='<div style="padding:20px;color:var(--red);font-family:DM Sans,sans-serif;font-size:12px"><strong>Render error:</strong> '+e.message+'<br><small>'+e.stack+'</small></div>';console.error('Render error:',e);}
+  try{
+    if(mode==='followup')renderFU();
+    else if(mode==='lookup')renderLookup();
+    else if(mode==='claims')renderClaims();
+    else if(mode==='leads')renderLeads();
+    else if(mode==='analytics'){
+      if(el&&!el.innerHTML.includes('Render error'))el.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:13px">Loading analytics...</div>';
+      setTimeout(function(){try{renderAnalytics();}catch(e){showErr(e);}},10);
+    }
+    else renderDQ();
+  }catch(e){showErr(e);}
 }
 function selC(id){ sel=(sel===id)?null:id; render(); }
 function renderFU(){
