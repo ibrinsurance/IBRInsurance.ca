@@ -1399,6 +1399,9 @@ function _anDailyView(D,MONTHS,f$){
   var tod2=new Date();tod2.setHours(0,0,0,0);
   var curY2=D.curYear;var curM2=D.curMonth;
   var MN=MONTHS[curM2-1];
+  // Debug: log May 2026 data
+  var _dbgMay=D.byYM[curY2]&&D.byYM[curY2][curM2];
+  console.log('[ANALYTICS_DEBUG] curY2='+curY2+' curM2='+curM2+' may_exists='+!!_dbgMay+' byProd='+JSON.stringify(_dbgMay?_dbgMay.byProd:null)+' totalClients='+clients.length);
   var totalComm=clients.reduce(function(s,c){return s+(parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0);},0);
   var avgComm=clients.length>0?totalComm/clients.length:0;
   // This month
@@ -1513,7 +1516,7 @@ function _anDailyView(D,MONTHS,f$){
     // Confidence: if best year is 1.5x the average, it's an outlier
     var isOutlier=histMonths>=2&&bestVal>avgHist*1.8;
     return{p:p,cur:cur,best:bestVal,bestYr:bestYr,avg:avgHist,isOutlier:isOutlier,gap:cur-bestVal};
-  }).filter(function(r){return r.cur>0||r.best>0;}).sort(function(a,b){return(b.cur+b.best)-(a.cur+a.best);}).slice(0,12);
+  }).filter(function(r){return r.cur>0||r.best>0;}).sort(function(a,b){return(b.cur+b.best)-(a.cur+a.best);});
 
   if(pRows2.length>0){
     var mxV2=Math.max.apply(null,pRows2.map(function(r){return Math.max(r.cur,r.best);}));
