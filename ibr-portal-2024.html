@@ -664,6 +664,7 @@ function detH(c){
   html+='<div style="flex:1"><div class="dn">'+c.cn+'</div><div class="ds2">Insured: '+c.ins+' \xb7 '+c.pr+'</div></div>';
   html+='<div style="display:flex;gap:6px;margin-left:auto;flex-shrink:0">';
   html+='<button onclick="event.stopPropagation();openEditModal('+c.id+')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border2);border-radius:4px;background:none;cursor:pointer;color:var(--text2);font-family:DM Sans,sans-serif">Edit policy</button>';
+  html+='<button onclick="event.stopPropagation();cloneSale('+c.id+')" title="Clone this sale for same client with new product" style="font-size:11px;padding:4px 10px;border:1px solid var(--accent);border-radius:4px;background:var(--accent-l);cursor:pointer;color:var(--accent);font-family:DM Sans,sans-serif;font-weight:500">&#43; Clone sale</button>';
   // Button row: WA Review | ✓ Review | Mark messaged | Market alert (all household-wide)
   var arDone=c.ar==='Y'; var maDone=c.ma==='Y'; var msgdDone=c.msgd;
   var hhLinked=getAllLinked(c).filter(function(l){return l.status!=='closed';});
@@ -3492,6 +3493,7 @@ function openLinkedPolicy(id){
   html+='<div class="fac">';
   html+='<button onclick="document.getElementById(\'modal\').innerHTML=\'\'" class="bcn">Close</button>';
   html+='<button onclick="openEditModal('+c.id+')" class="bsb">Edit policy</button>';
+  html+='<button onclick="cloneSale('+c.id+')" style="font-size:12px;padding:8px 16px;border:1px solid var(--accent);border-radius:var(--rs);background:var(--accent-l);cursor:pointer;color:var(--accent);font-family:DM Sans,sans-serif;font-weight:500">&#43; Clone sale</button>';
   // Close/reopen button
   if(c.status!=='closed'){html+='<button onclick="event.stopPropagation();togglePolicyClosed('+c.id+');document.getElementById(\'modal\').innerHTML=\'\'" style="font-size:12px;padding:8px 16px;border:1px solid var(--red);border-radius:var(--rs);background:none;cursor:pointer;color:var(--red);font-family:DM Sans,sans-serif">&#10005; Close policy</button>';}
   else{html+='<button onclick="event.stopPropagation();togglePolicyClosed('+c.id+');document.getElementById(\'modal\').innerHTML=\'\'" style="font-size:12px;padding:8px 16px;border:1px solid var(--accent);border-radius:var(--rs);background:var(--accent-l);cursor:pointer;color:var(--accent);font-family:DM Sans,sans-serif">&#8634; Reopen</button>';}
@@ -3634,6 +3636,33 @@ var LKP_CATS = {
   'Investments (RRSP/TFSA/RESP)': hasInv,
   'VTC / Supervisa': hasVTC
 };
+
+function cloneSale(id){
+  var c=clients.find(function(x){return x.id===id;});if(!c)return;
+  // Open new sale modal pre-filled with ALL client details except policy-specific fields
+  openNewSaleModal(c.cn, c.ph, c.em, c.cy, c.src);
+  // After modal opens, also pre-fill company and product from this policy
+  setTimeout(function(){
+    var co=document.getElementById('ns-co');
+    var pr=document.getElementById('ns-pr');
+    var ins=document.getElementById('ns-cn'); // client name already filled
+    if(co&&c.co)co.value=c.co;
+    if(pr&&c.pr){
+      // Find matching option in product dropdown
+      var opts=pr.options;
+      for(var i=0;i<opts.length;i++){
+        if(opts[i].value.toLowerCase()===c.pr.toLowerCase()){pr.selectedIndex=i;break;}
+      }
+    }
+    // Show a subtle hint
+    var hint=document.createElement('div');
+    hint.style.cssText='font-size:11px;color:var(--text3);margin-top:4px;padding:4px 0';
+    hint.textContent='Cloned from: '+c.pr+' ('+c.co+') — update product and policy details';
+    var modal=document.getElementById('modal');
+    var firstInput=modal&&modal.querySelector('input');
+    if(firstInput&&firstInput.parentNode)firstInput.parentNode.appendChild(hint);
+  },100);
+}
 
 </script>
 
