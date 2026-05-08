@@ -2562,7 +2562,7 @@ function _anPortfolioView(D,MONTHS,f$){
   // Avg commission per product
   var prodComm={};
   clients.forEach(function(c){var pr=(c.pr||'').trim()||'Unknown';var cm=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;if(!prodComm[pr])prodComm[pr]={total:0,count:0};prodComm[pr].total+=cm;prodComm[pr].count++;});
-  var prodRanked=Object.entries(prodComm).filter(function(e){return e[1].count>=3;}).map(function(e){return{pr:e[0],avg:e[1].total/e[1].count,total:e[1].total,count:e[1].count};}).sort(function(a,b){return b.avg-a.avg;}).slice(0,12);
+  var prodRanked=Object.entries(prodComm).filter(function(e){return e[1].count>=2;}).map(function(e){return{pr:e[0],avg:e[1].total/e[1].count,total:e[1].total,count:e[1].count};}).sort(function(a,b){return b.avg-a.avg;}).slice(0,12);
   var maxAvg=prodRanked.length?prodRanked[0].avg:1;
   var html='';
   // KPI row 1
@@ -2609,7 +2609,7 @@ function _anPortfolioView(D,MONTHS,f$){
   html+='</div></div>';
   // Avg commission per product
   html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px">';
-  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Avg commission per policy by product (min 3 policies) &mdash; which products pay best?</div>';
+  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Avg commission per policy by product (min 2 policies) &mdash; which products pay best?</div>';
   html+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px">';
   prodRanked.forEach(function(p,i){var pct=Math.round(p.avg/maxAvg*100);var medal=i===0?'#1 ':i===1?'#2 ':i===2?'#3 ':'';html+='<div style="background:var(--bg);border-radius:6px;padding:10px 12px;border:1px solid var(--border)"><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+p.pr+'">'+medal+p.pr+'</div><div style="background:var(--surface);border-radius:2px;height:5px;overflow:hidden;margin-bottom:5px"><div style="width:'+pct+'%;height:100%;background:var(--accent);border-radius:2px"></div></div><div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--text3)">'+p.count+' policies</span><span style="font-weight:600;color:var(--accent)">'+f$(p.avg)+'/policy</span></div></div>';});
   html+='</div></div>';
