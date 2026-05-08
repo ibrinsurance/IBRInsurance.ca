@@ -2429,7 +2429,7 @@ function renderAnalytics(){
   var avgYearComm=curYCount>0?Math.round(curYComm/curYCount):0;
   var prevAvgYearComm=prevYComm&&(D.byYear[prevY]?D.byYear[prevY].count:0)>0?Math.round(prevYComm/(D.byYear[prevY].count)):0;
   var avgYPct=prevAvgYearComm>0?Math.round((avgYearComm/prevAvgYearComm)*100):0;
-  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px">';
+
 
 
 
@@ -2444,7 +2444,7 @@ function renderAnalytics(){
   html+='<div style="font-size:11px;color:var(--text3);margin-top:2px">Avg commission / policy ('+MNow+')</div>';
   html+='<div style="font-size:11px;color:'+(avgMPct>=100?'var(--accent)':avgMPct>=80?'#f59e0b':'var(--red)')+';font-weight:600">'+avgMPct+'% vs '+MNow+' '+prevY+'</div>';
   html+='</div>';
-  html+='</div>';
+  html+='</div>'; // close monthly KPI grid
   // Year selector
   html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:14px">';
   html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Compare years:</div>';
