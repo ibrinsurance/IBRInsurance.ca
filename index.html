@@ -114,7 +114,7 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
 
 /* ── HERO ── */
 .hero{background:var(--navy);display:grid;grid-template-columns:1fr 440px;align-items:start;gap:52px;padding:72px 64px 0;position:relative}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 80% at 70% 50%,rgba(201,150,58,.1) 0%,transparent 55%)}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 80% at 70% 50%,rgba(201,150,58,.1) 0%,transparent 55%);pointer-events:none}
 .hero::after{content:'';position:absolute;bottom:-1px;left:0;width:50%;height:52px;background:#fff;clip-path:ellipse(55% 100% at 50% 100%);pointer-events:none}
 .hl{position:relative;z-index:2;padding-bottom:52px}
 .hero-tag{display:inline-flex;align-items:center;gap:9px;background:rgba(201,150,58,.12);border:1px solid rgba(201,150,58,.3);border-radius:8px;padding:7px 16px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gl);margin-bottom:24px}
@@ -135,13 +135,13 @@ h1 .italic{font-style:italic;color:var(--gl);display:block}
 .ht{font-size:12px;font-weight:500;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:6px}
 .ht::before{content:'';width:5px;height:5px;background:var(--gold);border-radius:50%;flex-shrink:0}
 /* Hero right panel */
-.hr{position:relative;z-index:2;background:rgba(255,255,255,.06);border-radius:16px;padding:28px 24px;border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(8px)}
+.hr{position:relative;z-index:10;background:rgba(255,255,255,.06);border-radius:16px;padding:28px 24px;border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(8px);pointer-events:auto}
 .qp-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(201,150,58,.15);border:1px solid rgba(201,150,58,.35);border-radius:7px;padding:5px 12px;font-size:10px;font-weight:700;color:var(--gl);margin-bottom:14px;letter-spacing:.07em;text-transform:uppercase}
 .qp-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:blink 2s infinite}
 .qp-h{font-family:'Fraunces',serif;font-size:22px;font-weight:900;color:#fff;margin-bottom:4px}
 .qp-s{font-size:13px;color:rgba(255,255,255,.45);margin-bottom:14px}
 .qa{margin-bottom:5px}
-.qah{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:12px 14px;cursor:pointer;transition:all .2s;user-select:none}
+.qah{pointer-events:auto;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:12px 14px;cursor:pointer;transition:all .2s;user-select:none}
 .qah:hover{border-color:rgba(201,150,58,.4)}
 .qah.open{background:var(--gold);border-color:var(--gold);border-radius:9px 9px 0 0}
 .qal{font-size:14px;font-weight:700;color:#fff}
@@ -475,6 +475,7 @@ h1 .italic{font-style:italic;color:var(--gl);display:block}
   <a href="quotes.html" class="mn-item">&#9889; Get Quotes</a>
   <a href="awards.html" class="mn-item">Awards</a>
   <a href="javascript:void(0)" onclick="openCalcModal()" class="mn-item">&#128274; Estate Calculator</a>
+  <a href="calculators.html" class="mn-item">&#129518; Investment Calculators</a>
   <a href="index.html#contact" class="mn-item">Contact</a>
   <div class="mn-ctas">
     <a href="tel:6477456850" class="mn-c1">&#128222; Call &mdash; 647-745-6850</a>

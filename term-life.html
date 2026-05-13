@@ -118,13 +118,13 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
 /* Page hero */
 .page-hero{background:var(--navy);padding:72px 56px 64px;position:relative;overflow:hidden}
 .page-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 70% 50%,rgba(201,150,58,.1) 0%,transparent 55%)}
-.ph-inner{max-width:700px;position:relative;z-index:1}
+.ph-inner{max-width:700px;position:relative;z-index:1;margin:0 auto;text-align:center}
 .ph-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(201,150,58,.13);border:1px solid rgba(201,150,58,.3);border-radius:7px;padding:5px 13px;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gl);margin-bottom:18px}
 .ph-tag::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .page-hero h1{font-family:'Fraunces',serif;font-size:clamp(1.9rem,4.5vw,3.2rem);font-weight:900;color:#fff;line-height:1.1;letter-spacing:-.02em;margin-bottom:14px}
 .page-hero p{font-size:clamp(14px,1.2vw,17px);color:rgba(255,255,255,.6);line-height:1.75;max-width:560px;margin-bottom:26px}
-.ph-btns{display:flex;gap:10px;flex-wrap:wrap}
+.ph-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 .ph-b1{background:var(--gold);color:var(--navy);padding:12px 22px;border-radius:9px;font-size:13.5px;font-weight:800;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
 .ph-b1:hover{background:var(--gl)}
 .ph-b2{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;padding:12px 18px;border-radius:9px;font-size:13.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
@@ -257,6 +257,7 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
     <li><a href="#">Calculators <span class="arr">&#9662;</span></a>
       <div class="dropdown">
         <a href="javascript:void(0)" onclick="openCalcModal()">&#128274; Estate Planning Calculator</a>
+        <a href="calculators.html">&#129518; Investment Calculators</a>
       </div>
     </li>
     <li><a href="quotes.html">Get Quotes</a></li>
@@ -305,6 +306,7 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
   <a href="quotes.html" class="mn-item">&#9889; Get Quotes</a>
   <a href="awards.html" class="mn-item">Awards</a>
   <a href="javascript:void(0)" onclick="openCalcModal()" class="mn-item">&#128274; Estate Calculator</a>
+  <a href="calculators.html" class="mn-item">&#129518; Investment Calculators</a>
   <a href="index.html#contact" class="mn-item">Contact</a>
   <div class="mn-ctas">
     <a href="tel:6477456850" class="mn-c1">&#128222; Call &mdash; 647-745-6850</a>
