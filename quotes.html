@@ -3,452 +3,247 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Get a Quote | Insurance by Rattan</title>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,700;1,9..144,900&display=swap" rel="stylesheet"/>
+<title>Get Insurance Quotes | Rattan Amol Taggar | 647-745-6850</title>
+<meta name="description" content="Instant insurance quotes compared across 25+ Canadian carriers. Super visa, visitors, term life, critical illness. Call Rattan at 647-745-6850."/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400&family=Bricolage+Grotesque:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+
+/* ── GLOBAL RESET ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-:root{--black:#0c0c0c;--green:#0b9a54;--green2:#0db461;--greendim:#e6f7ee;--gold:#c47c1a;--white:#fff;--off:#f5f6f4;--light:#eeefe c;--mid:#666d65;--border:#e0e3de;--dborder:#1d2420}
-body{font-family:'Bricolage Grotesque',sans-serif;background:#fff;color:var(--black);overflow-x:hidden;line-height:1.6}
+:root{
+  --navy:#0d1e35;--navy2:#122040;--navy3:#0a1628;
+  --gold:#c9963a;--gl:#e8b96a;--gp:#f7eed8;
+  --off:#f8fafc;--mid:#6b7280;--border:#e5e7eb;--dborder:#1d2420;
+  --white:#fff;--black:#0a0a0a;--check:#16a34a
+}
+body{font-family:'Bricolage Grotesque',sans-serif;background:#fff;color:var(--black);overflow-x:hidden;line-height:1.65;padding-bottom:0}
 a{text-decoration:none;color:inherit}
 
-/* TOPBAR */
-.topbar{background:var(--black);padding:10px 64px;display:flex;align-items:center;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.45)}
-.topbar a{color:rgba(255,255,255,.6);transition:color .15s}
-.topbar a:hover{color:var(--green2)}
-.tb-pill{background:var(--green);color:#fff;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.04em}
-.tb-r{display:flex;gap:20px;align-items:center}
+/* ── TOPBAR ── */
+.topbar{background:var(--navy);padding:8px 56px;display:flex;align-items:center;justify-content:space-between;font-size:11.5px;color:rgba(255,255,255,.5);border-bottom:1px solid rgba(201,150,58,.18)}
+.topbar a{color:var(--gl);transition:color .15s}.topbar a:hover{color:#fff}
+.tb-r{display:flex;gap:18px;align-items:center}
 
-/* NAV */
-nav{position:sticky;top:0;z-index:200;background:#fff;border-bottom:2px solid var(--black)}
-.nw{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:72px}
-.logo{font-family:'Fraunces',serif;font-size:20px;font-weight:900;color:var(--black);line-height:1.1;display:flex;flex-direction:column}
-.logo em{color:var(--green);font-style:normal}
-.logo-s{font-family:'Bricolage Grotesque',sans-serif;font-size:9.5px;font-weight:500;color:var(--mid);letter-spacing:.1em;text-transform:uppercase;margin-top:1px;white-space:nowrap}
-.nl{display:flex;gap:2px;list-style:none;align-items:center}
-.nl>li{position:relative}
-.nl>li>a{font-size:14px;font-weight:500;color:#3a433a;padding:8px 10px;border-radius:7px;display:flex;align-items:center;gap:4px;transition:all .15s;white-space:nowrap}
-.nl>li>a:hover{color:var(--black);background:var(--off)}
-.caret{font-size:9px;opacity:.45;transition:transform .2s}
-.nl>li:hover .caret{transform:rotate(180deg)}
-.drop{display:none;position:absolute;top:calc(100%+10px);left:0;min-width:272px;background:#fff;border:2px solid var(--black);border-radius:14px;padding:10px;box-shadow:6px 6px 0 var(--black);z-index:500}
-.nl>li:hover .drop{display:block}
-.drop a{display:flex;align-items:center;gap:10px;padding:10px 13px;border-radius:8px;font-size:14px;color:#3a433a;transition:all .15s;white-space:nowrap}
-.drop a:hover{background:var(--off);color:var(--black)}
-.ds{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--mid);padding:10px 13px 4px}
-.drop hr{border:none;border-top:1px solid var(--border);margin:5px 0}
-.nr{display:flex;gap:10px;align-items:center}
-.n-call{background:var(--black);color:#fff;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;transition:all .2s;border:2px solid var(--black)}
-.n-call:hover{background:var(--green);border-color:var(--green)}
-.n-quote{background:var(--green);color:#fff;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:700;border:2px solid var(--green);transition:all .2s}
-.n-quote:hover{background:var(--green2);border-color:var(--green2)}
-.burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;background:none;border:none}
-.burger span{display:block;width:25px;height:2.5px;background:var(--black);border-radius:3px;transition:all .28s}
-.burger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
-.burger.open span:nth-child(2){opacity:0}
-.burger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
-.mob{display:none;position:fixed;top:76px;left:0;right:0;bottom:0;background:#fff;z-index:190;overflow-y:auto;padding-bottom:120px;border-top:2px solid var(--black)}
-.mob.on{display:block}
-.ma{display:block;padding:16px 24px;font-size:17px;font-weight:600;color:var(--black);border-bottom:1px solid var(--border)}
-.ms{padding:10px 24px 3px;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--mid)}
-.msub{background:var(--off)}
-.msub a{display:block;padding:13px 36px;font-size:14px;color:#3a433a;border-bottom:1px solid var(--border)}
-.mctas{padding:20px 16px;display:flex;flex-direction:column;gap:10px}
-.mc1{display:block;background:var(--black);color:#fff;padding:17px;border-radius:10px;text-align:center;font-size:16px;font-weight:800;border:2px solid var(--black)}
-.mc2{display:block;background:var(--green);color:#fff;padding:17px;border-radius:10px;text-align:center;font-size:16px;font-weight:800;border:2px solid var(--green)}
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:200;background:var(--navy);border-bottom:2px solid var(--gold);box-shadow:0 2px 18px rgba(0,0,0,.22)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:0 56px;height:64px;max-width:1400px;margin:0 auto}
+.logo{display:flex;flex-direction:column;justify-content:center;text-decoration:none;line-height:1.1}
+.logo-main{font-family:'Fraunces',serif;font-size:1.22rem;font-weight:900;color:#fff;line-height:1.1}
+.logo-main em{color:var(--gold);font-style:normal}
+.logo-tag{font-size:8.5px;font-weight:600;color:rgba(255,255,255,.35);letter-spacing:.14em;text-transform:uppercase;margin-top:2px}
+.nav-menu{display:flex;gap:1px;list-style:none;align-items:center}
+.nav-menu>li>a{font-size:13px;font-weight:500;color:rgba(255,255,255,.78);padding:8px 11px;border-radius:6px;transition:all .15s;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.nav-menu>li>a:hover,.nav-menu>li>a.active{color:#fff;background:rgba(255,255,255,.1)}
+.nav-menu>li{position:relative}
+.arr{font-size:8px;opacity:.45;transition:transform .2s}
+.nav-menu>li:hover .arr{transform:rotate(180deg)}
+.dropdown{display:none;position:absolute;top:calc(100%+8px);left:0;background:var(--navy2);border:1px solid rgba(201,150,58,.25);border-radius:12px;padding:9px;min-width:262px;box-shadow:0 16px 44px rgba(0,0,0,.5);z-index:400}
+.nav-menu>li:hover .dropdown{display:block}
+.dropdown a{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:7px;font-size:12.5px;color:rgba(255,255,255,.72);transition:all .15s}
+.dropdown a:hover{background:rgba(255,255,255,.08);color:#fff;padding-left:16px}
+.dd-sec{font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);padding:8px 12px 2px}
+.dropdown hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:4px 0}
+.nav-actions{display:flex;gap:8px;align-items:center}
+.btn-call{background:rgba(201,150,58,.14);border:1px solid rgba(201,150,58,.36);color:var(--gl);padding:8px 15px;border-radius:7px;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:5px;transition:all .2s}
+.btn-call:hover{background:var(--gold);color:var(--navy)}
+.btn-quote{background:var(--gold);color:var(--navy);padding:8px 17px;border-radius:7px;font-size:12.5px;font-weight:700;transition:all .2s}
+.btn-quote:hover{background:var(--gl)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:7px;background:none;border:none}
+.hamburger span{display:block;width:24px;height:2px;background:#fff;border-radius:2px;transition:all .28s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mobile-nav{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:var(--navy2);z-index:190;overflow-y:auto;padding-bottom:130px;border-top:1px solid rgba(201,150,58,.22)}
+.mobile-nav.open{display:block}
+.mn-item{display:block;padding:15px 22px;font-size:15px;font-weight:600;color:rgba(255,255,255,.82);border-bottom:1px solid rgba(255,255,255,.06)}
+.mn-sec{padding:9px 22px 2px;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.mn-sub{background:rgba(0,0,0,.2)}
+.mn-sub a{display:block;padding:11px 34px;font-size:13px;color:rgba(255,255,255,.62);border-bottom:1px solid rgba(255,255,255,.04)}
+.mn-ctas{padding:18px 14px;display:flex;flex-direction:column;gap:9px}
+.mn-c1{display:block;background:rgba(255,255,255,.1);color:#fff;padding:15px;border-radius:9px;text-align:center;font-size:14px;font-weight:700;border:1px solid rgba(255,255,255,.18)}
+.mn-c2{display:block;background:var(--gold);color:var(--navy);padding:15px;border-radius:9px;text-align:center;font-size:14px;font-weight:700}
 
-/* HERO */
-.hero{background:var(--white);display:grid;grid-template-columns:1fr 440px;align-items:start;gap:52px;padding:80px 64px 90px;position:relative;overflow:hidden}
-.hero::after{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(11,154,84,.08) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;opacity:.6}
-.hl{position:relative;z-index:2}
-.hero-tag{display:inline-flex;align-items:center;gap:9px;background:rgba(11,154,84,.1);border:1.5px solid rgba(11,154,84,.25);border-radius:8px;padding:7px 16px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:28px}
-.htag-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:blink 2s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-h1{font-family:'Fraunces',serif;font-size:clamp(3.8rem,6.5vw,6.5rem);line-height:.98;color:var(--black);font-weight:900;letter-spacing:-.025em;margin-bottom:8px}
-h1 .italic{font-style:italic;color:var(--green);display:block}
-.hdesc{font-size:clamp(16px,1.4vw,20px);line-height:1.72;color:var(--mid);font-weight:300;max-width:500px;margin:26px 0 42px}
-.hdesc strong{color:var(--black);font-weight:700}
-.hbtns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:48px}
-.hb1{background:var(--green);color:#fff;padding:18px 36px;border-radius:10px;font-size:17px;font-weight:800;display:inline-flex;align-items:center;gap:9px;transition:all .2s;border:2px solid var(--green)}
-.hb1:hover{background:var(--green2);border-color:var(--green2);transform:translateY(-3px);box-shadow:0 16px 40px rgba(11,154,84,.4)}
-.hb2{background:var(--black);color:#fff;padding:18px 36px;border-radius:10px;font-size:17px;font-weight:800;display:inline-flex;align-items:center;gap:9px;transition:all .2s;border:2px solid var(--black)}
-.hb2:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.15);background:#222}
-.hb3{background:rgba(37,211,102,.1);border:2px solid rgba(37,211,102,.3);color:#2dd17a;padding:18px 28px;border-radius:10px;font-size:17px;font-weight:700;display:inline-flex;align-items:center;gap:8px;transition:all .2s}
-.hb3:hover{background:rgba(37,211,102,.2);transform:translateY(-3px)}
-.htrust{display:flex;gap:20px;flex-wrap:wrap;margin-top:4px}
-.ht{font-size:13px;font-weight:500;color:var(--mid);display:flex;align-items:center;gap:7px}
-.ht::before{content:'';width:5px;height:5px;background:var(--green);border-radius:50%;flex-shrink:0}
-/* QUOTE PANEL */
-.hr{position:relative;z-index:2;background:#fff;border-radius:16px;padding:30px 26px;border:2px solid var(--border);box-shadow:8px 8px 0 var(--black)}
-.qp-badge{display:inline-flex;align-items:center;gap:7px;background:var(--greendim);border-radius:7px;padding:6px 13px;font-size:11px;font-weight:700;color:var(--green);margin-bottom:16px;letter-spacing:.07em;text-transform:uppercase}
-.qp-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:blink 2s infinite}
-.qp-h{font-family:'Fraunces',serif;font-size:28px;font-weight:900;color:var(--black);margin-bottom:4px}
-.qp-s{font-size:14px;color:var(--mid);margin-bottom:18px}
-.qa{margin-bottom:5px}
-.qah{display:flex;align-items:center;justify-content:space-between;background:var(--off);border:2px solid var(--border);border-radius:9px;padding:13px 15px;cursor:pointer;transition:all .2s;user-select:none}
-.qah:hover{border-color:#9ca3af}
-.qah.open{background:var(--black);border-color:var(--black);border-radius:9px 9px 0 0}
-.qal{font-size:15px;font-weight:700;color:var(--black)}
-.qah.open .qal{color:#fff}
-.qaarr{font-size:10px;color:var(--mid);transition:transform .25s}
-.qah.open .qaarr{transform:rotate(180deg);color:rgba(255,255,255,.4)}
-.qab{display:none;background:#fff;border:2px solid var(--border);border-top:none;border-radius:0 0 9px 9px;overflow:hidden}
-.qab.open{display:block}
-.qrow{display:flex;align-items:center;justify-content:space-between;padding:11px 15px;font-size:14px;color:#374151;border-bottom:1px solid var(--off);transition:background .15s}
-.qrow:last-child{border-bottom:none}
-.qrow:hover{background:var(--off);color:var(--black)}
-.qrow span{font-size:11px;color:var(--green);font-weight:800}
-.qnote{font-size:11px;color:var(--mid);margin-top:12px;line-height:1.6;padding:10px 12px;background:var(--off);border-radius:7px}
+/* ── STICKY MOBILE ── */
+.sticky-call{display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;background:var(--navy);padding:10px 12px;border-top:1px solid rgba(201,150,58,.25)}
+.sticky-call-inner{display:flex;gap:9px}
+.sc-call{flex:1;background:var(--gold);color:var(--navy);padding:14px;border-radius:9px;text-align:center;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:7px}
+.sc-wa{flex:1;background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.3);color:#2dd17a;padding:14px;border-radius:9px;text-align:center;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:7px}
 
-/* STATS */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:2px solid var(--black);border-bottom:2px solid var(--black)}
-.st{padding:44px 28px;text-align:center;border-right:2px solid var(--black)}
-.st:last-child{border-right:none}
-.st-n{font-family:'Fraunces',serif;font-size:64px;font-weight:900;color:var(--black);line-height:1;letter-spacing:-.04em}
-.st-n em{color:var(--green);font-style:normal;font-size:44px}
-.st-stars{color:#f59e0b;font-size:16px;letter-spacing:4px;margin:6px 0}
-.st-l{font-size:15px;color:var(--mid);font-weight:500;margin-top:5px}
-
-/* TICKER */
-.ticker{padding:28px 0;border-top:2px solid var(--border);border-bottom:2px solid var(--border);overflow:hidden;background:#fff}
-.ticker-lbl{text-align:center;font-size:10px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--mid);margin-bottom:14px}
-.tf-l{position:absolute;left:0;top:32px;bottom:0;width:100px;background:linear-gradient(to right,var(--white),transparent);z-index:2}
-.tf-r{position:absolute;right:0;top:32px;bottom:0;width:100px;background:linear-gradient(to left,var(--white),transparent);z-index:2}
-
-
-.twrap:hover 
-100%{transform:translateX(-50%)}}
-.titem{display:inline-flex !important;align-items:center !important;padding:8px 16px !important;background:#eef5f0 !important;border:1.5px solid #b8d4b8 !important;border-radius:8px !important;white-space:nowrap !important;flex-shrink:0 !important}
-.titem span{font-size:13px !important;font-weight:600 !important;color:#1a401a !important;white-space:nowrap !important;display:inline !important}
-
-/* SERVICES */
-.services{padding:112px 64px;max-width:1280px;margin:0 auto}
-.ey{font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--green);display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.ey::after{content:'';display:block;width:28px;height:2px;background:var(--green);border-radius:2px}
-.sh{font-family:'Fraunces',serif;font-size:clamp(2.4rem,4vw,4.2rem);color:var(--black);line-height:1.05;font-weight:900;letter-spacing:-.025em}
-.ssub{font-size:18px;color:var(--mid);line-height:1.75;max-width:520px;margin-top:16px}
-.svchd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:56px;flex-wrap:wrap;gap:20px}
-.svcgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
-.sc{background:#fff;border:2px solid var(--border);border-radius:14px;padding:30px 24px;display:block;color:inherit;transition:all .25s;position:relative;overflow:hidden}
-.sc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--green);transform:scaleX(0);transform-origin:left;transition:transform .3s}
-.sc:hover{border-color:var(--black);box-shadow:5px 5px 0 var(--black);transform:translate(-2px,-2px)}
-.sc:hover::after{transform:scaleX(1)}
-.sc-ic{font-size:34px;margin-bottom:16px;display:block}
-.sc-t{font-size:18px;font-weight:800;color:var(--black);margin-bottom:10px}
-.sc-b{font-size:14px;line-height:1.7;color:var(--mid);margin-bottom:16px}
-.sc-l{font-size:13px;font-weight:700;color:var(--green);display:flex;align-items:center;gap:6px;transition:gap .2s}
-.sc:hover .sc-l{gap:11px}
-
-/* WHY */
-.why{background:var(--off);padding:112px 64px;border-top:2px solid var(--black)}
-.winn{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:96px;align-items:start}
-.why .ey{color:var(--green)}
-.why .ey::after{background:var(--green)}
-.why .sh{color:var(--black)}
-.wlead{font-size:19px;line-height:1.78;color:var(--mid);font-weight:400;margin:20px 0 44px}
-.wf{display:flex;gap:20px;padding:24px 0;border-bottom:1px solid var(--border)}
-.wf:last-child{border-bottom:none}
-.wfic{width:48px;height:48px;background:var(--greendim);border:1.5px solid rgba(11,154,84,.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;margin-top:3px}
-.wf h4{font-size:18px;font-weight:800;color:var(--black);margin-bottom:7px}
-.wf p{font-size:15px;line-height:1.72;color:var(--mid);font-weight:400}
-.wstats{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.ws{background:#fff;border:2px solid var(--border);border-radius:14px;padding:30px 26px;transition:all .2s}
-.ws:hover{border-color:var(--black);box-shadow:4px 4px 0 var(--black)}
-.ws.ft{grid-column:span 2;background:var(--greendim);border-color:rgba(11,154,84,.25)}
-.ws-n{font-family:'Fraunces',serif;font-size:56px;font-weight:900;color:var(--black);line-height:1;letter-spacing:-.03em}
-.ws-n em{color:var(--green);font-style:normal;font-size:36px}
-.ws-l{font-size:15px;color:var(--mid);margin-top:8px;font-weight:400}
-
-/* ABOUT */
-.about{background:var(--off);padding:112px 64px;border-top:2px solid var(--black)}
-.ainn{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:400px 1fr;gap:80px;align-items:center}
-.aimg{background:linear-gradient(160deg,#0f3d2e 0%,#1a5c42 100%);border-radius:16px;min-height:560px;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;position:relative;border:2px solid var(--black);box-shadow:8px 8px 0 var(--black)}
-.abadge{position:absolute;top:22px;left:22px;background:var(--gold);border-radius:10px;padding:16px 20px;z-index:2;text-align:center;border:2px solid rgba(255,255,255,.2)}
-.abn{font-family:'Fraunces',serif;font-size:34px;font-weight:900;color:#fff;line-height:1}
-.abs{font-size:12px;font-weight:700;color:rgba(255,255,255,.8);letter-spacing:2px;margin-top:3px;display:block}
-.aphoto{width:100%;max-width:340px;display:block;position:relative;z-index:1;margin-top:auto}
-.atags{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 26px}
-.atag{background:#fff;border:2px solid var(--border);border-radius:100px;padding:5px 16px;font-size:13px;font-weight:600;color:#374151}
-.atag.gd{background:#fef3c7;border-color:#d97706;color:#92400e}
-.ap{font-size:17px;line-height:1.88;color:#4b5563;margin-bottom:16px}
-.provs{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0 24px}
-.prov{background:var(--black);color:#fff;border-radius:6px;padding:5px 14px;font-size:12px;font-weight:800;letter-spacing:.07em;border:2px solid var(--black)}
-.abtns{display:flex;gap:12px;flex-wrap:wrap}
-.ab{background:var(--black);color:#fff;padding:13px 24px;border-radius:9px;font-size:15px;font-weight:700;transition:all .2s;border:2px solid var(--black)}
-.ab:hover{background:var(--green);border-color:var(--green)}
-.ab.o{background:transparent;border:2px solid var(--border);color:var(--black)}
-.ab.o:hover{border-color:var(--green);color:var(--green);background:var(--greendim)}
-.socs{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
-.soc{background:#fff;border:2px solid var(--border);color:#3a433a;padding:9px 16px;border-radius:9px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px;transition:all .2s}
-.soc:hover{border-color:var(--green);color:var(--green);background:var(--greendim)}
-
-/* PROCESS */
-.process{padding:112px 64px;background:#fff;border-top:2px solid var(--black)}
-.pinn{max-width:1280px;margin:0 auto}
-.psteps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:64px;position:relative}
-.psteps::before{content:'';position:absolute;top:27px;left:calc(12.5% + 28px);right:calc(12.5% + 28px);height:2px;background:var(--border)}
-.ps{padding:0 24px;text-align:center;position:relative;z-index:1}
-.psn{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:22px;font-weight:900;margin:0 auto 22px;background:#fff;border:2px solid var(--border);position:relative;z-index:1}
-.ps:first-child .psn{background:var(--green);color:#fff;border-color:var(--green)}
-.ps h4{font-size:18px;font-weight:800;color:var(--black);margin-bottom:10px}
-.ps p{font-size:15px;line-height:1.7;color:var(--mid)}
-
-/* TESTIMONIALS */
-.testi{background:var(--off);padding:112px 0;border-top:2px solid var(--black)}
-.tinn{max-width:1280px;margin:0 auto;padding:0 64px}
-.thd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:52px;flex-wrap:wrap;gap:14px}
-.thd a{font-size:15px;font-weight:700;color:var(--green)}
-.twrap{overflow:hidden;position:relative;white-space:nowrap}
-.tc,.tc *{white-space:normal}
-.twrap::before,.twrap::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none}
-.twrap::before{left:0;background:linear-gradient(to right,var(--off),transparent)}
-.twrap::after{right:0;background:linear-gradient(to left,var(--off),transparent)}
-
-100%{transform:translateX(-50%)}}
-
-.tc{display:inline-flex;flex-direction:column;background:#fff;border:2px solid var(--border);border-radius:14px;padding:24px;width:280px;min-width:280px;height:200px;flex-shrink:0;transition:box-shadow .2s}
-.tc:hover{box-shadow:4px 4px 0 var(--black);border-color:var(--black)}
-.tct{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.tcst{color:#f59e0b;font-size:14px;letter-spacing:3px}
-.tcg{font-size:10px;background:#4285f4;color:#fff;border-radius:4px;padding:2px 8px;font-weight:800}
-.tcq{font-size:13px;line-height:1.6;color:#374151;font-style:italic;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;flex:1}
-.tca{display:flex;align-items:center;gap:11px}
-.tcav{width:40px;height:40px;border-radius:50%;background:var(--black);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:16px;color:#c8842a;font-weight:900;flex-shrink:0}
-.tcn{font-size:15px;font-weight:800;color:var(--black)}
-.tcl{font-size:12px;color:var(--mid);margin-top:1px}
-
-/* CTA */
-.cta{background:var(--green);padding:96px 64px;text-align:center;position:relative;overflow:hidden;border-top:2px solid rgba(0,0,0,.15)}
-.cta::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;border-radius:50%;background:rgba(255,255,255,.07)}
-.ctai{position:relative;z-index:1;max-width:720px;margin:0 auto}
-.ctai h2{font-family:'Fraunces',serif;font-size:clamp(2.4rem,4.5vw,4.4rem);color:#fff;line-height:1.05;font-weight:900;letter-spacing:-.025em;margin-bottom:18px}
-.ctai p{font-size:20px;color:rgba(255,255,255,.74);margin-bottom:44px;line-height:1.72}
-.ctabtns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-.cb1{background:#fff;color:var(--green);padding:20px 40px;border-radius:11px;font-size:17px;font-weight:900;display:inline-flex;align-items:center;gap:9px;transition:all .22s;border:2px solid #fff}
-.cb1:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.2)}
-.cb2{background:rgba(0,0,0,.18);border:2px solid rgba(255,255,255,.28);color:#fff;padding:20px 40px;border-radius:11px;font-size:17px;font-weight:700;display:inline-flex;align-items:center;gap:9px;transition:all .22s}
-.cb2:hover{background:rgba(0,0,0,.32);border-color:rgba(255,255,255,.6)}
-
-/* CONTACT ROW */
-.conrow{background:var(--black);padding:60px 64px;display:grid;grid-template-columns:repeat(3,1fr);border-top:2px solid var(--dborder)}
-.conc{padding:0 40px;display:flex;align-items:center;gap:18px;border-right:1px solid var(--dborder)}
-.conc:last-child{border-right:none}
-.conic{width:48px;height:48px;background:rgba(11,154,84,.14);border:1.5px solid rgba(11,154,84,.24);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.conl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:5px}
-.conv{font-size:18px;font-weight:700}
-.conv a{color:#fff;transition:color .2s}
-.conv a:hover{color:#4ade80}
-
-/* FOOTER */
-footer{background:#060606;padding:64px 64px 28px;border-top:2px solid rgba(255,255,255,.05)}
-.fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:52px;margin-bottom:48px}
-.flogo{font-family:'Fraunces',serif;font-size:22px;font-weight:900;color:#fff;display:block;margin-bottom:12px}
-.flogo em{color:var(--green);font-style:normal}
-.fbio{font-size:13px;line-height:1.9;color:rgba(255,255,255,.25);max-width:240px}
-.fc h5{font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:14px}
-.fc ul{list-style:none;display:flex;flex-direction:column;gap:8px}
-.fc a{font-size:14px;color:rgba(255,255,255,.28);transition:color .2s}
-.fc a:hover{color:#4ade80}
-.fbot{border-top:1px solid rgba(255,255,255,.06);padding-top:22px;display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,.17);flex-wrap:wrap;gap:8px}
-
-/* STICKY MOBILE */
-.sticky{display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;background:var(--black);padding:12px 14px;border-top:2px solid rgba(255,255,255,.1)}
-.srow{display:flex;gap:10px}
-.s1{flex:1;background:var(--green);color:#fff;padding:16px;border-radius:10px;text-align:center;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:8px;border:2px solid var(--green)}
-.s2{flex:1;background:rgba(37,211,102,.1);border:2px solid rgba(37,211,102,.3);color:#2dd17a;padding:16px;border-radius:10px;text-align:center;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:8px}
-
-/* RESPONSIVE */
-@media(max-width:900px){
-  .topbar,.n-call,.n-quote,.nl{display:none}
-  .nw{padding:0 16px}
-  .burger{display:flex}
-  .sticky{display:block}
-  body{padding-bottom:80px}
-  .hero{grid-template-columns:1fr;padding:52px 16px 44px;gap:44px}
-  h1{font-size:3.2rem}
-  .hdesc{font-size:16px;margin:20px 0 32px}
-  .hbtns{flex-direction:column;gap:10px}
-  .hb1,.hb2,.hb3{width:100%;justify-content:center;padding:17px}
-  .stats{grid-template-columns:1fr 1fr}
-  .st{border-bottom:2px solid var(--black);padding:30px 16px}
-  .st:nth-child(2){border-right:none}
-  .st-n{font-size:48px}
-  .services{padding:64px 16px}
-  .svcgrid{grid-template-columns:1fr 1fr;gap:14px}
-  .sc{padding:22px 16px}
-  .svchd{flex-direction:column;align-items:flex-start}
-  .why{padding:64px 16px}
-  .winn{grid-template-columns:1fr;gap:52px}
-  .wstats{grid-template-columns:1fr 1fr}
-  .ws.ft{grid-column:span 2}
-  .ws-n{font-size:44px}
-  .about{padding:64px 16px}
-  .ainn{grid-template-columns:1fr;gap:36px}
-  .aimg{min-height:340px}
-  .aphoto{max-width:250px}
-  .process{padding:64px 16px}
-  .psteps{grid-template-columns:1fr 1fr;gap:32px}
-  .psteps::before{display:none}
-  .ps{text-align:left;padding:0}
-  .psn{margin:0 0 16px}
-  .testi{padding:64px 0}
-  .tinn{padding:0 16px}
-  .tc{width:280px}
-  .cta{padding:64px 16px}
-  .ctai h2{font-size:2.4rem}
-  .ctai p{font-size:17px}
-  .ctabtns{flex-direction:column;align-items:center}
-  .cb1,.cb2{width:100%;max-width:360px;justify-content:center}
-  .conrow{grid-template-columns:1fr;padding:40px 16px}
-  .conc{border-right:none;border-bottom:1px solid var(--dborder);padding:20px 0;gap:14px}
-  .conc:last-child{border-bottom:none}
-  footer{padding:48px 16px 24px}
-  .fg{grid-template-columns:1fr 1fr;gap:28px}
-  .fbot{flex-direction:column;text-align:center}
-}
-@media(max-width:520px){
-  h1{font-size:2.6rem}
-  .svcgrid{grid-template-columns:1fr}
-  .wstats{grid-template-columns:1fr}
-  .ws.ft{grid-column:span 1}
-  .psteps{grid-template-columns:1fr}
-  .fg{grid-template-columns:1fr}
-  .stats{grid-template-columns:1fr 1fr}
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  .topbar,.nav-menu,.btn-call,.btn-quote{display:none}
+  .nav-inner{padding:0 16px}
+  .hamburger{display:flex}
+  .sticky-call{display:block}
+  body{padding-bottom:78px}
 }
 
-.g-banner{display:flex;align-items:center;justify-content:space-between;background:#fff;border:2px solid var(--black);border-radius:12px;padding:22px 28px;margin-bottom:44px;transition:all .2s;box-shadow:4px 4px 0 var(--black)}
-.g-banner:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--black)}
-.g-banner-l{display:flex;align-items:center;gap:18px}
-.g-logo{width:48px;height:48px;background:#4285f4;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:#fff;font-family:'Fraunces',serif;flex-shrink:0}
-.g-banner-title{font-size:18px;font-weight:800;color:var(--black)}
-.g-banner-sub{font-size:14px;color:var(--mid);margin-top:3px}
-.g-stars{font-size:22px;color:#f59e0b;display:flex;align-items:center;gap:8px}
-.g-stars span{font-size:20px;font-weight:900;color:var(--black);font-family:'Fraunces',serif}
-@media(max-width:900px){
-  .g-banner{flex-direction:column;align-items:flex-start;gap:14px;padding:18px 20px}
+
+
+footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(255,255,255,.06)}
+.fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:44px;margin-bottom:36px}
+.fb .fl{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:900;color:#fff;display:block;margin-bottom:8px}
+.fb .fl em{color:var(--gold);font-style:normal}
+.fb p{font-size:11.5px;line-height:1.85;color:rgba(255,255,255,.22);max-width:230px}
+.fc h5{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:11px}
+.fc ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.fc a{font-size:12.5px;color:rgba(255,255,255,.3);transition:color .2s}
+.fc a:hover{color:var(--gl)}
+.fbot{border-top:1px solid rgba(255,255,255,.05);padding-top:16px;display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.16);flex-wrap:wrap;gap:6px}
+/* ── MOBILE FOOTER ── compact horizontal strip */
+@media(max-width:960px){
+  footer{padding:28px 16px 16px}
+  .fg{display:none}
+  .fbot{flex-direction:column;align-items:center;text-align:center;gap:10px;border-top:none;padding-top:0}
+  .fbot::before{
+    content:'';display:block;width:100%;height:1px;
+    background:rgba(255,255,255,.07);margin-bottom:6px
+  }
+  footer::before{
+    content:'';
+    display:flex;
+    width:100%;
+  }
+  .f-mobile-links{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 10px;margin-bottom:14px}
+  .f-mobile-links a{font-size:12px;color:rgba(255,255,255,.45);text-decoration:none;padding:4px 0}
+  .f-mobile-links a:hover{color:var(--gl)}
+  .f-name{font-family:'Fraunces',serif;font-size:1rem;font-weight:900;color:#fff;margin-bottom:10px;text-align:center}
+  .f-name em{color:var(--gold);font-style:normal}
+}
 }
 
-/* CARRIER TICKER */
-.ttrack{display:flex;align-items:center;gap:12px;animation:tscroll 20s linear infinite;width:max-content;padding:6px 0}
-@keyframes tscroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.ticker:hover .ttrack{animation-play-state:paused}
 
-/* REVIEW SCROLL */
-.rtrack{display:inline-flex;flex-direction:row;flex-wrap:nowrap;gap:18px;animation:rscroll 200s linear infinite;width:max-content;align-items:stretch}
-@keyframes rscroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.twrap:hover .rtrack{animation-play-state:paused}
-.twrap:hover::before,.twrap:hover::after{opacity:0}
-</style>
-<style>
-/* QUOTES PAGE STYLES */
-.qp-hero{background:var(--black);padding:80px 64px 64px;position:relative;overflow:hidden;border-bottom:2px solid var(--black)}
-.qp-hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.045) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
-.qp-hero::after{content:'';position:absolute;top:-120px;right:-80px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(11,154,84,.18) 0%,transparent 65%);pointer-events:none}
-.qp-inner{max-width:1280px;margin:0 auto;position:relative;z-index:1}
-.qp-eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--green2);margin-bottom:16px;display:flex;align-items:center;gap:10px}
-.qp-eyebrow::after{content:'';display:block;width:24px;height:2px;background:var(--green2)}
-.qp-hero h1{font-family:'Fraunces',serif;font-size:clamp(3rem,5.5vw,5.2rem);font-weight:900;color:#fff;line-height:1.05;margin-bottom:20px;letter-spacing:-.02em}
-.qp-hero p{font-size:1.05rem;color:rgba(255,255,255,.55);max-width:560px;line-height:1.75}
-.qp-hero-badges{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
-.qhb{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;color:rgba(255,255,255,.7)}
-.qhb span{color:var(--green2)}
-
-/* QUOTE GRID WRAPPER */
-.qp-body{max-width:1280px;margin:0 auto;padding:72px 64px 80px}
-
-/* SECTION LABEL */
-.qs-label{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);margin:52px 0 20px;display:flex;align-items:center;gap:14px}
-.qs-label:first-child{margin-top:0}
-.qs-label::after{content:'';flex:1;height:1px;background:var(--border)}
-
-/* CARD GRID */
-.qgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--black);border:2px solid var(--black);border-radius:16px;overflow:hidden;margin-bottom:2px}
-.qgrid.two-col{grid-template-columns:repeat(2,1fr)}
-.qgrid.four-col{grid-template-columns:repeat(4,1fr)}
-
-/* QUOTE CARD */
-.qcard{background:#fff;padding:32px 28px;display:flex;flex-direction:column;gap:0;transition:background .18s}
-.qcard:hover{background:var(--off)}
-.qc-icon{font-size:28px;margin-bottom:14px;line-height:1}
-.qcard h3{font-family:'Fraunces',serif;font-size:1.25rem;font-weight:900;color:var(--black);margin-bottom:10px;line-height:1.2}
-.qcard p{font-size:14px;line-height:1.7;color:var(--mid);flex:1;margin-bottom:20px}
-.qc-note{font-size:12px;color:var(--gold);font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px}
-.qc-note::before{content:'*';font-size:16px}
-.qc-actions{display:flex;flex-direction:column;gap:8px;margin-top:auto}
-.qbtn{display:flex;align-items:center;justify-content:center;gap:7px;background:var(--black);color:#fff;padding:11px 16px;border-radius:8px;font-size:13px;font-weight:700;border:2px solid var(--black);transition:all .18s;text-align:center}
-.qbtn:hover{background:var(--green);border-color:var(--green)}
-.qbtn.green{background:var(--green);border-color:var(--green)}
-.qbtn.green:hover{background:var(--green2);border-color:var(--green2)}
-.qbtn-ghost{display:flex;align-items:center;justify-content:center;gap:6px;background:transparent;color:var(--green);padding:9px 16px;border-radius:8px;font-size:13px;font-weight:700;border:2px solid var(--border);transition:all .18s;text-align:center}
-.qbtn-ghost:hover{border-color:var(--green);color:var(--black)}
-
-/* CONSULT STRIP */
-.qconsult{background:var(--black);border:2px solid var(--black);border-radius:16px;padding:40px 44px;margin-top:52px;display:flex;align-items:center;justify-content:space-between;gap:28px;flex-wrap:wrap}
-.qconsult h3{font-family:'Fraunces',serif;font-size:1.6rem;font-weight:900;color:#fff;line-height:1.2}
-.qconsult p{font-size:14px;color:rgba(255,255,255,.5);margin-top:6px;max-width:400px}
-.qconsult-btns{display:flex;gap:12px;flex-shrink:0;flex-wrap:wrap}
-.qc-call{background:var(--green);color:#fff;padding:14px 28px;border-radius:9px;font-size:14px;font-weight:800;border:2px solid var(--green);transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:8px}
-.qc-call:hover{background:var(--green2);border-color:var(--green2)}
-.qc-wa{background:transparent;color:rgba(255,255,255,.8);padding:14px 28px;border-radius:9px;font-size:14px;font-weight:700;border:2px solid rgba(255,255,255,.15);transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:8px}
-.qc-wa:hover{border-color:rgba(255,255,255,.4);color:#fff}
-
-@media(max-width:1024px){
-  .qgrid{grid-template-columns:repeat(2,1fr)}
-  .qgrid.four-col{grid-template-columns:repeat(2,1fr)}
-  .qp-body{padding:52px 40px 64px}
-  .qp-hero{padding:60px 40px 48px}
+/* ── PAGE LAYOUT ── */
+.breadcrumb{padding:13px 56px;background:var(--off);font-size:12.5px;color:var(--mid);border-bottom:1px solid var(--border)}
+.breadcrumb a{color:var(--navy);font-weight:500;transition:color .2s}
+.breadcrumb a:hover{color:var(--gold)}
+/* Page hero */
+.page-hero{background:var(--navy);padding:72px 56px 64px;position:relative;overflow:hidden}
+.page-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 70% 50%,rgba(201,150,58,.1) 0%,transparent 55%)}
+.ph-inner{max-width:700px;position:relative;z-index:1}
+.ph-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(201,150,58,.13);border:1px solid rgba(201,150,58,.3);border-radius:7px;padding:5px 13px;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gl);margin-bottom:18px}
+.ph-tag::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.page-hero h1{font-family:'Fraunces',serif;font-size:clamp(1.9rem,4.5vw,3.2rem);font-weight:900;color:#fff;line-height:1.1;letter-spacing:-.02em;margin-bottom:14px}
+.page-hero p{font-size:clamp(14px,1.2vw,17px);color:rgba(255,255,255,.6);line-height:1.75;max-width:560px;margin-bottom:26px}
+.ph-btns{display:flex;gap:10px;flex-wrap:wrap}
+.ph-b1{background:var(--gold);color:var(--navy);padding:12px 22px;border-radius:9px;font-size:13.5px;font-weight:800;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.ph-b1:hover{background:var(--gl)}
+.ph-b2{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;padding:12px 18px;border-radius:9px;font-size:13.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.ph-b2:hover{background:rgba(255,255,255,.18)}
+/* Content */
+.content-sec{padding:64px 56px;max-width:1240px;margin:0 auto}
+.sec-tag{font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:9px}
+.sec-title{font-family:'Fraunces',serif;font-size:clamp(1.7rem,3vw,2.6rem);font-weight:900;color:var(--black);line-height:1.1;letter-spacing:-.02em;margin-bottom:13px}
+.sec-lead{font-size:clamp(14px,1.1vw,16px);color:var(--mid);line-height:1.8;max-width:580px;margin-bottom:40px}
+/* Cards */
+.cards-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.cards-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.cards-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:24px 20px;transition:all .22s}
+.card:hover{border-color:var(--navy);box-shadow:4px 4px 0 var(--navy);transform:translate(-2px,-2px)}
+.card-ic{font-size:24px;margin-bottom:11px;display:block}
+.card h3{font-size:16px;font-weight:800;color:var(--black);margin-bottom:7px}
+.card p{font-size:13.5px;line-height:1.7;color:var(--mid)}
+/* FAQ */
+.faq{max-width:760px}
+.qa-item{border-bottom:1px solid var(--border)}
+.qa-header{display:flex;justify-content:space-between;align-items:center;padding:18px 0;cursor:pointer;font-size:15px;font-weight:700;color:var(--black);gap:12px}
+.qa-header .qa-arr{font-size:10px;color:var(--mid);transition:transform .22s;flex-shrink:0}
+.qa-header.open .qa-arr{transform:rotate(180deg);color:var(--gold)}
+.qa-body{display:none;padding:0 0 18px;font-size:14px;line-height:1.8;color:var(--mid)}
+/* CTA strip */
+.qstrip{background:var(--navy);padding:56px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:36px}
+.qs-title{font-family:'Fraunces',serif;font-size:clamp(1.4rem,2.5vw,2rem);font-weight:900;color:#fff;line-height:1.1;margin-bottom:7px}
+.qs-sub{color:rgba(255,255,255,.5);font-size:14px}
+.qs-btns{display:flex;gap:9px;flex-wrap:wrap}
+.qs-b1{background:var(--gold);color:var(--navy);padding:13px 22px;border-radius:9px;font-size:13.5px;font-weight:800;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.qs-b1:hover{background:var(--gl)}
+.qs-b2{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;padding:13px 20px;border-radius:9px;font-size:13.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.qs-b2:hover{background:rgba(255,255,255,.18)}
+/* Contact row */
+.page-contact{background:var(--navy3);padding:48px 56px;display:grid;grid-template-columns:repeat(3,1fr)}
+.cr{padding:0 32px;display:flex;align-items:center;gap:14px;border-right:1px solid rgba(255,255,255,.08)}
+.cr:first-child{padding-left:0}
+.cr:last-child{border-right:none}
+.cr-ico{width:42px;height:42px;background:rgba(201,150,58,.12);border:1px solid rgba(201,150,58,.22);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.cr-lbl{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.26);margin-bottom:3px}
+.cr-val{font-size:15.5px;font-weight:700}
+.cr-val a{color:#fff;transition:color .2s}
+.cr-val a:hover{color:var(--gl)}
+/* Compare table */
+.compare-tbl{width:100%;border-collapse:collapse;font-size:13.5px;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+.compare-tbl th{background:var(--navy);color:#fff;padding:13px 16px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.compare-tbl td{padding:13px 16px;border-bottom:1px solid var(--border);color:var(--black)}
+.compare-tbl tr:last-child td{border-bottom:none}
+.compare-tbl tr:nth-child(even) td{background:var(--off)}
+.check{color:var(--check);font-weight:700}
+.cross{color:#dc2626;font-weight:700}
+/* Modal */
+#calcModal{align-items:center;justify-content:center}
+/* Responsive */
+@media(max-width:960px){
+  .breadcrumb{padding:11px 16px}
+  .page-hero{padding:52px 16px 48px}
+  .content-sec{padding:52px 16px}
+  .cards-2,.cards-3,.cards-4{grid-template-columns:1fr}
+  .qstrip{grid-template-columns:1fr;padding:44px 16px;gap:20px}
+  .page-contact{grid-template-columns:1fr;padding:36px 16px}
+  .cr{border-right:none;border-bottom:1px solid rgba(255,255,255,.08);padding:15px 0;gap:12px}
+  .cr:last-child{border-bottom:none}
 }
-@media(max-width:680px){
-  .qp-hero{padding:44px 20px 36px}
-  .qp-hero h1{font-size:2.4rem}
-  .qp-body{padding:36px 16px 52px}
-  .qgrid,.qgrid.two-col,.qgrid.four-col{grid-template-columns:1fr}
-  .qconsult{padding:28px 20px;flex-direction:column;align-items:flex-start}
-  .qconsult-btns{width:100%}
-  .qc-call,.qc-wa{flex:1;justify-content:center}
-  .qhb{font-size:12px;padding:7px 12px}
+@media(max-width:600px){
+  .cards-2{grid-template-columns:1fr}
 }
+
+
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <span>&#127464;&#127462; Licensed across Canada &nbsp;&middot;&nbsp; ON &middot; BC &middot; AB &middot; MB &middot; SK &middot; NS &middot; PEI &middot; NB</span>
-  <div class="tb-r"><span class="tb-pill">&#11088; 400+ Reviews</span><a href="tel:6477456850">&#128222; 647-745-6850</a></div>
+  <span>&#127464;&#127462; Licensed: ON &middot; BC &middot; AB &middot; MB &middot; SK &middot; NS &middot; PEI &middot; NB</span>
+  <div class="tb-r">
+    <a href="https://share.google/cPVqZl6i5B7tOrQSP" target="_blank">&#11088; 425+ Google Reviews</a>
+    <a href="tel:6477456850">&#128222; 647-745-6850</a>
+    <a href="https://wa.me/16477456850" target="_blank">&#128172; WhatsApp</a>
+  </div>
 </div>
-
-<nav>
-<div class="nw">
-  <a href="index.html" class="logo">Insurance <em>by Rattan</em><span class="logo-s">Life Insurance Advisor &middot; Canada</span></a>
-  <ul class="nl">
+<nav><div class="nav-inner">
+  <a href="index.html" class="logo">
+    <span class="logo-main">Rattan <em>Amol Taggar</em></span>
+    <span class="logo-tag">Life Insurance Advisor &middot; Canada</span>
+  </a>
+  <ul class="nav-menu">
     <li><a href="index.html">Home</a></li>
     <li><a href="about.html">About</a></li>
-    <li><a href="#">Insurance <span class="caret">&#9660;</span></a>
-      <div class="drop">
-        <div class="ds">Visitor &amp; Travel</div>
+    <li><a href="#">Insurance <span class="arr">&#9662;</span></a>
+      <div class="dropdown">
+        <div class="dd-sec">Visitor &amp; Travel</div>
         <a href="super-visa.html">&#128706; Super Visa Insurance</a>
         <a href="visitors.html">&#9992;&#65039; Visitors to Canada</a>
         <a href="travel-insurance.html">&#127757; Travel Insurance</a>
         <a href="student-insurance.html">&#127891; International Student</a>
         <hr/>
-        <div class="ds">Life Insurance</div>
+        <div class="dd-sec">Life Insurance</div>
         <a href="term-life.html">&#128737;&#65039; Term Life Insurance</a>
         <a href="whole-life.html">&#127807; Whole Life Insurance</a>
-        <a href="universal-life.html">&#9881;&#65039; Universal Life</a>
+        <a href="universal-life.html">&#9881;&#65039; Universal Life Insurance</a>
         <a href="mortgage-insurance.html">&#127968; Mortgage Insurance</a>
         <hr/>
-        <div class="ds">Living Benefits</div>
+        <div class="dd-sec">Living Benefits</div>
         <a href="critical-illness.html">&#10084;&#65039; Critical Illness</a>
         <a href="disability.html">&#129466; Disability Insurance</a>
         <a href="drug-dental.html">&#128138; Drug &amp; Dental</a>
         <hr/>
-        <div class="ds">Planning</div>
+        <div class="dd-sec">Planning</div>
         <a href="estate-planning.html">&#127981; Estate Planning</a>
         <a href="business-insurance.html">&#128188; Business Insurance</a>
       </div>
     </li>
-    <li><a href="#">Investments <span class="caret">&#9660;</span></a>
-      <div class="drop">
+    <li><a href="#">Investments <span class="arr">&#9662;</span></a>
+      <div class="dropdown">
         <a href="rrsp.html">&#128200; RRSP</a>
         <a href="tfsa.html">&#128176; TFSA</a>
         <a href="resp.html">&#127891; RESP</a>
@@ -458,264 +253,102 @@ footer{background:#060606;padding:64px 64px 28px;border-top:2px solid rgba(255,2
         <a href="retirement-planning.html">&#127774; Retirement Planning</a>
       </div>
     </li>
+    <li><a href="#">Calculators <span class="arr">&#9662;</span></a>
+      <div class="dropdown">
+        <a href="javascript:void(0)" onclick="openCalcModal()">&#128274; Estate Planning Calculator</a>
+        <a href="quotes.html">&#9889; Insurance Quote Tool</a>
+      </div>
+    </li>
     <li><a href="quotes.html">Get Quotes</a></li>
     <li><a href="awards.html">Awards</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
   </ul>
-  <div class="nr">
-    <a href="tel:6477456850" class="n-call">&#128222; Call Now</a>
-    <a href="quotes.html" class="n-quote">Get a Quote</a>
-    <button class="burger" id="burger"><span></span><span></span><span></span></button>
+  <div class="nav-actions">
+    <a href="tel:6477456850" class="btn-call">&#128222; 647-745-6850</a>
+    <a href="quotes.html" class="btn-quote">&#9889; Get a Quote</a>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
-</div>
-</nav>
-
-<div class="mob" id="mob">
-  <a href="index.html" class="ma">Home</a>
-  <a href="about.html" class="ma">About</a>
-  <div class="ma" style="font-weight:800;border-bottom:none;padding-bottom:6px">Insurance</div>
-  <div class="msub">
-    <div class="ms">Visitor &amp; Travel</div>
+</div></nav>
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html" class="mn-item">Home</a>
+  <a href="about.html" class="mn-item">About</a>
+  <span class="mn-item" style="font-weight:700;border-bottom:none;padding-bottom:3px;color:rgba(255,255,255,.5);font-size:13px">INSURANCE</span>
+  <div class="mn-sub">
+    <div class="mn-sec">Visitor &amp; Travel</div>
     <a href="super-visa.html">&#128706; Super Visa Insurance</a>
     <a href="visitors.html">&#9992;&#65039; Visitors to Canada</a>
     <a href="travel-insurance.html">&#127757; Travel Insurance</a>
     <a href="student-insurance.html">&#127891; International Student</a>
-    <div class="ms">Life Insurance</div>
+    <div class="mn-sec">Life Insurance</div>
     <a href="term-life.html">&#128737;&#65039; Term Life Insurance</a>
     <a href="whole-life.html">&#127807; Whole Life Insurance</a>
     <a href="universal-life.html">&#9881;&#65039; Universal Life</a>
     <a href="mortgage-insurance.html">&#127968; Mortgage Insurance</a>
-    <div class="ms">Living Benefits</div>
+    <div class="mn-sec">Living Benefits</div>
     <a href="critical-illness.html">&#10084;&#65039; Critical Illness</a>
-    <a href="disability.html">&#129466; Disability Insurance</a>
+    <a href="disability.html">&#129466; Disability</a>
     <a href="drug-dental.html">&#128138; Drug &amp; Dental</a>
-    <div class="ms">Planning</div>
+    <div class="mn-sec">Planning</div>
     <a href="estate-planning.html">&#127981; Estate Planning</a>
     <a href="business-insurance.html">&#128188; Business Insurance</a>
   </div>
-  <div class="ma" style="font-weight:800;border-bottom:none;padding-bottom:6px">Investments</div>
-  <div class="msub">
+  <span class="mn-item" style="font-weight:700;border-bottom:none;padding-bottom:3px;color:rgba(255,255,255,.5);font-size:13px">INVESTMENTS</span>
+  <div class="mn-sub">
     <a href="rrsp.html">&#128200; RRSP</a>
     <a href="tfsa.html">&#128176; TFSA</a>
+    <a href="fhsa.html">&#127969; FHSA</a>
     <a href="resp.html">&#127891; RESP</a>
     <a href="rdsp.html">&#9855; RDSP</a>
-    <a href="fhsa.html">&#127969; FHSA</a>
     <a href="non-registered.html">&#128202; Non-Registered</a>
     <a href="retirement-planning.html">&#127774; Retirement Planning</a>
   </div>
-  <a href="quotes.html" class="ma">Get Quotes</a>
-  <a href="awards.html" class="ma">Awards</a>
-  <a href="#contact" class="ma">Contact</a>
-  <div class="mctas">
-    <a href="tel:6477456850" class="mc1">&#128222; Call Now &mdash; 647-745-6850</a>
-    <a href="quotes.html" class="mc2">&#9889; Get Instant Quote</a>
+  <a href="quotes.html" class="mn-item">&#9889; Get Quotes</a>
+  <a href="awards.html" class="mn-item">Awards</a>
+  <a href="javascript:void(0)" onclick="openCalcModal()" class="mn-item">&#128274; Estate Calculator</a>
+  <a href="index.html#contact" class="mn-item">Contact</a>
+  <div class="mn-ctas">
+    <a href="tel:6477456850" class="mn-c1">&#128222; Call &mdash; 647-745-6850</a>
+    <a href="quotes.html" class="mn-c2">&#9889; Get Instant Quote</a>
   </div>
 </div>
 
-<!-- PAGE HERO -->
-<div class="qp-hero">
-  <div class="qp-inner">
-    <div class="qp-eyebrow">Get a Quote</div>
-    <h1>Compare &amp; save<br>in minutes.</h1>
-    <p>Click any product for an instant online quote — or call me directly for personalized advice. I compare 25+ Canadian carriers to find you the best rate.</p>
-    <div class="qp-hero-badges">
-      <div class="qhb"><span>25+</span> Carriers Compared</div>
-      <div class="qhb"><span>⚡</span> Instant Online Quotes</div>
-      <div class="qhb"><span>✓</span> No Obligation</div>
-    </div>
+<div class="breadcrumb"><a href="index.html">Home</a> &rsaquo; <a href="index.html"></a> &rsaquo; <span>Get Quotes</span></div><div class="page-hero"><div class="ph-inner"><div class="ph-tag">&#9889; Instant Quotes</div><h1>Best rate. 25+ carriers.<br>Compared for you.</h1><p>Select a product below for an instant online quote, or call Rattan directly for a personalized comparison in minutes.</p><div class="ph-btns"><a href="https://www.insurancebyrattan.ca/super-visa-insurance/" target="_blank" class="ph-b1">&#128706; Super Visa Quote</a><a href="tel:6477456850" class="ph-b1">&#128222; Call Rattan</a><a href="https://wa.me/16477456850" target="_blank" class="ph-b2">&#128172; WhatsApp</a></div></div></div><div class="content-sec">
+  <div class="sec-tag">Online Quote Tools</div>
+  <h2 class="sec-title">Click to get an instant quote</h2>
+  <p class="sec-lead">These tools compare multiple carriers in real time. For products without a tool, call or WhatsApp — most quotes take under 5 minutes.</p>
+  <div class="cards-2" style="margin-bottom:44px">
+    <a href="https://www.insurancebyrattan.ca/super-visa-insurance/" target="_blank" class="card" style="display:flex;gap:16px;align-items:flex-start">
+      <div style="font-size:1.8rem;flex-shrink:0">&#128706;</div><div><h3>Super Visa Insurance</h3><p>Instant comparison for parents visiting Canada. Multiple carriers, best rates, same-day approval.</p><div style="margin-top:10px;font-size:13px;font-weight:700;color:var(--gold)">Get Quote Online &rarr;</div></div>
+    </a>
+    <a href="https://www.insurancebyrattan.ca/visitors-insurance/" target="_blank" class="card" style="display:flex;gap:16px;align-items:flex-start">
+      <div style="font-size:1.8rem;flex-shrink:0">&#9992;&#65039;</div><div><h3>Visitors to Canada</h3><p>Short-term emergency medical coverage for visitors. Includes pre-existing condition options.</p><div style="margin-top:10px;font-size:13px;font-weight:700;color:var(--gold)">Get Quote Online &rarr;</div></div>
+    </a>
+    <a href="https://www.insurancebyrattan.ca/term-life-insurance/" target="_blank" class="card" style="display:flex;gap:16px;align-items:flex-start">
+      <div style="font-size:1.8rem;flex-shrink:0">&#128737;&#65039;</div><div><h3>Term Life Insurance</h3><p>Compare term life rates from Canada&rsquo;s top carriers. 10, 20, 25, and 30-year options.</p><div style="margin-top:10px;font-size:13px;font-weight:700;color:var(--gold)">Get Quote Online &rarr;</div></div>
+    </a>
+    <a href="https://www.insurancebyrattan.ca/critical-illness-insurance/" target="_blank" class="card" style="display:flex;gap:16px;align-items:flex-start">
+      <div style="font-size:1.8rem;flex-shrink:0">&#10084;&#65039;</div><div><h3>Critical Illness</h3><p>Lump-sum payout on diagnosis of cancer, heart attack, stroke, and 25+ conditions.</p><div style="margin-top:10px;font-size:13px;font-weight:700;color:var(--gold)">Get Quote Online &rarr;</div></div>
+    </a>
   </div>
-</div>
-
-<!-- QUOTE BODY -->
-<div class="qp-body">
-
-  <!-- VISITOR & TRAVEL -->
-  <div class="qs-label">Visitor &amp; Travel Insurance</div>
-  <div class="qgrid four-col">
-    <div class="qcard">
-      <div class="qc-icon">🛂</div>
-      <h3>Super Visa Insurance</h3>
-      <p>Mandatory coverage for parents &amp; grandparents on a Super Visa. IRCC-compliant plans from all major providers.</p>
-      <div class="qc-actions">
-        <a href="https://www.insurancebyrattan.ca/super-visa-insurance/" target="_blank" class="qbtn green">⚡ Instant Quote</a>
-        <a href="super-visa.html" class="qbtn-ghost">Learn More →</a>
-      </div>
-    </div>
-    <div class="qcard">
-      <div class="qc-icon">✈️</div>
-      <h3>Visitors to Canada</h3>
-      <p>Emergency medical coverage for tourists, visiting family, and new immigrants. Fast approval, flexible deductibles.</p>
-      <div class="qc-actions">
-        <a href="https://www.insurancebyrattan.ca/visitors-insurance/" target="_blank" class="qbtn green">⚡ Instant Quote</a>
-        <a href="visitors.html" class="qbtn-ghost">Learn More →</a>
-      </div>
-    </div>
-    <div class="qcard">
-      <div class="qc-icon">🌍</div>
-      <h3>Travel Insurance</h3>
-      <p>Coverage for Canadians abroad — emergency medical, trip cancellation, and baggage protection included.</p>
-      <div class="qc-actions">
-        <a href="https://www.insurancebyrattan.ca/" target="_blank" class="qbtn green">⚡ Instant Quote</a>
-        <a href="travel-insurance.html" class="qbtn-ghost">Learn More →</a>
-      </div>
-    </div>
-    <div class="qcard">
-      <div class="qc-icon">🎓</div>
-      <h3>International Student</h3>
-      <p>Health coverage for international students studying in Canada — from day of arrival, all provinces.</p>
-      <div class="qc-actions">
-        <a href="https://www.insurancebyrattan.ca/" target="_blank" class="qbtn green">⚡ Instant Quote</a>
-        <a href="student-insurance.html" class="qbtn-ghost">Learn More →</a>
-      </div>
-    </div>
+  <div class="sec-tag">Best quoted by phone</div>
+  <h2 class="sec-title" style="margin-bottom:12px">These need a quick conversation</h2>
+  <p style="font-size:15px;color:var(--mid);margin-bottom:28px">Whole life, disability, and business insurance require a short discussion to find the right fit. Most calls take 5&ndash;10 minutes.</p>
+  <div class="cards-4">
+    <div class="card"><div class="card-ic">&#127807;</div><h3>Whole Life</h3><p>Permanent coverage with cash value buildup.</p><div style="margin-top:10px"><a href="tel:6477456850" style="font-size:13px;font-weight:700;color:var(--navy)">Call &rarr;</a></div></div>
+    <div class="card"><div class="card-ic">&#9881;&#65039;</div><h3>Universal Life</h3><p>Flexible permanent insurance with investment component.</p><div style="margin-top:10px"><a href="tel:6477456850" style="font-size:13px;font-weight:700;color:var(--navy)">Call &rarr;</a></div></div>
+    <div class="card"><div class="card-ic">&#129466;</div><h3>Disability</h3><p>Income replacement if illness or injury stops you working.</p><div style="margin-top:10px"><a href="tel:6477456850" style="font-size:13px;font-weight:700;color:var(--navy)">Call &rarr;</a></div></div>
+    <div class="card"><div class="card-ic">&#128188;</div><h3>Business Insurance</h3><p>Key person, buy-sell, and corporate planning.</p><div style="margin-top:10px"><a href="tel:6477456850" style="font-size:13px;font-weight:700;color:var(--navy)">Call &rarr;</a></div></div>
   </div>
+</div><div class="qstrip"><div><div class="qs-title">Questions before getting a quote?</div><div class="qs-sub">Call or WhatsApp — most questions answered in under 2 minutes.</div></div><div class="qs-btns"><a href="tel:6477456850" class="qs-b1">&#128222; 647-745-6850</a><a href="https://wa.me/16477456850" target="_blank" class="qs-b2">&#128172; WhatsApp</a><a href="quotes.html" class="qs-b1" style="background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)">&#9889; Get a Quote</a></div></div><div class="page-contact"><div class="cr"><div class="cr-ico">&#128222;</div><div><div class="cr-lbl">Phone</div><div class="cr-val"><a href="tel:6477456850">647-745-6850</a></div></div></div><div class="cr"><div class="cr-ico">&#128172;</div><div><div class="cr-lbl">WhatsApp</div><div class="cr-val"><a href="https://wa.me/16477456850" target="_blank" style="color:#25d366">Message on WhatsApp</a></div></div></div><div class="cr"><div class="cr-ico">&#9889;</div><div><div class="cr-lbl">Online Quotes</div><div class="cr-val"><a href="quotes.html">View all quote tools</a></div></div></div></div>
 
-  <!-- LIFE INSURANCE -->
-  <div class="qs-label">Life Insurance</div>
-  <div class="qgrid">
-    <div class="qcard">
-      <div class="qc-icon">🛡️</div>
-      <h3>Term Life Insurance</h3>
-      <p>Compare rates from all major Canadian carriers. Coverage from $100K–$10M+ for 10, 20, or 30-year terms.</p>
-      <div class="qc-actions">
-        <a href="https://www.insurancebyrattan.ca/term-life-insurance/" target="_blank" class="qbtn green">⚡ Instant Quote</a>
-        <a href="term-life.html" class="qbtn-ghost">Learn More →</a>
-      </div>
-    </div>
-    <div class="qcard">
-      <div class="qc-icon">❤️</div>
-      <h3>Critical Illness Insurance</h3>
-      <p>Plans covering cancer, heart attack, stroke, and more. Lump-sum tax-free payout on diagnosis.</p>
-      <div class="qc-actions">
-        <a href="https://www.insurancebyrattan.ca/critical-illness-insurance/" target="_blank" class="qbtn green">⚡ Instant Quote</a>
-        <a href="critical-illness.html" class="qbtn-ghost">Learn More →</a>
-      </div>
-    </div>
-    <div class="qcard">
-      <div class="qc-icon">🌱</div>
-      <h3>Whole Life Insurance</h3>
-      <p>Permanent, lifelong coverage with guaranteed cash value growth. Best for estate planning and legacy goals.</p>
-      <div class="qc-note">Consultation required</div>
-      <div class="qc-actions">
-        <a href="tel:6477456850" class="qbtn">📞 Call for Quote</a>
-        <a href="whole-life.html" class="qbtn-ghost">Learn More →</a>
-      </div>
-    </div>
-    <div class="qcard">
-      <div class="qc-icon">⚙️</div>
-      <h3>Universal Life Insurance</h3>
-      <p>Flexible permanent coverage with a tax-sheltered investment component. Ideal for business owners.</p>
-      <div class="qc-note">Consultation required</div>
-      <div class="qc-actions">
-        <a href="tel:6477456850" class="qbtn">📞 Call for Quote</a>
-        <a href="universal-life.html" class="qbtn-ghost">Learn More →</a>
-      </div>
-    </div>
-    <div class="qcard">
-      <div class="qc-icon">🏠</div>
-      <h3>Mortgage Insurance</h3>
-      <p>Ensure your family keeps the home. Often better value than bank-provided mortgage insurance.</p>
-      <div class="qc-note">Consultation required</div>
-      <div class="qc-actions">
-        <a href="tel:6477456850" class="qbtn">📞 Call for Quote</a>
-        <a href="mortgage-insurance.html" class="qbtn-ghost">Learn More →</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- LIVING BENEFITS -->
-  <div class="qs-label">Living Benefits &amp; Business</div>
-  <div class="qgrid">
-    <div class="qcard">
-      <div class="qc-icon">🦺</div>
-      <h3>Disability Insurance</h3>
-      <p>Replaces up to 85% of your income if illness or injury prevents you from working. Protect your most valuable asset.</p>
-      <div class="qc-note">Consultation required</div>
-      <div class="qc-actions">
-        <a href="tel:6477456850" class="qbtn">📞 Call for Quote</a>
-        <a href="disability.html" class="qbtn-ghost">Learn More →</a>
-      </div>
-    </div>
-    <div class="qcard">
-      <div class="qc-icon">💊</div>
-      <h3>Drug &amp; Dental Insurance</h3>
-      <p>Individual and family coverage for prescriptions, dental care, vision, and extended health benefits.</p>
-      <div class="qc-note">Consultation required</div>
-      <div class="qc-actions">
-        <a href="tel:6477456850" class="qbtn">📞 Call for Quote</a>
-        <a href="drug-dental.html" class="qbtn-ghost">Learn More →</a>
-      </div>
-    </div>
-    <div class="qcard">
-      <div class="qc-icon">💼</div>
-      <h3>Business Insurance</h3>
-      <p>Key person, buy-sell agreements, group benefits, and corporate life insurance strategies for business owners.</p>
-      <div class="qc-note">Consultation required</div>
-      <div class="qc-actions">
-        <a href="tel:6477456850" class="qbtn">📞 Call for Quote</a>
-        <a href="business-insurance.html" class="qbtn-ghost">Learn More →</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- INVESTMENTS -->
-  <div class="qs-label">Investments — Consultation &amp; Planning</div>
-  <div class="qgrid four-col">
-    <div class="qcard">
-      <div class="qc-icon">📈</div>
-      <h3>RRSP</h3>
-      <p>Tax-deductible contributions, tax-deferred growth. The cornerstone of retirement planning for Canadians.</p>
-      <div class="qc-actions">
-        <a href="tel:6477456850" class="qbtn">📞 Consult</a>
-        <a href="rrsp.html" class="qbtn-ghost">Learn More →</a>
-      </div>
-    </div>
-    <div class="qcard">
-      <div class="qc-icon">💰</div>
-      <h3>TFSA</h3>
-      <p>Tax-free growth and withdrawals, anytime, for any reason. Flexible savings with no tax on earnings.</p>
-      <div class="qc-actions">
-        <a href="tel:6477456850" class="qbtn">📞 Consult</a>
-        <a href="tfsa.html" class="qbtn-ghost">Learn More →</a>
-      </div>
-    </div>
-    <div class="qcard">
-      <div class="qc-icon">🏫</div>
-      <h3>RESP</h3>
-      <p>Earn up to $500/year in free government grants. The smartest way to save for your child's education.</p>
-      <div class="qc-actions">
-        <a href="tel:6477456850" class="qbtn">📞 Consult</a>
-        <a href="resp.html" class="qbtn-ghost">Learn More →</a>
-      </div>
-    </div>
-    <div class="qcard">
-      <div class="qc-icon">🏡</div>
-      <h3>FHSA</h3>
-      <p>Save up to $40,000 tax-free toward your first home. Combines the best features of RRSP and TFSA.</p>
-      <div class="qc-actions">
-        <a href="tel:6477456850" class="qbtn">📞 Consult</a>
-        <a href="fhsa.html" class="qbtn-ghost">Learn More →</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- CONSULT STRIP -->
-  <div class="qconsult">
-    <div>
-      <h3>Not sure where to start?</h3>
-      <p>Call me — I'll ask the right questions and point you in the right direction. No pressure, no obligation.</p>
-    </div>
-    <div class="qconsult-btns">
-      <a href="tel:6477456850" class="qc-call">📞 647-745-6850</a>
-      <a href="https://wa.me/16477456850" target="_blank" class="qc-wa">💬 WhatsApp</a>
-    </div>
-  </div>
-
-</div>
 
 <footer>
+  <!-- Desktop footer: 4-column grid -->
   <div class="fg">
-    <div><a href="index.html" class="flogo">Insurance <em>by Rattan</em></a><p class="fbio">Rattan Amol Taggar &middot; Life Insurance Advisor &middot; B.Eng &middot; Ford Motor Company Alumni &middot; Licensed in ON, BC, AB, MB, SK, NS, PEI, NB &middot; Independent advisor.</p></div>
+    <div class="fb">
+      <a href="index.html" class="fl">Rattan <em>Amol Taggar</em></a>
+      <p>Life Insurance Advisor &middot; B.Eng &middot; Ford Motor Company Alumni &middot; Licensed in ON, BC, AB, MB, SK, NS, PEI, NB &middot; Independent advisor operating under iA Financial Group.</p>
+    </div>
     <div class="fc"><h5>Insurance</h5><ul>
       <li><a href="super-visa.html">Super Visa Insurance</a></li>
       <li><a href="visitors.html">Visitors to Canada</a></li>
@@ -738,54 +371,67 @@ footer{background:#060606;padding:64px 64px 28px;border-top:2px solid rgba(255,2
       <li><a href="tel:6477456850">647-745-6850</a></li>
       <li><a href="https://wa.me/16477456850" target="_blank">WhatsApp</a></li>
       <li><a href="quotes.html">Get Instant Quotes</a></li>
-      <li><a href="about.html">About &amp; Story</a></li>
+      <li><a href="about.html">About &amp; Our Story</a></li>
       <li><a href="awards.html">Awards</a></li>
       <li><a href="https://www.facebook.com/punjabifinance" target="_blank">Facebook</a></li>
       <li><a href="https://www.tiktok.com/@punjabifinance" target="_blank">TikTok</a></li>
     </ul></div>
   </div>
+  <!-- Mobile footer: compact strip -->
+  <div class="f-name">Rattan <em>Amol Taggar</em></div>
+  <div class="f-mobile-links">
+    <a href="index.html">Home</a>
+    <a href="super-visa.html">Super Visa</a>
+    <a href="term-life.html">Term Life</a>
+    <a href="critical-illness.html">Critical Illness</a>
+    <a href="estate-planning.html">Estate Planning</a>
+    <a href="rrsp.html">RRSP</a>
+    <a href="tfsa.html">TFSA</a>
+    <a href="quotes.html">Quotes</a>
+    <a href="awards.html">Awards</a>
+    <a href="about.html">About</a>
+  </div>
   <div class="fbot">
-    <span>&copy; 2026 Insurance by Rattan &middot; Rattan Amol Taggar. All rights reserved.</span>
-    <span>Independent Advisor &middot; Not affiliated with any single carrier</span>
+    <span>&copy; 2026 Rattan Amol Taggar &middot; Life Insurance Advisor. All rights reserved.</span>
+    <span>Independent &middot; Not affiliated with any single carrier</span>
   </div>
 </footer>
-
-<!-- STICKY (mobile) -->
-<div class="sticky">
-  <div class="srow">
-    <a href="tel:6477456850" class="s1">&#128222; Call Now</a>
-    <a href="https://wa.me/16477456850" target="_blank" class="s2">&#128172; WhatsApp</a>
+<div class="sticky-call">
+  <div class="sticky-call-inner">
+    <a href="tel:6477456850" class="sc-call">&#128222; Call Now</a>
+    <a href="https://wa.me/16477456850" target="_blank" class="sc-wa">&#128172; WhatsApp</a>
   </div>
 </div>
-
+<div id="calcModal" style="display:none;position:fixed;inset:0;background:rgba(8,15,28,.92);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
+  <div style="background:#122040;border:1px solid rgba(201,150,58,.36);border-radius:16px;padding:36px;max-width:340px;width:92%;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.65)">
+    <div style="font-size:2.4rem;margin-bottom:12px">&#128274;</div>
+    <div style="font-family:'Fraunces',serif;font-size:1.5rem;font-weight:900;color:#fff;margin-bottom:6px">Advisor Access</div>
+    <div style="font-size:12px;color:rgba(255,255,255,.42);margin-bottom:18px;line-height:1.6">Enter access code to unlock the estate planning calculator.</div>
+    <div id="calcModalErr" style="color:#f5a0a0;font-size:11px;margin-bottom:8px;display:none">Incorrect code. Contact Rattan for access.</div>
+    <input type="password" id="calcPw" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" maxlength="10"
+      style="width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:8px;color:#fff;font-size:20px;font-family:inherit;padding:11px 14px;letter-spacing:.32em;text-align:center;margin-bottom:10px;outline:none;transition:border .2s"
+      onkeyup="if(event.key==='Enter')doCalcUnlock()">
+    <button onclick="doCalcUnlock()" style="width:100%;background:#c9963a;border:none;border-radius:8px;color:#0d1e35;font-size:14px;font-weight:800;padding:12px;cursor:pointer;font-family:inherit;margin-bottom:8px">Unlock Calculator &rarr;</button>
+    <button onclick="document.getElementById('calcModal').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,.32);font-size:11px;cursor:pointer;font-family:inherit">Cancel</button>
+  </div>
+</div>
 <script>
+function openCalcModal(){var m=document.getElementById('calcModal');if(m){m.style.display='flex';setTimeout(function(){var i=document.getElementById('calcPw');if(i)i.focus();},80);}else{window.location.href='index.html#calculators';}}
+function doCalcUnlock(){var v=document.getElementById('calcPw').value.trim();if(v==='30181990'){window.location.href='estate-calculator.html';}else{var e=document.getElementById('calcModalErr');e.style.display='block';setTimeout(function(){e.style.display='none';},2000);}}
 document.addEventListener('DOMContentLoaded',function(){
-  var b=document.getElementById('burger'),m=document.getElementById('mob');
-  b.addEventListener('click',function(){b.classList.toggle('open');m.classList.toggle('on')});
-  m.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){b.classList.remove('open');m.classList.remove('on')})});
-  document.querySelectorAll('.qah').forEach(function(h){
-    h.addEventListener('click',function(){
-      var was=h.classList.contains('open');
-      document.querySelectorAll('.qah').forEach(function(x){x.classList.remove('open');if(x.nextElementSibling)x.nextElementSibling.classList.remove('open')});
-      if(!was){h.classList.add('open');if(h.nextElementSibling)h.nextElementSibling.classList.add('open')}
+  document.getElementById('calcModal').addEventListener('click',function(e){if(e.target===this)this.style.display='none';});
+  var h=document.getElementById('hamburger'),m=document.getElementById('mobileNav');
+  if(h&&m){h.addEventListener('click',function(){h.classList.toggle('open');m.classList.toggle('open');});
+  m.querySelectorAll('a:not([onclick])').forEach(function(a){a.addEventListener('click',function(){h.classList.remove('open');m.classList.remove('open');});});}
+  document.querySelectorAll('.qa-header').forEach(function(hdr){
+    hdr.addEventListener('click',function(){
+      var was=hdr.classList.contains('open');
+      document.querySelectorAll('.qa-header').forEach(function(x){x.classList.remove('open');if(x.nextElementSibling)x.nextElementSibling.style.display='none';});
+      if(!was){hdr.classList.add('open');if(hdr.nextElementSibling)hdr.nextElementSibling.style.display='block';}
     });
   });
 });
 </script>
 
-<script>
-document.addEventListener('DOMContentLoaded',function(){
-  var b=document.getElementById('burger'),m=document.getElementById('mob');
-  b.addEventListener('click',function(){b.classList.toggle('open');m.classList.toggle('on')});
-  m.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){b.classList.remove('open');m.classList.remove('on')})});
-  document.querySelectorAll('.qah').forEach(function(h){
-    h.addEventListener('click',function(){
-      var was=h.classList.contains('open');
-      document.querySelectorAll('.qah').forEach(function(x){x.classList.remove('open');if(x.nextElementSibling)x.nextElementSibling.classList.remove('open')});
-      if(!was){h.classList.add('open');if(h.nextElementSibling)h.nextElementSibling.classList.add('open')}
-    });
-  });
-});
-</script>
 </body>
 </html>
