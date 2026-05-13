@@ -3,176 +3,218 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Super Visa Insurance | Insurance by Rattan</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+<title>Super Visa Insurance | Best Rates | Rattan Amol Taggar</title>
+<meta name="description" content="Best super visa insurance compared across 15+ carriers. Same-day approval. Call Rattan at 647-745-6850."/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400&family=Bricolage+Grotesque:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--black:#0a0a0a;--dark:#111827;--green:#16a34a;--green-lt:#22c55e;--green-dim:#dcfce7;--amber:#d97706;--amber-lt:#f59e0b;--amber-dim:#fef3c7;--white:#ffffff;--off:#f8fafc;--muted:#6b7280;--border:#e5e7eb;--dark-border:#2d3748}
+/* ── GLOBAL RESET ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'Inter',sans-serif;background:var(--white);color:var(--black);overflow-x:hidden;font-size:18px;line-height:1.65;padding-bottom:0}
+:root{
+  --navy:#0d1e35;--navy2:#122040;--navy3:#0a1628;
+  --gold:#c9963a;--gl:#e8b96a;--gp:#f7eed8;
+  --off:#f8fafc;--mid:#6b7280;--border:#e5e7eb;--dborder:#1d2420;
+  --white:#fff;--black:#0a0a0a;--check:#16a34a
+}
+body{font-family:'Bricolage Grotesque',sans-serif;background:#fff;color:var(--black);overflow-x:hidden;line-height:1.65;padding-bottom:0}
 a{text-decoration:none;color:inherit}
-.topbar{background:var(--black);padding:10px 60px;display:flex;align-items:center;justify-content:space-between;font-size:.75rem;color:rgba(255,255,255,.55)}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--navy);padding:8px 56px;display:flex;align-items:center;justify-content:space-between;font-size:11.5px;color:rgba(255,255,255,.5);border-bottom:1px solid rgba(201,150,58,.18)}
+.topbar a{color:var(--gl);transition:color .15s}.topbar a:hover{color:#fff}
 .tb-r{display:flex;gap:18px;align-items:center}
-.topbar a{color:rgba(255,255,255,.7);transition:color .2s}
-.topbar a:hover{color:var(--amber-lt)}
-.tb-badge{background:var(--green);color:var(--white);padding:3px 10px;border-radius:20px;font-size:.64rem;font-weight:700}
-nav{position:sticky;top:0;z-index:200;background:var(--white);border-bottom:1px solid var(--border);box-shadow:0 1px 10px rgba(0,0,0,.05)}
-.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:0 60px;height:70px}
-.logo{display:flex;flex-direction:column;line-height:1.18}
-.logo-main{font-family:'DM Serif Display',serif;font-size:1.28rem;color:var(--black)}
-.logo-main em{color:var(--green);font-style:normal}
-.logo-sub{font-size:.57rem;font-weight:600;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
-.nav-menu{display:flex;gap:2px;list-style:none;align-items:center}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:200;background:var(--navy);border-bottom:2px solid var(--gold);box-shadow:0 2px 18px rgba(0,0,0,.22)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:0 56px;height:64px;max-width:1400px;margin:0 auto}
+.logo{display:flex;flex-direction:column;justify-content:center;text-decoration:none;line-height:1.1}
+.logo-main{font-family:'Fraunces',serif;font-size:1.22rem;font-weight:900;color:#fff;line-height:1.1}
+.logo-main em{color:var(--gold);font-style:normal}
+.logo-tag{font-size:8.5px;font-weight:600;color:rgba(255,255,255,.35);letter-spacing:.14em;text-transform:uppercase;margin-top:2px}
+.nav-menu{display:flex;gap:1px;list-style:none;align-items:center}
+.nav-menu>li>a{font-size:13px;font-weight:500;color:rgba(255,255,255,.78);padding:8px 11px;border-radius:6px;transition:all .15s;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.nav-menu>li>a:hover,.nav-menu>li>a.active{color:#fff;background:rgba(255,255,255,.1)}
 .nav-menu>li{position:relative}
-.nav-menu>li>a{font-size:.83rem;font-weight:500;color:#374151;padding:8px 12px;border-radius:6px;transition:all .2s;display:flex;align-items:center;gap:4px;white-space:nowrap}
-.nav-menu>li>a:hover{color:var(--black);background:var(--off)}
-.arr{font-size:.54rem;transition:transform .25s}
+.arr{font-size:8px;opacity:.45;transition:transform .2s}
 .nav-menu>li:hover .arr{transform:rotate(180deg)}
-.dropdown{display:none;position:absolute;top:calc(100%+8px);left:0;background:var(--white);border:1px solid var(--border);border-radius:12px;padding:8px;min-width:260px;box-shadow:0 12px 40px rgba(0,0,0,.12);z-index:400}
+.dropdown{display:none;position:absolute;top:calc(100%+8px);left:0;background:var(--navy2);border:1px solid rgba(201,150,58,.25);border-radius:12px;padding:9px;min-width:262px;box-shadow:0 16px 44px rgba(0,0,0,.5);z-index:400}
 .nav-menu>li:hover .dropdown{display:block}
-.dropdown a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;font-size:.82rem;color:#374151;transition:all .2s;white-space:nowrap}
-.dropdown a:hover{background:var(--off);color:var(--black)}
-.dd-sec{font-size:.59rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding:10px 12px 4px}
-.dropdown hr{border:none;border-top:1px solid var(--border);margin:5px 0}
-.nav-actions{display:flex;align-items:center;gap:9px}
-.btn-call{background:var(--black);color:var(--white);padding:9px 18px;border-radius:7px;font-size:.82rem;font-weight:700;display:flex;align-items:center;gap:6px;transition:all .2s}
-.btn-call:hover{background:var(--green)}
-.btn-quote{background:var(--amber);color:var(--white);padding:9px 18px;border-radius:7px;font-size:.82rem;font-weight:700;transition:all .2s}
-.btn-quote:hover{background:var(--amber-lt)}
-.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;background:none;border:none}
-.hamburger span{display:block;width:24px;height:2px;background:var(--black);border-radius:2px;transition:all .3s}
+.dropdown a{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:7px;font-size:12.5px;color:rgba(255,255,255,.72);transition:all .15s}
+.dropdown a:hover{background:rgba(255,255,255,.08);color:#fff;padding-left:16px}
+.dd-sec{font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);padding:8px 12px 2px}
+.dropdown hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:4px 0}
+.nav-actions{display:flex;gap:8px;align-items:center}
+.btn-call{background:rgba(201,150,58,.14);border:1px solid rgba(201,150,58,.36);color:var(--gl);padding:8px 15px;border-radius:7px;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:5px;transition:all .2s}
+.btn-call:hover{background:var(--gold);color:var(--navy)}
+.btn-quote{background:var(--gold);color:var(--navy);padding:8px 17px;border-radius:7px;font-size:12.5px;font-weight:700;transition:all .2s}
+.btn-quote:hover{background:var(--gl)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:7px;background:none;border:none}
+.hamburger span{display:block;width:24px;height:2px;background:#fff;border-radius:2px;transition:all .28s}
 .hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
 .hamburger.open span:nth-child(2){opacity:0}
 .hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
-.mobile-nav{display:none;position:fixed;top:70px;left:0;right:0;bottom:0;background:var(--white);z-index:300;overflow-y:auto;padding:0 0 120px}
+.mobile-nav{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:var(--navy2);z-index:190;overflow-y:auto;padding-bottom:130px;border-top:1px solid rgba(201,150,58,.22)}
 .mobile-nav.open{display:block}
-.mn-item{display:block;padding:15px 24px;font-size:.96rem;font-weight:500;color:var(--black);border-bottom:1px solid var(--border)}
-.mn-sub{background:var(--off)}
-.mn-sub a{display:block;padding:12px 36px;font-size:.87rem;color:#374151;border-bottom:1px solid var(--border)}
-.mn-sec{padding:9px 24px 3px;font-size:.59rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
-.mn-ctas{display:flex;gap:10px;padding:20px 16px;flex-direction:column}
-.mn-cta-call{display:block;background:var(--black);color:var(--white);padding:15px;border-radius:8px;text-align:center;font-size:.93rem;font-weight:700}
-.mn-cta-quote{display:block;background:var(--amber);color:var(--white);padding:15px;border-radius:8px;text-align:center;font-size:.93rem;font-weight:700}
-.breadcrumb{background:var(--white);padding:12px 60px;border-bottom:1px solid var(--border);font-size:.79rem;color:var(--muted);display:flex;gap:8px;align-items:center}
-.breadcrumb a{color:var(--green);font-weight:500}
-.breadcrumb a:hover{color:var(--black)}
-.page-hero{background:#0c0c0c;padding:80px 60px 72px;position:relative;overflow:hidden;border-bottom:2px solid #1a1a1a}
-.page-hero::before{content:'';position:absolute;top:-80px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(11,154,84,.12) 0%,transparent 65%);pointer-events:none}
-.page-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,rgba(11,154,84,.4),transparent)}
-.ph-inner{max-width:680px;position:relative;z-index:1}
-.ph-tag{font-size:.67rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#0db461;margin-bottom:18px;display:flex;align-items:center;gap:10px}
-.ph-tag::before{content:'';width:8px;height:8px;border-radius:50%;background:#0db461;box-shadow:0 0 0 3px rgba(13,180,97,.2);flex-shrink:0}
-.ph-tag::after{content:'';display:block;width:28px;height:2px;background:#0db461;border-radius:2px}
-.page-hero h1{font-family:'Fraunces',serif;font-size:clamp(2.4rem,4.5vw,3.8rem);color:#fff;line-height:1.1;margin-bottom:18px;letter-spacing:-.02em}
-.page-hero p{font-size:1.05rem;line-height:1.8;color:rgba(255,255,255,.6);max-width:560px;font-weight:300}
-.ph-btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
-.btn-primary{background:var(--green);color:var(--white);padding:14px 28px;border-radius:8px;font-size:.9rem;font-weight:700;display:inline-flex;align-items:center;gap:8px;transition:all .2s}
-.btn-primary:hover{background:var(--green-lt);transform:translateY(-2px)}
-.btn-outline-w{border:1.5px solid rgba(255,255,255,.3);color:var(--white);padding:14px 28px;border-radius:8px;font-size:.9rem;font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
-.btn-outline-w:hover{border-color:var(--green-lt);background:rgba(22,163,74,.15)}
-.pc-wrap{max-width:960px;margin:0 auto;padding:68px 60px}
-.section-eyebrow{font-size:.67rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--green);display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.section-eyebrow::after{content:'';display:block;width:20px;height:2px;background:var(--green);border-radius:2px}
-h2.sh{font-family:'DM Serif Display',serif;font-size:clamp(1.9rem,2.8vw,2.6rem);color:var(--black);line-height:1.15;margin-bottom:16px}
-h3.subh{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--black);margin:34px 0 12px}
-p.bt{font-size:.97rem;line-height:1.88;color:#4b5563;margin-bottom:15px}
-ul.cl{list-style:none;display:flex;flex-direction:column;gap:10px;margin:16px 0}
-ul.cl li{display:flex;align-items:flex-start;gap:12px;font-size:.95rem;color:#4b5563;line-height:1.68}
-ul.cl li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0;margin-top:2px}
-.icard{background:var(--off);border:1.5px solid var(--border);border-radius:10px;padding:26px 30px;margin:24px 0;border-left:4px solid var(--green)}
-.icard h4{font-weight:700;font-size:1rem;color:var(--black);margin-bottom:9px}
-.icard p{font-size:.95rem;line-height:1.82;color:#4b5563}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:20px 0}
-.page-contact{background:var(--green);padding:64px 60px;text-align:center;position:relative;overflow:hidden}
-.page-contact::before{content:'';position:absolute;top:-80px;right:-80px;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.07)}
-.page-contact h3{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--white);margin-bottom:12px;position:relative}
-.page-contact>p{font-size:.97rem;color:rgba(255,255,255,.75);margin-bottom:32px;max-width:480px;margin-left:auto;margin-right:auto;position:relative}
-.cms{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative}
-.cm{display:flex;align-items:center;gap:13px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.15);border-radius:9px;padding:18px 24px}
-.cm-ico{font-size:1.2rem}
-.cm h5{font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:3px}
-.cm a{font-size:.97rem;font-weight:700;color:var(--white);transition:color .2s}
-.cm a:hover{color:var(--amber-dim)}
-.contact-row{background:var(--black);padding:52px 60px;display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
-.cr{padding:0 32px;display:flex;align-items:center;gap:16px;border-right:1px solid var(--dark-border)}
-.cr:last-child{border-right:none}
-.cr-ico{width:44px;height:44px;background:rgba(22,163,74,.15);border:1px solid rgba(22,163,74,.25);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
-.cr-lbl{font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:3px}
-.cr-val{font-size:.97rem;font-weight:700}
-.cr-val a{color:var(--white);transition:color .2s}
-.cr-val a:hover{color:var(--green-lt)}
-footer{background:#050505;padding:56px 60px 28px}
-.fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:44px;margin-bottom:40px}
-.fl{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--white);display:block;margin-bottom:10px}
-.fl em{color:var(--green);font-style:normal}
-.fb p{font-size:.79rem;line-height:1.9;color:rgba(255,255,255,.28);max-width:240px}
-.fc h5{font-size:.59rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:13px}
-.fc ul{list-style:none;display:flex;flex-direction:column;gap:7px}
-.fc a{font-size:.79rem;color:rgba(255,255,255,.32);transition:color .2s}
-.fc a:hover{color:var(--green-lt)}
-.fbot{border-top:1px solid rgba(255,255,255,.07);padding-top:20px;display:flex;justify-content:space-between;font-size:.69rem;color:rgba(255,255,255,.2);flex-wrap:wrap;gap:8px}
-.sticky-call{display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;background:var(--black);padding:10px 14px;border-top:1px solid rgba(255,255,255,.1)}
-.sticky-call-inner{display:flex;gap:10px}
-.sc-call{flex:1;background:var(--green);color:var(--white);padding:13px;border-radius:8px;text-align:center;font-size:.88rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:7px}
-.sc-wa{flex:1;background:rgba(37,211,102,.1);border:1.5px solid rgba(37,211,102,.35);color:#25d366;padding:13px;border-radius:8px;text-align:center;font-size:.88rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:7px}
-@media(max-width:900px){
-  .topbar{display:none}
+.mn-item{display:block;padding:15px 22px;font-size:15px;font-weight:600;color:rgba(255,255,255,.82);border-bottom:1px solid rgba(255,255,255,.06)}
+.mn-sec{padding:9px 22px 2px;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.mn-sub{background:rgba(0,0,0,.2)}
+.mn-sub a{display:block;padding:11px 34px;font-size:13px;color:rgba(255,255,255,.62);border-bottom:1px solid rgba(255,255,255,.04)}
+.mn-ctas{padding:18px 14px;display:flex;flex-direction:column;gap:9px}
+.mn-c1{display:block;background:rgba(255,255,255,.1);color:#fff;padding:15px;border-radius:9px;text-align:center;font-size:14px;font-weight:700;border:1px solid rgba(255,255,255,.18)}
+.mn-c2{display:block;background:var(--gold);color:var(--navy);padding:15px;border-radius:9px;text-align:center;font-size:14px;font-weight:700}
+
+/* ── STICKY MOBILE ── */
+.sticky-call{display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;background:var(--navy);padding:10px 12px;border-top:1px solid rgba(201,150,58,.25)}
+.sticky-call-inner{display:flex;gap:9px}
+.sc-call{flex:1;background:var(--gold);color:var(--navy);padding:14px;border-radius:9px;text-align:center;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:7px}
+.sc-wa{flex:1;background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.3);color:#2dd17a;padding:14px;border-radius:9px;text-align:center;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:7px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  .topbar,.nav-menu,.btn-call,.btn-quote{display:none}
   .nav-inner{padding:0 16px}
-  .nav-menu{display:none}
-  .btn-call,.btn-quote{display:none}
   .hamburger{display:flex}
   .sticky-call{display:block}
-  body{padding-bottom:76px}
-  .breadcrumb{padding:10px 16px;font-size:.74rem}
-  .page-hero{padding:40px 16px 36px}
-  .page-hero h1{font-size:1.9rem;line-height:1.15}
-  .page-hero p{font-size:.92rem}
-  .ph-btns{flex-direction:column;gap:10px}
-  .btn-primary,.btn-outline-w{width:100%;justify-content:center;padding:14px}
-  .pc-wrap{padding:40px 16px}
-  h2.sh{font-size:1.65rem}
-  h3.subh{font-size:1.2rem;margin:24px 0 10px}
-  p.bt{font-size:.92rem}
-  ul.cl li{font-size:.9rem}
-  .icard{padding:20px 18px;margin:18px 0}
-  .two-col{grid-template-columns:1fr;gap:14px}
-  .page-contact{padding:44px 16px}
-  .page-contact h3{font-size:1.7rem}
-  .cms{flex-direction:column;align-items:stretch;gap:10px}
-  .cm{padding:14px 18px}
-  .contact-row{grid-template-columns:1fr;padding:36px 16px;gap:0}
-  .cr{border-right:none;border-bottom:1px solid var(--dark-border);padding:18px 0;gap:13px}
-  .cr:last-child{border-bottom:none}
-  footer{padding:40px 16px 22px}
-  .fg{grid-template-columns:1fr 1fr;gap:22px}
-  .fbot{flex-direction:column;text-align:center;font-size:.65rem}
-}
-@media(max-width:480px){
-  .fg{grid-template-columns:1fr}
-  .page-hero h1{font-size:1.6rem}
-  h2.sh{font-size:1.45rem}
+  body{padding-bottom:78px}
 }
 
-/* Hero CTA Buttons */
-.btn-gold{background:#c47c1a;color:#fff;padding:15px 32px;border-radius:8px;font-size:.95rem;font-weight:700;display:inline-flex;align-items:center;gap:9px;transition:all .2s;box-shadow:0 4px 14px rgba(196,124,26,.4);letter-spacing:.01em}
-.btn-gold:hover{background:#d98e20;transform:translateY(-2px);box-shadow:0 6px 20px rgba(196,124,26,.5)}
-.btn-primary{background:var(--green,#0b9a54);color:#fff;padding:15px 32px;border-radius:8px;font-size:.95rem;font-weight:700;display:inline-flex;align-items:center;gap:9px;transition:all .2s;box-shadow:0 4px 14px rgba(11,154,84,.3)}
-.btn-primary:hover{background:#0db461;transform:translateY(-2px)}
-.btn-outline-w{border:2px solid rgba(255,255,255,.5);color:#fff;padding:14px 28px;border-radius:8px;font-size:.92rem;font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:all .2s;background:rgba(255,255,255,.06)}
-.btn-outline-w:hover{border-color:#fff;background:rgba(255,255,255,.12)}
-.ph-btns{display:flex;gap:14px;flex-wrap:wrap;margin-top:32px;align-items:center}
 
+footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(255,255,255,.06)}
+.fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:44px;margin-bottom:36px}
+.fb .fl{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:900;color:#fff;display:block;margin-bottom:8px}
+.fb .fl em{color:var(--gold);font-style:normal}
+.fb p{font-size:11.5px;line-height:1.85;color:rgba(255,255,255,.22);max-width:230px}
+.fc h5{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:11px}
+.fc ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.fc a{font-size:12.5px;color:rgba(255,255,255,.3);transition:color .2s}
+.fc a:hover{color:var(--gl)}
+.fbot{border-top:1px solid rgba(255,255,255,.05);padding-top:16px;display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.16);flex-wrap:wrap;gap:6px}
+/* ── MOBILE FOOTER ── compact horizontal strip */
+@media(max-width:960px){
+  footer{padding:28px 16px 16px}
+  .fg{display:none}
+  .fbot{flex-direction:column;align-items:center;text-align:center;gap:10px;border-top:none;padding-top:0}
+  .fbot::before{
+    content:'';display:block;width:100%;height:1px;
+    background:rgba(255,255,255,.07);margin-bottom:6px
+  }
+  footer::before{
+    content:'';
+    display:flex;
+    width:100%;
+  }
+  .f-mobile-links{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 10px;margin-bottom:14px}
+  .f-mobile-links a{font-size:12px;color:rgba(255,255,255,.45);text-decoration:none;padding:4px 0}
+  .f-mobile-links a:hover{color:var(--gl)}
+  .f-name{font-family:'Fraunces',serif;font-size:1rem;font-weight:900;color:#fff;margin-bottom:10px;text-align:center}
+  .f-name em{color:var(--gold);font-style:normal}
+}
+}
+
+/* ── PAGE LAYOUT ── */
+.breadcrumb{padding:13px 56px;background:var(--off);font-size:12.5px;color:var(--mid);border-bottom:1px solid var(--border)}
+.breadcrumb a{color:var(--navy);font-weight:500;transition:color .2s}
+.breadcrumb a:hover{color:var(--gold)}
+/* Page hero */
+.page-hero{background:var(--navy);padding:72px 56px 64px;position:relative;overflow:hidden}
+.page-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 70% 50%,rgba(201,150,58,.1) 0%,transparent 55%)}
+.ph-inner{max-width:700px;position:relative;z-index:1}
+.ph-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(201,150,58,.13);border:1px solid rgba(201,150,58,.3);border-radius:7px;padding:5px 13px;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gl);margin-bottom:18px}
+.ph-tag::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.page-hero h1{font-family:'Fraunces',serif;font-size:clamp(1.9rem,4.5vw,3.2rem);font-weight:900;color:#fff;line-height:1.1;letter-spacing:-.02em;margin-bottom:14px}
+.page-hero p{font-size:clamp(14px,1.2vw,17px);color:rgba(255,255,255,.6);line-height:1.75;max-width:560px;margin-bottom:26px}
+.ph-btns{display:flex;gap:10px;flex-wrap:wrap}
+.ph-b1{background:var(--gold);color:var(--navy);padding:12px 22px;border-radius:9px;font-size:13.5px;font-weight:800;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.ph-b1:hover{background:var(--gl)}
+.ph-b2{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;padding:12px 18px;border-radius:9px;font-size:13.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.ph-b2:hover{background:rgba(255,255,255,.18)}
+/* Content */
+.content-sec{padding:64px 56px;max-width:1240px;margin:0 auto}
+.sec-tag{font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:9px}
+.sec-title{font-family:'Fraunces',serif;font-size:clamp(1.7rem,3vw,2.6rem);font-weight:900;color:var(--black);line-height:1.1;letter-spacing:-.02em;margin-bottom:13px}
+.sec-lead{font-size:clamp(14px,1.1vw,16px);color:var(--mid);line-height:1.8;max-width:580px;margin-bottom:40px}
+/* Cards */
+.cards-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.cards-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.cards-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:24px 20px;transition:all .22s}
+.card:hover{border-color:var(--navy);box-shadow:4px 4px 0 var(--navy);transform:translate(-2px,-2px)}
+.card-ic{font-size:24px;margin-bottom:11px;display:block}
+.card h3{font-size:16px;font-weight:800;color:var(--black);margin-bottom:7px}
+.card p{font-size:13.5px;line-height:1.7;color:var(--mid)}
+/* FAQ */
+.faq{max-width:760px}
+.qa-item{border-bottom:1px solid var(--border)}
+.qa-header{display:flex;justify-content:space-between;align-items:center;padding:18px 0;cursor:pointer;font-size:15px;font-weight:700;color:var(--black);gap:12px}
+.qa-header .qa-arr{font-size:10px;color:var(--mid);transition:transform .22s;flex-shrink:0}
+.qa-header.open .qa-arr{transform:rotate(180deg);color:var(--gold)}
+.qa-body{display:none;padding:0 0 18px;font-size:14px;line-height:1.8;color:var(--mid)}
+/* CTA strip */
+.qstrip{background:var(--navy);padding:56px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:36px}
+.qs-title{font-family:'Fraunces',serif;font-size:clamp(1.4rem,2.5vw,2rem);font-weight:900;color:#fff;line-height:1.1;margin-bottom:7px}
+.qs-sub{color:rgba(255,255,255,.5);font-size:14px}
+.qs-btns{display:flex;gap:9px;flex-wrap:wrap}
+.qs-b1{background:var(--gold);color:var(--navy);padding:13px 22px;border-radius:9px;font-size:13.5px;font-weight:800;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.qs-b1:hover{background:var(--gl)}
+.qs-b2{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;padding:13px 20px;border-radius:9px;font-size:13.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.qs-b2:hover{background:rgba(255,255,255,.18)}
+/* Contact row */
+.page-contact{background:var(--navy3);padding:48px 56px;display:grid;grid-template-columns:repeat(3,1fr)}
+.cr{padding:0 32px;display:flex;align-items:center;gap:14px;border-right:1px solid rgba(255,255,255,.08)}
+.cr:first-child{padding-left:0}
+.cr:last-child{border-right:none}
+.cr-ico{width:42px;height:42px;background:rgba(201,150,58,.12);border:1px solid rgba(201,150,58,.22);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.cr-lbl{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.26);margin-bottom:3px}
+.cr-val{font-size:15.5px;font-weight:700}
+.cr-val a{color:#fff;transition:color .2s}
+.cr-val a:hover{color:var(--gl)}
+/* Compare table */
+.compare-tbl{width:100%;border-collapse:collapse;font-size:13.5px;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+.compare-tbl th{background:var(--navy);color:#fff;padding:13px 16px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.compare-tbl td{padding:13px 16px;border-bottom:1px solid var(--border);color:var(--black)}
+.compare-tbl tr:last-child td{border-bottom:none}
+.compare-tbl tr:nth-child(even) td{background:var(--off)}
+.check{color:var(--check);font-weight:700}
+.cross{color:#dc2626;font-weight:700}
+/* Modal */
+#calcModal{align-items:center;justify-content:center}
+/* Responsive */
+@media(max-width:960px){
+  .breadcrumb{padding:11px 16px}
+  .page-hero{padding:52px 16px 48px}
+  .content-sec{padding:52px 16px}
+  .cards-2,.cards-3,.cards-4{grid-template-columns:1fr}
+  .qstrip{grid-template-columns:1fr;padding:44px 16px;gap:20px}
+  .qstrip{display:none}
+  .page-contact{display:flex;flex-direction:row;flex-wrap:wrap;padding:20px 16px;gap:10px;justify-content:center;background:var(--navy3)}
+  .cr{border-right:none;border-bottom:none;padding:0;gap:0;flex:none}
+  .cr-ico{display:none}
+  .cr-lbl{display:none}
+  .cr-val{font-size:0}
+  .cr-val a{font-size:14px;font-weight:700;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;padding:12px 20px;border-radius:9px;display:inline-block}
+  .cr-val a[href*="wa.me"]{color:#25d366;border-color:rgba(37,211,102,.28);background:rgba(37,211,102,.08)}
+  .cr-val a[href*="insurancebyrattan"]{display:none}
+}
+@media(max-width:600px){
+  .cards-2{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
+
 <div class="topbar">
-  <span>&#127464;&#127462; Windsor, ON &middot; Licensed: ON &middot; BC &middot; AB &middot; MB &middot; SK &middot; NS &middot; PEI &middot; NB</span>
-  <div class="tb-r"><span class="tb-badge">&#11088; 400+ Reviews</span><a href="tel:6477456850">&#128222; 647-745-6850</a></div>
+  <span>&#127464;&#127462; Licensed: ON &middot; BC &middot; AB &middot; MB &middot; SK &middot; NS &middot; PEI &middot; NB</span>
+  <div class="tb-r">
+    <a href="https://share.google/cPVqZl6i5B7tOrQSP" target="_blank">&#11088; 425+ Google Reviews</a>
+    <a href="tel:6477456850">&#128222; 647-745-6850</a>
+    <a href="https://wa.me/16477456850" target="_blank">&#128172; WhatsApp</a>
+  </div>
 </div>
 <nav><div class="nav-inner">
   <a href="index.html" class="logo">
-    <span class="logo-main">Insurance <em>by Rattan</em></span>
-    <span class="logo-sub">Life Insurance Advisor &middot; Windsor, ON</span>
+    <span class="logo-main">Rattan <em>Amol Taggar</em></span>
+    <span class="logo-tag">Life Insurance Advisor &middot; Canada</span>
   </a>
   <ul class="nav-menu">
     <li><a href="index.html">Home</a></li>
@@ -196,7 +238,7 @@ footer{background:#050505;padding:56px 60px 28px}
         <a href="disability.html">&#129466; Disability Insurance</a>
         <a href="drug-dental.html">&#128138; Drug &amp; Dental</a>
         <hr/>
-        <div class="dd-sec">Advanced Planning</div>
+        <div class="dd-sec">Planning</div>
         <a href="estate-planning.html">&#127981; Estate Planning</a>
         <a href="business-insurance.html">&#128188; Business Insurance</a>
       </div>
@@ -212,20 +254,26 @@ footer{background:#050505;padding:56px 60px 28px}
         <a href="retirement-planning.html">&#127774; Retirement Planning</a>
       </div>
     </li>
+    <li><a href="#">Calculators <span class="arr">&#9662;</span></a>
+      <div class="dropdown">
+        <a href="javascript:void(0)" onclick="openCalcModal()">&#128274; Estate Planning Calculator</a>
+        <a href="quotes.html">&#9889; Insurance Quote Tool</a>
+      </div>
+    </li>
     <li><a href="quotes.html">Get Quotes</a></li>
     <li><a href="awards.html">Awards</a></li>
     <li><a href="index.html#contact">Contact</a></li>
   </ul>
   <div class="nav-actions">
-    <a href="tel:6477456850" class="btn-call">&#128222; Call Now</a>
-    <a href="quotes.html" class="btn-quote">Get a Quote</a>
+    <a href="tel:6477456850" class="btn-call">&#128222; 647-745-6850</a>
+    <a href="quotes.html" class="btn-quote">&#9889; Get a Quote</a>
     <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
 </div></nav>
 <div class="mobile-nav" id="mobileNav">
   <a href="index.html" class="mn-item">Home</a>
   <a href="about.html" class="mn-item">About</a>
-  <div class="mn-item" style="font-weight:700;border-bottom:none;padding-bottom:4px">Insurance</div>
+  <span class="mn-item" style="font-weight:700;border-bottom:none;padding-bottom:3px;color:rgba(255,255,255,.5);font-size:13px">INSURANCE</span>
   <div class="mn-sub">
     <div class="mn-sec">Visitor &amp; Travel</div>
     <a href="super-visa.html">&#128706; Super Visa Insurance</a>
@@ -233,63 +281,48 @@ footer{background:#050505;padding:56px 60px 28px}
     <a href="travel-insurance.html">&#127757; Travel Insurance</a>
     <a href="student-insurance.html">&#127891; International Student</a>
     <div class="mn-sec">Life Insurance</div>
-    <a href="term-life.html">&#128737;&#65039; Term Life</a>
-    <a href="whole-life.html">&#127807; Whole Life</a>
+    <a href="term-life.html">&#128737;&#65039; Term Life Insurance</a>
+    <a href="whole-life.html">&#127807; Whole Life Insurance</a>
     <a href="universal-life.html">&#9881;&#65039; Universal Life</a>
     <a href="mortgage-insurance.html">&#127968; Mortgage Insurance</a>
     <div class="mn-sec">Living Benefits</div>
     <a href="critical-illness.html">&#10084;&#65039; Critical Illness</a>
     <a href="disability.html">&#129466; Disability</a>
     <a href="drug-dental.html">&#128138; Drug &amp; Dental</a>
-    <div class="mn-sec">Advanced Planning</div>
+    <div class="mn-sec">Planning</div>
     <a href="estate-planning.html">&#127981; Estate Planning</a>
     <a href="business-insurance.html">&#128188; Business Insurance</a>
   </div>
-  <div class="mn-item" style="font-weight:700;border-bottom:none;padding-bottom:4px">Investments</div>
+  <span class="mn-item" style="font-weight:700;border-bottom:none;padding-bottom:3px;color:rgba(255,255,255,.5);font-size:13px">INVESTMENTS</span>
   <div class="mn-sub">
     <a href="rrsp.html">&#128200; RRSP</a>
     <a href="tfsa.html">&#128176; TFSA</a>
+    <a href="fhsa.html">&#127969; FHSA</a>
     <a href="resp.html">&#127891; RESP</a>
     <a href="rdsp.html">&#9855; RDSP</a>
-    <a href="fhsa.html">&#127969; FHSA</a>
     <a href="non-registered.html">&#128202; Non-Registered</a>
     <a href="retirement-planning.html">&#127774; Retirement Planning</a>
   </div>
-  <a href="quotes.html" class="mn-item">Get Quotes</a>
+  <a href="quotes.html" class="mn-item">&#9889; Get Quotes</a>
   <a href="awards.html" class="mn-item">Awards</a>
+  <a href="javascript:void(0)" onclick="openCalcModal()" class="mn-item">&#128274; Estate Calculator</a>
   <a href="index.html#contact" class="mn-item">Contact</a>
   <div class="mn-ctas">
-    <a href="tel:6477456850" class="mn-cta-call">&#128222; Call Now &mdash; 647-745-6850</a>
-    <a href="quotes.html" class="mn-cta-quote">&#9889; Get Instant Quote</a>
+    <a href="tel:6477456850" class="mn-c1">&#128222; Call &mdash; 647-745-6850</a>
+    <a href="quotes.html" class="mn-c2">&#9889; Get Instant Quote</a>
   </div>
-</div>
-<div class="breadcrumb"><a href="index.html">Home</a><span style="color:var(--border)">›</span><a href="#">Insurance</a><span style="color:var(--border)">›</span><span style="color:var(--ink);font-weight:500">Super Visa Insurance</span></div>
-<div class="page-hero">
-  <div class="ph-tag">🛂 Visitor & Travel Insurance</div>
-  <h1>Super Visa Insurance for Parents & Grandparents</h1><p>Super Visa Insurance is mandatory for parents and grandparents applying for a Canadian Super Visa. I compare all major Canadian providers to find the most affordable IRCC-compliant plan — quickly.</p>
-  <div class="ph-btns"><a href="https://www.insurancebyrattan.ca/super-visa-insurance/" target="_blank" class="btn-gold">⚡ Get Instant Quote</a><a href="tel:6477456850" class="btn-outline-w">📞 647-745-6850</a></div>
-</div>
-<div class="pc-wrap">
-  <ul class="cl"><li>Mandatory for Super Visa applications — must meet IRCC minimum requirements</li><li>Coverage from $100,000 minimum (we recommend $150,000–$300,000)</li><li>Plans available for pre-existing medical conditions</li><li>Monthly payment options available</li><li>Fast approval — often same day</li><li>Covers emergency hospitalization, medical care, and repatriation</li></ul>
-  <h3 class="subh">What is Super Visa Insurance?</h3><p class="bt">A Super Visa allows parents and grandparents of Canadian citizens and permanent residents to stay in Canada for up to 5 years at a time. To qualify, the applicant must show proof of Canadian medical insurance valid for at least one year, from a Canadian insurance company, with a minimum of $100,000 coverage.</p><h3 class="subh">What Does It Cover?</h3><ul class="cl"><li>Emergency hospitalization</li><li>Physician services</li><li>Diagnostic tests and lab fees</li><li>Prescription medication (related to emergency)</li><li>Ambulance transportation</li><li>Repatriation of remains</li></ul><h3 class="subh">Pre-Existing Conditions</h3><p class="bt">Many of my clients need coverage for parents with diabetes, heart conditions, or other pre-existing conditions. I specialize in finding plans that include stable pre-existing conditions at competitive rates.</p><h3 class="subh">Monthly Payment Plans</h3><p class="bt">Unlike annual lump-sum plans, many carriers now offer monthly Super Visa insurance — which can significantly reduce upfront costs. I compare both options so you get the best fit for your budget.</p><div class="icard"><h4>Get the Best Rate</h4><p>Rates vary significantly between carriers. I compare Manulife, Sun Life, Blue Cross, Destination Travel, Travelance, Tugo, and more to find the best price for your parents' specific health profile.</p></div>
 </div>
 
-<div class="page-contact">
-  <h3>Ready to get started?</h3>
-  <p>Call for a free, no-obligation consultation. I respond the same day.</p>
-  <div class="cms">
-    <div class="cm"><div class="cm-ico">&#128222;</div><div><h5>Phone</h5><a href="tel:6477456850">647-745-6850</a></div></div>
-    <div class="cm"><div class="cm-ico">&#128172;</div><div><h5>WhatsApp</h5><a href="https://wa.me/16477456850" target="_blank" style="color:#25d366">Message Now</a></div></div>
-  </div>
-</div>
-<div class="contact-row" id="contact">
-  <div class="cr"><div class="cr-ico">&#128222;</div><div><div class="cr-lbl">Phone</div><div class="cr-val"><a href="tel:6477456850">647-745-6850</a></div></div></div>
-  <div class="cr"><div class="cr-ico">&#128172;</div><div><div class="cr-lbl">WhatsApp</div><div class="cr-val"><a href="https://wa.me/16477456850" target="_blank" style="color:#25d366">Message on WhatsApp</a></div></div></div>
-  <div class="cr"><div class="cr-ico">&#127760;</div><div><div class="cr-lbl">Online Quotes</div><div class="cr-val"><a href="https://www.insurancebyrattan.ca" target="_blank">insurancebyrattan.ca</a></div></div></div>
-</div>
+<div class="breadcrumb"><a href="index.html">Home</a> &rsaquo; <a href="#">Insurance</a> &rsaquo; <span>Super Visa Insurance</span></div><div class="page-hero"><div class="ph-inner"><div class="ph-tag">&#128706; Visitor &amp; Travel</div><h1>Super Visa Insurance.<br>Best rates. Same-day approval.</h1><p>Canadian Immigration requires parents on a Super Visa to have $100,000+ medical coverage. I compare all major providers to find you the lowest rate — policy delivered same day in most cases.</p><div class="ph-btns"><a href="https://www.insurancebyrattan.ca/super-visa-insurance/" target=_blank class="ph-b1">&#9889; Get Instant Quote</a><a href="tel:6477456850" class="ph-b2">&#128222; Call Rattan</a><a href="https://wa.me/16477456850" target=_blank class="ph-b2">&#128172; WhatsApp</a></div></div></div><div class="content-sec"><div class="cards-3" style="margin-bottom:44px"><div class="card"><div class="card-ic">&#9989;</div><h3>Government Requirement</h3><p>Super Visa applicants need proof of $100,000+ Canadian medical coverage valid for at least 1 year from arrival.</p></div><div class="card"><div class="card-ic">&#9889;</div><h3>Same-Day Approval</h3><p>Most policies issued the same day. Documents sent directly to your email — no waiting for mail.</p></div><div class="card"><div class="card-ic">&#128176;</div><h3>Save Up to 45%</h3><p>Choosing a deductible option significantly reduces your premium. I show you the comparison side by side.</p></div><div class="card"><div class="card-ic">&#127968;</div><h3>Pre-Existing Conditions</h3><p>Options for parents with stable pre-existing conditions. Different carriers have different waiting periods.</p></div><div class="card"><div class="card-ic">&#128200;</div><h3>15+ Carriers Compared</h3><p>iA Financial, Manulife, Sun Life, Travelance, GMS, Blue Cross and more — all in one comparison.</p></div><div class="card"><div class="card-ic">&#128222;</div><h3>Claims Support</h3><p>If your parents ever need to use the insurance, I help navigate the claims process. You&rsquo;re not on your own.</p></div></div><div class="sec-tag">FAQ</div><h2 class="sec-title" style="margin-bottom:28px">Super Visa Insurance FAQ</h2><div class="faq"><div class="qa-item"><div class="qa-header">How much does super visa insurance cost?<span class="qa-arr">&#9662;</span></div><div class="qa-body">Typically $800&ndash;$2,500/year per parent depending on age, coverage amount, deductible choice, and pre-existing conditions. I show all options side by side.</div></div><div class="qa-item"><div class="qa-header">Can I get a refund if the visa is denied?<span class="qa-arr">&#9662;</span></div><div class="qa-body">Yes. Most insurers offer a full refund if the visa is denied and no claims have been made. Apply for insurance before visa approval.</div></div><div class="qa-item"><div class="qa-header">What&rsquo;s the minimum coverage required?<span class="qa-arr">&#9662;</span></div><div class="qa-body">$100,000 CAD from a Canadian insurer. I recommend $150,000 for extra comfort.</div></div><div class="qa-item"><div class="qa-header">Does it cover pre-existing conditions?<span class="qa-arr">&#9662;</span></div><div class="qa-body">Yes — for stable conditions. &lsquo;Stable&rsquo; typically means no changes in medication or treatment in the past 90&ndash;180 days. I&rsquo;ll find the right plan.</div></div><div class="qa-item"><div class="qa-header">Can we pay monthly?<span class="qa-arr">&#9662;</span></div><div class="qa-body">Yes. Most carriers offer monthly payment plans.</div></div></div></div><div class="qstrip"><div><div class="qs-title">Ready to get protected?</div><div class="qs-sub">Call or WhatsApp for a no-pressure quote in minutes.</div></div><div class="qs-btns"><a href="tel:6477456850" class="qs-b1">&#128222; 647-745-6850</a><a href="https://wa.me/16477456850" target="_blank" class="qs-b2">&#128172; WhatsApp</a><a href="quotes.html" class="qs-b1" style="background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)">&#9889; Quotes</a></div></div><div class="page-contact"><div class="cr"><div class="cr-ico">&#128222;</div><div><div class="cr-lbl">Phone</div><div class="cr-val"><a href="tel:6477456850">647-745-6850</a></div></div></div><div class="cr"><div class="cr-ico">&#128172;</div><div><div class="cr-lbl">WhatsApp</div><div class="cr-val"><a href="https://wa.me/16477456850" target="_blank" style="color:#25d366">Message on WhatsApp</a></div></div></div><div class="cr"><div class="cr-ico">&#9889;</div><div><div class="cr-lbl">Quotes</div><div class="cr-val"><a href="quotes.html">View all quote tools</a></div></div></div></div>
+
+
 <footer>
+  <!-- Desktop footer: 4-column grid -->
   <div class="fg">
-    <div class="fb"><a href="index.html" class="fl">Insurance <em>by Rattan</em></a><p>Rattan Amol Taggar &middot; Life Insurance Advisor &middot; B.Eng &middot; Ford Motor Company Alumni &middot; Licensed in ON, BC, AB, MB, SK, NS, PEI, NB &middot; Independent.</p></div>
+    <div class="fb">
+      <a href="index.html" class="fl">Rattan <em>Amol Taggar</em></a>
+      <p>Life Insurance Advisor &middot; B.Eng &middot; Ford Motor Company Alumni &middot; Licensed in ON, BC, AB, MB, SK, NS, PEI, NB &middot; Independent advisor operating under iA Financial Group.</p>
+    </div>
     <div class="fc"><h5>Insurance</h5><ul>
       <li><a href="super-visa.html">Super Visa Insurance</a></li>
       <li><a href="visitors.html">Visitors to Canada</a></li>
@@ -300,8 +333,10 @@ footer{background:#050505;padding:56px 60px 28px}
       <li><a href="drug-dental.html">Drug &amp; Dental</a></li>
     </ul></div>
     <div class="fc"><h5>Investments</h5><ul>
-      <li><a href="rrsp.html">RRSP</a></li><li><a href="tfsa.html">TFSA</a></li>
-      <li><a href="fhsa.html">FHSA</a></li><li><a href="resp.html">RESP</a></li>
+      <li><a href="rrsp.html">RRSP</a></li>
+      <li><a href="tfsa.html">TFSA</a></li>
+      <li><a href="fhsa.html">FHSA</a></li>
+      <li><a href="resp.html">RESP</a></li>
       <li><a href="rdsp.html">RDSP</a></li>
       <li><a href="non-registered.html">Non-Registered</a></li>
       <li><a href="retirement-planning.html">Retirement Planning</a></li>
@@ -316,9 +351,23 @@ footer{background:#050505;padding:56px 60px 28px}
       <li><a href="https://www.tiktok.com/@punjabifinance" target="_blank">TikTok</a></li>
     </ul></div>
   </div>
+  <!-- Mobile footer: compact strip -->
+  <div class="f-name">Rattan <em>Amol Taggar</em></div>
+  <div class="f-mobile-links">
+    <a href="index.html">Home</a>
+    <a href="super-visa.html">Super Visa</a>
+    <a href="term-life.html">Term Life</a>
+    <a href="critical-illness.html">Critical Illness</a>
+    <a href="estate-planning.html">Estate Planning</a>
+    <a href="rrsp.html">RRSP</a>
+    <a href="tfsa.html">TFSA</a>
+    <a href="quotes.html">Quotes</a>
+    <a href="awards.html">Awards</a>
+    <a href="about.html">About</a>
+  </div>
   <div class="fbot">
-    <span>&copy; 2026 Insurance by Rattan &middot; Rattan Amol Taggar &middot; All rights reserved.</span>
-    <span>Independent Advisor &middot; Not affiliated with any single carrier</span>
+    <span>&copy; 2026 Rattan Amol Taggar &middot; Life Insurance Advisor. All rights reserved.</span>
+    <span>Independent &middot; Not affiliated with any single carrier</span>
   </div>
 </footer>
 <div class="sticky-call">
@@ -327,36 +376,36 @@ footer{background:#050505;padding:56px 60px 28px}
     <a href="https://wa.me/16477456850" target="_blank" class="sc-wa">&#128172; WhatsApp</a>
   </div>
 </div>
+<div id="calcModal" style="display:none;position:fixed;inset:0;background:rgba(8,15,28,.92);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
+  <div style="background:#122040;border:1px solid rgba(201,150,58,.36);border-radius:16px;padding:36px;max-width:340px;width:92%;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.65)">
+    <div style="font-size:2.4rem;margin-bottom:12px">&#128274;</div>
+    <div style="font-family:'Fraunces',serif;font-size:1.5rem;font-weight:900;color:#fff;margin-bottom:6px">Advisor Access</div>
+    <div style="font-size:12px;color:rgba(255,255,255,.42);margin-bottom:18px;line-height:1.6">Enter access code to unlock the estate planning calculator.</div>
+    <div id="calcModalErr" style="color:#f5a0a0;font-size:11px;margin-bottom:8px;display:none">Incorrect code. Contact Rattan for access.</div>
+    <input type="password" id="calcPw" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" maxlength="10"
+      style="width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:8px;color:#fff;font-size:20px;font-family:inherit;padding:11px 14px;letter-spacing:.32em;text-align:center;margin-bottom:10px;outline:none;transition:border .2s"
+      onkeyup="if(event.key==='Enter')doCalcUnlock()">
+    <button onclick="doCalcUnlock()" style="width:100%;background:#c9963a;border:none;border-radius:8px;color:#0d1e35;font-size:14px;font-weight:800;padding:12px;cursor:pointer;font-family:inherit;margin-bottom:8px">Unlock Calculator &rarr;</button>
+    <button onclick="document.getElementById('calcModal').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,.32);font-size:11px;cursor:pointer;font-family:inherit">Cancel</button>
+  </div>
+</div>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  var hamburger = document.getElementById('hamburger');
-  var mobileNav = document.getElementById('mobileNav');
-  if (hamburger && mobileNav) {
-    hamburger.addEventListener('click', function() {
-      hamburger.classList.toggle('open');
-      mobileNav.classList.toggle('open');
-    });
-    mobileNav.querySelectorAll('a').forEach(function(link) {
-      link.addEventListener('click', function() {
-        hamburger.classList.remove('open');
-        mobileNav.classList.remove('open');
-      });
-    });
-  }
-  document.querySelectorAll('.qa-header').forEach(function(header) {
-    header.addEventListener('click', function() {
-      var wasOpen = header.classList.contains('open');
-      document.querySelectorAll('.qa-header').forEach(function(h2) {
-        h2.classList.remove('open');
-        if (h2.nextElementSibling) h2.nextElementSibling.classList.remove('open');
-      });
-      if (!wasOpen) {
-        header.classList.add('open');
-        if (header.nextElementSibling) header.nextElementSibling.classList.add('open');
-      }
+function openCalcModal(){var m=document.getElementById('calcModal');if(m){m.style.display='flex';setTimeout(function(){var i=document.getElementById('calcPw');if(i)i.focus();},80);}else{window.location.href='index.html#calculators';}}
+function doCalcUnlock(){var v=document.getElementById('calcPw').value.trim();if(v==='30181990'){window.location.href='estate-calculator.html';}else{var e=document.getElementById('calcModalErr');e.style.display='block';setTimeout(function(){e.style.display='none';},2000);}}
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('calcModal').addEventListener('click',function(e){if(e.target===this)this.style.display='none';});
+  var h=document.getElementById('hamburger'),m=document.getElementById('mobileNav');
+  if(h&&m){h.addEventListener('click',function(){h.classList.toggle('open');m.classList.toggle('open');});
+  m.querySelectorAll('a:not([onclick])').forEach(function(a){a.addEventListener('click',function(){h.classList.remove('open');m.classList.remove('open');});});}
+  document.querySelectorAll('.qa-header').forEach(function(hdr){
+    hdr.addEventListener('click',function(){
+      var was=hdr.classList.contains('open');
+      document.querySelectorAll('.qa-header').forEach(function(x){x.classList.remove('open');if(x.nextElementSibling)x.nextElementSibling.style.display='none';});
+      if(!was){hdr.classList.add('open');if(hdr.nextElementSibling)hdr.nextElementSibling.style.display='block';}
     });
   });
 });
 </script>
+
 </body>
 </html>
