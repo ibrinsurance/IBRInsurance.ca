@@ -8,6 +8,111 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
+
+/* ── GLOBAL RESET ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --navy:#0d1e35;--navy2:#122040;--navy3:#0a1628;
+  --gold:#c9963a;--gl:#e8b96a;--gp:#f7eed8;
+  --off:#f8fafc;--mid:#6b7280;--border:#e5e7eb;--dborder:#1d2420;
+  --white:#fff;--black:#0a0a0a;--check:#16a34a
+}
+body{font-family:'Bricolage Grotesque',sans-serif;background:#fff;color:var(--black);overflow-x:hidden;line-height:1.65;padding-bottom:0}
+a{text-decoration:none;color:inherit}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--navy);padding:8px 56px;display:flex;align-items:center;justify-content:space-between;font-size:11.5px;color:rgba(255,255,255,.5);border-bottom:1px solid rgba(201,150,58,.18)}
+.topbar a{color:var(--gl);transition:color .15s}.topbar a:hover{color:#fff}
+.tb-r{display:flex;gap:18px;align-items:center}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:200;background:var(--navy);border-bottom:2px solid var(--gold);box-shadow:0 2px 18px rgba(0,0,0,.22)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:0 56px;height:64px;max-width:1400px;margin:0 auto}
+.logo{display:flex;flex-direction:column;justify-content:center;text-decoration:none;line-height:1.1}
+.logo-main{font-family:'Fraunces',serif;font-size:1.22rem;font-weight:900;color:#fff;line-height:1.1}
+.logo-main em{color:var(--gold);font-style:normal}
+.logo-tag{font-size:8.5px;font-weight:600;color:rgba(255,255,255,.35);letter-spacing:.14em;text-transform:uppercase;margin-top:2px}
+.nav-menu{display:flex;gap:1px;list-style:none;align-items:center}
+.nav-menu>li>a{font-size:13px;font-weight:500;color:rgba(255,255,255,.78);padding:8px 11px;border-radius:6px;transition:all .15s;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.nav-menu>li>a:hover,.nav-menu>li>a.active{color:#fff;background:rgba(255,255,255,.1)}
+.nav-menu>li{position:relative}
+.arr{font-size:8px;opacity:.45;transition:transform .2s}
+.nav-menu>li:hover .arr{transform:rotate(180deg)}
+.dropdown{display:none;position:absolute;top:calc(100%+8px);left:0;background:var(--navy2);border:1px solid rgba(201,150,58,.25);border-radius:12px;padding:9px;min-width:262px;box-shadow:0 16px 44px rgba(0,0,0,.5);z-index:400}
+.nav-menu>li:hover .dropdown{display:block}
+.dropdown a{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:7px;font-size:12.5px;color:rgba(255,255,255,.72);transition:all .15s}
+.dropdown a:hover{background:rgba(255,255,255,.08);color:#fff;padding-left:16px}
+.dd-sec{font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);padding:8px 12px 2px}
+.dropdown hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:4px 0}
+.nav-actions{display:flex;gap:8px;align-items:center}
+.btn-call{background:rgba(201,150,58,.14);border:1px solid rgba(201,150,58,.36);color:var(--gl);padding:8px 15px;border-radius:7px;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:5px;transition:all .2s}
+.btn-call:hover{background:var(--gold);color:var(--navy)}
+.btn-quote{background:var(--gold);color:var(--navy);padding:8px 17px;border-radius:7px;font-size:12.5px;font-weight:700;transition:all .2s}
+.btn-quote:hover{background:var(--gl)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:7px;background:none;border:none}
+.hamburger span{display:block;width:24px;height:2px;background:#fff;border-radius:2px;transition:all .28s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mobile-nav{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:var(--navy2);z-index:190;overflow-y:auto;padding-bottom:130px;border-top:1px solid rgba(201,150,58,.22)}
+.mobile-nav.open{display:block}
+.mn-item{display:block;padding:15px 22px;font-size:15px;font-weight:600;color:rgba(255,255,255,.82);border-bottom:1px solid rgba(255,255,255,.06)}
+.mn-sec{padding:9px 22px 2px;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.mn-sub{background:rgba(0,0,0,.2)}
+.mn-sub a{display:block;padding:11px 34px;font-size:13px;color:rgba(255,255,255,.62);border-bottom:1px solid rgba(255,255,255,.04)}
+.mn-ctas{padding:18px 14px;display:flex;flex-direction:column;gap:9px}
+.mn-c1{display:block;background:rgba(255,255,255,.1);color:#fff;padding:15px;border-radius:9px;text-align:center;font-size:14px;font-weight:700;border:1px solid rgba(255,255,255,.18)}
+.mn-c2{display:block;background:var(--gold);color:var(--navy);padding:15px;border-radius:9px;text-align:center;font-size:14px;font-weight:700}
+
+/* ── STICKY MOBILE ── */
+.sticky-call{display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;background:var(--navy);padding:10px 12px;border-top:1px solid rgba(201,150,58,.25)}
+.sticky-call-inner{display:flex;gap:9px}
+.sc-call{flex:1;background:var(--gold);color:var(--navy);padding:14px;border-radius:9px;text-align:center;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:7px}
+.sc-wa{flex:1;background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.3);color:#2dd17a;padding:14px;border-radius:9px;text-align:center;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:7px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  .topbar,.nav-menu,.btn-call,.btn-quote{display:none}
+  .nav-inner{padding:0 16px}
+  .hamburger{display:flex}
+  .sticky-call{display:block}
+  body{padding-bottom:78px}
+}
+
+
+footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(255,255,255,.06)}
+.fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:44px;margin-bottom:36px}
+.fb .fl{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:900;color:#fff;display:block;margin-bottom:8px}
+.fb .fl em{color:var(--gold);font-style:normal}
+.fb p{font-size:11.5px;line-height:1.85;color:rgba(255,255,255,.22);max-width:230px}
+.fc h5{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:11px}
+.fc ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.fc a{font-size:12.5px;color:rgba(255,255,255,.3);transition:color .2s}
+.fc a:hover{color:var(--gl)}
+.fbot{border-top:1px solid rgba(255,255,255,.05);padding-top:16px;display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.16);flex-wrap:wrap;gap:6px}
+/* ── MOBILE FOOTER ── compact horizontal strip */
+@media(max-width:960px){
+  footer{padding:28px 16px 16px}
+  .fg{display:none}
+  .fbot{flex-direction:column;align-items:center;text-align:center;gap:10px;border-top:none;padding-top:0}
+  .fbot::before{
+    content:'';display:block;width:100%;height:1px;
+    background:rgba(255,255,255,.07);margin-bottom:6px
+  }
+  footer::before{
+    content:'';
+    display:flex;
+    width:100%;
+  }
+  .f-mobile-links{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 10px;margin-bottom:14px}
+  .f-mobile-links a{font-size:12px;color:rgba(255,255,255,.45);text-decoration:none;padding:4px 0}
+  .f-mobile-links a:hover{color:var(--gl)}
+  .f-name{font-family:'Fraunces',serif;font-size:1rem;font-weight:900;color:#fff;margin-bottom:10px;text-align:center}
+  .f-name em{color:var(--gold);font-style:normal}
+}
+
+
 :root{--navy:#0d1e35;--gold:#c9963a;--gl:#e8b96a;--gp:#f7eed8;--cream:#f9f6f0;--t:#1a1a2e;--tm:#4a4a6a;--tl:#8a8aaa;--bdr:#e2d8c8;--r:#b92d1f;--rbg:#fdf0ee;--g:#1a6b3a;--gbg:#edf7f1;--b:#185FA5;--bbg:#eef4fc;--a:#7a5200;--abg:#fdf7ed;}
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
 body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--t);font-size:15px;line-height:1.6}
@@ -217,10 +322,117 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
 </style>
 </head>
 <body>
-<nav class="nav">
-  <div class="nb">Rattan <span>Amol Taggar</span></div>
-  <div class="nr"><span class="ntag"></span><a href="tel:6477456850" class="nph">&#128222; 647-745-6850</a></div>
-</nav>
+
+<div class="topbar">
+  <span>&#127464;&#127462; Licensed: ON &middot; BC &middot; AB &middot; MB &middot; SK &middot; NS &middot; PEI &middot; NB</span>
+  <div class="tb-r">
+    <a href="https://share.google/cPVqZl6i5B7tOrQSP" target="_blank">&#11088; 425+ Google Reviews</a>
+    <a href="tel:6477456850">&#128222; 647-745-6850</a>
+    <a href="https://wa.me/16477456850" target="_blank">&#128172; WhatsApp</a>
+  </div>
+</div>
+<nav><div class="nav-inner">
+  <a href="index.html" class="logo">
+    <span class="logo-main">Rattan <em>Amol Taggar</em></span>
+    <span class="logo-tag">Life Insurance Advisor &middot; Canada</span>
+  </a>
+  <ul class="nav-menu">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="#">Insurance <span class="arr">&#9662;</span></a>
+      <div class="dropdown">
+        <div class="dd-sec">Visitor &amp; Travel</div>
+        <a href="super-visa.html">&#128706; Super Visa Insurance</a>
+        <a href="visitors.html">&#9992;&#65039; Visitors to Canada</a>
+        <a href="travel-insurance.html">&#127757; Travel Insurance</a>
+        <a href="student-insurance.html">&#127891; International Student</a>
+        <hr/>
+        <div class="dd-sec">Life Insurance</div>
+        <a href="term-life.html">&#128737;&#65039; Term Life Insurance</a>
+        <a href="whole-life.html">&#127807; Whole Life Insurance</a>
+        <a href="universal-life.html">&#9881;&#65039; Universal Life Insurance</a>
+        <a href="mortgage-insurance.html">&#127968; Mortgage Insurance</a>
+        <hr/>
+        <div class="dd-sec">Living Benefits</div>
+        <a href="critical-illness.html">&#10084;&#65039; Critical Illness</a>
+        <a href="disability.html">&#129466; Disability Insurance</a>
+        <a href="drug-dental.html">&#128138; Drug &amp; Dental</a>
+        <hr/>
+        <div class="dd-sec">Planning</div>
+        <a href="estate-planning.html">&#127981; Estate Planning</a>
+        <a href="business-insurance.html">&#128188; Business Insurance</a>
+      </div>
+    </li>
+    <li><a href="#">Investments <span class="arr">&#9662;</span></a>
+      <div class="dropdown">
+        <a href="rrsp.html">&#128200; RRSP</a>
+        <a href="tfsa.html">&#128176; TFSA</a>
+        <a href="resp.html">&#127891; RESP</a>
+        <a href="rdsp.html">&#9855; RDSP</a>
+        <a href="fhsa.html">&#127969; FHSA</a>
+        <a href="non-registered.html">&#128202; Non-Registered</a>
+        <a href="retirement-planning.html">&#127774; Retirement Planning</a>
+      </div>
+    </li>
+    <li><a href="#">Calculators <span class="arr">&#9662;</span></a>
+      <div class="dropdown">
+        <a href="javascript:void(0)" onclick="openCalcModal()">&#128274; Estate Planning Calculator</a>
+        <a href="quotes.html">&#9889; Insurance Quote Tool</a>
+      </div>
+    </li>
+    <li><a href="quotes.html">Get Quotes</a></li>
+    <li><a href="awards.html">Awards</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="tel:6477456850" class="btn-call">&#128222; 647-745-6850</a>
+    <a href="quotes.html" class="btn-quote">&#9889; Get a Quote</a>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</div></nav>
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html" class="mn-item">Home</a>
+  <a href="about.html" class="mn-item">About</a>
+  <span class="mn-item" style="font-weight:700;border-bottom:none;padding-bottom:3px;color:rgba(255,255,255,.5);font-size:13px">INSURANCE</span>
+  <div class="mn-sub">
+    <div class="mn-sec">Visitor &amp; Travel</div>
+    <a href="super-visa.html">&#128706; Super Visa Insurance</a>
+    <a href="visitors.html">&#9992;&#65039; Visitors to Canada</a>
+    <a href="travel-insurance.html">&#127757; Travel Insurance</a>
+    <a href="student-insurance.html">&#127891; International Student</a>
+    <div class="mn-sec">Life Insurance</div>
+    <a href="term-life.html">&#128737;&#65039; Term Life Insurance</a>
+    <a href="whole-life.html">&#127807; Whole Life Insurance</a>
+    <a href="universal-life.html">&#9881;&#65039; Universal Life</a>
+    <a href="mortgage-insurance.html">&#127968; Mortgage Insurance</a>
+    <div class="mn-sec">Living Benefits</div>
+    <a href="critical-illness.html">&#10084;&#65039; Critical Illness</a>
+    <a href="disability.html">&#129466; Disability</a>
+    <a href="drug-dental.html">&#128138; Drug &amp; Dental</a>
+    <div class="mn-sec">Planning</div>
+    <a href="estate-planning.html">&#127981; Estate Planning</a>
+    <a href="business-insurance.html">&#128188; Business Insurance</a>
+  </div>
+  <span class="mn-item" style="font-weight:700;border-bottom:none;padding-bottom:3px;color:rgba(255,255,255,.5);font-size:13px">INVESTMENTS</span>
+  <div class="mn-sub">
+    <a href="rrsp.html">&#128200; RRSP</a>
+    <a href="tfsa.html">&#128176; TFSA</a>
+    <a href="fhsa.html">&#127969; FHSA</a>
+    <a href="resp.html">&#127891; RESP</a>
+    <a href="rdsp.html">&#9855; RDSP</a>
+    <a href="non-registered.html">&#128202; Non-Registered</a>
+    <a href="retirement-planning.html">&#127774; Retirement Planning</a>
+  </div>
+  <a href="quotes.html" class="mn-item">&#9889; Get Quotes</a>
+  <a href="awards.html" class="mn-item">Awards</a>
+  <a href="javascript:void(0)" onclick="openCalcModal()" class="mn-item">&#128274; Estate Calculator</a>
+  <a href="index.html#contact" class="mn-item">Contact</a>
+  <div class="mn-ctas">
+    <a href="tel:6477456850" class="mn-c1">&#128222; Call &mdash; 647-745-6850</a>
+    <a href="quotes.html" class="mn-c2">&#9889; Get Instant Quote</a>
+  </div>
+</div>
+
 <div class="hero">
   <div class="he">Life Insurance &middot; Estate Planning</div>
   <h1>What does your family<br>actually <em>inherit?</em></h1>
@@ -565,479 +777,23 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
     <a href="https://wa.me/16477456850" target="_blank" class="sc-wa">&#128172; WhatsApp</a>
   </div>
 </div>
-  <div style="display:flex;align-items:center;gap:8px">
-    <span style="font-size:10px;color:var(--tl);font-weight:600;letter-spacing:.08em;text-transform:uppercase">Estate complexity</span>
-    <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;background:${D.complexColor}18;color:${D.complexColor}">${D.complexity}</span>
-  </div>
-</div>
-<div class="mg">
-  <div class="mc cn"><div class="ml">You own today</div><div class="mv">${fD(D.totN)}</div><div class="ms">All assets combined</div></div>
-  <div class="mc cg"><div class="ml">Projected in ${D.h} years</div><div class="mv">${fD(D.totF)}</div><div class="ms">At age ${D.p1a+D.h}</div></div>
-  <div class="mc cd"><div class="ml">Taxes &amp; costs</div><div class="mv d">${fD(D.totCosts)}</div><div class="ms">About ${D.pctLost}% of your estate</div></div>
-  <div class="mc cs"><div class="ml">What family gets</div><div class="mv s">${fD(Math.max(0,D.netWIns))}</div><div class="ms">With existing insurance</div></div>
-</div>
-<div style="position:relative;height:180px"><canvas id="growthChart" role="img" aria-label="Bar chart of estate growth">Estate growth chart.</canvas></div>
-<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--tm)">
-  <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#0d1e35BB;display:inline-block"></span>Total estate</span>
-  <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#1a6b3aBB;display:inline-block"></span>To heirs (after taxes + costs)</span>
-</div>`);
 
+<div class="sticky-call"><div class="sticky-call-inner">
+  <a href="tel:6477456850" class="sc-call">&#128222; Call Now</a>
+  <a href="https://wa.me/16477456850" target="_blank" class="sc-wa">&#128172; WhatsApp</a>
+</div></div>
+<div id="calcModal" style="display:none;position:fixed;inset:0;background:rgba(8,15,28,.92);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
+  <div style="background:#122040;border:1px solid rgba(201,150,58,.36);border-radius:16px;padding:36px;max-width:340px;width:92%;text-align:center">
+    <div style="font-size:2.4rem;margin-bottom:12px">&#128274;</div>
+    <div style="font-family:'Fraunces',serif;font-size:1.5rem;font-weight:900;color:#fff;margin-bottom:6px">Advisor Access</div>
+    <div id="calcModalErr" style="color:#f5a0a0;font-size:11px;margin-bottom:8px;display:none">Incorrect code.</div>
+    <input type="password" id="calcPw" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" maxlength="10" style="width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:8px;color:#fff;font-size:20px;font-family:inherit;padding:11px 14px;letter-spacing:.32em;text-align:center;margin-bottom:10px;outline:none" onkeyup="if(event.key==='Enter')doCalcUnlock()">
+    <button onclick="doCalcUnlock()" style="width:100%;background:#c9963a;border:none;border-radius:8px;color:#0d1e35;font-size:14px;font-weight:800;padding:12px;cursor:pointer;font-family:inherit;margin-bottom:8px">Unlock &rarr;</button>
+    <button onclick="document.getElementById('calcModal').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,.32);font-size:11px;cursor:pointer;font-family:inherit">Cancel</button>
+  </div>
+</div>
 
-  // SLIDE 1b — Where estate goes (pie) — inserted as slide 2
-  slides.push(`
-<div class="shd">
-  <div class="stag">The visual breakdown</div>
-  <div class="stitle">Where does your estate <strong>actually go?</strong></div>
-  <div class="ssub">A picture is worth a thousand numbers. Here's how your projected estate splits between your family, the government, and estate costs — at age ${D.p1a+D.h}.</div>
-</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center;margin-bottom:14px">
-  <div style="position:relative;height:200px"><canvas id="pieChart" role="img" aria-label="Pie chart showing estate distribution">Estate pie chart.</canvas></div>
-  <div style="display:flex;flex-direction:column;gap:10px">
-    ${(()=>{
-      const tot=Math.max(1,D.totF+D.namedIns);
-      const heirAmt=Math.max(0,D.netWIns);
-      const segs=[
-        {l:'To your heirs',v:heirAmt,c:'#1a6b3a'},
-        {l:'Income tax (RRSP etc)',v:D.rrspTax,c:'#A32D2D'},
-        {l:'Capital gains tax',v:D.reTax+D.nrTax,c:'#c0392b'},
-        {l:'Probate + legal fees',v:D.probF+D.legFees,c:'#BA7517'},
-        {l:'Funeral expenses',v:D.finE,c:'#888'},
-        {l:'Debts remaining',v:D.debtF,c:'#555'},
-      ].filter(s=>s.v>500);
-      const grandTot=segs.reduce((a,s)=>a+s.v,0)||1;
-      return segs.map(s=>'<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px"><span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:50%;background:'+s.c+';flex-shrink:0"></span><span style="color:var(--tm)">'+s.l+'</span></span><strong style="color:'+s.c+'">'+Math.round(s.v/grandTot*100)+'%</strong></div>').join('');
-    })()}
-  </div>
-</div>
-${D.pctLost>0?`<div class="bighero"><div class="bh-label">Potential estate leakage</div><div class="bh-val danger">${D.pctLost}%</div><div class="bh-sub">Of your projected estate may not reach your family without planning</div></div>`:''}
-`);
-
-  // SLIDE 2 — Score
-  slides.push(`
-<div class="shd">
-  <div class="stag">Estate efficiency score</div>
-  <div class="stitle">Your estate scores <strong>${D.score} out of 100</strong></div>
-  <div class="ssub">Six factors combine into one score: liquidity, probate exposure, tax concentration, beneficiary setup, insurance match, and diversification. Higher means more of your estate reaches your family.</div>
-</div>
-<div class="score-wrap">
-  <div class="sring">
-    <svg viewBox="0 0 110 110">
-      <circle cx="55" cy="55" r="44" fill="none" stroke="#e2d8c8" stroke-width="9"/>
-      <circle cx="55" cy="55" r="44" fill="none" stroke="${sc}" stroke-width="9"
-        stroke-dasharray="${circ.toFixed(1)}" stroke-dashoffset="${dashOff.toFixed(1)}"
-        stroke-linecap="round" transform="rotate(-90 55 55)"/>
-    </svg>
-    <div class="sring-inner"><div class="snum-big" style="color:${sc}">${D.score}</div><div class="sden">/100</div></div>
-  </div>
-  <div class="score-body">
-    <div class="score-title">Estate Efficiency</div>
-    <div class="sgrade sg-${D.grade}">${D.gradeLabel}</div>
-    <div class="sfactors">
-      ${D.factors.map(f=>`<div style="margin-bottom:8px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
-          <span style="font-size:11px;font-weight:600;color:var(--t)">${f.l}</span>
-          <span style="font-size:11px;font-weight:700;color:${f.v>=f.max*0.6?'#1a6b3a':f.v>=f.max*0.3?'#BA7517':'#A32D2D'}">${f.v} / ${f.max}</span>
-        </div>
-        <div class="sfbar" style="height:6px;border-radius:3px"><div class="sffill" style="width:${Math.round(f.v/f.max*100)}%;background:${f.v>=f.max*0.6?'#1a6b3a':f.v>=f.max*0.3?'#BA7517':'#E24B4A'};border-radius:3px"></div></div>
-        <div style="font-size:10px;color:var(--tl);margin-top:2px;line-height:1.4">${f.desc}</div>
-      </div>`).join('')}
-    </div>
-  </div>
-</div>
-<div style="background:#fff;border:1px solid var(--bdr);border-radius:10px;padding:16px 18px;margin-top:14px">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
-    <div style="font-size:12px;font-weight:700;color:var(--navy)">Projection confidence</div>
-    <div style="font-size:12px;font-weight:700;padding:3px 10px;border-radius:10px;background:${D.confColor}22;color:${D.confColor}">${D.confLabel} — ${D.confidence}%</div>
-  </div>
-  <div style="background:var(--bdr);border-radius:4px;height:8px;overflow:hidden;margin-bottom:8px">
-    <div style="width:${D.confidence}%;height:100%;background:${D.confColor};border-radius:4px"></div>
-  </div>
-  <div style="font-size:11px;color:var(--tl);line-height:1.55">${D.confNote}</div>
-  <div style="display:flex;gap:14px;margin-top:8px;font-size:10px;color:var(--tl);flex-wrap:wrap">
-    <span>● High ≥80%: short horizon, liquid estate</span>
-    <span>● Moderate 65–79%: medium-term assumptions</span>
-    <span>● Lower <65%: long horizon or complex assets</span>
-  </div>
-</div>`);
-
-  // SLIDE 3 — Tomorrow
-  slides.push(`
-<div class="shd">
-  <div class="stag">The hard question</div>
-  <div class="stitle">What if something happened <strong>tomorrow?</strong></div>
-  <div class="ssub">Before your investments have time to grow — what would your family actually have right now? This is about cash in hand, not what's on paper.</div>
-</div>
-<div class="tmr">
-  <div class="tmr-title">💭 If everything stopped today...</div>
-  <div class="tmr-grid">
-    <div class="ti good"><div class="ti-lbl">Cash available quickly</div><div class="ti-val">${fD(D.todayLiquid)}</div><div class="ti-sub">TFSA + named insurance</div></div>
-    <div class="ti bad"><div class="ti-lbl">Bills due right away</div><div class="ti-val">${fD(D.todayNeed)}</div><div class="ti-sub">Tax, probate, debts, funeral</div></div>
-    <div class="ti ${D.shortfall>0?'bad':'good'}">
-      <div class="ti-lbl">${D.shortfall>0?'Cash shortfall':'Appears covered'}</div>
-      <div class="ti-val">${D.shortfall>0?fD(D.shortfall):'✓'}</div>
-      <div class="ti-sub">${D.shortfall>0?'Family may need to sell something':''}</div>
-    </div>
-    <div class="ti bad"><div class="ti-lbl">Likely frozen in estate</div><div class="ti-val">${fD(Math.max(0,D.totN-D.todayLiquid))}</div><div class="ti-sub">Could take months to access</div></div>
-  </div>
-</div>
-${D.shortfall>0
-  ? `<div class="ins id"><div class="ins-ic">&#9888;</div><div><div class="ins-t">Near-term cash pressure detected</div><div class="ins-x">Your family may face a cash shortfall covering immediate estate costs — debts, funeral, probate, and early tax demands. This is separate from the longer-term RRSP tax obligation. Life insurance is commonly used to address both: it may provide funds faster than assets going through the estate.</div></div></div>`
-  : D.gap>D.totF*0.05
-    ? `<div class="ins iw"><div class="ins-ic">&#128161;</div><div><div class="ins-t">Near-term liquidity appears manageable — but a long-term tax gap remains</div><div class="ins-x">Your family likely has enough liquid assets to cover immediate costs. However, the projected estate tax obligations at the planning horizon (primarily RRSP) represent a separate, longer-term concern that life insurance can help address.</div></div></div>`
-    : `<div class="ins ig"><div class="ins-ic">&#10003;</div><div><div class="ins-t">Immediate liquidity appears adequate</div><div class="ins-x">Based on current inputs, your family appears positioned to cover near-term estate costs. Review annually as your estate and obligations grow.</div></div></div>`}`);
-
-  // SLIDE 4 — RRSP Tax Bomb
-  slides.push(`
-<div class="shd">
-  <div class="stag">The RRSP surprise</div>
-  <div class="stitle">Your RRSP is <strong>not tax-free</strong> when you die</div>
-  <div class="ssub">Most Canadians are surprised by this. When you pass away, the government treats your entire RRSP as income — all in one year. That can mean a very large tax bill for your family.</div>
-</div>
-<div class="bighero">
-  <div class="bh-label">Your projected RRSP / RRIF at age ${D.p1a+D.h}</div>
-  <div class="bh-val">${fD(D.rrspF)}</div>
-  <div class="bh-sub">Grows sheltered from tax your whole life — but the government collects when you die</div>
-</div>
-<div class="mg" style="margin-top:14px">
-  <div class="mc cd"><div class="ml">Possible tax at death</div><div class="mv d">${fD(D.rrspTax)}</div><div class="ms">At your marginal rate</div></div>
-  <div class="mc cs"><div class="ml">What heirs receive</div><div class="mv s">${fD(Math.max(0,D.rrspF-D.rrspTax))}</div><div class="ms">After the tax is taken</div></div>
-</div>
-${D.hs?`
-<div class="card" style="margin-top:4px">
-  <div class="ch"><div class="ci">💑</div><div><div class="ct">For couples — the "two death" picture</div><div class="cs">Many people think the RRSP goes to the spouse tax-free. It does — but only temporarily.</div></div></div>
-  <div class="casc">
-    <div class="casc-col">
-      <div class="casc-lbl bad">Without a life insurance plan</div>
-      <div class="cstep"><div class="cdot cdn">1</div><div class="cstep-body"><div class="cstep-t">First death</div><div class="cstep-x">RRSP rolls to the surviving spouse — no tax yet</div><div class="cval n">Tax deferred</div></div></div>
-      <div class="cstep"><div class="cdot cdd">2</div><div class="cstep-body"><div class="cstep-t">Second death</div><div class="cstep-x">Now the full RRSP becomes taxable — all at once</div><div class="cval d">${fD(D.rrspTax)} tax bill</div></div></div>
-      <div class="cstep"><div class="cdot cdd">3</div><div class="cstep-body"><div class="cstep-t">What children receive</div><div class="cval d">${fD(Math.max(0,D.rrspF-D.rrspTax))}</div></div></div>
-    </div>
-    <div class="casc-col">
-      <div class="casc-lbl good">With a permanent life policy</div>
-      <div class="cstep"><div class="cdot cdn">1</div><div class="cstep-body"><div class="cstep-t">First death</div><div class="cstep-x">Same — RRSP rolls to spouse</div><div class="cval n">Tax deferred</div></div></div>
-      <div class="cstep"><div class="cdot cdw">2</div><div class="cstep-body"><div class="cstep-t">Second death</div><div class="cstep-x">Tax still due — but insurance arrives to offset it</div><div class="cval d">${fD(D.rrspTax)} tax due</div></div></div>
-      <div class="cstep"><div class="cdot cdg">3</div><div class="cstep-body"><div class="cstep-t">Insurance pays out — tax-free</div><div class="cstep-x">Goes directly to named beneficiaries within weeks</div><div class="cval g">Tax may be covered</div></div></div>
-    </div>
-  </div>
-</div>`:`<div class="ins iw"><div class="ins-ic">💡</div><div><div class="ins-t">Important to know</div><div class="ins-x">Common approaches include converting RRSP funds over time or using insurance to help cover the tax bill for your heirs. The earlier you plan, the more affordable the solution — because insurance costs less when you're younger and healthier.</div></div></div>`}`);
-
-  // SLIDE 5 — Forced sale risk
-  const frc={low:'low',mod:'mod',high:'high'}[D.fsRisk];
-  const fri={low:'🟢',mod:'🟡',high:'🔴'}[D.fsRisk];
-  const frt={low:'Low forced sale risk',mod:'Worth reviewing — moderate risk',high:'High risk — your family may face pressure to sell'}[D.fsRisk];
-  const frx={low:"Your estate has a reasonable mix of liquid and illiquid assets. Your family may face pressure to sell assets quickly.",mod:"A significant portion of your estate is in real estate or business. If taxes are due before liquid assets are available, your heirs could face pressure to sell.",high:"Most of your estate is tied up in property or business — assets that can't be sold overnight. Without enough cash or insurance, your family may face pressure to sell the family home or business at the worst possible time, just to pay a tax bill."}[D.fsRisk];
-  slides.push(`
-<div class="shd">
-  <div class="stag">Cash vs. real assets</div>
-  <div class="stitle">Could your family be forced to <strong>sell something?</strong></div>
-  <div class="ssub">The government needs cash — not your house. If there isn't enough liquid money available when taxes are due, your family may have no choice but to sell.</div>
-</div>
-<div class="fsr ${frc}">
-  <div class="fsr-ic">${fri}</div>
-  <div class="fsr-body">
-    <div class="fsr-lbl">Forced sale risk: ${D.fsRisk.toUpperCase()}</div>
-    <div class="fsr-t">${frt}</div>
-    <div class="fsr-x">${frx}</div>
-  </div>
-</div>
-<div class="card">
-  <div class="ch"><div class="ci">💸</div><div><div class="ct">Where the money needs to come from</div><div class="cs">Projected at age ${D.p1a+D.h}</div></div></div>
-  <table class="liq-tbl">
-    <thead><tr><th>What needs to be paid</th><th style="text-align:right">Estimated amount</th></tr></thead>
-    <tbody>
-      <tr><td>RRSP / RRIF income tax</td><td style="text-align:right;color:var(--r)">${fF(D.rrspTax)}</td></tr>
-      ${D.reTax>500?`<tr><td>Capital gains on real estate</td><td style="text-align:right;color:var(--r)">${fF(D.reTax)}</td></tr>`:''}
-      ${D.nrTax>500?`<tr><td>Capital gains on investments</td><td style="text-align:right;color:var(--r)">${fF(D.nrTax)}</td></tr>`:''}
-      <tr><td>Probate &amp; court fees</td><td style="text-align:right;color:var(--r)">${fF(D.probF)}</td></tr>
-      <tr><td>Legal &amp; executor fees</td><td style="text-align:right;color:var(--r)">${fF(D.legFees)}</td></tr>
-      <tr><td>Funeral &amp; final expenses</td><td style="text-align:right;color:var(--r)">${fF(D.finE)}</td></tr>
-      <tr class="liq-divider"><td><strong>Total cash needed</strong></td><td style="text-align:right"><strong style="color:var(--r)">${fF(D.totCosts)}</strong></td></tr>
-      <tr style="height:4px"></tr>
-      <tr><td>Life insurance (named beneficiary)</td><td style="text-align:right;color:var(--g)">${fF(D.namedIns)}</td></tr>
-      <tr class="liq-divider"><td><strong>${D.gap>0?'Remaining gap':'Appears covered'}</strong></td><td style="text-align:right"><strong style="color:${D.gap>0?'var(--r)':'var(--g)'}">${D.gap>0?fF(D.gap):'✓ Covered'}</strong></td></tr>
-    </tbody>
-  </table>
-</div>`);
-
-  // SLIDE 6 — Probate education
-  slides.push(`
-<div class="shd">
-  <div class="stag">Understanding probate</div>
-  <div class="stitle">Some assets reach your family fast. <strong>Others get frozen.</strong></div>
-  <div class="ssub">Probate is a court process where a judge approves how your estate is divided. It can freeze your assets for months and costs money. The good news — some assets skip it entirely.</div>
-</div>
-<div class="prob-grid">
-  <div class="pc bypass">
-    <div class="pc-title">Goes directly to family — quickly</div>
-    <div class="pi">Life insurance with a named beneficiary</div>
-    <div class="pi">TFSA with a named beneficiary or successor</div>
-    <div class="pi">Seg funds with a named beneficiary</div>
-    <div class="pi">Joint bank accounts</div>
-    <div class="pi">RRSP with a named beneficiary (no spouse)</div>
-  </div>
-  <div class="pc through">
-    <div class="pc-title">Goes through probate — takes time</div>
-    <div class="pi">Sole-owned home or cottage</div>
-    <div class="pi">Corporation shares or business</div>
-    <div class="pi">Investments with no named beneficiary</div>
-    <div class="pi">Bank accounts with no joint owner</div>
-    <div class="pi">TFSA without a named beneficiary</div>
-  </div>
-</div>
-<div class="bighero">
-  <div class="bh-label">Estimated probate fees on your estate</div>
-  <div class="bh-val danger">${fD(D.probF)}</div>
-  <div class="bh-sub">Paid before a single dollar goes to your family — avoidable on many assets simply by naming a beneficiary</div>
-</div>
-<div class="ins ig" style="margin-top:14px">
-  <div class="ins-ic">💡</div>
-  <div><div class="ins-t">One of the easiest wins in estate planning</div><div class="ins-x">Naming a beneficiary on your TFSA, seg funds, or RRSP takes about 10 minutes at your bank or with your advisor — and can save your family months of waiting and thousands in fees.</div></div>
-</div>`);
-
-  // SLIDE 7 — Health check
-  slides.push(`
-<div class="shd">
-  <div class="stag">Your personal health check</div>
-  <div class="stitle">What's working — and <strong>what to look at</strong></div>
-  <div class="ssub">Every estate has strengths and things to improve. Here's your summary based on what you told us.</div>
-</div>
-${D.wins.length>0?`<div class="secl" style="margin-bottom:8px">Things you're doing right</div><div class="chk-list">${D.wins.map(m=>`<div class="chk ${m.type}"><div class="chk-ic">${m.icon}</div><div class="chk-tx">${m.text}</div></div>`).join('')}</div>`:''}
-${D.mistakes.length>0?`<div class="secl" style="margin:16px 0 8px">Worth discussing with an advisor</div><div class="chk-list">${D.mistakes.map(m=>`<div class="chk ${m.type}"><div class="chk-ic">${m.icon}</div><div class="chk-tx">${m.text}</div></div>`).join('')}</div>`:''}
-${D.mistakes.length===0&&D.wins.length>0?`<div class="ins ig" style="margin-top:14px"><div class="ins-ic">🎉</div><div><div class="ins-t">No major gaps found</div><div class="ins-x">Your estate appears reasonably well-structured. Book an annual review to make sure it stays that way as your life changes.</div></div></div>`:''}`);
-
-
-  // SLIDE: Corp module (adaptive — only shown if isCorp)
-  if(D.modCorp){
-  slides.push(`
-<div class="shd">
-  <div class="stag">Business owner module</div>
-  <div class="stitle">Your corporation changes <strong>everything</strong></div>
-  <div class="ssub">Most business owners are surprised by how much corporate structure affects estate outcomes. Here's what's unique to your situation.</div>
-</div>
-${D.cdaCredit>0?`
-<div class="cda-box">
-  <div class="cda-label">Capital Dividend Account (CDA) credit</div>
-  <div class="cda-val">${fD(D.cdaCredit)}</div>
-  <div class="cda-sub">Estimated CDA credit created by corp-owned insurance death benefit.<br>This may allow your corporation to pay a tax-free capital dividend to your estate \u2014 a significant advantage over personally-owned insurance.</div>
-</div>`:''}
-<div class="mg" style="margin-top:14px">
-  <div class="mc cn"><div class="ml">Corp retained earnings</div><div class="mv">${fD(D.corp.retained)}</div><div class="ms">Today's value</div></div>
-  <div class="mc cg"><div class="ml">Projected retained</div><div class="mv">${fD(D.retainedFut)}</div><div class="ms">At ${D.h}-yr horizon</div></div>
-  <div class="mc ${D.buySellGap>0?'cd':'cs'}"><div class="ml">Buy-sell funding gap</div><div class="mv ${D.buySellGap>0?'d':'s'}">${D.buySellGap>0?fD(D.buySellGap):'Funded'}</div><div class="ms">${D.corp.partners>0?'For partner buyout':'Sole owner'}</div></div>
-</div>
-${D.buySellGap>0?`<div class="ins id"><div class="ins-ic">\u26a0\ufe0f</div><div><div class="ins-t">Buy-sell gap: ${fD(D.buySellGap)}</div><div class="ins-x">Without a funded buy-sell agreement, your partners or estate may struggle to complete a buyout at fair value. Corp-owned life insurance is commonly used to fund this obligation \u2014 cleanly and cost-effectively.</div></div></div>`:''}
-${D.keyPersonVal>0?`<div class="ins iw"><div class="ins-ic">\U0001F4BC</div><div><div class="ins-t">Key person risk: approximately ${fD(D.keyPersonVal)}</div><div class="ins-x">Estimated cost to replace or transition your role in the business. Key person insurance held by the corporation can protect business continuity and lender covenants if you're no longer able to work.</div></div></div>`:''}
-<div class="ins ib" style="margin-top:4px">
-  <div class="ins-ic">\u{1F4CB}</div>
-  <div><div class="ins-t">Estate freeze opportunity</div><div class="ins-x">If your business is growing, future value accrues in your estate \u2014 increasing your estate tax exposure over time. An estate freeze is a strategy (implemented with a lawyer and accountant) that locks in today's value in your hands and transfers future growth to the next generation or a trust. Corporate-owned insurance is often used alongside a freeze to cover the residual estate tax.</div></div>
-
-<div class="card" style="margin-top:12px">
-  <div class="ch"><div class="ci">&#128561;</div><div><div class="ct">At-death obligations — all at once</div><div class="cs">An owner\'s death triggers multiple simultaneous financial demands on the estate</div></div></div>
-  <table style="width:100%;border-collapse:collapse;font-size:12px">
-    <thead><tr style="border-bottom:1px solid var(--bdr)"><th style="padding:0 8px 10px;text-align:left;font-size:10px;font-weight:700;color:var(--tl);letter-spacing:.06em;text-transform:uppercase">Obligation</th><th style="padding:0 8px 10px;text-align:right;font-size:10px;font-weight:700;color:var(--tl);letter-spacing:.06em;text-transform:uppercase">Estimated exposure</th><th style="padding:0 8px 10px;text-align:left;font-size:10px;font-weight:700;color:var(--tl);letter-spacing:.06em;text-transform:uppercase">Solution</th></tr></thead>
-    <tbody>
-      <tr style="border-bottom:1px solid var(--cream)"><td style="padding:9px 8px">Capital gains on business shares</td><td style="padding:9px 8px;text-align:right;color:var(--r);font-weight:700">${fD(D.bizTax)}</td><td style="padding:9px 8px;color:var(--g);font-size:11px">&#10003; Corp or personal life policy</td></tr>
-      <tr style="border-bottom:1px solid var(--cream)"><td style="padding:9px 8px">RRSP / RRIF income tax</td><td style="padding:9px 8px;text-align:right;color:var(--r);font-weight:700">${fD(D.rrspTax)}</td><td style="padding:9px 8px;color:var(--g);font-size:11px">&#10003; Permanent life policy</td></tr>
-      ${D.buySellGap>0?'<tr style="border-bottom:1px solid var(--cream)"><td style="padding:9px 8px">Partner buyout obligation</td><td style="padding:9px 8px;text-align:right;color:var(--r);font-weight:700">'+fD(D.buySellGap)+'</td><td style="padding:9px 8px;color:var(--g);font-size:11px">&#10003; Corp-owned buy-sell policy</td></tr>':''}
-      ${D.keyPersonVal>0?'<tr style="border-bottom:1px solid var(--cream)"><td style="padding:9px 8px">Key person / transition cost</td><td style="padding:9px 8px;text-align:right;color:var(--r);font-weight:700">'+fD(D.keyPersonVal)+'</td><td style="padding:9px 8px;color:var(--g);font-size:11px">&#10003; Corp key person policy</td></tr>':''}
-      <tr style="border-top:2px solid var(--bdr)"><td style="padding:10px 8px;font-weight:700">Total business-related exposure</td><td style="padding:10px 8px;text-align:right;font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--r)">${fD(D.bizTax+D.rrspTax+(D.buySellGap||0)+(D.keyPersonVal||0))}</td><td style="padding:10px 8px"></td></tr>
-    </tbody>
-  </table>
-  <div class="ins ib" style="margin-top:10px"><div class="ins-ic">&#128161;</div><div><div class="ins-t">Corporate-owned insurance may be well-positioned here</div><div class="ins-x">A single corp-owned permanent policy can fund multiple obligations simultaneously: it creates a CDA credit for tax-free dividends, it funds the buy-sell, and it protects against key person loss \u2014 often at lower after-tax cost than personally-owned coverage.</div></div></div>
-</div>
-</div>
-`);}
-
-    // SLIDE: Per-asset breakdown
-  slides.push(`
-<div class="shd">
-  <div class="stag">Asset by asset</div>
-  <div class="stitle">What each asset <strong>becomes — and what gets taxed</strong></div>
-  <div class="ssub">Each asset grows differently and faces a different tax outcome at death. Here is your complete picture at age ${D.p1a+D.h}.</div>
-</div>
-<div style="display:flex;flex-direction:column;gap:10px">
-${(()=>{
-  const tax=+document.getElementById('taxRate')?.value/100||0.43;
-  const assets=[
-    {n:'Primary residence',now:D.reN,fut:D.reF,fut:D.reF>0?D.reF:0,tx:0,tl:'Tax-free',col:'#1a6b3a',ic:'&#127968;',note:'No capital gains tax on your primary home.'},
-    {n:D.p1n+"\'s RRSP / RRIF",now:D.rr1N,fut:D.rr1F,tx:D.rr1F*tax,tl:'100% taxable as income',col:'#A32D2D',ic:'&#128200;',note:'Entire balance is taxable income in the year of death. With a spouse, deferred to second death — not avoided. If held inside a seg fund contract, the same RRSP tax rules apply — the seg fund adds creditor protection and death guarantees, but does not change the tax treatment at death.'},
-    {n:D.hs?D.p2n+"\'s RRSP / RRIF":'',now:D.rr2N,fut:D.rr2F,tx:D.rr2F*tax,tl:'100% taxable — deferred to 2nd death',col:'#A32D2D',ic:'&#128200;',note:'Rolls to surviving spouse. Fully taxable on second death.'},
-    {n:D.p1n+"\'s TFSA",now:D.tf1N,fut:D.tf1F,tx:0,tl:'Tax-free (if beneficiary named)',col:'#1a6b3a',ic:'&#128176;',note:'Always tax-free. Name a beneficiary or successor holder to also bypass probate.'},
-    {n:D.hs?D.p2n+"\'s TFSA":'',now:D.tf2N,fut:D.tf2F,tx:0,tl:'Tax-free (if beneficiary named)',col:'#1a6b3a',ic:'&#128176;',note:''},
-    {n:'Investments / seg funds',now:D.nrN,fut:D.nrF,tx:D.nrTax,tl:'Capital gains (50% inclusion)',col:'#BA7517',ic:'&#128202;',note:'Capital gains triggered at death. Seg funds with named beneficiaries bypass probate.'},
-    {n:'Business interest',now:D.bizN,fut:D.bizF,tx:D.bizTax,tl:'Capital gains (LCGE $1.275M may apply)',col:'#7a3e00',ic:'&#127970;',note:'LCGE of $1,275,000 (2026) may offset gains on qualifying shares. Requires professional planning.'},
-    {n:'Cottage / rental property',now:D.reTax>100?Math.round(D.reTax/0.5/0.43):0,fut:D.reTax>100?Math.round(D.reTax/0.5/0.43)+Math.round(D.reTax):0,tx:D.reTax,tl:'Capital gains (50% inclusion, 2026)',col:'#BA7517',ic:'&#127963;',note:'Capital gains on cottages and rental properties triggered at death. Probate applies unless held jointly.'},
-  ].filter(a=>a.now>0&&a.n);
-  return assets.map(a=>{
-    const pctT=a.fut>0?Math.min(99,Math.round(a.tx/a.fut*100)):0;
-    const pctH=100-pctT;
-    return '<div style="background:#fff;border:1px solid var(--bdr);border-radius:10px;padding:14px 16px">'
-      +'<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:8px;flex-wrap:wrap">'
-      +'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:1.2rem">'+a.ic+'</span>'
-      +'<div><div style="font-size:13px;font-weight:700;color:var(--navy)">'+a.n+'</div>'
-      +'<div style="font-size:10px;font-weight:700;color:'+a.col+';letter-spacing:.04em;text-transform:uppercase">'+a.tl+'</div></div></div>'
-      +'<div style="text-align:right"><div style="font-size:10px;color:var(--tl)">Today: '+fD(a.now)+'</div>'
-      +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.3rem;font-weight:700;color:var(--navy)">'+fD(a.fut)+'</div></div></div>'
-      +(a.fut>0?'<div style="display:flex;height:12px;border-radius:6px;overflow:hidden;margin-bottom:6px">'
-      +'<div style="flex:'+pctH+';background:#1a6b3a" title="To heirs"></div>'
-      +(pctT>0?'<div style="flex:'+pctT+';background:'+a.col+'" title="Potential tax"></div>':'')
-      +'</div>'
-      +'<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--tl);margin-bottom:'+(a.note?'8':'2')+'px">'
-      +'<span style="color:#1a6b3a">&#10003; To heirs ~'+pctH+'% ('+fD(Math.round(a.fut*(pctH/100)))+')</span>'
-      +(pctT>0?'<span style="color:'+a.col+'">Potential tax ~'+pctT+'% ('+fD(a.tx)+')</span>':'<span style="color:#1a6b3a">No tax</span>')
-      +'</div>':'')+(a.note?'<div style="font-size:11px;color:var(--tl);line-height:1.5;border-top:1px solid var(--cream);padding-top:7px">'+a.note+'</div>':'')
-      +'</div>';
-  }).join('');
-})()}
-</div>
-<div class="ins ib" style="margin-top:12px"><div class="ins-ic">&#128161;</div>
-<div><div class="ins-t">The bar shows the estimated tax split</div>
-<div class="ins-x">Green = likely reaches your heirs. Coloured portion = potential tax obligation. These are estimates based on your inputs — actual amounts depend on tax rates at death, deductions, and estate structure. Life insurance is commonly used to fund the tax portion so heirs receive the full intended value. <strong>Note on seg funds:</strong> RRSP or TFSA accounts held inside segregated fund contracts follow the same tax rules as regular RRSPs and TFSAs — the seg fund wrapper adds creditor protection and death/maturity guarantees, but does not change the tax treatment. Beneficiaries are NOT automatically named — you must actively designate them on each account regardless of account type.</div></div></div>`);
-
-  // SLIDE 7b — Sensitivity + Concentration (inserted as new slide 7)
-  const sensBases=[0.04,0.06,0.08];
-  const sensLabels=['Conservative (4%/yr)','Moderate (6%/yr)','Aggressive (8%/yr)'];
-  const sensEst=sensBases.map(r=>{
-    const yRrsp=cpd(D.rr1N+D.rr2N,r*100,D.h,18000);
-    const yRe=cpd(D.reN||0,r*100*0.7,D.h);
-    const yNr=cpd(D.nrN,r*100,D.h);
-    const yTf=cpd(D.tf1N+D.tf2N,r*100,D.h,7000);
-    return Math.round((yRrsp+yRe+yNr+yTf+D.bizN)/1000);
-  });
-  const topEst=sensEst[2]*1000;
-  slides.push(`
-<div class="shd">
-  <div class="stag">Stress testing your plan</div>
-  <div class="stitle">What if growth is <strong>faster or slower</strong> than expected?</div>
-  <div class="ssub">These projections assume a constant growth rate — real life varies. Here's how your estate could look under three different scenarios.</div>
-</div>
-<div class="card">
-  <div class="ch"><div class="ci">&#128200;</div><div><div class="ct">Estate size at age ${D.p1a+D.h} — three growth scenarios</div><div class="cs">Illustrative only — actual returns will vary year to year</div></div></div>
-  ${sensLabels.map((lbl,i)=>{
-    const pct=Math.round(sensEst[i]/sensEst[2]*90);
-    const barColor=i===0?'#888':i===1?'#185FA5':'#1a6b3a';
-    return '<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span style="color:var(--tm)">'+lbl+'</span><strong style="color:var(--navy)">$'+sensEst[i]+'K</strong></div><div style="background:var(--bdr);border-radius:4px;height:20px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:'+barColor+';border-radius:4px;transition:width .6s"></div></div></div>';
-  }).join('')}
-  <div class="ins ib" style="margin-top:4px"><div class="ins-ic">&#128161;</div><div><div class="ins-t">Why this matters for insurance planning</div><div class="ins-x">A higher-performing estate means a larger RRSP tax bill at death. A lower-performing estate may still have liquidity gaps. The right coverage adapts to the range, not just the middle estimate.</div></div></div>
-</div>
-<div class="card" style="margin-top:0">
-  <div class="ch"><div class="ci">&#128993;</div><div><div class="ct">Where your estate tax risk comes from</div><div class="cs">Tax concentration at age ${D.p1a+D.h} — projected figures</div></div></div>
-  <div style="display:flex;height:20px;border-radius:10px;overflow:hidden;gap:2px;margin-bottom:12px">
-    ${(()=>{const tot=Math.max(1,D.rrspTax+D.reTax+D.nrTax);const segs=[{l:'RRSP / RRIF tax',v:D.rrspTax,c:'#A32D2D'},{l:'Real estate capital gains',v:D.reTax,c:'#185FA5'},{l:'Investment gains',v:D.nrTax,c:'#c9963a'}].filter(s=>s.v>0);return segs.map(s=>'<div style="flex:'+(s.v/tot).toFixed(3)+';background:'+s.c+'" title="'+s.l+'"></div>').join('');})()}
-  </div>
-  <div style="display:flex;flex-direction:column;gap:8px">
-    ${(()=>{const tot=Math.max(1,D.rrspTax+D.reTax+D.nrTax);const segs=[{l:'RRSP / RRIF income tax',v:D.rrspTax,c:'#A32D2D'},{l:'Real estate capital gains',v:D.reTax,c:'#185FA5'},{l:'Investment gains',v:D.nrTax,c:'#c9963a'}].filter(s=>s.v>0);return segs.map(s=>'<div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;padding:8px 10px;background:var(--cream);border-radius:6px"><span style="display:flex;align-items:center;gap:7px"><span style="width:10px;height:10px;border-radius:50%;background:'+s.c+';flex-shrink:0"></span>'+s.l+'</span><span style="font-weight:700;color:'+s.c+'">'+fD(s.v)+' ('+Math.round(s.v/tot*100)+'%)</span></div>').join('');})()}
-  </div>
-</div>
-<div class="card" style="margin-top:0">
-  <div class="ch"><div class="ci">&#128221;</div><div><div class="ct">Assumptions used in this illustration</div><div class="cs">Tap to see what this tool assumes</div></div></div>
-  <details style="font-size:12px;color:var(--tm);line-height:1.7">
-    <summary style="cursor:pointer;font-weight:600;color:var(--navy);padding:4px 0;list-style:none;display:flex;align-items:center;gap:6px">&#9660; View assumptions</summary>
-    <div style="margin-top:10px;padding:12px 14px;background:var(--cream);border-radius:8px">
-      <div style="margin-bottom:6px"><strong>Growth:</strong> Constant annual rate applied to all assets — real returns vary each year and are not guaranteed.</div>
-      <div style="margin-bottom:6px"><strong>Tax rates:</strong> Simplified approximations based on your input rate. Actual tax depends on income in the year of death, deductions, and other factors.</div>
-      <div style="margin-bottom:6px"><strong>Capital gains:</strong> 50% inclusion rate confirmed for 2026. Legislative changes may occur.</div>
-      <div style="margin-bottom:6px"><strong>Probate:</strong> Simplified percentage of estate — actual fees depend on province, estate structure, and assets involved.</div>
-      <div style="margin-bottom:6px"><strong>Inflation:</strong> ${"future".includes('today') ? 'Figures shown as projected nominal values — actual future dollar amounts at the growth rates entered.' : 'Figures shown as projected nominal values — actual future dollar amounts at the growth rates entered.'}</div>
-      <div style="margin-bottom:6px"><strong>Not included:</strong> Long-term care costs, nursing home expenses, inflation-adjusted tax brackets, legislative changes, estate equalization complexity.</div>
-      <div><strong>Purpose:</strong> Educational illustration for insurance planning discussions — not financial, tax, or legal advice.</div>
-    </div>
-  </details>
-</div>`);
-
-  // SLIDE 7c -- Easy wins
-  slides.push(`
-<div class="shd">
-  <div class="stag">Your next steps</div>
-  <div class="stitle"><strong>Easy wins</strong> before we talk products</div>
-  <div class="ssub">Many estate planning improvements cost nothing and take minutes. Here’s what would make the biggest difference for your specific situation.</div>
-</div>
-<div style="display:flex;flex-direction:column;gap:10px">
-  ${D.easyWins.map(w=>`<div style="background:#fff;border:1px solid var(--bdr);border-radius:10px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start">
-    <div style="font-size:1.4rem;flex-shrink:0;line-height:1.2">${w.icon}</div>
-    <div style="flex:1">
-      <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:3px">${w.action}</div>
-      <div style="font-size:12px;color:var(--tm);line-height:1.55;margin-bottom:6px">${w.why}</div>
-      <div style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--tl)">${w.effort}</div>
-    </div>
-  </div>`).join('')}
-</div>
-<div class="ins ig" style="margin-top:14px">
-  <div class="ins-ic">&#128203;</div>
-  <div><div class="ins-t">Advisor-first approach</div><div class="ins-x">These improvements are worth doing regardless of what insurance you choose. A well-structured estate plan works across all strategies — coverage is one important piece.</div></div>
-</div>`);
-
-    // SLIDE 8 — Options
-  slides.push(`
-<div class="shd">
-  <div class="stag">Your options</div>
-  <div class="stitle">Three ways to <strong>protect what you've built</strong></div>
-  <div class="ssub">There's no single right answer — it depends on your goals, budget, and health. All numbers below are illustrative estimates only, subject to underwriting and individual health assessment.</div>
-</div>
-<div class="sc-grid">
-  <div class="sc term">
-    <div class="sc-badge">Term Life</div>
-    <div class="sc-t">Lowest cost, time-limited</div>
-    <div class="sc-est">Illustrative estimate only</div>
-    <div class="sc-prem">${fD(D.pTerm)}<span style="font-size:13px;font-weight:400">/yr</span></div>
-    <div class="sc-sub">Preliminary · subject to underwriting &amp; health</div>
-    <ul class="sc-pros">
-      <li>Lowest annual cost</li>
-      <li>Tax-free payout to named beneficiaries</li>
-      <li>Good for specific time windows</li>
-      <li class="con">Coverage expires — may not last the full horizon</li>
-      <li class="con">No value if you outlive the term</li>
-    </ul>
-    <a href="tel:6477456850" class="sc-cta">📞 Book a free conversation</a>
-  </div>
-  <div class="sc perm">
-    <div class="sc-badge">Permanent Life</div>
-    <div class="sc-t">Guaranteed for life</div>
-    <div class="sc-est">Illustrative estimate only</div>
-    <div class="sc-prem">${fD(D.pPerm)}<span style="font-size:13px;font-weight:400">/yr</span></div>
-    <div class="sc-sub">Preliminary · subject to underwriting &amp; health</div>
-    <ul class="sc-pros">
-      <li>Coverage never expires</li>
-      <li>Locks in your health rating today</li>
-      <li>Builds cash value over time</li>
-      <li>Best for RRSP tax &amp; leaving a legacy</li>
-      <li class="con">Higher annual cost than term</li>
-    </ul>
-    <a href="tel:6477456850" class="sc-cta">📞 Book a free conversation</a>
-  </div>
-  <div class="sc seg">
-    <div class="sc-badge">Seg Funds</div>
-    <div class="sc-t">Invest + protect together</div>
-    <div class="sc-est">Illustrative deposit estimate</div>
-    <div class="sc-prem">${fD(D.pSeg)}<span style="font-size:13px;font-weight:400">/yr</span></div>
-    <div class="sc-sub">Illustrative deposit only · not a premium</div>
-    <ul class="sc-pros">
-      <li>75–100% principal guarantee on deposits</li>
-      <li>Bypasses probate with named beneficiary</li>
-      <li>Potential for investment growth</li>
-      <li>Potential creditor protection</li>
-      <li class="con">Returns are market-linked, not guaranteed</li>
-    </ul>
-    <a href="tel:6477456850" class="sc-cta">📞 Book a free conversation</a>
-  </div>
-</div>
-<div class="cta-strip">
-  <div class="cta-tx">
-    <div class="cta-n">Want a licensed advisor to review this?</div>
-    <div class="cta-d">Rattan Amol Taggar · Life Insurance Advisor · Access to 25+ Canadian insurers<br>Licensed: ON · AB · BC · MB · SK · NB · PEI · NS · 400+ Google Reviews</div>
-  </div>
-  <div class="cta-ac">
-    <a href="tel:6477456850" class="cta-ph">📞 647-745-6850</a>
-    <div class="cta-bs">
-      <a href="tel:6477456850" class="cbp">Book Free Review</a>
-      <a href="https://wa.me/16477456850" class="cbs">💬 WhatsApp</a>
-    </div>
-  </div>
-</div>
-<div class="discl">This tool provides educational illustrations for insurance planning discussions only. All figures are estimates based on your inputs — not financial, tax, or legal advice. Capital gains inclusion rate reflects confirmed 2026 Canadian law (50% — proposed 66.67% increase was cancelled March 21, 2025). All premium and deposit estimates are preliminary and illustrative only — subject to underwriting, carrier selection, and individual health. Rattan Amol Taggar is a licensed life insurance advisor (HLLQP), not a financial planner, tax advisor, or lawyer.</div>`);
-
-  return slides;
-}
+<script>
 
 function buildDots(){
   const dc=document.getElementById('dotsArea');dc.innerHTML='';
