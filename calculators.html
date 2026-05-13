@@ -121,12 +121,12 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
 .page-hero h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4vw,3rem);font-weight:900;color:#fff;line-height:1.1;letter-spacing:-.02em;margin-bottom:12px}
 .page-hero p{font-size:16px;color:rgba(255,255,255,.6);line-height:1.75;max-width:560px}
 /* Calc wrapper */
-.calc-wrapper{max-width:1100px;margin:0 auto;padding:48px 40px}
+.calc-wrapper{max-width:1100px;margin:0 auto;padding:0 40px 48px}
 
-.calc-tabs{border-bottom:2px solid var(--border,#e5e7eb);margin-bottom:32px;display:flex;gap:4px;flex-wrap:wrap}
-.calc-tab{background:none;border:none;padding:10px 18px;font-size:13.5px;font-weight:600;color:var(--mid,#6b7280);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;font-family:'Bricolage Grotesque',sans-serif;border-radius:8px 8px 0 0}
-.calc-tab:hover{color:var(--navy,#0d1e35);background:rgba(13,30,53,.06)}
-.calc-tab.active{color:var(--navy,#0d1e35);border-bottom-color:var(--gold,#c9963a);font-weight:700}
+.calc-tabs{background:#0d1e35;padding:0 8px;margin-bottom:0;display:flex;gap:2px;flex-wrap:wrap;border-radius:10px 10px 0 0;border-bottom:2px solid rgba(201,150,58,.3)}
+.calc-tab{background:none;border:none;padding:12px 18px;font-size:13px;font-weight:600;color:rgba(255,255,255,.55);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;font-family:'Bricolage Grotesque',sans-serif;white-space:nowrap}
+.calc-tab:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.06)}
+.calc-tab.active{color:#fff;border-bottom-color:#c9963a;font-weight:700;background:rgba(255,255,255,.08)}
 /* Breadcrumb */
 .breadcrumb{padding:13px 56px;background:var(--off,#f8fafc);font-size:12.5px;color:var(--mid,#6b7280);border-bottom:1px solid var(--border,#e5e7eb)}
 .breadcrumb a{color:var(--navy,#0d1e35);font-weight:500;text-decoration:none}
@@ -518,12 +518,12 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
   </div>
 </div>
 
-<div class="calc-wrapper">
+<div class="calc-wrapper" style="padding-top:48px">
   <div class="calc-tabs">
-  <button class="calc-tab active" onclick="switchTab('sip')">&#128200; Investment Calculator</button>
-  <button class="calc-tab" onclick="switchTab('resp')">&#127464;&#127462; RESP Calculator</button>
-  <button class="calc-tab" onclick="switchTab('goal')">&#127919; Goal Planner</button>
-  <button class="calc-tab" onclick="switchTab('swp')">&#128185; Withdrawal Planner</button>
+  <button class="calc-tab active" onclick="switchTab('sip',this)">&#128200; Investment Calculator</button>
+  <button class="calc-tab" onclick="switchTab('resp',this)">&#127464;&#127462; RESP Calculator</button>
+  <button class="calc-tab" onclick="switchTab('goal',this)">&#127919; Goal Planner</button>
+  <button class="calc-tab" onclick="switchTab('swp',this)">&#128185; Withdrawal Planner</button>
 </div>
   <div class="calc-panel active" id="panel-sip">
   <div class="panel-title">Investment Calculator</div>
@@ -1149,9 +1149,9 @@ document.addEventListener('click',function(e){
 });
 
 var respInitialized = false;
-function switchTab(id){
+function switchTab(id,btn){
   document.querySelectorAll('.calc-tab').forEach((t,i)=>t.classList.remove('active'));
-  event.target.classList.add('active');
+  if(btn)btn.classList.add('active');
   document.querySelectorAll('.calc-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
   // Init RESP on first open
