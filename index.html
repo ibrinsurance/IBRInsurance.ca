@@ -150,7 +150,7 @@ h1 .italic{font-style:italic;color:var(--gl);display:block}
 .qah.open .qaarr{transform:rotate(180deg);color:var(--navy)}
 .qab{display:none;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-top:none;border-radius:0 0 9px 9px;overflow:hidden}
 .qab.open{display:block}
-.qrow{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;font-size:13px;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.05);transition:background .15s;text-decoration:none}
+.qrow{pointer-events:all;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;font-size:13px;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.05);transition:background .15s;text-decoration:none}
 .qrow:last-child{border-bottom:none}
 .qrow:hover{background:rgba(255,255,255,.1);color:#fff}
 .qrow span{font-size:10px;color:var(--gl);font-weight:800}
@@ -310,11 +310,11 @@ h1 .italic{font-style:italic;color:var(--gl);display:block}
   body{padding-bottom:76px}
   .hero{grid-template-columns:1fr;padding:44px 16px 0;gap:0}
   .hr{display:block;border-radius:12px;margin:0 0 36px;padding:20px 16px}
-  .hl{padding-bottom:36px}
+  .hl{padding-bottom:36px;text-align:center}
   h1{font-size:clamp(2rem,8vw,2.8rem);line-height:1.05}
   .hero-tag{font-size:10px;padding:6px 12px;margin-bottom:16px}
   .hdesc{font-size:15px;margin:14px 0 22px;line-height:1.68}
-  .hbtns{flex-direction:column;gap:9px}
+  .hbtns{flex-direction:column;gap:9px;align-items:center}
   .hb1,.hb2,.hb3{width:100%;justify-content:center;padding:13px 16px;font-size:15px}
   .htrust{gap:10px;flex-wrap:wrap}
   .ht{font-size:11px}
@@ -507,7 +507,7 @@ h1 .italic{font-style:italic;color:var(--gl);display:block}
     <div class="qp-h">Get a Quote</div>
     <div class="qp-s">Select a product to get started</div>
     <div class="qa">
-      <div class="qah" onclick="this.classList.toggle('open');var n=this.nextElementSibling;n.classList.toggle('open')">
+      <div class="qah">
         <div class="qal">&#9992;&#65039; Visitor &amp; Travel</div><span class="qaarr">&#9660;</span>
       </div>
       <div class="qab">
@@ -518,7 +518,7 @@ h1 .italic{font-style:italic;color:var(--gl);display:block}
       </div>
     </div>
     <div class="qa">
-      <div class="qah" onclick="this.classList.toggle('open');var n=this.nextElementSibling;n.classList.toggle('open')">
+      <div class="qah">
         <div class="qal">&#128737;&#65039; Life Insurance</div><span class="qaarr">&#9660;</span>
       </div>
       <div class="qab">
@@ -529,7 +529,7 @@ h1 .italic{font-style:italic;color:var(--gl);display:block}
       </div>
     </div>
     <div class="qa">
-      <div class="qah" onclick="this.classList.toggle('open');var n=this.nextElementSibling;n.classList.toggle('open')">
+      <div class="qah">
         <div class="qal">&#10084;&#65039; Living Benefits</div><span class="qaarr">&#9660;</span>
       </div>
       <div class="qab">
@@ -539,7 +539,7 @@ h1 .italic{font-style:italic;color:var(--gl);display:block}
       </div>
     </div>
     <div class="qa">
-      <div class="qah" onclick="this.classList.toggle('open');var n=this.nextElementSibling;n.classList.toggle('open')">
+      <div class="qah">
         <div class="qal">&#127981; Estate &amp; Investments</div><span class="qaarr">&#9660;</span>
       </div>
       <div class="qab">
