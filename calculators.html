@@ -443,6 +443,13 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
 
 <style id="ibr-dropdown-fix">
 
+@media(max-width:960px){
+  div.topbar:first-of-type{display:none!important}
+  nav .btn-call,.nav-menu,.btn-quote{display:none!important}
+  .hamburger{display:flex!important}
+}
+
+
 /* ── Topbar: match homepage ── */
 div.topbar:first-of-type{display:flex!important;background:#0d1e35!important;padding:8px 56px!important;font-size:11.5px!important;color:rgba(255,255,255,.65)!important;font-family:'Bricolage Grotesque',sans-serif!important;border-bottom:1px solid rgba(201,150,58,.2)!important;min-height:auto!important;position:static!important;z-index:auto!important}
 div.topbar:first-of-type a{color:rgba(255,255,255,.65)!important;text-decoration:none!important;font-size:11.5px!important}
@@ -552,7 +559,8 @@ footer .fbot span{color:rgba(255,255,255,.28)!important}
     <li><a href="#">Calculators <span class="arr">&#9662;</span></a>
       <div class="dropdown">
         <a href="javascript:void(0)" onclick="openCalcModal()">&#128274; Estate Planning Calculator</a>
-        <a href="quotes.html">&#9889; Insurance Quote Tool</a>
+        <a href="calculators.html">&#129518; Investment Calculators</a>
+        <a href="needs-analysis.html">&#128221; Needs Analysis</a>
       </div>
     </li>
     <li><a href="quotes.html">Get Quotes</a></li>
@@ -601,6 +609,8 @@ footer .fbot span{color:rgba(255,255,255,.28)!important}
   <a href="quotes.html" class="mn-item">&#9889; Get Quotes</a>
   <a href="awards.html" class="mn-item">Awards</a>
   <a href="javascript:void(0)" onclick="openCalcModal()" class="mn-item">&#128274; Estate Calculator</a>
+  <a href="calculators.html" class="mn-item">&#129518; Investment Calculators</a>
+  <a href="needs-analysis.html" class="mn-item">&#128221; Needs Analysis</a>
   <a href="index.html#contact" class="mn-item">Contact</a>
   <div class="mn-ctas">
     <a href="tel:6477456850" class="mn-c1">&#128222; Call &mdash; 647-745-6850</a>
