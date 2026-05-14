@@ -1,29 +1,351 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Financial Calculators | Rattan Amol Taggar | IBR Insurance</title>
-<meta name="description" content="Free financial calculators — investment growth, RESP, goal planner, and withdrawal planner. Built for Canadian investors by Rattan Amol Taggar."/>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400&family=Bricolage+Grotesque:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Free Financial Calculators | Rattan Amol Taggar | IBR Insurance</title>
+<meta name="description" content="Free investing calculators for Canadians — monthly SIP calculator, lump sum compound growth, goal planner, withdrawal calculator, CAGR calculator, and covered call options income estimator.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ibrinsurance.ca/calculators.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="IBR Insurance">
+<meta property="og:title" content="Free Investing Calculators — IBR Insurance">
+<meta property="og:description" content="Free investing calculators — compound growth, monthly SIP, goal planner, withdrawal planning, CAGR, and covered call options income. Built for long-term investors.">
+<meta property="og:image" content="https://ibrinsurance.ca/og-community.jpg">
+<meta property="og:url" content="https://ibrinsurance.ca/calculators.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@IBR Insurance">
+<meta name="twitter:title" content="Free Investing Calculators — IBR Insurance">
+<meta name="twitter:description" content="Free investing calculators — compound growth, SIP, goal planner, withdrawal, CAGR, and covered call income. Built for long-term investors.">
+<meta name="twitter:image" content="https://ibrinsurance.ca/og-community.jpg">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Free Investing Calculators — IBR Insurance",
+  "description": "Free investing calculators for compound growth, monthly SIP, goal planning, withdrawal, CAGR, and covered call options income estimation.",
+  "url": "https://ibrinsurance.ca/calculators.html",
+  "author": {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Rattan Amol Taggar",
+    "url": "https://ibrinsurance.ca"
+  }
+}
+</script>
+<script>const PF_MONTHLY_CODE = "PF-APR-2026";</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:18px;-webkit-text-size-adjust:100%}
+body{font-family:'DM Sans',sans-serif;background:#f4f2ee;color:#1a1a1a;line-height:1.6;min-height:100vh}
 
+/* ── TOPBAR ── */
+.topbar{background:#111009;padding:0 24px;display:flex;align-items:center;border-bottom:1px solid rgba(212,165,52,0.15);min-height:58px;position:sticky;top:0;z-index:100;gap:12px;width:100%;box-sizing:border-box}
+.wm-link{text-decoration:none;display:flex;align-items:center;padding-right:20px;border-right:1px solid rgba(212,165,52,0.12);flex-shrink:0}
+.wm-name{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:800;color:#fff;letter-spacing:-0.01em;line-height:1}
+.wm-gold{color:#d4a534}
+.topbar-nav{display:flex;align-items:center;gap:2px;flex:1}
+.nav-btn{display:inline-flex;align-items:center;color:rgba(255,255,255,0.5);font-size:0.67rem;font-weight:500;letter-spacing:0.04em;padding:7px 12px;border-radius:7px;text-decoration:none;border:1px solid transparent;white-space:nowrap;transition:all .15s}
+.nav-btn:hover{background:rgba(212,165,52,0.1);color:#d4a534;border-color:rgba(212,165,52,0.2)}
+.nav-btn.active{color:#d4a534;border-color:rgba(212,165,52,0.2);background:rgba(212,165,52,0.08)}
+.nav-dropdown .nav-btn{font-size:0.89rem;padding:12px 14px;border-radius:9px;width:100%;letter-spacing:0.02em}
+.topbar-right-btns{display:none;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}
+.topbar-mobile-btn{display:inline-flex;align-items:center;font-size:0.75rem;font-weight:700;padding:8px 16px;border-radius:8px;text-decoration:none;white-space:nowrap;transition:all .15s}
+.topbar-mobile-btn.join{color:#1a9e50;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.25)}
+.ham-btn{display:flex;flex-direction:column;justify-content:center;gap:5px;cursor:pointer;padding:10px 12px;border:1px solid rgba(212,165,52,0.35);background:rgba(212,165,52,0.1);border-radius:8px;flex-shrink:0}
+.ham-btn:hover{background:rgba(212,165,52,0.2);border-color:rgba(212,165,52,0.5)}
+.ham-line{width:24px;height:2.5px;background:#d4a534;border-radius:2px;transition:all .25s;display:block}
+.ham-btn.open .ham-line:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.ham-btn.open .ham-line:nth-child(2){opacity:0;transform:scaleX(0)}
+.ham-btn.open .ham-line:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.nav-dropdown{display:none;position:fixed;top:58px;left:0;right:0;background:#111009;border-bottom:1px solid rgba(212,165,52,0.15);z-index:99;padding:8px 16px 14px;flex-direction:column;gap:3px;box-shadow:0 8px 32px rgba(0,0,0,0.5)}
+.nav-dropdown.open{display:flex}
+@media(max-width:720px){.topbar-nav{display:none}.topbar-right-btns{display:flex}}
+@media(max-width:480px){.topbar{padding:0 14px;gap:8px}.wm-link{padding-right:14px}}
+@media(max-width:360px){.topbar-mobile-btn{display:none!important}}
+
+/* ── HERO ── */
+.hero{background:#0d0b04;padding:clamp(44px,6vw,72px) 40px clamp(28px,4vw,48px);text-align:center;position:relative;overflow:hidden;border-bottom:1px solid rgba(212,165,52,0.08)}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(212,165,52,0.12) 0%,transparent 65%);pointer-events:none}
+.hero-inner{position:relative;z-index:2;max-width:640px;margin:0 auto}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(212,165,52,0.1);border:1px solid rgba(212,165,52,0.2);padding:6px 18px;border-radius:100px;font-size:0.65rem;letter-spacing:0.16em;text-transform:uppercase;color:#d4a534;font-weight:700;margin-bottom:20px}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4.5vw,3rem);font-weight:900;color:#fff;line-height:1.1;margin-bottom:14px;letter-spacing:-0.02em}
+.hero-title em{color:#d4a534;font-style:normal}
+.hero-sub{font-size:0.85rem;color:rgba(255,255,255,0.4);line-height:1.75;max-width:480px;margin:0 auto;text-align:center}
+
+/* ── CALC TABS ── */
+.calc-tabs-wrap{background:#111009;padding:0 40px;border-top:1px solid rgba(212,165,52,0.12);border-bottom:1px solid rgba(212,165,52,0.12)}
+.calc-tabs{display:flex;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;max-width:1080px;margin:0 auto}
+.calc-tabs::-webkit-scrollbar{display:none}
+.calc-tab{flex-shrink:0;padding:16px 20px;font-size:0.68rem;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:0.1em;cursor:pointer;border-bottom:2.5px solid transparent;transition:all .2s;white-space:nowrap;text-transform:uppercase;background:none;border-top:none;border-left:none;border-right:none;font-family:'DM Sans',sans-serif}
+.calc-tab:hover{color:rgba(212,165,52,0.7)}
+.calc-tab.active{color:#d4a534;border-bottom-color:#d4a534}
+
+/* ── MAIN CALC AREA ── */
+.calc-area{max-width:960px;margin:0 auto;padding:clamp(32px,4vw,52px) 40px;background:#f4f2ee}
+
+/* ── PANELS ── */
+.calc-panel{display:none}
+.calc-panel.active{display:block}
+.panel-title{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:800;color:#1a1a1a;margin-bottom:4px}
+.panel-sub{font-size:0.78rem;color:#999;margin-bottom:28px;line-height:1.6}
+
+/* ── TWO-COL LAYOUT ── */
+.calc-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.two-col{display:grid;grid-template-columns:360px 1fr;gap:20px;align-items:start}
+.two-col>*{min-width:0}
+
+/* ── INPUTS ── */
+.input-group{margin-bottom:20px}
+.input-label{font-size:0.63rem;letter-spacing:0.12em;text-transform:uppercase;color:#888;font-weight:600;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px;min-width:0}
+.input-val{font-size:0.8rem;font-weight:700;color:#b8862a;white-space:nowrap;flex-shrink:0}
+.input-wrap{position:relative}
+.input-prefix{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:0.85rem;font-weight:600;color:#888;pointer-events:none}
+.calc-input{width:100%;padding:12px 14px 12px 30px;border:1.5px solid #e8e4dc;border-radius:10px;font-size:0.88rem;font-family:'DM Sans',sans-serif;background:#fff;color:#1a1a1a;outline:none;transition:border-color .15s}
+.calc-input:focus{border-color:#b8862a}
+.calc-input.no-prefix{padding-left:14px}
+.calc-input.suffix-pad{padding-right:36px}
+.input-suffix{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:0.85rem;font-weight:600;color:#888;pointer-events:none}
+.calc-range{width:100%;margin-top:8px;accent-color:#b8862a;cursor:pointer}
+
+/* ── RESULT CARD ── */
+.result-card{background:#111009;border-radius:16px;padding:28px 24px;position:relative;overflow:hidden;width:100%}
+.result-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#b8862a,#d4a534)}
+.result-eyebrow{font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(212,165,52,0.5);font-weight:700;margin-bottom:16px}
+.result-row{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.result-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.result-label{font-size:0.68rem;color:rgba(255,255,255,0.35);margin-bottom:4px;letter-spacing:0.06em;text-transform:uppercase}
+.result-val{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;color:#d4a534;line-height:1}
+.result-val.white{color:#fff}
+.result-val.green{color:#4caf7d}
+.result-note{font-size:0.68rem;color:rgba(255,255,255,0.25);margin-top:4px;line-height:1.5}
+
+/* ── CHART BAR ── */
+.result-bar-wrap{margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,255,255,0.06)}
+.result-bar-label{font-size:0.6rem;color:rgba(255,255,255,0.3);margin-bottom:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600}
+.result-bar-name{font-size:0.63rem;color:rgba(255,255,255,0.4);white-space:nowrap;display:flex;align-items:center;gap:5px}
+.result-bar-row{display:grid;grid-template-columns:90px 1fr 72px;gap:8px;align-items:center;margin-bottom:10px}
+.result-bar-track{flex:1;height:10px;background:rgba(255,255,255,0.08);border-radius:100px;overflow:hidden}
+.result-bar-fill{height:100%;border-radius:100px;transition:width .6s ease}
+.result-bar-fill.gold{background:linear-gradient(90deg,#b8862a,#d4a534)}
+.result-bar-fill.green{background:linear-gradient(90deg,#1a6b3c,#4caf7d)}
+.result-bar-text{font-size:0.63rem;color:rgba(255,255,255,0.45);text-align:right;white-space:nowrap}
+
+/* ── CTA ── */
+.calc-cta{background:#fff;border:1px solid #e8e4dc;border-radius:14px;padding:28px 32px;margin-top:24px;display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;text-align:center}
+.calc-cta-text{font-size:0.8rem;color:#555;line-height:1.6;max-width:400px;text-align:center}
+.calc-cta-text strong{color:#1a1a1a;display:block;margin-bottom:2px}
+.calc-cta-btn{display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#052a10;padding:11px 22px;border-radius:9px;font-weight:700;font-size:0.78rem;text-decoration:none;white-space:nowrap;flex-shrink:0}
+
+/* ── DISCLAIMER ── */
+.calc-disclaimer{font-size:0.65rem;color:#bbb;line-height:1.7;margin-top:20px;padding:12px 16px;background:#fff;border-radius:8px;border-left:2px solid #e8e4dc}
+
+/* ── FOOTER ── */
+
+.chart-wrap{margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06)}
+.chart-label{font-size:0.6rem;color:rgba(255,255,255,0.3);margin-bottom:8px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600}
+.chart-canvas-wrap{position:relative;height:150px}
+
+.footer-bar{background:#1a1a1a;padding:20px 40px;text-align:center;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.25)}
+.footer-bar a{color:rgba(255,255,255,0.4);text-decoration:none}
+
+@media(max-width:720px){
+  .sched-grid{grid-template-columns:1fr 1fr!important}
+  .calc-layout{grid-template-columns:1fr}
+  .calc-area{padding:20px 16px;overflow:hidden}
+  .calc-tabs-wrap{padding:0}
+  .hero{padding:32px 16px 22px}
+  .hero-sub{font-size:0.8rem}
+  .calc-cta{flex-direction:column;align-items:center}
+  .calc-tab{padding:13px 14px;font-size:0.6rem}
+  .result-val{font-size:1.25rem}
+  .panel-title{font-size:1.05rem}
+  .result-card{padding:18px 16px}
+  .input-group{margin-bottom:14px}
+  .calc-input{font-size:0.82rem}
+  .input-label{font-size:0.58rem}
+  .input-val{font-size:0.75rem}
+}
+
+.input-panel{background:#fff;border:1px solid #e8e4dc;border-radius:18px;overflow:hidden}
+.input-panel-head{background:#111009;padding:20px 24px;border-bottom:1px solid rgba(212,165,52,0.12)}
+.input-panel-title{font-size:0.72rem;font-weight:700;color:#d4a534;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px}
+.input-panel-sub{font-size:0.72rem;color:rgba(255,255,255,0.35)}
+.input-panel-body{padding:24px}
+.field{margin-bottom:20px}
+.field-label{font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:#888;font-weight:600;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.field-hint{font-size:0.6rem;color:#b8862a;font-weight:600;white-space:nowrap}
+.field-input{width:100%;padding:11px 14px;border:1.5px solid #e8e4dc;border-radius:10px;font-size:0.88rem;font-family:'DM Sans',sans-serif;background:#fafaf8;color:#1a1a1a;outline:none;transition:border-color .15s}
+.field-input:focus{border-color:#b8862a;background:#fff}
+.field-input-wrap{position:relative}
+.field-prefix{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:0.85rem;color:#888;pointer-events:none}
+.field-input.has-prefix{padding-left:28px}
+.field-input.has-suffix{padding-right:32px}
+.field-suffix{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:0.85rem;color:#888;pointer-events:none}
+.field-range{width:100%;margin-top:8px;accent-color:#b8862a;cursor:pointer}
+.field-note{font-size:0.65rem;color:#bbb;margin-top:5px;line-height:1.5}
+.section-divider{height:1px;background:#f0ede8;margin:8px 0 20px}
+.section-label{font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:#b8862a;font-weight:700;margin-bottom:14px}
+
+/* ── UPFRONT TOGGLE ── */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f9f7f3;border-radius:10px;margin-bottom:16px;cursor:pointer;border:1.5px solid #e8e4dc;transition:border-color .15s}
+.toggle-row:hover{border-color:#b8862a}
+.toggle-label{font-size:0.78rem;font-weight:600;color:#1a1a1a}
+.toggle-sub{font-size:0.65rem;color:#aaa;margin-top:1px}
+.toggle-switch{width:38px;height:22px;background:#ddd;border-radius:100px;position:relative;transition:background .2s;flex-shrink:0}
+.toggle-switch.on{background:#b8862a}
+.toggle-switch::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
+.toggle-switch.on::after{transform:translateX(16px)}
+.upfront-field{display:none}
+.upfront-field.visible{display:block}
+
+/* ── RESULT PANEL ── */
+.result-panel{display:flex;flex-direction:column;gap:20px;min-width:0;width:100%}
+.result-summary{background:#111009;border-radius:18px;overflow:hidden;position:relative;min-width:0;width:100%}
+.result-summary::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#b8862a,#d4a534)}
+.result-head{padding:22px 24px 0}
+.result-eyebrow{font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(212,165,52,0.5);font-weight:700;margin-bottom:14px}
+.result-big{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,0.06);min-width:0}
+.result-big-item{background:#111009;padding:16px 18px;min-width:0;overflow:hidden}
+.result-big-item.span2{grid-column:span 2;background:#0d0b04}
+.rbi-label{font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rbi-val{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:800;color:#d4a534;line-height:1}
+.rbi-val.white{color:#fff}
+.rbi-val.green{color:#4caf7d}
+.rbi-sub{font-size:0.62rem;color:rgba(255,255,255,0.25);margin-top:3px}
+.result-strips{padding:14px 18px;display:flex;flex-direction:column;gap:8px}
+.result-strip{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:rgba(255,255,255,0.04);border-radius:8px;gap:8px;min-width:0}
+.rs-label{font-size:0.67rem;color:rgba(255,255,255,0.45);min-width:0}
+.rs-val{font-size:0.72rem;font-weight:700;color:#fff;white-space:nowrap;flex-shrink:0}
+.rs-val.gold{color:#d4a534}
+.rs-val.green{color:#4caf7d}
+.rs-val.red{color:#e74c3c}
+
+/* ── GRANT INFO BOX ── */
+.grant-box{background:#fff;border:1px solid #e8e4dc;border-radius:14px;overflow:hidden;min-width:0;width:100%}
+.grant-box-head{background:#f9f7f3;padding:14px 18px;border-bottom:1px solid #e8e4dc;font-size:0.68rem;font-weight:700;color:#1a1a1a;letter-spacing:0.06em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.grant-box-body{padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.grant-row{display:flex;justify-content:space-between;align-items:center;font-size:0.75rem}
+.grant-label{color:#666}
+.grant-val{font-weight:700;color:#1a1a1a}
+.grant-val.gold{color:#b8862a}
+.grant-val.green{color:#1a6b3c}
+.grant-val.red{color:#c0392b}
+.grant-progress-wrap{margin-top:10px}
+.grant-progress-label{font-size:0.62rem;color:#aaa;margin-bottom:5px;display:flex;justify-content:space-between}
+.grant-progress-track{height:8px;background:#f0ede8;border-radius:100px;overflow:hidden}
+.grant-progress-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,#b8862a,#d4a534);transition:width .5s ease}
+
+/* ── CHART ── */
+.chart-panel{background:#fff;border:1px solid #e8e4dc;border-radius:14px;overflow:hidden;min-width:0;width:100%}
+.chart-head{padding:16px 20px;border-bottom:1px solid #f0ede8;display:flex;align-items:center;justify-content:space-between}
+.chart-title{font-size:0.72rem;font-weight:700;color:#1a1a1a;letter-spacing:0.06em;text-transform:uppercase}
+.chart-legend{display:flex;gap:14px}
+.chart-legend-item{display:flex;align-items:center;gap:5px;font-size:0.62rem;color:#666}
+.chart-legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.chart-body{padding:16px 20px}
+
+/* ── YEAR TABLE ── */
+.table-panel{background:#fff;border:1px solid #e8e4dc;border-radius:14px;overflow:hidden;margin-top:0;min-width:0;width:100%}
+.table-head-bar{padding:14px 20px;border-bottom:1px solid #f0ede8;display:flex;align-items:center;justify-content:space-between}
+.table-title{font-size:0.68rem;font-weight:700;color:#1a1a1a;letter-spacing:0.06em;text-transform:uppercase}
+.table-wrap{overflow-x:auto;max-height:420px;overflow-y:auto}
+.resp-table{width:100%;border-collapse:collapse;font-size:0.72rem}
+.resp-table th{position:sticky;top:0;background:#f9f7f3;padding:9px 12px;text-align:right;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:#888;font-weight:700;white-space:nowrap;border-bottom:1px solid #e8e4dc;z-index:1}
+.resp-table th:first-child,.resp-table th:nth-child(2){text-align:left}
+.resp-table td{padding:9px 12px;border-bottom:1px solid #f0ede8;text-align:right;white-space:nowrap;color:#444}
+.resp-table td:first-child,.resp-table td:nth-child(2){text-align:left;color:#1a1a1a;font-weight:600}
+.resp-table tr:last-child td{border-bottom:none}
+.resp-table tr:hover td{background:#fafaf8}
+.td-grant{color:#b8862a;font-weight:600}
+.td-total{color:#1a1a1a;font-weight:700}
+.td-balance{color:#1a6b3c;font-weight:700}
+.no-grant{color:#ccc}
+
+/* ── RULES BOX ── */
+.rules-box{background:#fff;border:1px solid #e8e4dc;border-radius:14px;padding:20px}
+.rules-title{font-size:0.68rem;font-weight:700;color:#1a1a1a;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.rules-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rule-item{background:#f9f7f3;border-radius:10px;padding:12px 14px}
+.rule-item-label{font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;margin-bottom:3px}
+.rule-item-val{font-size:0.82rem;font-weight:700;color:#b8862a}
+.rule-item-note{font-size:0.65rem;color:#888;margin-top:2px;line-height:1.4}
+
+/* ── DISCLAIMER ── */
+.disclaimer{font-size:0.65rem;color:#bbb;line-height:1.7;padding:14px 18px;background:#fff;border-radius:10px;border-left:2px solid #e8e4dc;margin-top:4px}
+
+/* ── FOOTER ── */
+.footer-bar{background:#1a1a1a;padding:20px 40px;text-align:center;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-top:40px}
+.footer-bar a{color:rgba(255,255,255,0.4);text-decoration:none}
+
+@media(max-width:900px){
+  .two-col{grid-template-columns:1fr}
+  .main-wrap{padding:20px 16px}
+  .hero{padding:32px 16px 24px}
+  .result-big{grid-template-columns:1fr 1fr}
+  .rules-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:500px){
+  .result-big{grid-template-columns:1fr}
+  .result-big-item.span2{grid-column:span 1}
+  .rules-grid{grid-template-columns:1fr}
+}
+
+
+
+.resp-freq-btn{flex:1;padding:8px 6px;border:1.5px solid #e8e4dc;border-radius:8px;background:#fafaf8;font-size:0.72rem;font-weight:600;color:#888;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.resp-freq-btn.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.resp-freq-btn:hover:not(.active){border-color:#b8862a;color:#b8862a}
+.sched-row{background:#fafaf8;border:1.5px solid #e8e4dc;border-radius:12px;padding:14px 14px 10px;margin-bottom:10px;position:relative}
+.sched-row-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sched-row-label{font-size:0.65rem;font-weight:700;color:#b8862a;letter-spacing:0.1em;text-transform:uppercase}
+.sched-row-del{background:none;border:none;color:#ccc;font-size:1rem;cursor:pointer;padding:2px 6px;border-radius:6px;line-height:1;transition:color .15s}
+.sched-row-del:hover{color:#e74c3c}
+.sched-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px}
+.sched-mini-label{font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;font-weight:600;margin-bottom:4px}
+.sched-select{width:100%;padding:7px 10px;border:1.5px solid #e8e4dc;border-radius:8px;font-size:0.78rem;font-family:'DM Sans',sans-serif;background:#fff;color:#1a1a1a;outline:none;cursor:pointer}
+.sched-select:focus{border-color:#b8862a}
+.sched-input{width:100%;padding:7px 10px 7px 22px;border:1.5px solid #e8e4dc;border-radius:8px;font-size:0.78rem;font-family:'DM Sans',sans-serif;background:#fff;color:#1a1a1a;outline:none}
+.sched-input:focus{border-color:#b8862a}
+.sched-input-wrap{position:relative}
+.sched-prefix{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:0.75rem;color:#aaa;pointer-events:none}
+.sched-annual-equiv{font-size:0.65rem;color:#b8862a;margin-top:5px;font-weight:600}
+.resp-flag{display:none}@media(max-width:720px){.resp-flag{display:inline}}
+
+.sugg-card{background:#fff;border:1.5px solid #e8e4dc;border-radius:12px;overflow:hidden;transition:border-color .15s}
+.sugg-card:hover{border-color:rgba(212,165,52,0.4)}
+.sugg-card-head{padding:12px 14px 8px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.sugg-card-label{font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;margin-bottom:3px}
+.sugg-card-title{font-size:0.82rem;font-weight:700;color:#1a1a1a;line-height:1.3}
+.sugg-card-cesg{font-size:0.68rem;color:#1a6b3c;font-weight:600;margin-top:2px}
+.sugg-card-body{padding:0 14px 10px;font-size:0.7rem;color:#666;line-height:1.6}
+.sugg-card-rows{padding:0 14px 10px;display:flex;flex-direction:column;gap:4px}
+.sugg-row-pill{display:inline-flex;align-items:center;gap:6px;background:#f9f7f3;border:1px solid #e8e4dc;border-radius:6px;padding:4px 10px;font-size:0.68rem;color:#555}
+.sugg-row-pill .pill-amt{font-weight:700;color:#1a1a1a}
+.sugg-card-footer{padding:10px 14px;border-top:1px solid #f0ede8;display:flex;justify-content:flex-end}
+.sugg-apply-btn{background:#1a1a1a;color:#fff;border:none;border-radius:7px;padding:7px 18px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s}
+.sugg-apply-btn:hover{background:#333}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400&family=Bricolage+Grotesque:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
 /* ── GLOBAL RESET ── */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+
+
 :root{
   --navy:#0d1e35;--navy2:#122040;--navy3:#0a1628;
   --gold:#c9963a;--gl:#e8b96a;--gp:#f7eed8;
   --off:#f8fafc;--mid:#6b7280;--border:#e5e7eb;--dborder:#1d2420;
   --white:#fff;--black:#0a0a0a;--check:#16a34a
 }
-body{font-family:'Bricolage Grotesque',sans-serif;background:#fff;color:var(--black);overflow-x:hidden;line-height:1.65;padding-bottom:0}
-a{text-decoration:none;color:inherit}
+
+
 
 /* ── TOPBAR ── */
 .topbar{background:var(--navy);padding:8px 56px;display:flex;align-items:center;justify-content:space-between;font-size:11.5px;color:rgba(255,255,255,.5);border-bottom:1px solid rgba(201,150,58,.18)}
-.topbar a{color:var(--gl);transition:color .15s}.topbar a:hover{color:#fff}
+.topbar .topbar a:hover{color:#fff}
 .tb-r{display:flex;gap:18px;align-items:center}
 
 /* ── NAV ── */
@@ -41,7 +363,7 @@ nav{position:sticky;top:0;z-index:200;background:var(--navy);border-bottom:2px s
 .nav-menu>li:hover .arr{transform:rotate(180deg)}
 .dropdown{display:none;position:absolute;top:calc(100%+8px);left:0;background:var(--navy2);border:1px solid rgba(201,150,58,.25);border-radius:12px;padding:9px;min-width:262px;box-shadow:0 16px 44px rgba(0,0,0,.5);z-index:400}
 .nav-menu>li:hover .dropdown{display:block}
-.dropdown a{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:7px;font-size:12.5px;color:rgba(255,255,255,.72);transition:all .15s}
+.dropdown 
 .dropdown a:hover{background:rgba(255,255,255,.08);color:#fff;padding-left:16px}
 .dd-sec{font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);padding:8px 12px 2px}
 .dropdown hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:4px 0}
@@ -60,7 +382,7 @@ nav{position:sticky;top:0;z-index:200;background:var(--navy);border-bottom:2px s
 .mn-item{display:block;padding:15px 22px;font-size:15px;font-weight:600;color:rgba(255,255,255,.82);border-bottom:1px solid rgba(255,255,255,.06)}
 .mn-sec{padding:9px 22px 2px;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
 .mn-sub{background:rgba(0,0,0,.2)}
-.mn-sub a{display:block;padding:11px 34px;font-size:13px;color:rgba(255,255,255,.62);border-bottom:1px solid rgba(255,255,255,.04)}
+.mn-sub 
 .mn-ctas{padding:18px 14px;display:flex;flex-direction:column;gap:9px}
 .mn-c1{display:block;background:rgba(255,255,255,.1);color:#fff;padding:15px;border-radius:9px;text-align:center;font-size:14px;font-weight:700;border:1px solid rgba(255,255,255,.18)}
 .mn-c2{display:block;background:var(--gold);color:var(--navy);padding:15px;border-radius:9px;text-align:center;font-size:14px;font-weight:700}
@@ -77,7 +399,7 @@ nav{position:sticky;top:0;z-index:200;background:var(--navy);border-bottom:2px s
   .nav-inner{padding:0 16px}
   .hamburger{display:flex}
   .sticky-call{display:block}
-  body{padding-bottom:78px}
+  
 }
 
 
@@ -111,285 +433,67 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
   .f-name{font-family:'Fraunces',serif;font-size:1rem;font-weight:900;color:#fff;margin-bottom:10px;text-align:center}
   .f-name em{color:var(--gold);font-style:normal}
 }
+</style>
+<style>
+.calc-tabs-wrap{background:#0d1e35!important}
+.calc-tab{color:rgba(255,255,255,.55)!important}
+.calc-tab.active{color:#fff!important;border-bottom-color:#c9963a!important}
+.calc-tab:hover{color:rgba(255,255,255,.8)!important}
+</style>
+
+<style id="ibr-dropdown-fix">
+
+/* ── Topbar: match homepage ── */
+div.topbar:first-of-type{display:flex!important;background:#0d1e35!important;padding:8px 56px!important;font-size:11.5px!important;color:rgba(255,255,255,.65)!important;font-family:'Bricolage Grotesque',sans-serif!important;border-bottom:1px solid rgba(201,150,58,.2)!important;min-height:auto!important;position:static!important;z-index:auto!important}
+div.topbar:first-of-type a{color:rgba(255,255,255,.65)!important;text-decoration:none!important;font-size:11.5px!important}
+div.topbar:first-of-type a:hover{color:#fff!important}
+/* ── Nav link underlines ── */
+nav a,nav a:visited{text-decoration:none!important}
+/* ── Footer links ── */
+footer .f-mobile-links a{color:rgba(255,255,255,.45)!important;text-decoration:none!important;font-size:11.5px!important}
+footer .f-mobile-links a:hover{color:#c9963a!important}
+footer .fg a{color:rgba(255,255,255,.55)!important;text-decoration:none!important}
+footer .fg a:hover{color:#c9963a!important}
+footer .fbot span{color:rgba(255,255,255,.28)!important}
+footer .fl{text-decoration:none!important}
+footer .fl .logo-name{color:#fff!important;font-family:'Fraunces',serif!important;font-size:1.3rem!important;font-weight:900!important}
+footer .fl .logo-name em{color:#c9963a!important;font-style:italic!important}
+
+/* ── IBR Hero Font/Colour Override ── */
+.hero-title{font-family:'Fraunces',serif!important;font-size:clamp(2rem,4.5vw,3.2rem)!important;font-weight:900!important;letter-spacing:-.025em!important}
+.hero-title em{color:#c9963a!important;font-style:italic!important}
+.hero-sub{font-family:'Bricolage Grotesque',sans-serif!important;font-size:15px!important;color:rgba(255,255,255,.6)!important;max-width:540px!important}
+.hero-tag{font-family:'Bricolage Grotesque',sans-serif!important;font-size:10.5px!important;font-weight:700!important;letter-spacing:.12em!important}
+
+nav{border-bottom:1px solid rgba(201,150,58,.18)!important}
+
+/* IBR nav takes priority over PF topbar CSS */
+.topbar{border-bottom:1px solid rgba(201,150,58,.25)!important}
+nav{position:sticky;top:0;z-index:200!important;background:#0d1e35!important}
+nav .nav-inner{background:#0d1e35!important}
 
 
-/* Page hero */
-.page-hero{background:var(--navy);padding:56px 56px 48px;position:relative;overflow:hidden}
-.page-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 70% 50%,rgba(201,150,58,.1) 0%,transparent 55%)}
-.ph-inner{max-width:760px;position:relative;z-index:1}
-.ph-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(201,150,58,.13);border:1px solid rgba(201,150,58,.3);border-radius:7px;padding:5px 13px;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gl);margin-bottom:16px}
-.page-hero h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4vw,3rem);font-weight:900;color:#fff;line-height:1.1;letter-spacing:-.02em;margin-bottom:12px}
-.page-hero p{font-size:16px;color:rgba(255,255,255,.6);line-height:1.75;max-width:560px}
-/* Calc wrapper */
-.calc-wrapper{max-width:1100px;margin:0 auto;padding:0 40px 48px}
+/* ── IBR Hero Font/Colour Override ── */
+.hero-title{font-family:'Fraunces',serif!important;font-size:clamp(2rem,4.5vw,3.2rem)!important;font-weight:900!important;letter-spacing:-.025em!important}
+.hero-title em{color:#c9963a!important;font-style:italic!important}
+.hero-sub{font-family:'Bricolage Grotesque',sans-serif!important;font-size:15px!important;color:rgba(255,255,255,.6)!important;max-width:540px!important}
+.hero-tag{font-family:'Bricolage Grotesque',sans-serif!important;font-size:10.5px!important;font-weight:700!important;letter-spacing:.12em!important}
 
-.calc-tabs{background:#0d1e35;padding:0 8px;margin-bottom:0;display:flex;gap:2px;flex-wrap:wrap;border-radius:10px 10px 0 0;border-bottom:2px solid rgba(201,150,58,.3)}
-.calc-tab{background:none;border:none;padding:12px 18px;font-size:13px;font-weight:600;color:rgba(255,255,255,.55);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;font-family:'Bricolage Grotesque',sans-serif;white-space:nowrap}
-.calc-tab:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.06)}
-.calc-tab.active{color:#fff;border-bottom-color:#c9963a;font-weight:700;background:rgba(255,255,255,.08)}
-/* Breadcrumb */
-.breadcrumb{padding:13px 56px;background:var(--off,#f8fafc);font-size:12.5px;color:var(--mid,#6b7280);border-bottom:1px solid var(--border,#e5e7eb)}
-.breadcrumb a{color:var(--navy,#0d1e35);font-weight:500;text-decoration:none}
-.breadcrumb a:hover{color:var(--gold,#c9963a)}
-@media(max-width:900px){
-  .page-hero{padding:44px 16px 40px}
-  .calc-wrapper{padding:32px 16px}
-  .calc-tab{font-size:12px;padding:8px 12px}
-  .breadcrumb{padding:11px 16px}
-}
-
-.calc-tabs-wrap{background:#111;padding:0 40px;border-top:1px solid rgba(212,165,52,0.12);border-bottom:1px solid rgba(212,165,52,0.12)}
-.calc-tabs{display:flex;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;max-width:1080px;margin:0 auto}
-.calc-tabs::-webkit-scrollbar{display:none}
-.calc-tab{flex-shrink:0;padding:16px 20px;font-size:0.68rem;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:0.1em;cursor:pointer;border-bottom:2.5px solid transparent;transition:all .2s;white-space:nowrap;text-transform:uppercase;background:none;border-top:none;border-left:none;border-right:none;font-family:'DM Sans',sans-serif}
-.calc-tab:hover{color:rgba(212,165,52,0.7)}
-.calc-tab.active{color:#c9963a;border-bottom-color:#c9963a}
-
-/* ── MAIN CALC AREA ── */
-.calc-area{max-width:960px;margin:0 auto;padding:clamp(32px,4vw,52px) 40px;background:#f4f2ee}
-
-/* ── PANELS ── */
-.calc-panel{display:none}
-.calc-panel.active{display:block}
-.panel-title{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:800;color:#1a1a1a;margin-bottom:4px}
-.panel-sub{font-size:0.78rem;color:#999;margin-bottom:28px;line-height:1.6}
-
-/* ── TWO-COL LAYOUT ── */
-.calc-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
-.two-col{display:grid;grid-template-columns:360px 1fr;gap:20px;align-items:start}
-.two-col>*{min-width:0}
-
-/* ── INPUTS ── */
-.input-group{margin-bottom:20px}
-.input-label{font-size:0.63rem;letter-spacing:0.12em;text-transform:uppercase;color:#888;font-weight:600;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px;min-width:0}
-.input-val{font-size:0.8rem;font-weight:700;color:#c9963a;white-space:nowrap;flex-shrink:0}
-.input-wrap{position:relative}
-.input-prefix{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:0.85rem;font-weight:600;color:#888;pointer-events:none}
-.calc-input{width:100%;padding:12px 14px 12px 30px;border:1.5px solid #e8e4dc;border-radius:10px;font-size:0.88rem;font-family:'DM Sans',sans-serif;background:#fff;color:#1a1a1a;outline:none;transition:border-color .15s}
-.calc-input:focus{border-color:#c9963a}
-.calc-input.no-prefix{padding-left:14px}
-.calc-input.suffix-pad{padding-right:36px}
-.input-suffix{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:0.85rem;font-weight:600;color:#888;pointer-events:none}
-.calc-range{width:100%;margin-top:8px;accent-color:#c9963a;cursor:pointer}
-
-/* ── RESULT CARD ── */
-.result-card{background:#111;border-radius:16px;padding:28px 24px;position:relative;overflow:hidden;width:100%}
-.result-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#c9963a,#c9963a)}
-.result-eyebrow{font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(212,165,52,0.5);font-weight:700;margin-bottom:16px}
-.result-row{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.06)}
-.result-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
-.result-label{font-size:0.68rem;color:rgba(255,255,255,0.35);margin-bottom:4px;letter-spacing:0.06em;text-transform:uppercase}
-.result-val{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;color:#c9963a;line-height:1}
-.result-val.white{color:#fff}
-.result-val.green{color:#4caf7d}
-.result-note{font-size:0.68rem;color:rgba(255,255,255,0.25);margin-top:4px;line-height:1.5}
-
-/* ── CHART BAR ── */
-.result-bar-wrap{margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,255,255,0.06)}
-.result-bar-label{font-size:0.6rem;color:rgba(255,255,255,0.3);margin-bottom:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600}
-.result-bar-name{font-size:0.63rem;color:rgba(255,255,255,0.4);white-space:nowrap;display:flex;align-items:center;gap:5px}
-.result-bar-row{display:grid;grid-template-columns:90px 1fr 72px;gap:8px;align-items:center;margin-bottom:10px}
-.result-bar-track{flex:1;height:10px;background:rgba(255,255,255,0.08);border-radius:100px;overflow:hidden}
-.result-bar-fill{height:100%;border-radius:100px;transition:width .6s ease}
-.result-bar-fill.gold{background:linear-gradient(90deg,#c9963a,#c9963a)}
-.result-bar-fill.green{background:linear-gradient(90deg,#1a6b3c,#4caf7d)}
-.result-bar-text{font-size:0.63rem;color:rgba(255,255,255,0.45);text-align:right;white-space:nowrap}
-
-/* ── CTA ── */
-.calc-cta{background:#fff;border:1px solid #e8e4dc;border-radius:14px;padding:28px 32px;margin-top:24px;display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;text-align:center}
-.calc-cta-text{font-size:0.8rem;color:#555;line-height:1.6;max-width:400px;text-align:center}
-.calc-cta-text strong{color:#1a1a1a;display:block;margin-bottom:2px}
-.calc-cta-btn{display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#052a10;padding:11px 22px;border-radius:9px;font-weight:700;font-size:0.78rem;text-decoration:none;white-space:nowrap;flex-shrink:0}
-
-/* ── DISCLAIMER ── */
-.calc-disclaimer{font-size:0.65rem;color:#bbb;line-height:1.7;margin-top:20px;padding:12px 16px;background:#fff;border-radius:8px;border-left:2px solid #e8e4dc}
-
-/* ── FOOTER ── */
-
-.chart-wrap{margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06)}
-.chart-label{font-size:0.6rem;color:rgba(255,255,255,0.3);margin-bottom:8px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600}
-.chart-canvas-wrap{position:relative;height:150px}
-
-.footer-bar{background:var(--navy2,#122040);padding:20px 40px;text-align:center;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.25)}
-.footer-bar a{color:rgba(255,255,255,0.4);text-decoration:none}
-
-@media(max-width:720px){
-  .sched-grid{grid-template-columns:1fr 1fr!important}
-  .calc-layout{grid-template-columns:1fr}
-  .calc-area{padding:20px 16px;overflow:hidden}
-  .calc-tabs-wrap{padding:0}
-  .hero{padding:32px 16px 22px}
-  .hero-sub{font-size:0.8rem}
-  .calc-cta{flex-direction:column;align-items:center}
-  .calc-tab{padding:13px 14px;font-size:0.6rem}
-  .result-val{font-size:1.25rem}
-  .panel-title{font-size:1.05rem}
-  .result-card{padding:18px 16px}
-  .input-group{margin-bottom:14px}
-  .calc-input{font-size:0.82rem}
-  .input-label{font-size:0.58rem}
-  .input-val{font-size:0.75rem}
-}
-
-.input-panel{background:#fff;border:1px solid #e8e4dc;border-radius:18px;overflow:hidden}
-.input-panel-head{background:#111;padding:20px 24px;border-bottom:1px solid rgba(212,165,52,0.12)}
-.input-panel-title{font-size:0.72rem;font-weight:700;color:#c9963a;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px}
-.input-panel-sub{font-size:0.72rem;color:rgba(255,255,255,0.35)}
-.input-panel-body{padding:24px}
-.field{margin-bottom:20px}
-.field-label{font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:#888;font-weight:600;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.field-hint{font-size:0.6rem;color:#c9963a;font-weight:600;white-space:nowrap}
-.field-input{width:100%;padding:11px 14px;border:1.5px solid #e8e4dc;border-radius:10px;font-size:0.88rem;font-family:'DM Sans',sans-serif;background:#fafaf8;color:#1a1a1a;outline:none;transition:border-color .15s}
-.field-input:focus{border-color:#c9963a;background:#fff}
-.field-input-wrap{position:relative}
-.field-prefix{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:0.85rem;color:#888;pointer-events:none}
-.field-input.has-prefix{padding-left:28px}
-.field-input.has-suffix{padding-right:32px}
-.field-suffix{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:0.85rem;color:#888;pointer-events:none}
-.field-range{width:100%;margin-top:8px;accent-color:#c9963a;cursor:pointer}
-.field-note{font-size:0.65rem;color:#bbb;margin-top:5px;line-height:1.5}
-.section-divider{height:1px;background:#f0ede8;margin:8px 0 20px}
-.section-label{font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:#c9963a;font-weight:700;margin-bottom:14px}
-
-/* ── UPFRONT TOGGLE ── */
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f9f7f3;border-radius:10px;margin-bottom:16px;cursor:pointer;border:1.5px solid #e8e4dc;transition:border-color .15s}
-.toggle-row:hover{border-color:#c9963a}
-.toggle-label{font-size:0.78rem;font-weight:600;color:#1a1a1a}
-.toggle-sub{font-size:0.65rem;color:#aaa;margin-top:1px}
-.toggle-switch{width:38px;height:22px;background:#ddd;border-radius:100px;position:relative;transition:background .2s;flex-shrink:0}
-.toggle-switch.on{background:#c9963a}
-.toggle-switch::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
-.toggle-switch.on::after{transform:translateX(16px)}
-.upfront-field{display:none}
-.upfront-field.visible{display:block}
-
-/* ── RESULT PANEL ── */
-.result-panel{display:flex;flex-direction:column;gap:20px;min-width:0;width:100%}
-.result-summary{background:#111;border-radius:18px;overflow:hidden;position:relative;min-width:0;width:100%}
-.result-summary::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#c9963a,#c9963a)}
-.result-head{padding:22px 24px 0}
-.result-eyebrow{font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(212,165,52,0.5);font-weight:700;margin-bottom:14px}
-.result-big{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,0.06);min-width:0}
-.result-big-item{background:#111;padding:16px 18px;min-width:0;overflow:hidden}
-.result-big-item.span2{grid-column:span 2;background:#0d1e35}
-.rbi-label{font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rbi-val{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:800;color:#c9963a;line-height:1}
-.rbi-val.white{color:#fff}
-.rbi-val.green{color:#4caf7d}
-.rbi-sub{font-size:0.62rem;color:rgba(255,255,255,0.25);margin-top:3px}
-.result-strips{padding:14px 18px;display:flex;flex-direction:column;gap:8px}
-.result-strip{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:rgba(255,255,255,0.04);border-radius:8px;gap:8px;min-width:0}
-.rs-label{font-size:0.67rem;color:rgba(255,255,255,0.45);min-width:0}
-.rs-val{font-size:0.72rem;font-weight:700;color:#fff;white-space:nowrap;flex-shrink:0}
-.rs-val.gold{color:#c9963a}
-.rs-val.green{color:#4caf7d}
-.rs-val.red{color:#e74c3c}
-
-/* ── GRANT INFO BOX ── */
-.grant-box{background:#fff;border:1px solid #e8e4dc;border-radius:14px;overflow:hidden;min-width:0;width:100%}
-.grant-box-head{background:#f9f7f3;padding:14px 18px;border-bottom:1px solid #e8e4dc;font-size:0.68rem;font-weight:700;color:#1a1a1a;letter-spacing:0.06em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
-.grant-box-body{padding:16px 18px;display:flex;flex-direction:column;gap:8px}
-.grant-row{display:flex;justify-content:space-between;align-items:center;font-size:0.75rem}
-.grant-label{color:#666}
-.grant-val{font-weight:700;color:#1a1a1a}
-.grant-val.gold{color:#c9963a}
-.grant-val.green{color:#1a6b3c}
-.grant-val.red{color:#c0392b}
-.grant-progress-wrap{margin-top:10px}
-.grant-progress-label{font-size:0.62rem;color:#aaa;margin-bottom:5px;display:flex;justify-content:space-between}
-.grant-progress-track{height:8px;background:#f0ede8;border-radius:100px;overflow:hidden}
-.grant-progress-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,#c9963a,#c9963a);transition:width .5s ease}
-
-/* ── CHART ── */
-.chart-panel{background:#fff;border:1px solid #e8e4dc;border-radius:14px;overflow:hidden;min-width:0;width:100%}
-.chart-head{padding:16px 20px;border-bottom:1px solid #f0ede8;display:flex;align-items:center;justify-content:space-between}
-.chart-title{font-size:0.72rem;font-weight:700;color:#1a1a1a;letter-spacing:0.06em;text-transform:uppercase}
-.chart-legend{display:flex;gap:14px}
-.chart-legend-item{display:flex;align-items:center;gap:5px;font-size:0.62rem;color:#666}
-.chart-legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.chart-body{padding:16px 20px}
-
-/* ── YEAR TABLE ── */
-.table-panel{background:#fff;border:1px solid #e8e4dc;border-radius:14px;overflow:hidden;margin-top:0;min-width:0;width:100%}
-.table-head-bar{padding:14px 20px;border-bottom:1px solid #f0ede8;display:flex;align-items:center;justify-content:space-between}
-.table-title{font-size:0.68rem;font-weight:700;color:#1a1a1a;letter-spacing:0.06em;text-transform:uppercase}
-.table-wrap{overflow-x:auto;max-height:420px;overflow-y:auto}
-.resp-table{width:100%;border-collapse:collapse;font-size:0.72rem}
-.resp-table th{position:sticky;top:0;background:#f9f7f3;padding:9px 12px;text-align:right;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:#888;font-weight:700;white-space:nowrap;border-bottom:1px solid #e8e4dc;z-index:1}
-.resp-table th:first-child,.resp-table th:nth-child(2){text-align:left}
-.resp-table td{padding:9px 12px;border-bottom:1px solid #f0ede8;text-align:right;white-space:nowrap;color:#444}
-.resp-table td:first-child,.resp-table td:nth-child(2){text-align:left;color:#1a1a1a;font-weight:600}
-.resp-table tr:last-child td{border-bottom:none}
-.resp-table tr:hover td{background:#fafaf8}
-.td-grant{color:#c9963a;font-weight:600}
-.td-total{color:#1a1a1a;font-weight:700}
-.td-balance{color:#1a6b3c;font-weight:700}
-.no-grant{color:#ccc}
-
-/* ── RULES BOX ── */
-.rules-box{background:#fff;border:1px solid #e8e4dc;border-radius:14px;padding:20px}
-.rules-title{font-size:0.68rem;font-weight:700;color:#1a1a1a;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.rules-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.rule-item{background:#f9f7f3;border-radius:10px;padding:12px 14px}
-.rule-item-label{font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;margin-bottom:3px}
-.rule-item-val{font-size:0.82rem;font-weight:700;color:#c9963a}
-.rule-item-note{font-size:0.65rem;color:#888;margin-top:2px;line-height:1.4}
-
-/* ── DISCLAIMER ── */
-.disclaimer{font-size:0.65rem;color:#bbb;line-height:1.7;padding:14px 18px;background:#fff;border-radius:10px;border-left:2px solid #e8e4dc;margin-top:4px}
-
-/* ── FOOTER ── */
-.footer-bar{background:var(--navy2,#122040);padding:20px 40px;text-align:center;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-top:40px}
-.footer-bar a{color:rgba(255,255,255,0.4);text-decoration:none}
-
-@media(max-width:900px){
-  .two-col{grid-template-columns:1fr}
-  .main-wrap{padding:20px 16px}
-  .hero{padding:32px 16px 24px}
-  .result-big{grid-template-columns:1fr 1fr}
-  .rules-grid{grid-template-columns:1fr 1fr}
-}
-@media(max-width:500px){
-  .result-big{grid-template-columns:1fr}
-  .result-big-item.span2{grid-column:span 1}
-  .rules-grid{grid-template-columns:1fr}
-}
-
-
-
-.resp-freq-btn{flex:1;padding:8px 6px;border:1.5px solid #e8e4dc;border-radius:8px;background:#fafaf8;font-size:0.72rem;font-weight:600;color:#888;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
-.resp-freq-btn.active{background:var(--navy2,#122040);color:#fff;border-color:#1a1a1a}
-.resp-freq-btn:hover:not(.active){border-color:#c9963a;color:#c9963a}
-.sched-row{background:#fafaf8;border:1.5px solid #e8e4dc;border-radius:12px;padding:14px 14px 10px;margin-bottom:10px;position:relative}
-.sched-row-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.sched-row-label{font-size:0.65rem;font-weight:700;color:#c9963a;letter-spacing:0.1em;text-transform:uppercase}
-.sched-row-del{background:none;border:none;color:#ccc;font-size:1rem;cursor:pointer;padding:2px 6px;border-radius:6px;line-height:1;transition:color .15s}
-.sched-row-del:hover{color:#e74c3c}
-.sched-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px}
-.sched-mini-label{font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;font-weight:600;margin-bottom:4px}
-.sched-select{width:100%;padding:7px 10px;border:1.5px solid #e8e4dc;border-radius:8px;font-size:0.78rem;font-family:'DM Sans',sans-serif;background:#fff;color:#1a1a1a;outline:none;cursor:pointer}
-.sched-select:focus{border-color:#c9963a}
-.sched-input{width:100%;padding:7px 10px 7px 22px;border:1.5px solid #e8e4dc;border-radius:8px;font-size:0.78rem;font-family:'DM Sans',sans-serif;background:#fff;color:#1a1a1a;outline:none}
-.sched-input:focus{border-color:#c9963a}
-.sched-input-wrap{position:relative}
-.sched-prefix{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:0.75rem;color:#aaa;pointer-events:none}
-.sched-annual-equiv{font-size:0.65rem;color:#c9963a;margin-top:5px;font-weight:600}
-.resp-flag{display:none}@media(max-width:720px){.resp-flag{display:inline}}
-
-.sugg-card{background:#fff;border:1.5px solid #e8e4dc;border-radius:12px;overflow:hidden;transition:border-color .15s}
-.sugg-card:hover{border-color:rgba(212,165,52,0.4)}
-.sugg-card-head{padding:12px 14px 8px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
-.sugg-card-label{font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;margin-bottom:3px}
-.sugg-card-title{font-size:0.82rem;font-weight:700;color:#1a1a1a;line-height:1.3}
-.sugg-card-cesg{font-size:0.68rem;color:#1a6b3c;font-weight:600;margin-top:2px}
-.sugg-card-body{padding:0 14px 10px;font-size:0.7rem;color:#666;line-height:1.6}
-.sugg-card-rows{padding:0 14px 10px;display:flex;flex-direction:column;gap:4px}
-.sugg-row-pill{display:inline-flex;align-items:center;gap:6px;background:#f9f7f3;border:1px solid #e8e4dc;border-radius:6px;padding:4px 10px;font-size:0.68rem;color:#555}
-.sugg-row-pill .pill-amt{font-weight:700;color:#1a1a1a}
-.sugg-card-footer{padding:10px 14px;border-top:1px solid #f0ede8;display:flex;justify-content:flex-end}
-.sugg-apply-btn{background:var(--navy2,#122040);color:#fff;border:none;border-radius:7px;padding:7px 18px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s}
-.sugg-apply-btn:hover{background:#333}
-
+/* Force IBR nav dropdown to render correctly over PF CSS */
+nav .dropdown { background:#122040!important; border:1px solid rgba(201,150,58,.25)!important; border-radius:12px!important; padding:9px!important; min-width:262px!important; box-shadow:0 16px 44px rgba(0,0,0,.45)!important; }
+nav .dropdown a { display:block!important; padding:9px 13px!important; border-radius:8px!important; font-size:13.5px!important; font-weight:500!important; color:#fff!important; transition:background .15s!important; }
+nav .dropdown a:hover { background:rgba(201,150,58,.12)!important; color:#e8b96a!important; }
+/* Fix any PF CSS that might darken nav text */
+nav .nav-inner a { color:#fff!important; }
+nav .nav-menu > li > a { color:rgba(255,255,255,.82)!important; }
+nav .logo .logo-name { color:#fff!important; }
+nav .logo .logo-name em { color:#c9963a!important; }
+footer a{color:rgba(255,255,255,.55)!important;text-decoration:none!important}
+footer a:hover{color:#c9963a!important}
+footer .fl{color:#fff!important;font-weight:700!important}
+footer .fl em{color:#c9963a!important;font-style:italic!important}
+footer .fb-desc{color:rgba(255,255,255,.42)!important}
+footer .fbot span{color:rgba(255,255,255,.28)!important}
 </style>
 </head>
 <body>
@@ -497,9 +601,6 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
   <a href="quotes.html" class="mn-item">&#9889; Get Quotes</a>
   <a href="awards.html" class="mn-item">Awards</a>
   <a href="javascript:void(0)" onclick="openCalcModal()" class="mn-item">&#128274; Estate Calculator</a>
-  <a href="calculators.html" class="mn-item">&#129518; Investment Calculators</a>
-  <a href="needs-analysis.html" class="mn-item">&#128203; Needs Analysis</a>
-  <a href="needs-analysis.html" class="mn-item">&#128221; Needs Analysis</a>
   <a href="index.html#contact" class="mn-item">Contact</a>
   <div class="mn-ctas">
     <a href="tel:6477456850" class="mn-c1">&#128222; Call &mdash; 647-745-6850</a>
@@ -507,25 +608,68 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
   </div>
 </div>
 
+<h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0">Free Investing Calculators — Compound Growth, SIP, CAGR & Options Income</h1>
 
-<div class="breadcrumb"><a href="index.html">Home</a> &rsaquo; <span>Calculators</span></div>
+<!-- TOPBAR -->
+<div class="topbar" style="display:none!important">
+  <a class="wm-link" href="index.html">
+    <div class="wm-name">Punjabi <span class="wm-gold">Finance</span></div>
+  </a>
+  <div class="topbar-nav">
+  <a class="nav-btn" href="index.html">Live Portfolio</a>
+  <a class="nav-btn" href="watchlist.html">Watchlist</a>
+  <a class="nav-btn" href="philosophy.html">How I Invest</a>
+  <a class="nav-btn" href="webinars.html">Webinars</a>
+  <a class="nav-btn" href="community.html" style="color:#1a9e50">Join</a>
+  <a class="nav-btn active" href="calculators.html">Calculators</a>
+  <a class="nav-btn" href="links.html">Links</a>
+  <a class="nav-btn" href="mediakit.html">Media Kit</a>
+  </div>
+  <div class="topbar-right-btns">
+    <a class="topbar-mobile-btn join" href="community.html">Join</a>
+    <button class="ham-btn" id="ham-btn" onclick="toggleMenu()" aria-label="Menu">
+      <span class="ham-line"></span><span class="ham-line"></span><span class="ham-line"></span>
+    </button>
+  </div>
+</div>
+<nav class="nav-dropdown" id="nav-dropdown">
+  <a class="nav-btn" href="index.html">Live Portfolio</a>
+  <a class="nav-btn" href="watchlist.html">Watchlist</a>
+  <a class="nav-btn" href="philosophy.html">How I Invest</a>
+  <a class="nav-btn" href="webinars.html">Webinars</a>
+  <a class="nav-btn" href="community.html" style="color:#1a9e50">Join</a>
+  <a class="nav-btn active" href="calculators.html">Calculators</a>
+  <a class="nav-btn" href="links.html">Links</a>
+  <a class="nav-btn" href="mediakit.html">Media Kit</a>
+</nav>
 
-<div class="page-hero">
-  <div class="ph-inner">
-    <div class="ph-tag">&#129518; Financial Tools</div>
-    <h1>Free financial calculators.</h1>
-    <p>Run the numbers before you invest. Simple, honest tools to help you plan your investment growth, RESP savings, retirement withdrawals, and goal timelines.</p>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">🧮 Investing Tools</div>
+    <div class="hero-title">Plan smarter.<br><em>Calculate first.</em></div>
+    <div class="hero-sub">Free tools to plan your RESP, investment growth, retirement withdrawals, and savings goals — from Rattan Amol Taggar, independent life insurance advisor.</div>
   </div>
 </div>
 
-<div class="calc-wrapper" style="padding-top:48px">
-  <div class="calc-tabs">
-  <button class="calc-tab active" onclick="switchTab('sip',this)">&#128200; Investment Calculator</button>
-  <button class="calc-tab" onclick="switchTab('resp',this)">&#127464;&#127462; RESP Calculator</button>
-  <button class="calc-tab" onclick="switchTab('goal',this)">&#127919; Goal Planner</button>
-  <button class="calc-tab" onclick="switchTab('swp',this)">&#128185; Withdrawal Planner</button>
+<!-- TABS -->
+<div class="calc-tabs-wrap">
+<div class="calc-tabs">
+  <button class="calc-tab active" onclick="switchTab('sip')">Investment Calculator</button>
+  <button class="calc-tab" onclick="switchTab('resp')"><span class="resp-flag">🇨🇦 </span>RESP <span style="font-size:0.55rem;background:rgba(212,165,52,0.15);color:#d4a534;border:1px solid rgba(212,165,52,0.3);border-radius:4px;padding:1px 5px;letter-spacing:0.06em;vertical-align:middle;margin-left:3px">Advanced</span></button>
+  <button class="calc-tab" onclick="switchTab('goal')">Goal Planner</button>
+  <button class="calc-tab" onclick="switchTab('swp')">Withdrawal (SWP)</button>
+  <button class="calc-tab" onclick="switchTab('cagr')" style="display:none">CAGR</button>
+  <button class="calc-tab" onclick="switchTab('options')" style="display:none">Options Income</button>
 </div>
-  <div class="calc-panel active" id="panel-sip">
+</div>
+
+<div style="height:3px;background:linear-gradient(90deg,#b8862a,#d4a534,#b8862a);opacity:0.3"></div>
+<!-- ════════════════════════════════════════ -->
+<!-- PANEL 1: Monthly Investing (SIP) -->
+<!-- ════════════════════════════════════════ -->
+<div class="calc-area">
+<div class="calc-panel active" id="panel-sip">
   <div class="panel-title">Investment Calculator</div>
   <div class="panel-sub">Combine a lump sum with monthly contributions — or use either on its own. Set the other to $0 to use just one.</div>
   <div class="calc-layout">
@@ -583,7 +727,7 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
         <div class="result-bar-wrap">
           <div class="result-bar-label">How your money breaks down</div>
           <div class="result-bar-row">
-            <div class="result-bar-name"><span style="width:8px;height:8px;border-radius:50%;background:#c9963a;display:inline-block;flex-shrink:0"></span>Invested</div>
+            <div class="result-bar-name"><span style="width:8px;height:8px;border-radius:50%;background:#d4a534;display:inline-block;flex-shrink:0"></span>Invested</div>
             <div class="result-bar-track"><div class="result-bar-fill gold" id="sip-bar-inv" style="width:32%"></div></div>
             <div class="result-bar-text" id="sip-bar-inv-t">32%</div>
           </div>
@@ -603,326 +747,16 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
   
   <div class="calc-disclaimer">For illustrative purposes only. Returns are not guaranteed. Actual market returns vary and may be higher or lower than the assumed rate. Always do your own research before investing. IBR Insurance and Rattan Amol Taggar do not guarantee the accuracy of these projections and accept no responsibility or liability for financial decisions made based on this calculator. This tool does not constitute financial, tax, or legal advice.</div>
 
-  <div style="margin-top:20px"><div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+  <div style="display:none"><div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
       <span style="font-size:0.8rem;color:#555;font-weight:500">Looking to learn more about this setup?</span>
       <a href="https://www.ibrinsurance.ca/" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;background:rgba(37,211,102,0.12);color:#1a9e50;border:1.5px solid rgba(37,211,102,0.3);padding:9px 20px;border-radius:9px;font-size:0.78rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:all .15s" onmouseover="this.style.background='rgba(37,211,102,0.2)'" onmouseout="this.style.background='rgba(37,211,102,0.12)'">Learn More →</a>
     </div></div>
 </div>
-  <div class="calc-panel" id="panel-resp">
-  <div class="panel-title">🇨🇦 RESP Calculator <span style="font-size:0.6rem;background:rgba(212,165,52,0.12);color:#c9963a;border:1px solid rgba(212,165,52,0.25);border-radius:6px;padding:2px 8px;letter-spacing:0.08em;vertical-align:middle;margin-left:6px;font-family:'DM Sans',sans-serif;font-weight:700">ADVANCED</span></div>
-  <div class="panel-sub">Automatically calculates CESG and CLB government grants based on your child's date of birth. Enter your contribution plan to see projected growth by age 18.</div>
-  <div class="two-col">
 
-  <!-- ── LEFT: INPUTS ── -->
-  <div>
-    <div class="input-panel">
-      <div class="input-panel-head">
-        <div class="input-panel-title">📋 Your RESP Details</div>
-        <div class="input-panel-sub">Enter your child's info — grants calculate automatically</div>
-      </div>
-      <div class="input-panel-body">
-
-        <div class="section-label">Child Information</div>
-
-        <div class="field">
-          <div class="field-label">Child's Date of Birth <span class="field-hint" id="child-age-display">Age: —</span></div>
-          <input class="field-input" type="date" id="child-dob" onchange="initRESPSchedule(document.querySelector('.sched-from-date')?.value||'')">
-          <div class="field-note">Used to calculate grant eligibility. CESG grant room accumulates every year age 0–17. Catch-up grants available for missed years.</div>
-        </div>
-
-        <div class="section-divider"></div>
-        <div class="section-label">Contribution Schedule</div>
-        <div class="field-note" style="margin-bottom:12px">Add one or more periods with different amounts &amp; frequencies — e.g. high contributions early, then lower later.</div>
-
-        <div id="contrib-schedule-rows"></div>
-
-        <button onclick="addContribRow()" style="display:flex;align-items:center;gap:6px;background:transparent;border:1.5px dashed #c9963a;border-radius:9px;padding:9px 16px;color:#c9963a;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;justify-content:center;margin-top:4px;transition:all .15s" onmouseover="this.style.background='rgba(184,134,42,0.06)'" onmouseout="this.style.background='transparent'">
-          + Add Another Period
-        </button>
-        <div class="field-note" style="margin-top:10px">Periods run in order. $2,500/yr per period gets full $500 grant. Lifetime max $50,000. <span style="color:#c9963a">Tip: on phone, tap the month/year header in the calendar to jump to any year.</span></div>
-
-        <!-- Upfront lump sum toggle -->
-        <div class="toggle-row" onclick="toggleUpfront()">
-          <div>
-            <div class="toggle-label">Add lump sum contribution?</div>
-            <div class="toggle-sub">One-time deposit at account opening</div>
-          </div>
-          <div class="toggle-switch" id="upfront-toggle"></div>
-        </div>
-        <div class="upfront-field" id="upfront-field">
-          <div class="field">
-            <div class="field-label">Lump Sum Amount <span class="field-hint" id="lump-hint"></span></div>
-            <div class="field-input-wrap">
-              <span class="field-prefix">$</span>
-              <input class="field-input has-prefix" type="number" id="lump-sum" value="5000" min="0" max="50000" step="500" oninput="respSyncRange('lump-sum','lump-range');autoAdjustEndDates()">
-            </div>
-            <input class="field-range" type="range" id="lump-range" min="0" max="50000" step="500" value="5000" oninput="document.getElementById('lump-sum').value=this.value;autoAdjustEndDates()">
-            <div class="field-note">Applied in year 1 alongside your regular contribution. Both count toward the lifetime $50,000 limit.</div>
-          </div>
-        </div>
-
-
-        <!-- Smart Suggestions -->
-        <div id="suggestions-trigger" style="display:none;margin-top:8px">
-          <button onclick="toggleSuggestions()" style="display:flex;align-items:center;justify-content:space-between;width:100%;background:rgba(212,165,52,0.08);border:1.5px dashed rgba(212,165,52,0.4);border-radius:10px;padding:10px 16px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s" onmouseover="this.style.background='rgba(212,165,52,0.14)'" onmouseout="this.style.background='rgba(212,165,52,0.08)'">
-            <span style="display:flex;align-items:center;gap:8px;font-size:0.78rem;font-weight:700;color:#c9963a">💡 See smart suggestions</span>
-            <span id="suggestions-chevron" style="font-size:0.75rem;color:#c9963a;transition:transform .2s">▼</span>
-          </button>
-        </div>
-        <div id="suggestions-panel" style="display:none;margin-top:8px;flex-direction:column;gap:10px"></div>
-
-        <!-- Over limit error -->
-        <div id="over-limit-error" style="display:none;background:#fff0f0;border:1px solid rgba(231,76,60,0.25);border-left:3px solid #e74c3c;border-radius:10px;padding:12px 14px;margin-top:8px">
-          <div style="font-size:0.7rem;font-weight:700;color:#c0392b;margin-bottom:2px">⚠ Exceeds $50,000 lifetime limit</div>
-          <div style="font-size:0.68rem;color:#888;line-height:1.6" id="over-limit-msg">Your schedule contributes more than the lifetime limit. Contributions will be capped automatically in the calculation.</div>
-        </div>
-        <!-- CLB Toggle -->
-        <div class="toggle-row" onclick="toggleCLB()" style="margin-top:12px">
-          <div>
-            <div class="toggle-label">Eligible for Canada Learning Bond (CLB)?</div>
-            <div class="toggle-sub">Low-income families — up to $2,000, no contribution needed</div>
-          </div>
-          <div class="toggle-switch" id="clb-toggle"></div>
-        </div>
-        <div id="clb-info" style="display:none;background:#f0f7f0;border:1px solid #c3e0c3;border-radius:10px;padding:12px 14px;margin-top:8px;font-size:0.72rem;color:#1a6b3c;line-height:1.6">
-          <strong>CLB included:</strong> $500 in year 1 + $100/yr for each subsequent year child is eligible (up to age 15), max $2,000 total. Child must be born 2004 or later. No personal contribution required to receive CLB.
-        </div>
-
-        <div class="section-divider"></div>
-        <div class="section-label">Growth Assumptions</div>
-
-        <div class="field">
-          <div class="field-label">Annual Return Rate <span class="field-hint" id="rate-display">10%</span></div>
-          <div class="field-input-wrap">
-            <input class="field-input has-suffix" type="number" id="return-rate" value="10" min="1" max="30" step="0.5" oninput="respSyncRange('return-rate','rate-range');calcRESP()">
-            <span class="field-suffix">%</span>
-          </div>
-          <input class="field-range" type="range" id="rate-range" min="1" max="20" step="0.5" value="10" oninput="document.getElementById('return-rate').value=this.value;calcRESP()">
-        </div>
-
-        <input type="hidden" id="start-year" value="2026">
-
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ── RIGHT: RESULTS ── -->
-  <div class="result-panel">
-
-    <!-- Summary Card -->
-    <div class="result-summary">
-      <div class="result-head">
-        <div class="result-eyebrow">Projected Outcome at Age 18</div>
-      </div>
-      <div class="result-big">
-        <div class="result-big-item span2" style="background:#0d1e35;padding:22px 24px">
-          <div class="rbi-label">Total Portfolio Value</div>
-          <div class="rbi-val" id="res-total" style="font-size:2.2rem">$—</div>
-          <div class="rbi-sub" id="res-years">When your child is ready for post-secondary</div>
-        </div>
-        <div class="result-big-item">
-          <div class="rbi-label">Your Contributions</div>
-          <div class="rbi-val white" id="res-contrib">$—</div>
-          <div class="rbi-sub" id="res-contrib-pct"></div>
-        </div>
-        <div class="result-big-item">
-          <div class="rbi-label">Govt. Grants (CESG + CLB)</div>
-          <div class="rbi-val green" id="res-grants">$—</div>
-          <div class="rbi-sub" id="res-grants-note">CESG + CLB grants</div>
-        </div>
-        <div class="result-big-item">
-          <div class="rbi-label">Investment Growth</div>
-          <div class="rbi-val" id="res-growth" style="color:#c9963a">$—</div>
-          <div class="rbi-sub">Compounding returns</div>
-        </div>
-        <div class="result-big-item">
-          <div class="rbi-label">Total Invested</div>
-          <div class="rbi-val white" id="res-total-invested">$—</div>
-          <div class="rbi-sub">Before market growth</div>
-        </div>
-      </div>
-      <div class="result-strips">
-
-
-
-        <div class="result-strip" id="over-limit-strip" style="display:none">
-          <span class="rs-label">⚠ Lifetime limit status</span>
-          <span class="rs-val red" id="res-limit-warn">—</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Grant Progress -->
-    <div class="grant-box">
-      <div class="grant-box-head">🏛️ Government Grants Tracker</div>
-      <div class="grant-box-body">
-
-        <!-- CESG Section -->
-        <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#c9963a;margin-bottom:2px">Canada Education Savings Grant (CESG)</div>
-        <div class="grant-row">
-          <span class="grant-label">Projected total CESG received</span>
-          <span class="grant-val gold" id="gt-collected">$—</span>
-        </div>
-        <div class="grant-row">
-          <span class="grant-label">Lifetime CESG limit</span>
-          <span class="grant-val">$7,200</span>
-        </div>
-        <div class="grant-row">
-          <span class="grant-label">Remaining CESG available</span>
-          <span class="grant-val green" id="gt-remaining">$—</span>
-        </div>
-        <div class="grant-progress-wrap">
-          <div class="grant-progress-label">
-            <span id="gt-pct-label">0% of lifetime grant used</span>
-            <span>$7,200 max</span>
-          </div>
-          <div class="grant-progress-track">
-            <div class="grant-progress-fill" id="gt-bar" style="width:0%"></div>
-          </div>
-        </div>
-
-        <!-- CLB Section — shown only when CLB enabled -->
-        <div id="clb-tracker-section" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid #f0ede8">
-          <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#1a6b3c;margin-bottom:6px">Canada Learning Bond (CLB)</div>
-          <div class="grant-row">
-            <span class="grant-label">Projected CLB received</span>
-            <span class="grant-val green" id="gt-clb-received">$—</span>
-          </div>
-          <div class="grant-row">
-            <span class="grant-label">Lifetime CLB max</span>
-            <span class="grant-val">$2,000</span>
-          </div>
-          <div class="grant-row">
-            <span class="grant-label">CLB remaining available</span>
-            <span class="grant-val" id="gt-clb-remaining">$—</span>
-          </div>
-          <div class="grant-progress-wrap">
-            <div class="grant-progress-label">
-              <span id="gt-clb-pct-label">0% of CLB received</span>
-              <span>$2,000 max</span>
-            </div>
-            <div class="grant-progress-track">
-              <div class="grant-progress-fill" id="gt-clb-bar" style="width:0%;background:linear-gradient(90deg,#1a6b3c,#4caf7d)"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Total government money -->
-        <div id="gt-total-row" style="margin-top:12px;padding:10px 14px;background:#f9f7f3;border-radius:8px;display:flex;justify-content:space-between;align-items:center">
-          <span style="font-size:0.72rem;font-weight:700;color:#1a1a1a">Total govt. grants projected</span>
-          <span style="font-size:0.82rem;font-weight:800;color:#c9963a" id="gt-total-grants">$—</span>
-        </div>
-
-        <!-- Contribution limit -->
-        <div class="grant-row" style="margin-top:10px;padding-top:10px;border-top:1px solid #f0ede8">
-          <span class="grant-label">Contribution limit used</span>
-          <span class="grant-val" id="gt-contrib-pct">—</span>
-        </div>
-        <div class="grant-progress-wrap">
-          <div class="grant-progress-label">
-            <span id="gt-contrib-label">of $50,000 lifetime limit</span>
-            <span>$50,000 max</span>
-          </div>
-          <div class="grant-progress-track">
-            <div class="grant-progress-fill" id="gt-contrib-bar" style="width:0%;background:linear-gradient(90deg,#1a6b3c,#4caf7d)"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- $50K LIMIT WIDGET -->
-    <div id="limit-widget" style="background:#fff;border:1px solid #e8e4dc;border-radius:14px;overflow:hidden;display:none">
-      <div style="background:var(--navy2,#122040);padding:14px 18px;display:flex;align-items:center;gap:10px">
-        <span style="font-size:1rem">⏸️</span>
-        <div>
-          <div style="font-size:0.68rem;font-weight:700;color:#c9963a;letter-spacing:0.1em;text-transform:uppercase">$50,000 Limit Reached</div>
-          <div style="font-size:0.65rem;color:rgba(255,255,255,0.35);margin-top:1px">Pause contributions after this point</div>
-        </div>
-      </div>
-      <div style="padding:16px 18px;display:flex;flex-direction:column;gap:10px">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#fff8f0;border:1px solid rgba(212,165,52,0.2);border-radius:9px">
-          <span style="font-size:0.72rem;color:#555;font-weight:500">Limit hit in year</span>
-          <span style="font-size:0.88rem;font-weight:800;color:#c9963a" id="limit-year">—</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#f9f7f3;border:1px solid #e8e4dc;border-radius:9px">
-          <span style="font-size:0.72rem;color:#555;font-weight:500">Child's age at that point</span>
-          <span style="font-size:0.88rem;font-weight:800;color:#1a1a1a" id="limit-age">—</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#f9f7f3;border:1px solid #e8e4dc;border-radius:9px">
-          <span style="font-size:0.72rem;color:#555;font-weight:500">Approx. month to pause</span>
-          <span style="font-size:0.84rem;font-weight:700;color:#1a6b3c" id="limit-month">—</span>
-        </div>
-        <div style="font-size:0.65rem;color:#bbb;line-height:1.6;border-top:1px solid #f0ede8;padding-top:10px">After the $50,000 lifetime limit is reached, no further contributions are allowed. The portfolio continues to grow tax-sheltered. You don't need to close the account — just stop contributing.</div>
-      </div>
-    </div>
-
-    <!-- Chart -->
-    <div class="chart-panel">
-      <div class="chart-head">
-        <div class="chart-title">Growth Over Time</div>
-        <div class="chart-legend">
-          <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#c9963a"></div>Contributions</div>
-          <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#4caf7d"></div>Grants</div>
-          <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#c9963a"></div>Portfolio Value</div>
-        </div>
-      </div>
-      <div class="chart-body">
-        <canvas id="resp-chart" height="220"></canvas>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-  <!-- Year-by-year table — full width below both columns -->
-  <div class="table-panel" style="margin-top:20px">
-    <div class="table-head-bar">
-      <div class="table-title">Year-by-Year Breakdown</div>
-      <div style="font-size:0.65rem;color:#aaa">Scroll to see all years</div>
-    </div>
-    <div class="table-wrap">
-      <table class="resp-table">
-        <thead>
-          <tr>
-            <th>Year</th>
-            <th>Age</th>
-            <th>Your Contribution</th>
-            <th>CESG Grant</th>
-            <th>Year Total</th>
-            <th>Balance (End of Year)</th>
-            <th style="color:#c9963a">Growth (Cumulative)</th>
-          </tr>
-        </thead>
-        <tbody id="resp-table-body"></tbody>
-      </table>
-    </div>
-  </div>
-
-
-  <!-- RESP Rules Reference — moved after table -->
-  <details style="margin-top:12px">
-    <summary style="cursor:pointer;font-size:0.68rem;font-weight:700;color:#888;letter-spacing:0.08em;text-transform:uppercase;padding:12px 16px;background:#f9f7f3;border:1px solid #e8e4dc;border-radius:10px;list-style:none;display:flex;justify-content:space-between;align-items:center">
-      <span>📋 RESP Grant Rules Reference</span>
-      <span style="font-size:0.7rem;color:#c9963a">Show / Hide</span>
-    </summary>
-    <div class="rules-grid" style="margin-top:8px">
-      <div class="rule-item"><div class="rule-item-label">Annual CESG Grant</div><div class="rule-item-val">20% of $2,500</div><div class="rule-item-note">$500/yr max per child</div></div>
-      <div class="rule-item"><div class="rule-item-label">Lifetime CESG Max</div><div class="rule-item-val">$7,200</div><div class="rule-item-note">Total govt. grants ever</div></div>
-      <div class="rule-item"><div class="rule-item-label">Grant Cutoff</div><div class="rule-item-val">Age 17</div><div class="rule-item-note">CESG room stops Dec 31 of year child turns 17</div></div>
-      <div class="rule-item"><div class="rule-item-label">Contribution Limit</div><div class="rule-item-val">$50,000</div><div class="rule-item-note">Lifetime per beneficiary</div></div>
-      <div class="rule-item"><div class="rule-item-label">Catch-Up Grants</div><div class="rule-item-val">$1,000/yr</div><div class="rule-item-note">Contribute $5,000 to use prior unused room</div></div>
-      <div class="rule-item"><div class="rule-item-label">Account Closes By</div><div class="rule-item-val" id="rule-close-year">35 yrs after opening</div><div class="rule-item-note">Dec 31 of the 35th year</div></div>
-    </div>
-  </details>
-  <div class="calc-disclaimer">For illustrative and educational purposes only. RESP rules, grant amounts, and eligibility may change. Results assume contributions at the start of each year and a fixed annual return rate. Actual returns will vary. Enhanced CESG grants based on family income are not included. Consult a financial advisor for personalized RESP advice. <strong>IBR Insurance and Rattan Amol Taggar do not guarantee the accuracy of these projections and accept no responsibility or liability for financial decisions made based on this calculator. This tool does not constitute financial, tax, or legal advice.</strong></div>
-
-  <div style="margin-top:20px"><div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
-      <span style="font-size:0.8rem;color:#555;font-weight:500">Looking to learn more about this setup?</span>
-      <a href="https://www.ibrinsurance.ca/" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;background:rgba(37,211,102,0.12);color:#1a9e50;border:1.5px solid rgba(37,211,102,0.3);padding:9px 20px;border-radius:9px;font-size:0.78rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:all .15s" onmouseover="this.style.background='rgba(37,211,102,0.2)'" onmouseout="this.style.background='rgba(37,211,102,0.12)'">Learn More →</a>
-    </div></div>
-</div>
-  <div class="calc-panel" id="panel-goal">
+<!-- ════════════════════════════════════════ -->
+<!-- PANEL 2: Lump Sum -->
+<!-- ════════════════════════════════════════ -->
+<div class="calc-panel" id="panel-goal">
   <div class="panel-title">Goal Planner</div>
   <div class="panel-sub">How much do you need to invest monthly to reach a specific goal?</div>
   <div class="calc-layout">
@@ -984,7 +818,11 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
       <a href="https://www.ibrinsurance.ca/" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;background:rgba(37,211,102,0.12);color:#1a9e50;border:1.5px solid rgba(37,211,102,0.3);padding:9px 20px;border-radius:9px;font-size:0.78rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:all .15s" onmouseover="this.style.background='rgba(37,211,102,0.2)'" onmouseout="this.style.background='rgba(37,211,102,0.12)'">Learn More →</a>
     </div></div>
 </div>
-  <div class="calc-panel" id="panel-swp">
+
+<!-- ════════════════════════════════════════ -->
+<!-- PANEL 4: Withdrawal (SWP) -->
+<!-- ════════════════════════════════════════ -->
+<div class="calc-panel" id="panel-swp">
   <div class="panel-title">Withdrawal Planner</div>
   <div class="panel-sub">How long will your portfolio last if you withdraw a fixed amount each month?</div>
   <div class="calc-layout">
@@ -1028,7 +866,7 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
         </div>
         <div class="result-row">
           <div class="result-label">Annual Withdrawal Rate</div>
-          <div class="result-val" id="swp-rate-show" style="color:#c9963a">4.8%</div>
+          <div class="result-val" id="swp-rate-show" style="color:#d4a534">4.8%</div>
           <div class="result-note" id="swp-rate-note">The 4% rule is a common safe withdrawal guideline</div>
         </div>
         <div class="chart-wrap">
@@ -1041,88 +879,479 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
 
   <div class="calc-disclaimer">For illustrative purposes only. Withdrawal sustainability depends on market returns, inflation, and actual portfolio performance. Consult a financial advisor for retirement planning. IBR Insurance and Rattan Amol Taggar do not guarantee the accuracy of these projections and accept no responsibility or liability for financial decisions made based on this calculator. This tool does not constitute financial, tax, or legal advice.</div>
 </div>
-</div>
 
-
-<footer>
-  <!-- Desktop footer: 4-column grid -->
-  <div class="fg">
-    <div class="fb">
-      <a href="index.html" class="fl">Rattan <em>Amol Taggar</em></a>
-      <p>Life Insurance Advisor &middot; B.Eng &middot; Ford Motor Company Alumni &middot; Licensed in ON, BC, AB, MB, SK, NS, PEI, NB &middot; Independent advisor operating under iA Financial Group.</p>
+<!-- ════════════════════════════════════════ -->
+<!-- PANEL 5: CAGR -->
+<!-- ════════════════════════════════════════ -->
+<div class="calc-panel" id="panel-cagr">
+  <div class="panel-title">CAGR Calculator</div>
+  <div class="panel-sub">Calculate the Compound Annual Growth Rate of any investment — or find out what a position is worth at a given CAGR.</div>
+  <div class="calc-layout">
+    <div>
+      <div style="background:#fff;border:1px solid #e8e4dc;border-radius:12px;padding:16px 18px;margin-bottom:20px;display:flex;gap:0">
+        <button id="cagr-mode-calc" onclick="setCagrMode('calc')" style="flex:1;padding:9px;border-radius:8px;border:none;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;background:#1a1a1a;color:#fff;transition:all .15s">Find CAGR</button>
+        <button id="cagr-mode-proj" onclick="setCagrMode('proj')" style="flex:1;padding:9px;border-radius:8px;border:none;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;color:#888;transition:all .15s">Project Future Value</button>
+      </div>
+      <div id="cagr-calc-inputs">
+        <div class="input-group">
+          <div class="input-label">Initial Investment <span class="input-val" id="cagr-initial-val">$10,000</span></div>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="calc-input" id="cagr-initial" type="number" value="10000" min="1" oninput="calcCAGR()"></div>
+          <input class="calc-range" type="range" id="cagr-initial-r" min="1000" max="1000000" step="1000" value="10000" oninput="document.getElementById('cagr-initial').value=this.value;calcCAGR()">
+        </div>
+        <div class="input-group">
+          <div class="input-label">Final Value <span class="input-val" id="cagr-final-val">$50,000</span></div>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="calc-input" id="cagr-final" type="number" value="50000" min="1" oninput="calcCAGR()"></div>
+          <input class="calc-range" type="range" id="cagr-final-r" min="1000" max="2000000" step="1000" value="50000" oninput="document.getElementById('cagr-final').value=this.value;calcCAGR()">
+        </div>
+        <div class="input-group">
+          <div class="input-label">Years Held <span class="input-val" id="cagr-yrs-val">10 years</span></div>
+          <div class="input-wrap"><input class="calc-input no-prefix suffix-pad" id="cagr-yrs" type="number" value="10" min="1" max="50" oninput="calcCAGR()"><span class="input-suffix">yrs</span></div>
+          <input class="calc-range" type="range" id="cagr-yrs-r" min="1" max="50" step="1" value="10" oninput="document.getElementById('cagr-yrs').value=this.value;calcCAGR()">
+        </div>
+      </div>
+      <div id="cagr-proj-inputs" style="display:none">
+        <div class="input-group">
+          <div class="input-label">Initial Investment <span class="input-val" id="cagr-p-initial-val">$10,000</span></div>
+          <div class="input-wrap"><span class="input-prefix">$</span><input class="calc-input" id="cagr-p-initial" type="number" value="10000" min="1" oninput="calcCAGRProj()"></div>
+          <input class="calc-range" type="range" min="1000" max="1000000" step="1000" value="10000" oninput="document.getElementById('cagr-p-initial').value=this.value;calcCAGRProj()">
+        </div>
+        <div class="input-group">
+          <div class="input-label">CAGR <span class="input-val" id="cagr-p-rate-val">15%</span></div>
+          <div class="input-wrap"><input class="calc-input no-prefix suffix-pad" id="cagr-p-rate" type="number" value="15" min="1" max="100" step="0.5" oninput="calcCAGRProj()"><span class="input-suffix">%</span></div>
+          <input class="calc-range" type="range" min="1" max="50" step="0.5" value="15" oninput="document.getElementById('cagr-p-rate').value=this.value;calcCAGRProj()">
+        </div>
+        <div class="input-group">
+          <div class="input-label">Years <span class="input-val" id="cagr-p-yrs-val">10 years</span></div>
+          <div class="input-wrap"><input class="calc-input no-prefix suffix-pad" id="cagr-p-yrs" type="number" value="10" min="1" max="50" oninput="calcCAGRProj()"><span class="input-suffix">yrs</span></div>
+          <input class="calc-range" type="range" min="1" max="50" step="1" value="10" oninput="document.getElementById('cagr-p-yrs').value=this.value;calcCAGRProj()">
+        </div>
+      </div>
     </div>
-    <div class="fc"><h5>Insurance</h5><ul>
-      <li><a href="super-visa.html">Super Visa Insurance</a></li>
-      <li><a href="visitors.html">Visitors to Canada</a></li>
-      <li><a href="term-life.html">Term Life Insurance</a></li>
-      <li><a href="critical-illness.html">Critical Illness</a></li>
-      <li><a href="disability.html">Disability Insurance</a></li>
-      <li><a href="estate-planning.html">Estate Planning</a></li>
-      <li><a href="drug-dental.html">Drug &amp; Dental</a></li>
-    </ul></div>
-    <div class="fc"><h5>Investments</h5><ul>
-      <li><a href="rrsp.html">RRSP</a></li>
-      <li><a href="tfsa.html">TFSA</a></li>
-      <li><a href="fhsa.html">FHSA</a></li>
-      <li><a href="resp.html">RESP</a></li>
-      <li><a href="rdsp.html">RDSP</a></li>
-      <li><a href="non-registered.html">Non-Registered</a></li>
-      <li><a href="retirement-planning.html">Retirement Planning</a></li>
-    </ul></div>
-    <div class="fc"><h5>Connect</h5><ul>
-      <li><a href="tel:6477456850">647-745-6850</a></li>
-      <li><a href="https://wa.me/16477456850" target="_blank">WhatsApp</a></li>
-      <li><a href="quotes.html">Get Instant Quotes</a></li>
-      <li><a href="about.html">About &amp; Our Story</a></li>
-      <li><a href="awards.html">Awards</a></li>
-      <li><a href="https://www.facebook.com/punjabifinance" target="_blank">Facebook</a></li>
-      <li><a href="https://www.tiktok.com/@punjabifinance" target="_blank">TikTok</a></li>
-    </ul></div>
+    <div>
+      <div class="result-card">
+        <div class="result-eyebrow">Result</div>
+        <div class="result-row">
+          <div class="result-label" id="cagr-res-label">Compound Annual Growth Rate</div>
+          <div class="result-val" id="cagr-result">17.46%</div>
+        </div>
+        <div class="result-row">
+          <div class="result-label">Total Return</div>
+          <div class="result-val green" id="cagr-total-return">400%</div>
+        </div>
+        <div class="result-row">
+          <div class="result-label">Gain</div>
+          <div class="result-val white" id="cagr-gain">$40,000</div>
+          <div class="result-note" id="cagr-note">Over 10 years</div>
+        </div>
+      </div>
+    </div>
   </div>
-  <!-- Mobile footer: compact strip -->
-  <div class="f-name">Rattan <em>Amol Taggar</em></div>
-  <div class="f-mobile-links">
-    <a href="index.html">Home</a>
-    <a href="super-visa.html">Super Visa</a>
-    <a href="term-life.html">Term Life</a>
-    <a href="critical-illness.html">Critical Illness</a>
-    <a href="estate-planning.html">Estate Planning</a>
-    <a href="rrsp.html">RRSP</a>
-    <a href="tfsa.html">TFSA</a>
-    <a href="quotes.html">Quotes</a>
-    <a href="awards.html">Awards</a>
-    <a href="about.html">About</a>
+  <div class="calc-disclaimer">CAGR shows smoothed annual return and does not reflect year-to-year volatility. For illustrative purposes only. IBR Insurance and Rattan Amol Taggar do not guarantee the accuracy of these projections and accept no responsibility or liability for financial decisions made based on this calculator. This tool does not constitute financial, tax, or legal advice.</div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<!-- PANEL 6: Options Income -->
+<!-- ════════════════════════════════════════ -->
+<div class="calc-panel" id="panel-options">
+  <div class="panel-title">Covered Call Income Calculator</div>
+  <div class="panel-sub">Estimate monthly and annual income from selling covered calls on your stock positions.</div>
+  <div class="calc-layout">
+    <div>
+      <div class="input-group">
+        <div class="input-label">Number of Shares <span class="input-val" id="opt-shares-val">100</span></div>
+        <div class="input-wrap"><input class="calc-input no-prefix" id="opt-shares" type="number" value="100" min="100" step="100" oninput="calcOptions()"></div>
+        <input class="calc-range" type="range" id="opt-shares-r" min="100" max="10000" step="100" value="100" oninput="document.getElementById('opt-shares').value=this.value;calcOptions()">
+      </div>
+      <div class="input-group">
+        <div class="input-label">Current Stock Price <span class="input-val" id="opt-price-val">$50</span></div>
+        <div class="input-wrap"><span class="input-prefix">$</span><input class="calc-input" id="opt-price" type="number" value="50" min="1" step="0.5" oninput="calcOptions()"></div>
+        <input class="calc-range" type="range" id="opt-price-r" min="5" max="1000" step="5" value="50" oninput="document.getElementById('opt-price').value=this.value;calcOptions()">
+      </div>
+      <div class="input-group">
+        <div class="input-label">Premium per Share <span class="input-val" id="opt-prem-val">$1.50</span></div>
+        <div class="input-wrap"><span class="input-prefix">$</span><input class="calc-input" id="opt-prem" type="number" value="1.50" min="0.01" step="0.05" oninput="calcOptions()"></div>
+        <input class="calc-range" type="range" id="opt-prem-r" min="0.05" max="20" step="0.05" value="1.5" oninput="document.getElementById('opt-prem').value=this.value;calcOptions()">
+      </div>
+      <div class="input-group">
+        <div class="input-label">Contracts per Month <span class="input-val" id="opt-contracts-val">1</span></div>
+        <div class="input-wrap"><input class="calc-input no-prefix" id="opt-contracts" type="number" value="1" min="1" oninput="calcOptions()"></div>
+        <input class="calc-range" type="range" id="opt-contracts-r" min="1" max="50" step="1" value="1" oninput="document.getElementById('opt-contracts').value=this.value;calcOptions()">
+        <div style="font-size:0.65rem;color:#aaa;margin-top:4px">1 contract = 100 shares</div>
+      </div>
+    </div>
+    <div>
+      <div class="result-card">
+        <div class="result-eyebrow">Income Estimate</div>
+        <div class="result-row">
+          <div class="result-label">Monthly Premium Income</div>
+          <div class="result-val" id="opt-monthly">$150</div>
+        </div>
+        <div class="result-row">
+          <div class="result-label">Annual Income Projection</div>
+          <div class="result-val green" id="opt-annual">$1,800</div>
+        </div>
+        <div class="result-row">
+          <div class="result-label">Yield on Position</div>
+          <div class="result-val white" id="opt-yield">36%</div>
+          <div class="result-note" id="opt-pos-val">Position value: $5,000</div>
+        </div>
+        <div class="result-bar-wrap">
+          <div class="result-bar-label">Monthly vs Annual</div>
+          <div class="result-bar-row">
+            <div class="result-bar-name"><span style="width:8px;height:8px;border-radius:50%;background:#d4a534;display:inline-block;flex-shrink:0"></span>Monthly</div>
+            <div class="result-bar-track"><div class="result-bar-fill gold" style="width:8%"></div></div>
+            <div class="result-bar-text" id="opt-bar-mo-t">$150</div>
+          </div>
+          <div class="result-bar-row">
+            <div class="result-bar-name"><span style="width:8px;height:8px;border-radius:50%;background:#4caf7d;display:inline-block;flex-shrink:0"></span>Annual</div>
+            <div class="result-bar-track"><div class="result-bar-fill green" style="width:100%"></div></div>
+            <div class="result-bar-text" id="opt-bar-yr-t">$1,800</div>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-label">Cumulative Income Over 12 Months</div>
+          <div class="chart-canvas-wrap"><canvas id="chart-options"></canvas></div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="fbot">
-    <span>&copy; 2026 Rattan Amol Taggar &middot; Life Insurance Advisor. All rights reserved.</span>
-    <span>Independent &middot; Not affiliated with any single carrier</span>
+  <div class="calc-disclaimer">Options involve risk. This calculator assumes consistent monthly contracts at the same premium — actual premiums vary with volatility, time to expiry, and strike selection. Not financial advice. IBR Insurance and Rattan Amol Taggar do not guarantee the accuracy of these projections and accept no responsibility or liability for financial decisions made based on this calculator. This tool does not constitute financial, tax, or legal advice.</div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<!-- PANEL 7: RESP CALCULATOR -->
+<!-- ════════════════════════════════════════ -->
+<div class="calc-panel" id="panel-resp">
+  <div class="panel-title">🇨🇦 RESP Calculator <span style="font-size:0.6rem;background:rgba(212,165,52,0.12);color:#b8862a;border:1px solid rgba(212,165,52,0.25);border-radius:6px;padding:2px 8px;letter-spacing:0.08em;vertical-align:middle;margin-left:6px;font-family:'DM Sans',sans-serif;font-weight:700">ADVANCED</span></div>
+  <div class="panel-sub">Automatically calculates CESG and CLB government grants based on your child's date of birth. Enter your contribution plan to see projected growth by age 18.</div>
+  <div class="two-col">
+
+  <!-- ── LEFT: INPUTS ── -->
+  <div>
+    <div class="input-panel">
+      <div class="input-panel-head">
+        <div class="input-panel-title">📋 Your RESP Details</div>
+        <div class="input-panel-sub">Enter your child's info — grants calculate automatically</div>
+      </div>
+      <div class="input-panel-body">
+
+        <div class="section-label">Child Information</div>
+
+        <div class="field">
+          <div class="field-label">Child's Date of Birth <span class="field-hint" id="child-age-display">Age: —</span></div>
+          <input class="field-input" type="date" id="child-dob" onchange="initRESPSchedule(document.querySelector('.sched-from-date')?.value||'')">
+          <div class="field-note">Used to calculate grant eligibility. CESG grant room accumulates every year age 0–17. Catch-up grants available for missed years.</div>
+        </div>
+
+        <div class="section-divider"></div>
+        <div class="section-label">Contribution Schedule</div>
+        <div class="field-note" style="margin-bottom:12px">Add one or more periods with different amounts &amp; frequencies — e.g. high contributions early, then lower later.</div>
+
+        <div id="contrib-schedule-rows"></div>
+
+        <button onclick="addContribRow()" style="display:flex;align-items:center;gap:6px;background:transparent;border:1.5px dashed #b8862a;border-radius:9px;padding:9px 16px;color:#b8862a;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;justify-content:center;margin-top:4px;transition:all .15s" onmouseover="this.style.background='rgba(184,134,42,0.06)'" onmouseout="this.style.background='transparent'">
+          + Add Another Period
+        </button>
+        <div class="field-note" style="margin-top:10px">Periods run in order. $2,500/yr per period gets full $500 grant. Lifetime max $50,000. <span style="color:#b8862a">Tip: on phone, tap the month/year header in the calendar to jump to any year.</span></div>
+
+        <!-- Upfront lump sum toggle -->
+        <div class="toggle-row" onclick="toggleUpfront()">
+          <div>
+            <div class="toggle-label">Add lump sum contribution?</div>
+            <div class="toggle-sub">One-time deposit at account opening</div>
+          </div>
+          <div class="toggle-switch" id="upfront-toggle"></div>
+        </div>
+        <div class="upfront-field" id="upfront-field">
+          <div class="field">
+            <div class="field-label">Lump Sum Amount <span class="field-hint" id="lump-hint"></span></div>
+            <div class="field-input-wrap">
+              <span class="field-prefix">$</span>
+              <input class="field-input has-prefix" type="number" id="lump-sum" value="5000" min="0" max="50000" step="500" oninput="respSyncRange('lump-sum','lump-range');autoAdjustEndDates()">
+            </div>
+            <input class="field-range" type="range" id="lump-range" min="0" max="50000" step="500" value="5000" oninput="document.getElementById('lump-sum').value=this.value;autoAdjustEndDates()">
+            <div class="field-note">Applied in year 1 alongside your regular contribution. Both count toward the lifetime $50,000 limit.</div>
+          </div>
+        </div>
+
+
+        <!-- Smart Suggestions -->
+        <div id="suggestions-trigger" style="display:none;margin-top:8px">
+          <button onclick="toggleSuggestions()" style="display:flex;align-items:center;justify-content:space-between;width:100%;background:rgba(212,165,52,0.08);border:1.5px dashed rgba(212,165,52,0.4);border-radius:10px;padding:10px 16px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s" onmouseover="this.style.background='rgba(212,165,52,0.14)'" onmouseout="this.style.background='rgba(212,165,52,0.08)'">
+            <span style="display:flex;align-items:center;gap:8px;font-size:0.78rem;font-weight:700;color:#b8862a">💡 See smart suggestions</span>
+            <span id="suggestions-chevron" style="font-size:0.75rem;color:#b8862a;transition:transform .2s">▼</span>
+          </button>
+        </div>
+        <div id="suggestions-panel" style="display:none;margin-top:8px;flex-direction:column;gap:10px"></div>
+
+        <!-- Over limit error -->
+        <div id="over-limit-error" style="display:none;background:#fff0f0;border:1px solid rgba(231,76,60,0.25);border-left:3px solid #e74c3c;border-radius:10px;padding:12px 14px;margin-top:8px">
+          <div style="font-size:0.7rem;font-weight:700;color:#c0392b;margin-bottom:2px">⚠ Exceeds $50,000 lifetime limit</div>
+          <div style="font-size:0.68rem;color:#888;line-height:1.6" id="over-limit-msg">Your schedule contributes more than the lifetime limit. Contributions will be capped automatically in the calculation.</div>
+        </div>
+        <!-- CLB Toggle -->
+        <div class="toggle-row" onclick="toggleCLB()" style="margin-top:12px">
+          <div>
+            <div class="toggle-label">Eligible for Canada Learning Bond (CLB)?</div>
+            <div class="toggle-sub">Low-income families — up to $2,000, no contribution needed</div>
+          </div>
+          <div class="toggle-switch" id="clb-toggle"></div>
+        </div>
+        <div id="clb-info" style="display:none;background:#f0f7f0;border:1px solid #c3e0c3;border-radius:10px;padding:12px 14px;margin-top:8px;font-size:0.72rem;color:#1a6b3c;line-height:1.6">
+          <strong>CLB included:</strong> $500 in year 1 + $100/yr for each subsequent year child is eligible (up to age 15), max $2,000 total. Child must be born 2004 or later. No personal contribution required to receive CLB.
+        </div>
+
+        <div class="section-divider"></div>
+        <div class="section-label">Growth Assumptions</div>
+
+        <div class="field">
+          <div class="field-label">Annual Return Rate <span class="field-hint" id="rate-display">10%</span></div>
+          <div class="field-input-wrap">
+            <input class="field-input has-suffix" type="number" id="return-rate" value="10" min="1" max="30" step="0.5" oninput="respSyncRange('return-rate','rate-range');calcRESP()">
+            <span class="field-suffix">%</span>
+          </div>
+          <input class="field-range" type="range" id="rate-range" min="1" max="20" step="0.5" value="10" oninput="document.getElementById('return-rate').value=this.value;calcRESP()">
+        </div>
+
+        <input type="hidden" id="start-year" value="2026">
+
+      </div>
+    </div>
+
   </div>
-</footer>
-<div class="sticky-call">
-  <div class="sticky-call-inner">
-    <a href="tel:6477456850" class="sc-call">&#128222; Call Now</a>
-    <a href="https://wa.me/16477456850" target="_blank" class="sc-wa">&#128172; WhatsApp</a>
+
+  <!-- ── RIGHT: RESULTS ── -->
+  <div class="result-panel">
+
+    <!-- Summary Card -->
+    <div class="result-summary">
+      <div class="result-head">
+        <div class="result-eyebrow">Projected Outcome at Age 18</div>
+      </div>
+      <div class="result-big">
+        <div class="result-big-item span2" style="background:#0d0b04;padding:22px 24px">
+          <div class="rbi-label">Total Portfolio Value</div>
+          <div class="rbi-val" id="res-total" style="font-size:2.2rem">$—</div>
+          <div class="rbi-sub" id="res-years">When your child is ready for post-secondary</div>
+        </div>
+        <div class="result-big-item">
+          <div class="rbi-label">Your Contributions</div>
+          <div class="rbi-val white" id="res-contrib">$—</div>
+          <div class="rbi-sub" id="res-contrib-pct"></div>
+        </div>
+        <div class="result-big-item">
+          <div class="rbi-label">Govt. Grants (CESG + CLB)</div>
+          <div class="rbi-val green" id="res-grants">$—</div>
+          <div class="rbi-sub" id="res-grants-note">CESG + CLB grants</div>
+        </div>
+        <div class="result-big-item">
+          <div class="rbi-label">Investment Growth</div>
+          <div class="rbi-val" id="res-growth" style="color:#d4a534">$—</div>
+          <div class="rbi-sub">Compounding returns</div>
+        </div>
+        <div class="result-big-item">
+          <div class="rbi-label">Total Invested</div>
+          <div class="rbi-val white" id="res-total-invested">$—</div>
+          <div class="rbi-sub">Before market growth</div>
+        </div>
+      </div>
+      <div class="result-strips">
+
+
+
+        <div class="result-strip" id="over-limit-strip" style="display:none">
+          <span class="rs-label">⚠ Lifetime limit status</span>
+          <span class="rs-val red" id="res-limit-warn">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grant Progress -->
+    <div class="grant-box">
+      <div class="grant-box-head">🏛️ Government Grants Tracker</div>
+      <div class="grant-box-body">
+
+        <!-- CESG Section -->
+        <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#b8862a;margin-bottom:2px">Canada Education Savings Grant (CESG)</div>
+        <div class="grant-row">
+          <span class="grant-label">Projected total CESG received</span>
+          <span class="grant-val gold" id="gt-collected">$—</span>
+        </div>
+        <div class="grant-row">
+          <span class="grant-label">Lifetime CESG limit</span>
+          <span class="grant-val">$7,200</span>
+        </div>
+        <div class="grant-row">
+          <span class="grant-label">Remaining CESG available</span>
+          <span class="grant-val green" id="gt-remaining">$—</span>
+        </div>
+        <div class="grant-progress-wrap">
+          <div class="grant-progress-label">
+            <span id="gt-pct-label">0% of lifetime grant used</span>
+            <span>$7,200 max</span>
+          </div>
+          <div class="grant-progress-track">
+            <div class="grant-progress-fill" id="gt-bar" style="width:0%"></div>
+          </div>
+        </div>
+
+        <!-- CLB Section — shown only when CLB enabled -->
+        <div id="clb-tracker-section" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid #f0ede8">
+          <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#1a6b3c;margin-bottom:6px">Canada Learning Bond (CLB)</div>
+          <div class="grant-row">
+            <span class="grant-label">Projected CLB received</span>
+            <span class="grant-val green" id="gt-clb-received">$—</span>
+          </div>
+          <div class="grant-row">
+            <span class="grant-label">Lifetime CLB max</span>
+            <span class="grant-val">$2,000</span>
+          </div>
+          <div class="grant-row">
+            <span class="grant-label">CLB remaining available</span>
+            <span class="grant-val" id="gt-clb-remaining">$—</span>
+          </div>
+          <div class="grant-progress-wrap">
+            <div class="grant-progress-label">
+              <span id="gt-clb-pct-label">0% of CLB received</span>
+              <span>$2,000 max</span>
+            </div>
+            <div class="grant-progress-track">
+              <div class="grant-progress-fill" id="gt-clb-bar" style="width:0%;background:linear-gradient(90deg,#1a6b3c,#4caf7d)"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total government money -->
+        <div id="gt-total-row" style="margin-top:12px;padding:10px 14px;background:#f9f7f3;border-radius:8px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:0.72rem;font-weight:700;color:#1a1a1a">Total govt. grants projected</span>
+          <span style="font-size:0.82rem;font-weight:800;color:#b8862a" id="gt-total-grants">$—</span>
+        </div>
+
+        <!-- Contribution limit -->
+        <div class="grant-row" style="margin-top:10px;padding-top:10px;border-top:1px solid #f0ede8">
+          <span class="grant-label">Contribution limit used</span>
+          <span class="grant-val" id="gt-contrib-pct">—</span>
+        </div>
+        <div class="grant-progress-wrap">
+          <div class="grant-progress-label">
+            <span id="gt-contrib-label">of $50,000 lifetime limit</span>
+            <span>$50,000 max</span>
+          </div>
+          <div class="grant-progress-track">
+            <div class="grant-progress-fill" id="gt-contrib-bar" style="width:0%;background:linear-gradient(90deg,#1a6b3c,#4caf7d)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- $50K LIMIT WIDGET -->
+    <div id="limit-widget" style="background:#fff;border:1px solid #e8e4dc;border-radius:14px;overflow:hidden;display:none">
+      <div style="background:#1a1a1a;padding:14px 18px;display:flex;align-items:center;gap:10px">
+        <span style="font-size:1rem">⏸️</span>
+        <div>
+          <div style="font-size:0.68rem;font-weight:700;color:#d4a534;letter-spacing:0.1em;text-transform:uppercase">$50,000 Limit Reached</div>
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.35);margin-top:1px">Pause contributions after this point</div>
+        </div>
+      </div>
+      <div style="padding:16px 18px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#fff8f0;border:1px solid rgba(212,165,52,0.2);border-radius:9px">
+          <span style="font-size:0.72rem;color:#555;font-weight:500">Limit hit in year</span>
+          <span style="font-size:0.88rem;font-weight:800;color:#b8862a" id="limit-year">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#f9f7f3;border:1px solid #e8e4dc;border-radius:9px">
+          <span style="font-size:0.72rem;color:#555;font-weight:500">Child's age at that point</span>
+          <span style="font-size:0.88rem;font-weight:800;color:#1a1a1a" id="limit-age">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#f9f7f3;border:1px solid #e8e4dc;border-radius:9px">
+          <span style="font-size:0.72rem;color:#555;font-weight:500">Approx. month to pause</span>
+          <span style="font-size:0.84rem;font-weight:700;color:#1a6b3c" id="limit-month">—</span>
+        </div>
+        <div style="font-size:0.65rem;color:#bbb;line-height:1.6;border-top:1px solid #f0ede8;padding-top:10px">After the $50,000 lifetime limit is reached, no further contributions are allowed. The portfolio continues to grow tax-sheltered. You don't need to close the account — just stop contributing.</div>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-panel">
+      <div class="chart-head">
+        <div class="chart-title">Growth Over Time</div>
+        <div class="chart-legend">
+          <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#b8862a"></div>Contributions</div>
+          <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#4caf7d"></div>Grants</div>
+          <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#d4a534"></div>Portfolio Value</div>
+        </div>
+      </div>
+      <div class="chart-body">
+        <canvas id="resp-chart" height="220"></canvas>
+      </div>
+    </div>
+
   </div>
 </div>
 
-<div class="sticky-call"><div class="sticky-call-inner">
-  <a href="tel:6477456850" class="sc-call">&#128222; Call Now</a>
-  <a href="https://wa.me/16477456850" target="_blank" class="sc-wa">&#128172; WhatsApp</a>
-</div></div>
-<div id="calcModal" style="display:none;position:fixed;inset:0;background:rgba(8,15,28,.92);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
-  <div style="background:#122040;border:1px solid rgba(201,150,58,.36);border-radius:16px;padding:36px;max-width:340px;width:92%;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.65)">
-    <div style="font-size:2.4rem;margin-bottom:12px">&#128274;</div>
-    <div style="font-family:'Fraunces',serif;font-size:1.5rem;font-weight:900;color:#fff;margin-bottom:6px">Advisor Access</div>
-    <div style="font-size:12px;color:rgba(255,255,255,.42);margin-bottom:18px;line-height:1.6">Enter access code to unlock the estate planning calculator.</div>
-    <div id="calcModalErr" style="color:#f5a0a0;font-size:11px;margin-bottom:8px;display:none">Incorrect code.</div>
-    <input type="password" id="calcPw" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" maxlength="10" style="width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:8px;color:#fff;font-size:20px;font-family:inherit;padding:11px 14px;letter-spacing:.32em;text-align:center;margin-bottom:10px;outline:none" onkeyup="if(event.key==='Enter')doCalcUnlock()">
-    <button onclick="doCalcUnlock()" style="width:100%;background:#c9963a;border:none;border-radius:8px;color:#0d1e35;font-size:14px;font-weight:800;padding:12px;cursor:pointer;font-family:inherit;margin-bottom:8px">Unlock Calculator &rarr;</button>
-    <button onclick="document.getElementById('calcModal').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,.32);font-size:11px;cursor:pointer;font-family:inherit">Cancel</button>
+  <!-- Year-by-year table — full width below both columns -->
+  <div class="table-panel" style="margin-top:20px">
+    <div class="table-head-bar">
+      <div class="table-title">Year-by-Year Breakdown</div>
+      <div style="font-size:0.65rem;color:#aaa">Scroll to see all years</div>
+    </div>
+    <div class="table-wrap">
+      <table class="resp-table">
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>Age</th>
+            <th>Your Contribution</th>
+            <th>CESG Grant</th>
+            <th>Year Total</th>
+            <th>Balance (End of Year)</th>
+            <th style="color:#b8862a">Growth (Cumulative)</th>
+          </tr>
+        </thead>
+        <tbody id="resp-table-body"></tbody>
+      </table>
+    </div>
   </div>
+
+
+  <!-- RESP Rules Reference — moved after table -->
+  <details style="margin-top:12px">
+    <summary style="cursor:pointer;font-size:0.68rem;font-weight:700;color:#888;letter-spacing:0.08em;text-transform:uppercase;padding:12px 16px;background:#f9f7f3;border:1px solid #e8e4dc;border-radius:10px;list-style:none;display:flex;justify-content:space-between;align-items:center">
+      <span>📋 RESP Grant Rules Reference</span>
+      <span style="font-size:0.7rem;color:#b8862a">Show / Hide</span>
+    </summary>
+    <div class="rules-grid" style="margin-top:8px">
+      <div class="rule-item"><div class="rule-item-label">Annual CESG Grant</div><div class="rule-item-val">20% of $2,500</div><div class="rule-item-note">$500/yr max per child</div></div>
+      <div class="rule-item"><div class="rule-item-label">Lifetime CESG Max</div><div class="rule-item-val">$7,200</div><div class="rule-item-note">Total govt. grants ever</div></div>
+      <div class="rule-item"><div class="rule-item-label">Grant Cutoff</div><div class="rule-item-val">Age 17</div><div class="rule-item-note">CESG room stops Dec 31 of year child turns 17</div></div>
+      <div class="rule-item"><div class="rule-item-label">Contribution Limit</div><div class="rule-item-val">$50,000</div><div class="rule-item-note">Lifetime per beneficiary</div></div>
+      <div class="rule-item"><div class="rule-item-label">Catch-Up Grants</div><div class="rule-item-val">$1,000/yr</div><div class="rule-item-note">Contribute $5,000 to use prior unused room</div></div>
+      <div class="rule-item"><div class="rule-item-label">Account Closes By</div><div class="rule-item-val" id="rule-close-year">35 yrs after opening</div><div class="rule-item-note">Dec 31 of the 35th year</div></div>
+    </div>
+  </details>
+  <div class="calc-disclaimer">For illustrative and educational purposes only. RESP rules, grant amounts, and eligibility may change. Results assume contributions at the start of each year and a fixed annual return rate. Actual returns will vary. Enhanced CESG grants based on family income are not included. Consult a financial advisor for personalized RESP advice. <strong>IBR Insurance and Rattan Amol Taggar do not guarantee the accuracy of these projections and accept no responsibility or liability for financial decisions made based on this calculator. This tool does not constitute financial, tax, or legal advice.</strong></div>
+
+  <div style="margin-top:20px"><div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+      <span style="font-size:0.8rem;color:#555;font-weight:500">Looking to learn more about this setup?</span>
+      <a href="https://www.ibrinsurance.ca/" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;background:rgba(37,211,102,0.12);color:#1a9e50;border:1.5px solid rgba(37,211,102,0.3);padding:9px 20px;border-radius:9px;font-size:0.78rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:all .15s" onmouseover="this.style.background='rgba(37,211,102,0.2)'" onmouseout="this.style.background='rgba(37,211,102,0.12)'">Learn More →</a>
+    </div></div>
 </div>
+</div>
+
+
+<!-- CTA -->
+<div class="calc-cta" style="display:none!important">
+  <div class="calc-cta-text">
+    <strong>See how I apply this in my real portfolio</strong>
+    I share every covered call, position sizing decision, and trade in real time — with full reasoning. Members see the numbers behind the numbers.
+  </div>
+  <a class="calc-cta-btn" href="community.html">&#128172; Join the Community</a>
+</div>
+
+</div><!-- /calc-area -->
+
+<div class="footer-bar" style="display:none!important">Not financial advice &nbsp;&middot;&nbsp; ibrinsurance.ca &nbsp;&middot;&nbsp; <a href="community.html">Community</a> &nbsp;&middot;&nbsp; <a href="links.html">Links</a></div>
 
 <script>
-
 
 
 
@@ -1149,9 +1378,9 @@ document.addEventListener('click',function(e){
 });
 
 var respInitialized = false;
-function switchTab(id,btn){
+function switchTab(id){
   document.querySelectorAll('.calc-tab').forEach((t,i)=>t.classList.remove('active'));
-  if(btn)btn.classList.add('active');
+  event.target.classList.add('active');
   document.querySelectorAll('.calc-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
   // Init RESP on first open
@@ -1249,7 +1478,7 @@ function calcSIP(){
     invested_arr.push(Math.round(lump+mo*i*12));
   }
   makeChart('chart-sip', labels, [
-    {label:'Portfolio Value',data:total_arr,borderColor:'#c9963a',backgroundColor:'rgba(212,165,52,0.08)',fill:true,tension:0.3,pointRadius:0,borderWidth:2},
+    {label:'Portfolio Value',data:total_arr,borderColor:'#d4a534',backgroundColor:'rgba(212,165,52,0.08)',fill:true,tension:0.3,pointRadius:0,borderWidth:2},
     {label:'Invested',data:invested_arr,borderColor:'rgba(255,255,255,0.2)',backgroundColor:'transparent',fill:false,tension:0.3,pointRadius:0,borderWidth:1,borderDash:[4,4]}
   ]);
 }
@@ -1443,7 +1672,7 @@ function chartSIP(){
     total.push(Math.round(t));
   }
   makeChart('chart-sip', labels, [
-    {label:'Total Value',data:total,borderColor:'#c9963a',backgroundColor:'rgba(212,165,52,0.08)',fill:true,tension:0.3,pointRadius:0,borderWidth:2},
+    {label:'Total Value',data:total,borderColor:'#d4a534',backgroundColor:'rgba(212,165,52,0.08)',fill:true,tension:0.3,pointRadius:0,borderWidth:2},
     {label:'Invested',data:invested,borderColor:'rgba(255,255,255,0.2)',backgroundColor:'transparent',fill:false,tension:0.3,pointRadius:0,borderWidth:1,borderDash:[4,4]}
   ]);
 }
@@ -1460,7 +1689,7 @@ function chartLS(){
     gain.push(Math.round(t-p));
   }
   makeChart('chart-ls', labels, [
-    {label:'Value',data:total,borderColor:'#c9963a',backgroundColor:'rgba(212,165,52,0.08)',fill:true,tension:0.3,pointRadius:0,borderWidth:2}
+    {label:'Value',data:total,borderColor:'#d4a534',backgroundColor:'rgba(212,165,52,0.08)',fill:true,tension:0.3,pointRadius:0,borderWidth:2}
   ]);
 }
 
@@ -1570,7 +1799,7 @@ function respUpdateChart(years, contribData, grantData, portfolioData){
         {
           label: 'Portfolio Value',
           data: portfolioData,
-          borderColor: '#c9963a',
+          borderColor: '#d4a534',
           backgroundColor: 'rgba(212,165,52,0.08)',
           fill: true,
           tension: 0.4,
@@ -1580,7 +1809,7 @@ function respUpdateChart(years, contribData, grantData, portfolioData){
         {
           label: 'Total Contributed',
           data: contribData,
-          borderColor: '#c9963a',
+          borderColor: '#b8862a',
           backgroundColor: 'transparent',
           fill: false,
           tension: 0.4,
@@ -2207,7 +2436,7 @@ function renderSuggestions(suggs){
         <div>
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
             <span class="sugg-card-label">Option ${i+1}</span>
-            ${s.badge ? '<span style="font-size:0.58rem;font-weight:700;background:rgba(212,165,52,0.12);color:#c9963a;border:1px solid rgba(212,165,52,0.25);border-radius:4px;padding:1px 6px;letter-spacing:0.06em">' + s.badge + '</span>' : ''}
+            ${s.badge ? '<span style="font-size:0.58rem;font-weight:700;background:rgba(212,165,52,0.12);color:#b8862a;border:1px solid rgba(212,165,52,0.25);border-radius:4px;padding:1px 6px;letter-spacing:0.06em">' + s.badge + '</span>' : ''}
           </div>
           <div class="sugg-card-title">${s.title}</div>
           <div class="sugg-card-cesg">✓ ${i === 0 ? (s.cesgLabel || 'Up to ' + fmtS(s.cesg)) + ' in government grants' : 'Max ' + fmtS(s.cesg) + ' — optimize grants within payment constraints'}</div>
@@ -2703,7 +2932,7 @@ function calcRESP(){
       <td style="color:#1a6b3c;font-weight:600;display:${clbEnabled?'table-cell':'none'}">${(row.yearCLB||0) > 0 ? '+'+respFmtFull(row.yearCLB||0) : '—'}</td>
       <td class="td-total">${respFmtFull(row.yearTotal)}</td>
       <td class="td-balance">${respFmtFull(row.endBal)}</td>
-      <td style="color:#c9963a;font-weight:600">${row.cumGrowth > 0 ? '+'+respFmtFull(row.cumGrowth) : '—'}</td>
+      <td style="color:#b8862a;font-weight:600">${row.cumGrowth > 0 ? '+'+respFmtFull(row.cumGrowth) : '—'}</td>
     </tr>
   `).join('');
 
@@ -2722,8 +2951,72 @@ function calcRESP(){
 
 
 
-
 </script>
+
+
+<footer>
+  <!-- Desktop footer: 4-column grid -->
+  <div class="fg">
+    <div class="fb">
+      <a href="index.html" class="fl">Rattan <em>Amol Taggar</em></a>
+      <p>Life Insurance Advisor &middot; B.Eng &middot; Ford Motor Company Alumni &middot; Licensed in ON, BC, AB, MB, SK, NS, PEI, NB &middot; Independent advisor operating under iA Financial Group.</p>
+    </div>
+    <div class="fc"><h5>Insurance</h5><ul>
+      <li><a href="super-visa.html">Super Visa Insurance</a></li>
+      <li><a href="visitors.html">Visitors to Canada</a></li>
+      <li><a href="term-life.html">Term Life Insurance</a></li>
+      <li><a href="critical-illness.html">Critical Illness</a></li>
+      <li><a href="disability.html">Disability Insurance</a></li>
+      <li><a href="estate-planning.html">Estate Planning</a></li>
+      <li><a href="drug-dental.html">Drug &amp; Dental</a></li>
+    </ul></div>
+    <div class="fc"><h5>Investments</h5><ul>
+      <li><a href="rrsp.html">RRSP</a></li>
+      <li><a href="tfsa.html">TFSA</a></li>
+      <li><a href="fhsa.html">FHSA</a></li>
+      <li><a href="resp.html">RESP</a></li>
+      <li><a href="rdsp.html">RDSP</a></li>
+      <li><a href="non-registered.html">Non-Registered</a></li>
+      <li><a href="retirement-planning.html">Retirement Planning</a></li>
+    </ul></div>
+    <div class="fc"><h5>Connect</h5><ul>
+      <li><a href="tel:6477456850">647-745-6850</a></li>
+      <li><a href="https://wa.me/16477456850" target="_blank">WhatsApp</a></li>
+      <li><a href="quotes.html">Get Instant Quotes</a></li>
+      <li><a href="about.html">About &amp; Our Story</a></li>
+      <li><a href="awards.html">Awards</a></li>
+      <li><a href="https://www.facebook.com/punjabifinance" target="_blank">Facebook</a></li>
+      <li><a href="https://www.tiktok.com/@punjabifinance" target="_blank">TikTok</a></li>
+    </ul></div>
+  </div>
+  <!-- Mobile footer: compact strip -->
+  <div class="f-name">Rattan <em>Amol Taggar</em></div>
+  <div class="f-mobile-links">
+    <a href="index.html">Home</a>
+    <a href="super-visa.html">Super Visa</a>
+    <a href="term-life.html">Term Life</a>
+    <a href="critical-illness.html">Critical Illness</a>
+    <a href="estate-planning.html">Estate Planning</a>
+    <a href="rrsp.html">RRSP</a>
+    <a href="tfsa.html">TFSA</a>
+    <a href="quotes.html">Quotes</a>
+    <a href="awards.html">Awards</a>
+    <a href="about.html">About</a>
+  </div>
+  <div class="fbot">
+    <span>&copy; 2026 Rattan Amol Taggar &middot; Life Insurance Advisor. All rights reserved.</span>
+    <span>Independent &middot; Not affiliated with any single carrier</span>
+  </div>
+</footer>
+<div class="sticky-call">
+  <div class="sticky-call-inner">
+    <a href="tel:6477456850" class="sc-call">&#128222; Call Now</a>
+    <a href="https://wa.me/16477456850" target="_blank" class="sc-wa">&#128172; WhatsApp</a>
+  </div>
+</div>
+
+<div 
+<div id="calcModal" style="display:none;position:fixed;inset:0;background:rgba(8,15,28,.92);z-index:1000;align-items:center;justify-content:center"><div style="background:#122040;border:1px solid rgba(201,150,58,.36);border-radius:16px;padding:36px;max-width:340px;width:92%;text-align:center"><div id="calcModalErr" style="color:#f5a0a0;font-size:11px;display:none">Incorrect.</div><input type="password" id="calcPw" maxlength="10" style="width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:8px;color:#fff;font-size:20px;padding:11px 14px;text-align:center;margin-bottom:10px;outline:none" onkeyup="if(event.key==='Enter')doCalcUnlock()"><button onclick="doCalcUnlock()" style="width:100%;background:#c9963a;border:none;border-radius:8px;color:#0d1e35;font-size:14px;font-weight:800;padding:12px;cursor:pointer;margin-bottom:8px">Unlock &rarr;</button><button onclick="document.getElementById('calcModal').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,.32);font-size:11px;cursor:pointer">Cancel</button></div></div>
 
 <script>
 function openCalcModal(){var m=document.getElementById('calcModal');if(m){m.style.display='flex';setTimeout(function(){var i=document.getElementById('calcPw');if(i)i.focus();},80);}else{window.location.href='index.html#calculators';}}
