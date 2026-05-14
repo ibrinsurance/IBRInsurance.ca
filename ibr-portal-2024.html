@@ -433,7 +433,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzC6l59GZSjvzPDS-5aHE_7QbPjSJSPDh0uENQLLOtCGxsBRGB0c0JhXVaZuYElt8-5/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwCfkS59lauxIXAO_ieTHZayIP3ieheMB2cyJNc7D2ubqpUQ4ZYQYN2jsQsP-HqcRys/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -506,8 +506,14 @@ async function sheetWrite(action, data){
   try{
     const params=new URLSearchParams({action});
     Object.entries(data).forEach(([k,v])=>params.set(k,typeof v==='object'?JSON.stringify(v):v));
-    // Use no-cors for writes — we don't need the response
     fetch(APPS_SCRIPT_URL+'?'+params.toString(),{mode:'no-cors',redirect:'follow'});
+  }catch(e){console.warn('Write error:',e);}
+}
+function sheetWritePost(action, data){
+  if(!sheetConnected)return;
+  try{
+    var body=Object.assign({action:action},data);
+    fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(body),headers:{'Content-Type':'application/json'}});
   }catch(e){console.warn('Write error:',e);}
 }
 
@@ -1385,9 +1391,10 @@ async function submitEdit(id){
   c.pr=g('e-pr')||c.pr;var _pn=g('e-pn')||c.pn;if(_pn&&_pn[0]==='0'&&!_pn.startsWith("'"))_pn="'"+_pn;c.pn=_pn;c.cv=g('e-cv')||c.cv;c.ap=g('e-ap')||c.ap;
   if(isOwner)c.cm=g('e-cm')||c.cm;c.src=g('e-src')||c.src;c.ph=g('e-ph')||c.ph;
   c.em=g('e-em')||c.em;c.cy=g('e-cy')||c.cy;c.fu=g('e-fu')||null;
-  var cols=[[3,c.cn],[4,c.ins],[5,c.ds],[6,c.co],[7,c.cv],[8,c.pn],[14,c.ph],[15,c.em],[16,c.cy],[17,c.ap],[20,c.src],[21,c.pr],[22,c.fu||'']];
-  if(isOwner)cols.push([18,c.cm]);
-  for(var i=0;i<cols.length;i++)sheetWrite('writeCell',{rowNum:c.rowNum,colNum:cols[i][0],value:cols[i][1]});
+  // Use POST to avoid URL length limits when writing many fields
+  var rowData={rowNum:c.rowNum,cn:c.cn,ins:c.ins,ds:c.ds,co:c.co,cv:c.cv,pn:c.pn,ph:c.ph,em:c.em,cy:c.cy,ap:c.ap,src:c.src,pr:c.pr,fu:c.fu||''};
+  if(isOwner)rowData.cm=c.cm;
+  sheetWritePost('writeRow',rowData);
   if(_editFromLinked!==null){var _lid=_editFromLinked;_editFromLinked=null;render();setTimeout(function(){openLinkedPolicy(_lid);},50);}else{document.getElementById('modal').innerHTML='';render();}
 }
 
