@@ -1388,7 +1388,7 @@ async function submitEdit(id){
   var cols=[[3,c.cn],[4,c.ins],[5,c.ds],[6,c.co],[7,c.cv],[8,c.pn],[14,c.ph],[15,c.em],[16,c.cy],[17,c.ap],[20,c.src],[21,c.pr],[22,c.fu||'']];
   if(isOwner)cols.push([18,c.cm]);
   for(var i=0;i<cols.length;i++)sheetWrite('writeCell',{rowNum:c.rowNum,colNum:cols[i][0],value:cols[i][1]});
-  document.getElementById('modal').innerHTML='';render();
+  if(_editFromLinked!==null){var _lid=_editFromLinked;_editFromLinked=null;render();setTimeout(function(){openLinkedPolicy(_lid);},50);}else{document.getElementById('modal').innerHTML='';render();}
 }
 
 
@@ -2066,7 +2066,7 @@ function submitAddLead(){
     status:'active'
   };
   leads.unshift(lead);saveLead(lead);
-  document.getElementById('modal').innerHTML='';render();
+  if(_editFromLinked!==null){var _lid=_editFromLinked;_editFromLinked=null;render();setTimeout(function(){openLinkedPolicy(_lid);},50);}else{document.getElementById('modal').innerHTML='';render();}
 }
 
 function openEditLeadModal(id){
@@ -2341,7 +2341,7 @@ function renderLeadCards(leadList){
 }
 
 // ── ANALYTICS MODULE ──────────────────────────────────────────────
-var _anYears=[];var _anMonths=[];var _anExpHH={};var _anView='monthly';
+var _anYears=[];var _anMonths=[];var _editFromLinked=null;var _anExpHH={};var _anView='monthly';
 var _anAllYears=[];var _anNoneYears=false;
 
 function _buildAnalyticsData(){
@@ -3517,7 +3517,7 @@ function openLinkedPolicy(id){
   // Action buttons
   html+='<div class="fac">';
   html+='<button onclick="document.getElementById(\'modal\').innerHTML=\'\'" class="bcn">Close</button>';
-  html+='<button onclick="openEditModal('+c.id+')" class="bsb">Edit policy</button>';
+  html+='<button onclick="_editFromLinked='+c.id+';openEditModal('+c.id+')" class="bsb">Edit policy</button>';
   html+='<button onclick="cloneSale('+c.id+')" style="font-size:12px;padding:8px 16px;border:1px solid var(--accent);border-radius:var(--rs);background:var(--accent-l);cursor:pointer;color:var(--accent);font-family:DM Sans,sans-serif;font-weight:500">&#43; Clone sale</button>';
   // Close/reopen button
   if(c.status!=='closed'){html+='<button onclick="event.stopPropagation();togglePolicyClosed('+c.id+');document.getElementById(\'modal\').innerHTML=\'\'" style="font-size:12px;padding:8px 16px;border:1px solid var(--red);border-radius:var(--rs);background:none;cursor:pointer;color:var(--red);font-family:DM Sans,sans-serif">&#10005; Close policy</button>';}
