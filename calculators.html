@@ -444,7 +444,7 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
 <style id="ibr-dropdown-fix">
 
 @media(max-width:960px){
-  div.topbar:first-of-type{display:none!important}
+  div.topbar:first-of-type,#ibr-topbar{display:none!important}
   nav .btn-call,.nav-menu,.btn-quote{display:none!important}
   .hamburger{display:flex!important}
 }
@@ -502,10 +502,37 @@ footer .fl em{color:#c9963a!important;font-style:italic!important}
 footer .fb-desc{color:rgba(255,255,255,.42)!important}
 footer .fbot span{color:rgba(255,255,255,.28)!important}
 </style>
+
+<style id="ibr-overrides">
+/* Match IBR navy hero background */
+.hero{background:#0d1e35!important}
+/* Hero text - 2 lines max on desktop */
+.hero-title{max-width:700px!important;margin-left:auto!important;margin-right:auto!important}
+.hero-sub{max-width:680px!important}
+
+#ibr-topbar{background:#0d1e35!important;border-bottom:1px solid rgba(201,150,58,.2)!important}
+#ibr-topbar a{color:rgba(255,255,255,.65)!important;text-decoration:none!important}
+#ibr-topbar a:hover{color:#fff!important;text-decoration:none!important}
+#ibr-topbar .tb-r a{color:rgba(255,255,255,.65)!important;text-decoration:none!important}
+nav a,nav a:visited{text-decoration:none!important}
+nav .nav-menu > li > a{color:rgba(255,255,255,.82)!important;text-decoration:none!important}
+nav .dropdown a{color:#fff!important;text-decoration:none!important}
+nav .dropdown a:hover{color:#e8b96a!important;background:rgba(201,150,58,.12)!important}
+footer .f-name{display:none}
+footer .f-mobile-links{display:none}
+footer .fg{display:grid!important}
+@media(max-width:960px){
+  footer .f-name{display:block}
+  footer .f-mobile-links{display:flex}
+  footer .fg{display:none!important}
+  #ibr-topbar{display:none!important}
+}
+</style>
+
 </head>
 <body>
 
-<div class="topbar">
+<div class="topbar" id="ibr-topbar">
   <span>&#127464;&#127462; Licensed: ON &middot; BC &middot; AB &middot; MB &middot; SK &middot; NS &middot; PEI &middot; NB</span>
   <div class="tb-r">
     <a href="https://share.google/cPVqZl6i5B7tOrQSP" target="_blank">&#11088; 425+ Google Reviews</a>
