@@ -620,7 +620,7 @@ input[type=range]{accent-color:var(--gold)!important}
 
 <div class="na-wrap">
   
-<div class="na-print-bar">
+<div class="na-print-bar" style="display:none">
   <span>&#128203; Generate a signed compliance report for your records.</span>
   <button class="btn-print" onclick="naAskPw('print')">&#128438; Print / Save PDF</button>
   <button class="btn-dl" onclick="naAskPw('download')">&#11015;&#65039; Download HTML</button>
@@ -689,12 +689,12 @@ input[type=range]{accent-color:var(--gold)!important}
         <input class="calc-range" type="range" min="10" max="100" step="5" value="70" oninput="document.getElementById('n-pct').value=this.value;calcNeeds()">
       </div>
       <div class="input-group">
-        <div class="input-label">Years of support <span class="input-val" id="n-yrs-lbl">20 yrs</span></div>
+        <div class="input-label">Years of support <span class="input-val" id="n-yrs-lbl">10 yrs</span></div>
         <div class="input-wrap">
-          <input class="calc-input no-prefix suffix-pad" id="n-yrs" type="number" value="20" min="1" max="40" step="1" oninput="needsClearChips('yrs-chips');calcNeeds()">
+          <input class="calc-input no-prefix suffix-pad" id="n-yrs" type="number" value="10" min="1" max="40" step="1" oninput="needsClearChips('yrs-chips');calcNeeds()">
           <span class="input-suffix">yrs</span>
         </div>
-        <input class="calc-range" id="n-yrs-r" type="range" min="1" max="40" step="1" value="20" oninput="document.getElementById('n-yrs').value=this.value;needsClearChips('yrs-chips');calcNeeds()">
+        <input class="calc-range" id="n-yrs-r" type="range" min="1" max="40" step="1" value="10" oninput="document.getElementById('n-yrs').value=this.value;needsClearChips('yrs-chips');calcNeeds()">
       </div>
       <div class="input-group">
         <div class="input-label">Expected return <span class="input-val" id="n-ret-lbl">6%</span></div>
@@ -757,9 +757,9 @@ input[type=range]{accent-color:var(--gold)!important}
     <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;flex:1;min-width:0">
       <div style="font-size:0.62rem;font-weight:700;color:#888;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap">📅 Years of support</div>
       <div class="needs-chips" id="yrs-chips" style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="needs-chip" onclick="needsChip('n-yrs','n-yrs-r',10,'yrs-chips')">10 yrs</button>
+        <button class="needs-chip active" onclick="needsChip('n-yrs','n-yrs-r',10,'yrs-chips')">10 yrs</button>
         <button class="needs-chip" onclick="needsChip('n-yrs','n-yrs-r',15,'yrs-chips')">15 yrs</button>
-        <button class="needs-chip active" onclick="needsChip('n-yrs','n-yrs-r',20,'yrs-chips')">20 yrs</button>
+        <button class="needs-chip" onclick="needsChip('n-yrs','n-yrs-r',20,'yrs-chips')">20 yrs</button>
         <button class="needs-chip" onclick="needsChip('n-yrs','n-yrs-r',25,'yrs-chips')">25 yrs</button>
         <button class="needs-chip" onclick="needsChip('n-yrs','n-yrs-r',30,'yrs-chips')">30 yrs</button>
       </div>
@@ -841,8 +841,8 @@ input[type=range]{accent-color:var(--gold)!important}
     <!-- Right: CTAs -->
     <div class="needs-strip-right" style="display:flex;flex-direction:column;gap:10px;min-width:150px">
       <button onclick="downloadNeedsReport()" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;border-radius:10px;font-weight:700;font-size:0.78rem;text-decoration:none;background:#E63946;color:#fff;text-align:center;border:none;cursor:pointer;width:100%">📄 Download Report</button>
-      <a href="https://wa.me/16479955891?text=Hi%20Rattan%2C%20I%20used%20the%20needs%20calculator%20and%20would%20like%20to%20discuss%20my%20coverage" target="_blank" style="display:flex;align-items:center;justify-content:center;padding:10px 16px;border-radius:10px;font-weight:700;font-size:0.75rem;text-decoration:none;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.75);border:1px solid rgba(255,255,255,0.15);text-align:center">💬 Chat with Rattan</a>
-      <a href="https://ia.ca/life-insurance-calculator?cuid=ct0bQpfM" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;padding:10px 16px;border-radius:10px;font-weight:700;font-size:0.75rem;text-decoration:none;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.55);border:1px solid rgba(255,255,255,0.1);text-align:center">Get Instant Quote</a>
+      <a href="https://wa.me/16477456850?text=Hi%20Rattan%2C%20I%20used%20the%20needs%20calculator%20and%20would%20like%20to%20discuss%20my%20coverage" target="_blank" style="display:flex;align-items:center;justify-content:center;padding:10px 16px;border-radius:10px;font-weight:700;font-size:0.75rem;text-decoration:none;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.75);border:1px solid rgba(255,255,255,0.15);text-align:center">💬 Chat with Rattan</a>
+      <a href="https://www.ibrinsurance.ca/quotes.html" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;padding:10px 16px;border-radius:10px;font-weight:700;font-size:0.75rem;text-decoration:none;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.55);border:1px solid rgba(255,255,255,0.1);text-align:center">Get Instant Quote</a>
       <div style="font-size:0.58rem;color:rgba(255,255,255,0.18);text-align:center;line-height:1.5">Educational only · Not advice<br>Rattan Amol Taggar</div>
     </div>
 
@@ -924,7 +924,7 @@ input[type=range]{accent-color:var(--gold)!important}
         </div>
 
         <div style="font-size:0.64rem;color:rgba(255,255,255,0.4);line-height:1.65;margin-bottom:14px">A tax-free lump sum paid if you're diagnosed with a covered condition (heart attack, cancer, stroke, etc.). Covers what OHIP doesn't — lost income during recovery, private care, home adjustments.</div>
-        <a href="https://wa.me/16479955891?text=Hi%20Rattan%2C%20I%27d%20like%20to%20learn%20about%20Critical%20Illness%20insurance" target="_blank" style="display:block;text-align:center;padding:10px;border-radius:9px;font-weight:700;font-size:0.75rem;text-decoration:none;background:rgba(230,57,70,0.18);color:#E63946;border:1px solid rgba(230,57,70,0.3)">Ask Rattan about CI →</a>
+        <a href="https://wa.me/16477456850?text=Hi%20Rattan%2C%20I%27d%20like%20to%20learn%20about%20Critical%20Illness%20insurance" target="_blank" style="display:block;text-align:center;padding:10px;border-radius:9px;font-weight:700;font-size:0.75rem;text-decoration:none;background:rgba(230,57,70,0.18);color:#E63946;border:1px solid rgba(230,57,70,0.3)">Ask Rattan about CI →</a>
 
       </div>
 
@@ -934,7 +934,7 @@ input[type=range]{accent-color:var(--gold)!important}
         <div style="font-size:1.55rem;font-weight:800;color:#fff;line-height:1" id="n-di-amount">$5,250<span style="font-size:0.85rem;font-weight:500;color:rgba(255,255,255,0.45)">/mo</span></div>
         <div style="font-size:0.65rem;color:rgba(255,255,255,0.38);margin-top:5px;margin-bottom:12px">Suggested monthly benefit · 70% of income</div>
         <div style="font-size:0.65rem;color:rgba(255,255,255,0.45);line-height:1.65;flex:1">Replaces your paycheque if illness or injury stops you from working. 1 in 3 Canadians will face a disability before retirement. Group plans often fall short — an individual policy fills the gap.</div>
-        <a href="https://wa.me/16479955891?text=Hi%20Rattan%2C%20I%27d%20like%20to%20learn%20about%20Disability%20insurance" target="_blank" style="display:block;text-align:center;margin-top:16px;padding:10px;border-radius:9px;font-weight:700;font-size:0.75rem;text-decoration:none;background:rgba(58,107,192,0.18);color:#6b9fff;border:1px solid rgba(58,107,192,0.3)">Ask Rattan about DI →</a>
+        <a href="https://wa.me/16477456850?text=Hi%20Rattan%2C%20I%27d%20like%20to%20learn%20about%20Disability%20insurance" target="_blank" style="display:block;text-align:center;margin-top:16px;padding:10px;border-radius:9px;font-weight:700;font-size:0.75rem;text-decoration:none;background:rgba(58,107,192,0.18);color:#6b9fff;border:1px solid rgba(58,107,192,0.3)">Ask Rattan about DI →</a>
       </div>
 
     </div>
@@ -1250,237 +1250,160 @@ function calcCI() {
 
 // ── Download PDF Report ─────────────────────────────────────────────────────
 function downloadNeedsReport() {
-  // Collect inputs
-  const clientName = (document.getElementById('n-client-name').value || '').trim() || 'Client';
+  const clientName = (document.getElementById('n-client-name')?.value || '').trim() || 'Client';
 
-  const g = id => parseFloat(document.getElementById(id).value) || 0;
+  const g = id => parseFloat(document.getElementById(id)?.value) || 0;
   const mortgage  = g('n-mortgage');
   const funeral   = g('n-funeral');
+  const debt      = g('n-debt');
+  const edu       = g('n-edu');
   const emergency = g('n-emergency');
-  const education = g('n-education');
+  const years     = g('n-yrs') || 10;
   const income    = g('n-income');
-  const pct       = g('n-pct');
-  const yrs       = g('n-yrs');
-  const ret       = g('n-ret');
-  const ins       = g('n-ins');
-  const grp       = g('n-group');
-  const rrsp      = g('n-rrsp');
-  const savings   = g('n-savings');
+  const assets    = g('n-assets');
+  const existing  = g('n-existing');
 
-  // Read computed results from DOM
-  const totalCoverage = document.getElementById('n-result-main').textContent.trim();
-  const cashNeeds     = document.getElementById('n-s1-total').textContent.trim();
-  const incomeNeeds   = document.getElementById('n-s2-total').textContent.trim();
-  const assetsTotal   = document.getElementById('n-s3-total').textContent.trim();
-  const ciAmount      = document.getElementById('n-ci-amount').textContent.trim();
-  const ciHousing     = parseFloat(document.getElementById('ci-housing').value) || 0;
-  const ciLoans       = parseFloat(document.getElementById('ci-loans').value)   || 0;
-  const ciSavingsInp  = parseFloat(document.getElementById('ci-savings').value) || 0;
-  const ciOther       = parseFloat(document.getElementById('ci-other').value)   || 0;
-  const ciMonthly     = ciHousing + ciLoans + ciSavingsInp + ciOther;
-  const ciMonthlyTotal = document.getElementById('ci-monthly-total').textContent.trim();
-  const ciMonthsVal   = ciMonths;
-  const pvFactor      = document.getElementById('n-pv-factor').textContent.trim();
-  const diRaw         = document.getElementById('n-di-amount');
-  const diText        = diRaw ? diRaw.innerText.replace(/\s+/g,' ').trim() : '—';
-  const resultSub     = document.getElementById('n-result-sub').textContent.trim();
-  const isShortfall   = resultSub.includes('already cover');
+  const fmt = n => '$' + Math.round(n).toLocaleString('en-CA');
+  const today = new Date().toLocaleDateString('en-CA', {year:'numeric',month:'long',day:'numeric'});
 
-  const fmt = n => n > 0 ? '$' + n.toLocaleString('en-CA') : '$0';
+  // Get results from the live page
+  const totalEl = document.getElementById('n-total');
+  const totalCoverage = totalEl ? totalEl.textContent : '—';
+  const diEl = document.getElementById('n-di-amount');
+  const diAmount = diEl ? diEl.textContent : '—';
+  const ciEl = document.getElementById('n-ci-amount');
+  const ciAmount = ciEl ? ciEl.textContent : '—';
 
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Life Insurance Needs Analysis — ${clientName}</title>
+<title>Life Insurance Needs Analysis — Rattan Amol Taggar</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',Arial,sans-serif;color:#1a1a1a;background:#fff;font-size:10.5pt}
-@page{size:letter;margin:.5in .6in}
-@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
-
-.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;padding-bottom:13px;border-bottom:3px solid #0F2142}
-.logo-name{font-size:20pt;font-weight:900;letter-spacing:.02em;color:#0F2142}
-.logo-tag{font-size:7pt;letter-spacing:.2em;text-transform:uppercase;color:#E63946;font-weight:700;margin-top:3px}
-.advisor-block{text-align:right;font-size:8.5pt;color:#666;line-height:1.7}
-.advisor-block strong{color:#0F2142;font-size:10pt;display:block;font-weight:800}
-
-.doc-title{font-size:15pt;font-weight:900;color:#0F2142;margin-bottom:3px}
-.doc-sub{font-size:7.5pt;color:#aaa;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
-
-
-
-.result-hero{background:#0F2142;border-radius:9px;padding:14px 20px;color:#fff;margin-bottom:13px;display:flex;align-items:center;justify-content:space-between}
-.rh-label{font-size:7.5pt;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:4px}
-.rh-amount{font-size:26pt;font-weight:900;color:#E63946;line-height:1}
-.rh-note{font-size:7.5pt;color:rgba(255,255,255,.35);margin-top:5px;max-width:180px;line-height:1.45}
-.rh-breakdown{display:flex;gap:20px;flex-shrink:0}
-.bd-item{text-align:center}
-.bd-lbl{font-size:7.5pt;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);margin-bottom:3px}
-.bd-val{font-size:12pt;font-weight:900}
-.bd-val.red{color:#E63946}.bd-val.blue{color:#6b9fff}.bd-val.green{color:#4caf7d}
-
-.sec-title{font-size:7.5pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#E63946;margin:12px 0 8px}
-
-.inputs-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
-.ic{background:#f9f9fb;border-radius:7px;padding:10px 12px;border-top:2.5px solid #e0e3ec}
-.ic.red-t{border-top-color:#E63946}.ic.blue-t{border-top-color:#3a6bc0}.ic.green-t{border-top-color:#4caf7d}
-.ic-title{font-size:7.5pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#aaa;margin-bottom:6px}
-.ir{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid #f0f0f0}
-.ir:last-of-type{border-bottom:none}
-.ir .lbl{font-size:8.5pt;color:#666}
-.ir .val{font-size:9pt;font-weight:700;color:#0F2142}
-.subtotal{display:flex;justify-content:space-between;margin-top:7px;padding-top:6px;border-top:1px solid #ddd}
-.st-lbl{font-size:7.5pt;text-transform:uppercase;color:#bbb;font-weight:700;letter-spacing:.06em}
-.st-val{font-size:10pt;font-weight:900}
-.st-val.red{color:#c9963a}.st-val.blue{color:#2c5fab}.st-val.green{color:#1a7a4a}
-
-.assump-row{background:#f4f6fb;border-radius:7px;padding:9px 14px;display:flex;gap:30px;margin-bottom:12px;font-size:9pt}
-.as-item label{color:#bbb;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:2px;font-size:7.5pt}
-.as-item span{color:#0F2142;font-weight:800}
-
-.extra-grid{display:grid;grid-template-columns:3fr 2fr;gap:11px;margin-bottom:16px}
-.ec{background:#0F2142;border-radius:8px;padding:13px 15px;color:#fff}
-.ec-type{font-size:7.5pt;text-transform:uppercase;letter-spacing:.12em;font-weight:700;margin-bottom:5px}
-.ec-type.red{color:#E63946}.ec-type.blue{color:#6b9fff}
-.ec-amount{font-size:18pt;font-weight:900;color:#fff;line-height:1;margin-bottom:7px}
-.ec-sub{font-size:7.5pt;color:rgba(255,255,255,.38);line-height:1.6}
-.ec-row{display:flex;justify-content:space-between;font-size:8pt;color:rgba(255,255,255,.5);padding:3px 0;border-bottom:1px solid rgba(255,255,255,.07)}
-.ec-row:last-of-type{border-bottom:none}
-.ec-row span:last-child{font-weight:700;color:rgba(255,255,255,.8)}
-.ec-total{display:flex;justify-content:space-between;font-size:8pt;margin-top:7px;padding-top:6px;border-top:1px solid rgba(255,255,255,.15)}
-.ec-total span:last-child{font-weight:800;color:#fff}
-
-.sig-section{margin-top:18px;padding-top:14px;border-top:2px solid #e8eaf0}
-.sig-title-txt{font-size:8.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#0F2142;margin-bottom:14px}
-.sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
-.sig-line{border-bottom:1.5px solid #0F2142;height:36px;margin-bottom:5px}
-.sig-lbl{font-size:8pt;color:#aaa;text-transform:uppercase;letter-spacing:.08em}
-.sig-name{font-size:9.5pt;font-weight:700;color:#0F2142;margin-top:2px}
-
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Arial',sans-serif;color:#1a1a2e;background:#fff;padding:36px 44px;font-size:11pt;line-height:1.6}
+  .header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2.5px solid #0d1e35;padding-bottom:16px;margin-bottom:24px}
+  .advisor-name{font-size:20pt;font-weight:900;color:#0d1e35;letter-spacing:-.02em}
+  .advisor-name em{color:#c9963a;font-style:normal}
+  .advisor-info{font-size:9pt;color:#666;line-height:1.8;margin-top:4px}
+  .doc-title{font-size:14pt;font-weight:700;color:#0d1e35}
+  .doc-sub{font-size:9pt;color:#888;margin-top:2px}
+  .result-hero{background:#0d1e35;color:#fff;border-radius:10px;padding:24px 28px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+  .rh-label{font-size:8pt;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:4px}
+  .rh-amount{font-size:28pt;font-weight:900;color:#fff;letter-spacing:-.02em}
+  .rh-note{font-size:8.5pt;color:rgba(255,255,255,.5);margin-top:4px;max-width:300px}
+  .section{margin-bottom:18px}
+  .section-title{font-size:9pt;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#0d1e35;border-bottom:1px solid #e5e7eb;padding-bottom:5px;margin-bottom:10px}
+  .row{display:flex;justify-content:space-between;padding:4px 0;font-size:10pt}
+  .row-label{color:#555}
+  .row-value{font-weight:600;color:#0d1e35}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+  .card{background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;padding:14px 16px}
+  .card-label{font-size:8pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:4px}
+  .card-value{font-size:16pt;font-weight:900;color:#0d1e35}
+  .disclaimer{font-size:8pt;color:#999;line-height:1.65;border:1px solid #e5e7eb;border-radius:6px;padding:10px 14px;margin-bottom:24px;background:#fafafa}
+  /* Signature block */
+  .sig-section{margin-top:32px;border-top:2px solid #0d1e35;padding-top:24px;page-break-inside:avoid}
+  .sig-title{font-size:10pt;font-weight:700;color:#0d1e35;letter-spacing:.06em;text-transform:uppercase;margin-bottom:20px}
+  .sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+  .sig-box{display:flex;flex-direction:column;gap:6px}
+  .sig-line{border-bottom:1.5px solid #333;height:44px;width:100%}
+  .sig-label{font-size:8.5pt;font-weight:700;color:#555;letter-spacing:.04em;text-transform:uppercase}
+  .sig-name{font-size:10pt;color:#111;font-weight:600;margin-top:2px}
+  .sig-date-line{border-bottom:1.5px solid #333;height:44px;width:60%}
+  .footer-bar{display:flex;justify-content:space-between;font-size:8pt;color:#bbb;border-top:1px solid #e5e7eb;padding-top:10px;margin-top:28px}
+  @media print{body{padding:24px 32px}}
 </style>
 </head>
 <body>
-
 <div class="header">
   <div>
-    <div class="logo-name">Rattan Amol Taggar</div>
-    <div class="logo-tag">Life Insurance Advisor &nbsp;·&nbsp; HLLQP Licensed</div>
+    <div class="advisor-name">Rattan <em>Amol Taggar</em></div>
+    <div class="advisor-info">Life Insurance Advisor &nbsp;·&nbsp; HLLQP Licensed &nbsp;·&nbsp; iA Financial Group<br>647-745-6850 &nbsp;·&nbsp; rattan.taggar@gmail.com &nbsp;·&nbsp; ibrinsurance.ca</div>
   </div>
-  <div class="advisor-block">
-    647-745-6850 &nbsp;·&nbsp; rattan.taggar@gmail.com<br>
+  <div style="text-align:right">
+    <div class="doc-title">Life Insurance Needs Analysis</div>
+    <div class="doc-sub">Prepared for client review &nbsp;·&nbsp; ${today}</div>
   </div>
 </div>
-
-<div class="doc-title">Life Insurance Needs Analysis</div>
-<div class="doc-sub">Prepared for client review</div>
-
 
 <div class="result-hero">
   <div>
     <div class="rh-label">Recommended Life Insurance Coverage</div>
     <div class="rh-amount">${totalCoverage}</div>
-    <div class="rh-note">${isShortfall ? 'Existing assets already cover estimated needs — strong financial position.' : 'Estimated coverage gap based on information provided. Subject to underwriting approval.'}</div>
-  </div>
-  <div class="rh-breakdown">
-    <div class="bd-item">
-      <div class="bd-lbl">Cash Needs</div>
-      <div class="bd-val red">${cashNeeds}</div>
-    </div>
-    <div class="bd-item">
-      <div class="bd-lbl">Income (PV)</div>
-      <div class="bd-val blue">${incomeNeeds}</div>
-    </div>
-    <div class="bd-item">
-      <div class="bd-lbl">Less Assets</div>
-      <div class="bd-val green">−${assetsTotal}</div>
-    </div>
+    <div class="rh-note">Estimated coverage gap based on information provided. Subject to underwriting approval.</div>
   </div>
 </div>
 
-<div class="sec-title">Inputs Used in This Analysis</div>
-
-<div class="inputs-grid">
-  <div class="ic red-t">
-    <div class="ic-title">💸 Cash Needs</div>
-    <div class="ir"><span class="lbl">Mortgage / debt</span><span class="val">${fmt(mortgage)}</span></div>
-    <div class="ir"><span class="lbl">Funeral &amp; estate</span><span class="val">${fmt(funeral)}</span></div>
-    <div class="ir"><span class="lbl">Emergency fund</span><span class="val">${fmt(emergency)}</span></div>
-    <div class="ir"><span class="lbl">Education fund</span><span class="val">${fmt(education)}</span></div>
-    <div class="subtotal"><span class="st-lbl">Subtotal</span><span class="st-val red">${cashNeeds}</span></div>
+<div class="two-col">
+  <div class="card">
+    <div class="card-label">&#128737;&#65039; Critical Illness</div>
+    <div class="card-value">${ciAmount}</div>
+    <div style="font-size:8.5pt;color:#888;margin-top:4px">Suggested lump-sum benefit</div>
   </div>
-  <div class="ic blue-t">
-    <div class="ic-title">💰 Income Replacement</div>
-    <div class="ir"><span class="lbl">Annual income</span><span class="val">${fmt(income)}</span></div>
-    <div class="ir"><span class="lbl">Replacement %</span><span class="val">${pct}%</span></div>
-    <div class="ir"><span class="lbl">Years of support</span><span class="val">${yrs} yrs</span></div>
-    <div class="ir"><span class="lbl">Expected return</span><span class="val">${ret}%</span></div>
-    <div class="ir"><span class="lbl">PV factor applied</span><span class="val">${pvFactor}</span></div>
-    <div class="subtotal"><span class="st-lbl">Subtotal (PV)</span><span class="st-val blue">${incomeNeeds}</span></div>
-  </div>
-  <div class="ic green-t">
-    <div class="ic-title">✅ Assets to Deduct</div>
-    <div class="ir"><span class="lbl">Existing life insurance</span><span class="val">${fmt(ins)}</span></div>
-    <div class="ir"><span class="lbl">Group / employer coverage</span><span class="val">${fmt(grp)}</span></div>
-    <div class="ir"><span class="lbl">RRSPs / investments</span><span class="val">${fmt(rrsp)}</span></div>
-    <div class="ir"><span class="lbl">Savings / cash</span><span class="val">${fmt(savings)}</span></div>
-    <div class="subtotal"><span class="st-lbl">Already covered</span><span class="st-val green">${assetsTotal}</span></div>
+  <div class="card">
+    <div class="card-label">&#129497; Disability Insurance</div>
+    <div class="card-value">${diAmount}</div>
+    <div style="font-size:8.5pt;color:#888;margin-top:4px">Suggested monthly benefit</div>
   </div>
 </div>
 
-<div class="assump-row">
-  <div class="as-item"><label>Years of Support</label><span>${yrs} years</span></div>
-  <div class="as-item"><label>Income Replacement</label><span>${pct}%</span></div>
-  <div class="as-item"><label>Expected Return</label><span>${ret}% / yr</span></div>
-  <div class="as-item"><label>PV Factor Applied</label><span>${pvFactor}</span></div>
+<div class="section">
+  <div class="section-title">Income & Family</div>
+  <div class="row"><span class="row-label">Annual income</span><span class="row-value">${fmt(income)}</span></div>
+  <div class="row"><span class="row-label">Years of income replacement</span><span class="row-value">${years} years</span></div>
+  <div class="row"><span class="row-label">Education fund</span><span class="row-value">${fmt(edu)}</span></div>
+  <div class="row"><span class="row-label">Emergency fund</span><span class="row-value">${fmt(emergency)}</span></div>
 </div>
 
-<div class="sec-title">Additional Coverage to Consider</div>
+<div class="section">
+  <div class="section-title">Debts & Final Expenses</div>
+  <div class="row"><span class="row-label">Mortgage / rent obligation</span><span class="row-value">${fmt(mortgage)}</span></div>
+  <div class="row"><span class="row-label">Other debts</span><span class="row-value">${fmt(debt)}</span></div>
+  <div class="row"><span class="row-label">Final expenses / funeral</span><span class="row-value">${fmt(funeral)}</span></div>
+</div>
 
-<div class="extra-grid">
-  <div class="ec">
-    <div class="ec-type red">🫀 Critical Illness Insurance</div>
-    <div class="ec-amount">${ciAmount}</div>
-    ${ciMonthly > 0 ? `
-    <div class="ec-row"><span>Mortgage / rent</span><span>${fmt(ciHousing)}/mo</span></div>
-    <div class="ec-row"><span>Loans / credit cards</span><span>${fmt(ciLoans)}/mo</span></div>
-    <div class="ec-row"><span>RRSP / TFSA / RESP</span><span>${fmt(ciSavingsInp)}/mo</span></div>
-    <div class="ec-row"><span>Other expenses</span><span>${fmt(ciOther)}/mo</span></div>
-    <div class="ec-total"><span>× ${ciMonthsVal} mo + medical + wellness</span><span>${ciMonthlyTotal} + $25,000</span></div>
-    ` : `<div class="ec-sub">Tax-free lump sum on diagnosis of heart attack, cancer, stroke &amp; more. Enter monthly commitments to calculate.</div>`}
-  </div>
-  <div class="ec">
-    <div class="ec-type blue">🛡️ Disability Insurance</div>
-    <div class="ec-amount">${diText}</div>
-    <div class="ec-sub">Suggested monthly benefit · 70% of income, capped at $10,000/mo<br>Replaces income if illness or injury prevents you from working</div>
-  </div>
+<div class="section">
+  <div class="section-title">Assets & Existing Coverage</div>
+  <div class="row"><span class="row-label">Savings & liquid assets</span><span class="row-value">${fmt(assets)}</span></div>
+  <div class="row"><span class="row-label">Existing life insurance</span><span class="row-value">${fmt(existing)}</span></div>
+</div>
+
+<div class="disclaimer">
+  <strong>Disclaimer:</strong> This analysis is for educational and discussion purposes only. Results are estimates based on standard industry rules of thumb and do not constitute financial, insurance, or legal advice. Actual coverage needs vary by individual circumstances, health, and underwriting. IBR Insurance and Rattan Amol Taggar accept no responsibility for decisions made based on this tool. Consult a licensed advisor before purchasing any insurance product.
 </div>
 
 <div class="sig-section">
-  <div class="sig-title-txt">Acknowledgement &amp; Signature</div>
+  <div class="sig-title">Acknowledgement &amp; Signatures</div>
   <div class="sig-grid">
-    <div>
+    <div class="sig-box">
       <div class="sig-line"></div>
-      <div class="sig-lbl">Client Signature &amp; Date</div>
-      <div class="sig-name">${clientName}</div>
+      <div class="sig-label">Client Signature</div>
+      <div class="sig-name">Client Name: ___________________________</div>
+      <div style="font-size:8pt;color:#aaa;margin-top:6px">Date: _______________</div>
     </div>
-    <div>
+    <div class="sig-box">
       <div class="sig-line"></div>
-      <div class="sig-lbl">Advisor Signature &amp; Date</div>
-      <div class="sig-name">Rattan Amol Taggar &nbsp;·&nbsp; LLQP</div>
+      <div class="sig-label">Advisor Signature</div>
+      <div class="sig-name">Rattan Amol Taggar &nbsp;·&nbsp; HLLQP</div>
+      <div style="font-size:8pt;color:#aaa;margin-top:6px">Date: _______________</div>
     </div>
   </div>
 </div>
 
+<div class="footer-bar">
+  <span>Rattan Amol Taggar &nbsp;·&nbsp; Life Insurance Advisor &nbsp;·&nbsp; iA Financial Group &nbsp;·&nbsp; ibrinsurance.ca</span>
+  <span>Generated ${today}</span>
+</div>
 
 </body>
 </html>`;
 
-  const win = window.open('', '_blank', 'width=900,height=700');
-  if (!win) { alert('Please allow pop-ups for this site to download the report.'); return; }
-  win.document.write(html);
-  win.document.close();
-  setTimeout(() => win.print(), 600);
+  const w = window.open('', '_blank', 'width=900,height=800');
+  if (!w) { alert('Please allow pop-ups to generate the compliance report.'); return; }
+  w.document.write(html);
+  w.document.close();
+  setTimeout(() => { w.focus(); w.print(); }, 600);
 }
 function activateNeedsTab() {
       document.querySelectorAll('.calc-tab').forEach(t => t.classList.remove('active'));
