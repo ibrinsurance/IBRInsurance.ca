@@ -433,7 +433,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwCfkS59lauxIXAO_ieTHZayIP3ieheMB2cyJNc7D2ubqpUQ4ZYQYN2jsQsP-HqcRys/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby1i8ALsR0PV_RWopK_NcXN9Rx2kbgVjO0aJ01_H-3TZyZ4ynIsePb10VnExgO4aeAM/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -505,15 +505,24 @@ async function sheetWrite(action, data){
   if(!sheetConnected)return;
   try{
     const params=new URLSearchParams({action});
-    Object.entries(data).forEach(([k,v])=>params.set(k,typeof v==='object'?JSON.stringify(v):v));
-    fetch(APPS_SCRIPT_URL+'?'+params.toString(),{mode:'no-cors',redirect:'follow'});
+    Object.entries(data).forEach(([k,v])=>params.set(k,typeof v==='object'?JSON.stringify(v):(v===null||v===undefined?'':String(v))));
+    fetch(APPS_SCRIPT_URL+'?'+params.toString()).catch(function(){});
   }catch(e){console.warn('Write error:',e);}
 }
 function sheetWritePost(action, data){
   if(!sheetConnected)return;
   try{
-    var body=Object.assign({action:action},data);
-    fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(body),headers:{'Content-Type':'application/json'}});
+    // Use form-encoded POST
+    var params=new URLSearchParams();
+    params.set('action',action);
+    Object.entries(data).forEach(function(e){
+      params.set(e[0], e[1]===null||e[1]===undefined?'':String(e[1]));
+    });
+    fetch(APPS_SCRIPT_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:params.toString()
+    }).catch(function(){});
   }catch(e){console.warn('Write error:',e);}
 }
 
@@ -601,7 +610,7 @@ function onSearch(){
 // ── CONTROLS ──
 function applyPreset(){preset=document.getElementById('preset').value;sel=null;render();}
 function setMode(m){
-  mode=m;sel=null;
+  mode=m;sel=null;if(window._selSet)window._selSet.clear();
   // Remove lookup filter bar when leaving lookup tab
   if(m!=='lookup'){var fb=document.getElementById('lookup-filter-bar');if(fb)fb.remove();}lkp=null;
   // Don't clear list here — render() will overwrite it, avoids blank flash
@@ -637,7 +646,12 @@ function render(){
     else renderDQ();
   }catch(e){showErr(e);}
 }
-function selC(id){ sel=(sel===id)?null:id; render(); }
+function selC(id){
+  if(!window._selSet)window._selSet=new Set();
+  if(window._selSet.has(id))window._selSet.delete(id);
+  else window._selSet.add(id);
+  sel=id;render();
+}
 function renderFU(){
   // Update closed toggle button state
   var ct = document.getElementById('closedToggle');
@@ -649,7 +663,7 @@ function renderFU(){
 const SP={overdue:['sp-ov','Overdue'],today:['sp-td','Due today'],thisweek:['sp-tw','Due this week'],upcoming:['sp-up','Upcoming'],none:['sp-no','No follow-up'],done:['sp-dn','Complete']};
 const csMap={Submitted:'cs-sub','In Review':'cs-rev',Approved:'cs-app',Paid:'cs-paid',Denied:'cs-den'};
 
-function cardH(c){const s=gst(c);const[sc,sl]=SP[s]||['',''];const lnk=getAllLinked(c);const isel=sel===c.id;
+function cardH(c){const s=gst(c);const[sc,sl]=SP[s]||['',''];const lnk=getAllLinked(c);const isel=window._selSet?window._selSet.has(c.id):(sel===c.id);
 return`<div class="card${isel?' sel':''}${c.done?' done':''}" onclick="selC(${c.id})">
 <div class="ct">
 <div class="chk${c.done?' on':''}" onclick="event.stopPropagation();togDone(${c.id})">${c.done?`<svg viewBox="0 0 10 10" fill="none" width="9" height="9"><path d="M2 5l2.5 2.5L8 3" stroke="#1B4332" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div>
@@ -869,7 +883,7 @@ function renderClaims(){
     html+='<div style="text-align:center;padding:30px;color:var(--text3)"><div style="font-size:28px;margin-bottom:6px">&#128196;</div><div style="font-size:13px">No active claims. Click "+ New claim" to start tracking one.</div></div>';
   } else {
     withClaims.forEach(function(c){
-      var cl=c.claim;var issel=sel===c.id;
+      var cl=c.claim;var issel=window._selSet?window._selSet.has(c.id):(sel===c.id);
       var daysSince=cl.date?Math.ceil((new Date()-new Date(cl.date))/864e5):null;
       html+='<div class="card'+(issel?' sel':'')+'" onclick="selC('+c.id+')">';
       html+='<div style="display:flex;align-items:center;gap:10px">';
