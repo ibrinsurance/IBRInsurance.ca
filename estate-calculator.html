@@ -201,7 +201,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 .cda-sub{font-size:.78rem;color:rgba(255,255,255,.55);margin-top:5px;line-height:1.5}
 footer{background:var(--navy);color:rgba(255,255,255,.38);text-align:center;padding:20px;font-size:10px;line-height:1.8;border-top:1px solid rgba(201,150,58,.2)}
 footer a{color:var(--gl);text-decoration:none}
-@media print{.nav,.hero,.navbtns,.shr,.ab,.del,.stepper,.slide-top,.sctr,.gate,.s-prev,.s-next{display:none!important}.panel,.slide{display:block!important}body{background:#fff;font-size:13px}.main,.res-wrap{padding:0;max-width:100%;margin:0}.card{box-shadow:none;border:1px solid #ccc;break-inside:avoid;margin-bottom:10px}.bighero,.cda-box{background:#0d1e35!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#fff!important}.bh-val,.cda-val{color:#e8b96a!important}.ins{-webkit-print-color-adjust:exact;print-color-adjust:exact;break-inside:avoid}.id{background:#fdf0ee!important;border-color:#b92d1f!important}.ig{background:#edf7f1!important;border-color:#1a6b3a!important}.iw{background:#fdf7ed!important;border-color:#c9963a!important}.ib{background:#eef4fc!important;border-color:#185FA5!important}.cta-strip{background:#0d1e35!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.sc{break-inside:avoid;border:1px solid #ccc}.sc-grid{grid-template-columns:1fr 1fr 1fr}@page{margin:15mm;size:A4}.print-header{display:block!important;text-align:center;padding:0 0 14px;border-bottom:2px solid #c9963a;margin-bottom:16px}.print-footer{display:block!important;text-align:center;font-size:10px;color:#888;border-top:1px solid #ccc;padding-top:10px;margin-top:16px}}
+@media print{.slide-wrap,.shd+.card,.stitle+.card,div[class="card"]:nth-child(n+2){break-before:auto}.sc{break-inside:avoid;page-break-inside:avoid}.shd{break-before:page;page-break-before:page}.card{break-inside:avoid;page-break-inside:avoid}.ins{break-inside:avoid;page-break-inside:avoid}.res-wrap>div,.slide{break-before:page;page-break-before:page}.slide:first-child{break-before:auto;page-break-before:auto}.nav,.hero,.navbtns,.shr,.ab,.del,.stepper,.slide-top,.sctr,.gate,.s-prev,.s-next,.nav:not(.print-header){display:none!important}.panel,.slide{display:block!important}body{background:#fff;font-size:13px}.main,.res-wrap{padding:0;max-width:100%;margin:0}.card{box-shadow:none;border:1px solid #ccc;break-inside:avoid;margin-bottom:10px}.bighero,.cda-box{background:#0d1e35!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#fff!important}.bh-val,.cda-val{color:#e8b96a!important}.ins{-webkit-print-color-adjust:exact;print-color-adjust:exact;break-inside:avoid}.id{background:#fdf0ee!important;border-color:#b92d1f!important}.ig{background:#edf7f1!important;border-color:#1a6b3a!important}.iw{background:#fdf7ed!important;border-color:#c9963a!important}.ib{background:#eef4fc!important;border-color:#185FA5!important}.cta-strip{background:#0d1e35!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.sc{break-inside:avoid;border:1px solid #ccc}.sc-grid{grid-template-columns:1fr 1fr 1fr}@page{margin:15mm;size:A4}.print-header{display:block!important;text-align:center;padding:0 0 14px;border-bottom:2px solid #c9963a;margin-bottom:16px;break-after:avoid;page-break-after:avoid;break-inside:avoid}.print-footer{display:block!important;text-align:center;font-size:10px;color:#888;border-top:1px solid #ccc;padding-top:10px;margin-top:16px}}
 .print-header,.print-footer{display:none}
 @media(max-width:600px){.g2,.g3,.sc-grid,.casc,.prob-grid,.tmr-grid{grid-template-columns:1fr}.mg{grid-template-columns:1fr 1fr}.score-wrap{flex-direction:column;text-align:center}.slbl{display:none}.step{padding:10px 4px}.cta-strip{flex-direction:column}.cta-ac{align-items:flex-start}}
 </style>
@@ -608,6 +608,7 @@ nav .dropdown a:hover{color:#e8b96a!important;background:rgba(201,150,58,.12)!im
     <table class="at"><thead><tr><th style="width:32%">Business / corporation name</th><th>Value ($)</th><th>Your cost ($)</th><th>Growth %/yr</th><th>LCGE eligible?</th><th></th></tr></thead>
     <tbody id="bizBody"></tbody></table>
     <button class="ab" onclick="addBiz()">+ Add business</button>
+    <div style="font-size:11px;color:var(--tl);margin-top:6px;padding:6px 10px;background:var(--cream);border-radius:6px">&#128188; Enter each owner's share value separately. For jointly-owned businesses with a spouse, split the value by ownership percentage.</div>
     <div style="font-size:11px;color:var(--tl);margin-top:8px;line-height:1.5">&#128161; Enter the combined value. If you have both an OpCo and HoldCo, add them as separate rows. The Corporate Module below handles structure details.</div>
   </div>
   <!-- ADAPTIVE: Corp module -->
@@ -681,7 +682,7 @@ nav .dropdown a:hover{color:#e8b96a!important;background:rgba(201,150,58,.12)!im
   <div class="card">
     <div class="ch"><div class="ci">&#9878;</div><div><div class="ct">Estate costs</div><div class="cs">Come out automatically before your family gets anything</div></div></div>
     <div class="g2">
-      <div class="field"><label>Funeral &amp; final expenses ($)</label><input type="number" id="finalExp" value="15000"></div>
+      <div class="field"><label>Funeral &amp; final expenses ($) <span class="hint">per person — doubled automatically for couples</span></label><input type="number" id="finalExp" value="15000"></div>
       <div class="field"><label>Legal &amp; executor fees <span class="hint">(% of estate)</span></label>
         <div class="sw"><input type="range" id="legalFee" min="0.5" max="4" step="0.25" value="1.5" oninput="sl('legalFee','lfLbl','%')"><span class="sv" id="lfLbl">1.5%</span></div>
       </div>
@@ -928,7 +929,7 @@ function calcAll(){
   const cg=+document.getElementById('cgRate').value;
   const probR=+document.getElementById('probateRate').value;
   const legF=+document.getElementById('legalFee').value/100;
-  const finE=+document.getElementById('finalExp').value||0;
+  const finE=(+document.getElementById('finalExp').value||0)*(hs?2:1);
   const re=parseRE(),rr1=parseRRSP(1),rr2=hs?parseRRSP(2):[],tf1=parseTFSA(1),tf2=hs?parseTFSA(2):[],nr=parseNR(),biz=parseBiz(),debts=parseDebts(),ins=parseIns();
   const corp=parseCorp();
   const reF=proj(re,h,false),rr1F=proj(rr1,h),rr2F=proj(rr2,h),tf1F=proj(tf1,h),tf2F=proj(tf2,h),nrF=proj(nr,h,false),bizF=proj(biz,h,false);
