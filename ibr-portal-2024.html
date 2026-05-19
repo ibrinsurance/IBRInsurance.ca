@@ -433,7 +433,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
 const OWNER = 'rattan.taggar@gmail.com';
 const ASSISTANTS = ['insurancebyrattan@gmail.com'];
 // ↓ Replace this with your Apps Script Web App URL after deployment
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby1i8ALsR0PV_RWopK_NcXN9Rx2kbgVjO0aJ01_H-3TZyZ4ynIsePb10VnExgO4aeAM/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4J7OdRpzRrf29_0Oj3UPk0XW4xC_V-A7rqgzaozdN18hMhCEJPbhguIZwNjUjZzcp/exec';
 
 const TRAVEL=new Set(['vtc','supervisa','travel insurance','travel','truck-travel','truck - travel','truck travel','international student','student insurance','emergency medical']);
 const LIFE=new Set(['term insurance','ul insurance','whole life','term transfer','ul transfer','wl transfer','transfer']);
@@ -1903,8 +1903,8 @@ function lnkFile(cid,lid){
   if(!c.hh)c.hh=[];if(!c.hh.includes(lid))c.hh.push(lid);
   var l=clients.find(function(x){return x.id===lid;});
   if(l){if(!l.hh)l.hh=[];if(!l.hh.includes(cid))l.hh.push(cid);}
-  sheetWrite('writeHouseholdLinks',{rowNum:c.rowNum,value:JSON.stringify(c.hh)});
-  if(l)sheetWrite('writeHouseholdLinks',{rowNum:l.rowNum,value:JSON.stringify(l.hh)});
+  sheetWrite('writeHouseholdLinks',{rowNum:c.rowNum,linksJson:JSON.stringify(c.hh)});
+  if(l)sheetWrite('writeHouseholdLinks',{rowNum:l.rowNum,linksJson:JSON.stringify(l.hh)});
   togglePicker(cid);render();
 }
 
@@ -1913,8 +1913,8 @@ function unlnk(cid,lid){
   var l=clients.find(function(x){return x.id===lid;});
   if(c&&c.hh)c.hh=c.hh.filter(function(x){return x!==lid;});
   if(l&&l.hh)l.hh=l.hh.filter(function(x){return x!==cid;});
-  if(c)sheetWrite('writeHouseholdLinks',{rowNum:c.rowNum,value:JSON.stringify(c.hh||[])});
-  if(l)sheetWrite('writeHouseholdLinks',{rowNum:l.rowNum,value:JSON.stringify(l.hh||[])});
+  if(c)sheetWrite('writeHouseholdLinks',{rowNum:c.rowNum,linksJson:JSON.stringify(c.hh||[])});
+  if(l)sheetWrite('writeHouseholdLinks',{rowNum:l.rowNum,linksJson:JSON.stringify(l.hh||[])});
   render();
 }
 
