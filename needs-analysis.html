@@ -932,8 +932,26 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
       </div>
 
       <div class="na-field">
+        <div class="na-label"><span class="na-label-text">Home Equity (non-primary)</span><span class="na-label-val" id="n-equity-lbl">$0</span></div>
+        <div class="na-input-wrap"><span class="na-prefix">$</span><input class="na-input" id="n-equity" type="number" value="0" min="0" step="25000" oninput="document.getElementById('n-equity-lbl').textContent='$'+Number(this.value).toLocaleString('en-CA');calcNeeds()"></div>
+        <div style="font-size:11px;color:var(--mid);margin-top:5px">Rental property, cottage or investment real estate equity</div>
+      </div>
+
+      <div class="na-field">
+        <div class="na-label"><span class="na-label-text">Other Assets</span><span class="na-label-val" id="n-other-assets-lbl">$0</span></div>
+        <div class="na-input-wrap"><span class="na-prefix">$</span><input class="na-input" id="n-other-assets" type="number" value="0" min="0" step="10000" oninput="document.getElementById('n-other-assets-lbl').textContent='$'+Number(this.value).toLocaleString('en-CA');calcNeeds()"></div>
+        <div style="font-size:11px;color:var(--mid);margin-top:5px">Investments, RRSP, TFSA, business value, etc.</div>
+      </div>
+
+      <div class="na-field">
         <div class="na-label"><span class="na-label-text">Existing Life Insurance</span><span class="na-label-val" id="n-existing-lbl">$0</span></div>
         <div class="na-input-wrap"><span class="na-prefix">$</span><input class="na-input" id="n-existing" type="number" value="0" min="0" step="25000" oninput="document.getElementById('n-existing-lbl').textContent='$'+Number(this.value).toLocaleString('en-CA');calcNeeds()"></div>
+      </div>
+
+      <div class="na-field">
+        <div class="na-label"><span class="na-label-text">Group / Employer Coverage</span><span class="na-label-val" id="n-group-lbl">$0</span></div>
+        <div class="na-input-wrap"><span class="na-prefix">$</span><input class="na-input" id="n-group" type="number" value="0" min="0" step="25000" oninput="document.getElementById('n-group-lbl').textContent='$'+Number(this.value).toLocaleString('en-CA');calcNeeds()"></div>
+        <div style="font-size:11px;color:var(--mid);margin-top:5px">Note: group coverage typically ends when you leave the employer</div>
       </div>
 
       <div class="na-nav">
@@ -987,7 +1005,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
     </div>
 
     <div class="na-actions">
-      <button class="na-action-btn na-action-dl" onclick="downloadNeedsReport()">&#128438; Download Compliance Report</button>
+      <button class="na-action-btn na-action-dl" onclick="downloadNeedsReport()">&#128438; Download Report</button>
       <a href="https://wa.me/16477456850?text=Hi%20Rattan%2C%20I%20used%20the%20needs%20analysis%20and%20would%20like%20to%20discuss%20my%20coverage" target="_blank" class="na-action-btn na-action-wa">&#128172; Chat with Rattan</a>
       <a href="https://www.ibrinsurance.ca/quotes.html" target="_blank" class="na-action-btn na-action-quote">&#9889; Get Instant Quote</a>
     </div>
@@ -1141,8 +1159,11 @@ function calcNeeds() {
   const funeral  = gv('n-funeral');
   const emergency= gv('n-emergency');
   const education= gv('n-education');
-  const assets   = gv('n-assets');
-  const existing = gv('n-existing');
+  const assets      = gv('n-assets');
+  const equity      = gv('n-equity');
+  const otherAssets = gv('n-other-assets');
+  const existing    = gv('n-existing');
+  const groupCov    = gv('n-group');
 
   // Update labels
   sv('n-income-lbl',   '$'+income.toLocaleString('en-CA'));
@@ -1154,8 +1175,11 @@ function calcNeeds() {
   sv('n-funeral-lbl',  '$'+funeral.toLocaleString('en-CA'));
   sv('n-emergency-lbl','$'+emergency.toLocaleString('en-CA'));
   sv('n-education-lbl','$'+education.toLocaleString('en-CA'));
-  sv('n-assets-lbl',   '$'+assets.toLocaleString('en-CA'));
-  sv('n-existing-lbl', '$'+existing.toLocaleString('en-CA'));
+  sv('n-assets-lbl',       '$'+assets.toLocaleString('en-CA'));
+  sv('n-equity-lbl',       '$'+equity.toLocaleString('en-CA'));
+  sv('n-other-assets-lbl', '$'+otherAssets.toLocaleString('en-CA'));
+  sv('n-existing-lbl',     '$'+existing.toLocaleString('en-CA'));
+  sv('n-group-lbl',        '$'+groupCov.toLocaleString('en-CA'));
 
   // PV factor calculation
   const r = ret/100;
@@ -1166,7 +1190,8 @@ function calcNeeds() {
   const debtTotal  = mortgage + debt + funeral;
   const otherNeeds = emergency + education;
   const gross      = incomeNeed + debtTotal + otherNeeds;
-  const net        = Math.max(0, gross - assets - existing);
+  const totalAssets = assets + equity + otherAssets + existing + groupCov;
+  const net        = Math.max(0, gross - totalAssets);
 
   // DI: 70% of monthly income, max $10,000/mo
   const diMonthly = income>0 ? Math.min(Math.round(income*0.70/12),10000) : 0;
@@ -1187,7 +1212,7 @@ function calcNeeds() {
   sv('r-debts',   fmt(debtTotal));
   sv('r-needs',   fmt(otherNeeds));
   sv('r-gross',   fmt(gross));
-  sv('r-assets',  fmt(assets+existing));
+  sv('r-assets',  fmt(totalAssets));
   sv('r-net',     fmt(net));
   sv('r-di',      '$'+diMonthly.toLocaleString('en-CA')+'/mo');
   sv('n-ci-amount-display', fmt(ciVal));
@@ -1240,29 +1265,50 @@ function calcCI() {
 
 // ── Download PDF Report ─────────────────────────────────────────────────────
 function downloadNeedsReport() {
-  const clientName = (document.getElementById('n-client-name')?.value || '').trim() || 'Client';
+  // Read all inputs
+  const gn = id => parseFloat(document.getElementById(id)?.value) || 0;
+  const gv = id => (document.getElementById(id)?.value || '').trim();
 
-  const g = id => parseFloat(document.getElementById(id)?.value) || 0;
-  const mortgage  = g('n-mortgage');
-  const funeral   = g('n-funeral');
-  const debt      = g('n-debt');
-  const edu       = g('n-edu');
-  const emergency = g('n-emergency');
-  const years     = g('n-yrs') || 10;
-  const income    = g('n-income');
-  const assets    = g('n-assets');
-  const existing  = g('n-existing');
+  const income    = gn('n-income');
+  const pct       = gn('n-pct') || 70;
+  const yrs       = gn('n-yrs') || 10;
+  const ret       = gn('n-ret') || 6;
+  const mortgage  = gn('n-mortgage');
+  const debt      = gn('n-debt');
+  const funeral   = gn('n-funeral');
+  const emergency = gn('n-emergency');
+  const education = gn('n-education');
+  const assets      = gn('n-assets');
+  const equity      = gn('n-equity');
+  const otherAssets = gn('n-other-assets');
+  const existing    = gn('n-existing');
+  const groupCov    = gn('n-group');
+  const totalAssets = assets + equity + otherAssets + existing + groupCov;
 
-  const fmt = n => '$' + Math.round(n).toLocaleString('en-CA');
+  // CI inputs (Step 3)
+  const ciHousing = gn('ci-housing');
+  const ciLoans   = gn('ci-loans');
+  const ciOther   = gn('ci-other');
+  const ciMos     = gn('ci-months') || 12;
+  const ciHasData = ciHousing + ciLoans + ciOther > 0;
+  const ciMonthly = ciHousing + ciLoans + ciOther;
+  const ciRaw     = ciHasData ? (ciMonthly * ciMos + 15000 + 10000) : (income * 2);
+  const ciVal     = ciHasData ? Math.ceil(ciRaw / 25000) * 25000 : ciRaw;
+
+  // Calculations
+  const r = ret / 100;
+  const pvF = r > 0 ? (1 - Math.pow(1 + r, -yrs)) / r : yrs;
+  const incomeNeed = Math.round(income * (pct / 100) * pvF);
+  const debtTotal  = mortgage + debt + funeral;
+  const otherNeeds = emergency + education;
+  const gross      = incomeNeed + debtTotal + otherNeeds;
+    const net        = Math.max(0, gross - totalAssets);
+  const diMonthly  = income > 0 ? Math.min(Math.round(income * 0.70 / 12), 10000) : 0;
+
+  const fmt  = n => '$' + Math.round(n).toLocaleString('en-CA');
+  const fmtR = n => '$' + Math.round(n).toLocaleString('en-CA');
   const today = new Date().toLocaleDateString('en-CA', {year:'numeric',month:'long',day:'numeric'});
-
-  // Get results from the live page
-  const totalEl = document.getElementById('n-result-main');
-  const totalCoverage = totalEl ? totalEl.textContent.trim() : '—';
-  const diEl = document.getElementById('n-di-amount');
-  const diAmount = diEl ? diEl.textContent : '—';
-  const ciEl = document.getElementById('n-ci-amount');
-  const ciAmount = ciEl ? ciEl.textContent : '—';
+  const pvFmt = pvF.toFixed(2);
 
   const html = `<!DOCTYPE html>
 <html lang="en">
@@ -1271,143 +1317,201 @@ function downloadNeedsReport() {
 <title>Life Insurance Needs Analysis — Rattan Amol Taggar</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Arial',sans-serif;color:#1a1a2e;background:#fff;padding:36px 44px;font-size:11pt;line-height:1.6}
-  .header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2.5px solid #0d1e35;padding-bottom:16px;margin-bottom:24px}
-  .advisor-name{font-size:20pt;font-weight:900;color:#0d1e35;letter-spacing:-.02em}
-  .advisor-name em{color:#c9963a;font-style:normal}
-  .advisor-info{font-size:9pt;color:#666;line-height:1.8;margin-top:4px}
-  .doc-title{font-size:14pt;font-weight:700;color:#0d1e35}
-  .doc-sub{font-size:9pt;color:#888;margin-top:2px}
-  .result-hero{background:#0d1e35;color:#fff;border-radius:10px;padding:24px 28px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-  .rh-label{font-size:8pt;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:4px}
-  .rh-amount{font-size:28pt;font-weight:900;color:#fff;letter-spacing:-.02em}
-  .rh-note{font-size:8.5pt;color:rgba(255,255,255,.5);margin-top:4px;max-width:300px}
-  .section{margin-bottom:18px}
-  .section-title{font-size:9pt;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#0d1e35;border-bottom:1px solid #e5e7eb;padding-bottom:5px;margin-bottom:10px}
-  .row{display:flex;justify-content:space-between;padding:4px 0;font-size:10pt}
-  .row-label{color:#555}
-  .row-value{font-weight:600;color:#0d1e35}
-  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
-  .card{background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;padding:14px 16px}
-  .card-label{font-size:8pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:4px}
-  .card-value{font-size:16pt;font-weight:900;color:#0d1e35}
-  .disclaimer{font-size:8pt;color:#999;line-height:1.65;border:1px solid #e5e7eb;border-radius:6px;padding:10px 14px;margin-bottom:24px;background:#fafafa}
-  /* Signature block */
-  .sig-section{margin-top:32px;border-top:2px solid #0d1e35;padding-top:24px;page-break-inside:avoid}
-  .sig-title{font-size:10pt;font-weight:700;color:#0d1e35;letter-spacing:.06em;text-transform:uppercase;margin-bottom:20px}
-  .sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
-  .sig-box{display:flex;flex-direction:column;gap:6px}
-  .sig-line{border-bottom:1.5px solid #333;height:44px;width:100%}
-  .sig-label{font-size:8.5pt;font-weight:700;color:#555;letter-spacing:.04em;text-transform:uppercase}
-  .sig-name{font-size:10pt;color:#111;font-weight:600;margin-top:2px}
-  .sig-date-line{border-bottom:1.5px solid #333;height:44px;width:60%}
-  .footer-bar{display:flex;justify-content:space-between;font-size:8pt;color:#bbb;border-top:1px solid #e5e7eb;padding-top:10px;margin-top:28px}
+  body{font-family:Arial,sans-serif;color:#1a1a2e;background:#fff;padding:36px 44px;font-size:10.5pt;line-height:1.6}
+  .header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2.5px solid #0d1e35;padding-bottom:14px;margin-bottom:20px}
+  .adv-name{font-size:18pt;font-weight:900;color:#0d1e35}
+  .adv-name em{color:#c9963a;font-style:normal}
+  .adv-info{font-size:8.5pt;color:#666;line-height:1.8;margin-top:3px}
+  .doc-title{font-size:13pt;font-weight:700;color:#0d1e35;text-align:right}
+  .doc-sub{font-size:8.5pt;color:#999;text-align:right;margin-top:2px}
+  /* Section */
+  .sec{margin-bottom:18px}
+  .sec-head{background:#0d1e35;color:#fff;padding:7px 14px;border-radius:6px 6px 0 0;font-size:8.5pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+  .sec-head span{color:#c9963a;font-size:12pt;font-weight:900;font-family:Georgia,serif}
+  .sec-body{border:1px solid #ddd;border-top:none;border-radius:0 0 6px 6px;padding:0}
+  .row{display:flex;justify-content:space-between;padding:7px 14px;font-size:10pt;border-bottom:1px solid #f0f0f0}
+  .row:last-child{border-bottom:none}
+  .row-lbl{color:#555}
+  .row-val{font-weight:600;color:#0d1e35}
+  .row-note{font-size:7.5pt;color:#aaa;margin-top:1px}
+  .row-sub{font-size:8pt;color:#888;font-style:italic}
+  /* Formula box */
+  .formula{background:#f4f6fb;border-left:3px solid #c9963a;padding:9px 14px;margin:0 0 6px;border-radius:0 6px 6px 0;font-size:8.5pt;color:#555;line-height:1.65}
+  .formula strong{color:#0d1e35}
+  /* Subtotal rows */
+  .subtotal{background:#f8f6f0;font-weight:700}
+  .subtotal .row-lbl{color:#0d1e35}
+  .total-row{background:#0d1e35;color:#fff;padding:10px 14px;display:flex;justify-content:space-between;border-radius:6px;margin-bottom:6px}
+  .total-row .lbl{font-size:9pt;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.7}
+  .total-row .val{font-size:16pt;font-weight:900;font-family:Georgia,serif;color:#fff}
+  /* Side cards */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+  .card{border:1px solid #ddd;border-radius:8px;padding:12px 14px}
+  .card-lbl{font-size:7.5pt;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#888;margin-bottom:4px}
+  .card-val{font-size:15pt;font-weight:900;color:#0d1e35;font-family:Georgia,serif}
+  .card-sub{font-size:8pt;color:#aaa;margin-top:3px}
+  /* Sig */
+  .sig-section{margin-top:24px;border-top:2px solid #0d1e35;padding-top:20px;page-break-inside:avoid}
+  .sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:16px}
+  .sig-box{display:flex;flex-direction:column;gap:4px}
+  .sig-line{border-bottom:1.5px solid #333;height:44px}
+  .sig-lbl{font-size:8pt;font-weight:700;color:#555;letter-spacing:.04em;text-transform:uppercase;margin-top:4px}
+  .sig-name{font-size:9pt;color:#111;font-weight:600}
+  .sig-date{font-size:8pt;color:#999;margin-top:6px}
+  .disclaimer{font-size:7.5pt;color:#aaa;line-height:1.65;border:1px solid #e5e7eb;border-radius:5px;padding:9px 12px;margin-bottom:16px;background:#fafafa}
+  .footer-bar{display:flex;justify-content:space-between;font-size:7.5pt;color:#ccc;border-top:1px solid #e5e7eb;padding-top:8px;margin-top:20px}
   @media print{body{padding:24px 32px}}
 </style>
 </head>
 <body>
 
-<!-- Hidden compatibility inputs for old calcNeeds JS -->
-<div style="display:none">
-  <input id="n-client-name" type="text" value="">
-  <input id="na-client-name" type="text" value="">
-  <input id="ci-housing-compat" type="number" value="0">
-  <input id="ci-loans-compat" type="number" value="0">
-  <input id="ci-other-compat" type="number" value="0">
-  <input id="ci-savings-compat" type="number" value="0">
-  <div id="panel-needs"></div>
-  <span id="printAdvisorDate"></span>
-  <span id="printDate"></span>
-</div>
-
 <div class="header">
   <div>
-    <div class="advisor-name">Rattan <em>Amol Taggar</em></div>
-    <div class="advisor-info">Life Insurance Advisor &nbsp;·&nbsp; HLLQP Licensed &nbsp;·&nbsp; <br>647-745-6850 &nbsp;·&nbsp; rattan.taggar@gmail.com &nbsp;·&nbsp; ibrinsurance.ca</div>
+    <div class="adv-name">Rattan <em>Amol Taggar</em></div>
+    <div class="adv-info">Independent Life Insurance Advisor &nbsp;·&nbsp; HLLQP Licensed<br>
+    647-745-6850 &nbsp;·&nbsp; rattan.taggar@gmail.com &nbsp;·&nbsp; ibrinsurance.ca<br>
+    Licensed in ON, BC, AB, MB, SK, NS, PEI, NB &nbsp;·&nbsp; 25+ carriers compared</div>
   </div>
-  <div style="text-align:right">
+  <div>
     <div class="doc-title">Life Insurance Needs Analysis</div>
     <div class="doc-sub">Prepared for client review &nbsp;·&nbsp; ${today}</div>
   </div>
 </div>
 
-<div class="result-hero">
-  <div>
-    <div class="rh-label">Recommended Life Insurance Coverage</div>
-    <div class="rh-amount">${totalCoverage}</div>
-    <div class="rh-note">Estimated coverage gap based on information provided. Subject to underwriting approval.</div>
+<!-- Step 1: Income Replacement -->
+<div class="sec">
+  <div class="sec-head">Step 1 — Income Replacement</div>
+  <div class="formula">
+    <strong>Formula:</strong> Annual income × % family needs × present value factor<br>
+    PV factor = <strong>${pvFmt}×</strong> &nbsp;(${yrs} years @ ${ret}% return — what a lump sum needs to be today to replace ${pct}% of income for ${yrs} years)
+  </div>
+  <div class="sec-body">
+    <div class="row"><span class="row-lbl">Annual income</span><span class="row-val">${fmt(income)}</span></div>
+    <div class="row"><span class="row-lbl">% family needs</span><span class="row-val">${pct}%</span></div>
+    <div class="row"><span class="row-lbl">Years of support</span><span class="row-val">${yrs} years</span></div>
+    <div class="row"><span class="row-lbl">Expected return on payout</span><span class="row-val">${ret}%</span></div>
+    <div class="row subtotal"><span class="row-lbl">Income replacement need (PV)</span><span class="row-val">${fmt(incomeNeed)}</span></div>
   </div>
 </div>
 
-<div class="two-col">
+<!-- Step 2: Debts -->
+<div class="sec">
+  <div class="sec-head">Step 2 — Debts &amp; Final Expenses</div>
+  <div class="formula">
+    <strong>Formula:</strong> These are one-time lump sums needed immediately at death — cleared so the family has no inherited obligations.
+  </div>
+  <div class="sec-body">
+    <div class="row"><span class="row-lbl">Mortgage / rent obligation</span><span class="row-val">${fmt(mortgage)}</span></div>
+    <div class="row"><span class="row-lbl">Loans &amp; credit cards</span><span class="row-val">${fmt(debt)}</span></div>
+    <div class="row"><span class="row-lbl">Final expenses / funeral</span><span class="row-val">${fmt(funeral)}</span></div>
+    <div class="row subtotal"><span class="row-lbl">Total debts &amp; final expenses</span><span class="row-val">${fmt(debtTotal)}</span></div>
+  </div>
+</div>
+
+<!-- Step 3: Family Needs -->
+<div class="sec">
+  <div class="sec-head">Step 3 — Family Needs &amp; Critical Illness</div>
+  <div class="formula">
+    <strong>Life insurance needs:</strong> One-time lump sums for family stability.<br>
+    ${ciHasData ? `<strong>Critical Illness (Step 3 inputs):</strong> Monthly commitments ($${ciMonthly.toLocaleString('en-CA')}/mo) × ${ciMos} month recovery + $25,000 medical &amp; wellness buffers = ${fmt(ciVal)}` : `<strong>Critical Illness (default):</strong> 2× annual income = ${fmt(ciVal)}`}
+  </div>
+  <div class="sec-body">
+    <div class="row"><span class="row-lbl">Emergency fund</span><span class="row-val">${fmt(emergency)}</span></div>
+    <div class="row"><span class="row-lbl">Children's education</span><span class="row-val">${fmt(education)}</span></div>
+    <div class="row subtotal"><span class="row-lbl">Total family needs</span><span class="row-val">${fmt(otherNeeds)}</span></div>
+    ${ciHasData ? `
+    <div class="row" style="background:#fff8f0"><span class="row-lbl">CI — Monthly mortgage/rent</span><span class="row-val">$${ciHousing.toLocaleString('en-CA')}/mo</span></div>
+    <div class="row" style="background:#fff8f0"><span class="row-lbl">CI — Monthly loans/credit cards</span><span class="row-val">$${ciLoans.toLocaleString('en-CA')}/mo</span></div>
+    <div class="row" style="background:#fff8f0"><span class="row-lbl">CI — Monthly other expenses</span><span class="row-val">$${ciOther.toLocaleString('en-CA')}/mo</span></div>
+    <div class="row" style="background:#fff8f0"><span class="row-lbl">CI — Recovery period</span><span class="row-val">${ciMos} months</span></div>
+    ` : ''}
+  </div>
+</div>
+
+<!-- Step 4: Assets -->
+<div class="sec">
+  <div class="sec-head">Step 4 — Existing Assets &amp; Coverage</div>
+  <div class="formula">
+    <strong>Formula:</strong> These are subtracted from gross need — money the family already has available. Note: group coverage ends with employment; individual coverage is permanent.
+  </div>
+  <div class="sec-body">
+    <div class="row"><span class="row-lbl">Savings &amp; liquid assets</span><span class="row-val">${fmt(assets)}</span></div>
+    <div class="row"><span class="row-lbl">Home equity (non-primary)</span><span class="row-val">${fmt(equity)}</span></div>
+    <div class="row"><span class="row-lbl">Other assets (RRSP/TFSA/investments)</span><span class="row-val">${fmt(otherAssets)}</span></div>
+    <div class="row"><span class="row-lbl">Existing life insurance (personal)</span><span class="row-val">${fmt(existing)}</span></div>
+    <div class="row"><span class="row-lbl">Group / employer life coverage</span><span class="row-val">${fmt(groupCov)}</span></div>
+    <div class="row subtotal"><span class="row-lbl">Total assets &amp; coverage</span><span class="row-val">${fmt(totalAssets)}</span></div>
+  </div>
+</div>
+
+<!-- Final Calculation -->
+<div class="sec">
+  <div class="sec-head">Summary Calculation</div>
+  <div class="sec-body">
+    <div class="row"><span class="row-lbl">Income replacement (Step 1)</span><span class="row-val">${fmt(incomeNeed)}</span></div>
+    <div class="row"><span class="row-lbl">Debts &amp; final expenses (Step 2)</span><span class="row-val">${fmt(debtTotal)}</span></div>
+    <div class="row"><span class="row-lbl">Family needs (Step 3)</span><span class="row-val">${fmt(otherNeeds)}</span></div>
+    <div class="row"><span class="row-lbl">Gross need</span><span class="row-val" style="color:#555">${fmt(gross)}</span></div>
+    <div class="row"><span class="row-lbl">Savings &amp; liquid assets</span><span class="row-val" style="color:#c0392b">− ${fmt(assets)}</span></div>
+    ${equity > 0 ? `<div class="row"><span class="row-lbl">Home equity (non-primary)</span><span class="row-val" style="color:#c0392b">− ${fmt(equity)}</span></div>` : ''}
+    ${otherAssets > 0 ? `<div class="row"><span class="row-lbl">Other assets</span><span class="row-val" style="color:#c0392b">− ${fmt(otherAssets)}</span></div>` : ''}
+    ${existing > 0 ? `<div class="row"><span class="row-lbl">Existing life insurance</span><span class="row-val" style="color:#c0392b">− ${fmt(existing)}</span></div>` : ''}
+    ${groupCov > 0 ? `<div class="row"><span class="row-lbl">Group coverage</span><span class="row-val" style="color:#c0392b">− ${fmt(groupCov)}</span></div>` : ''}
+  </div>
+</div>
+
+<div class="total-row">
+  <span class="lbl">Recommended Life Insurance Coverage Gap</span>
+  <span class="val">${fmt(net)}</span>
+</div>
+
+<div class="cards">
   <div class="card">
-    <div class="card-label">&#128737;&#65039; Critical Illness</div>
-    <div class="card-value">${ciAmount}</div>
-    <div style="font-size:8.5pt;color:#888;margin-top:4px">Suggested lump-sum benefit</div>
+    <div class="card-lbl">&#129497; Disability Insurance</div>
+    <div class="card-val">$${diMonthly.toLocaleString('en-CA')}/mo</div>
+    <div class="card-sub">70% of monthly income, max $10,000/mo — replaces your paycheque if you can't work</div>
   </div>
   <div class="card">
-    <div class="card-label">&#129497; Disability Insurance</div>
-    <div class="card-value">${diAmount}</div>
-    <div style="font-size:8.5pt;color:#888;margin-top:4px">Suggested monthly benefit</div>
+    <div class="card-lbl">&#10084;&#65039; Critical Illness</div>
+    <div class="card-val">${fmt(ciVal)}</div>
+    <div class="card-sub">${ciHasData ? `${ciMos}-month recovery · $${ciMonthly.toLocaleString('en-CA')}/mo commitments + buffers` : '2× income default · enter monthly commitments in Step 3 for a precise amount'}</div>
   </div>
-</div>
-
-<div class="section">
-  <div class="section-title">Income & Family</div>
-  <div class="row"><span class="row-label">Annual income</span><span class="row-value">${fmt(income)}</span></div>
-  <div class="row"><span class="row-label">Years of income replacement</span><span class="row-value">${years} years</span></div>
-  <div class="row"><span class="row-label">Education fund</span><span class="row-value">${fmt(edu)}</span></div>
-  <div class="row"><span class="row-label">Emergency fund</span><span class="row-value">${fmt(emergency)}</span></div>
-</div>
-
-<div class="section">
-  <div class="section-title">Debts & Final Expenses</div>
-  <div class="row"><span class="row-label">Mortgage / rent obligation</span><span class="row-value">${fmt(mortgage)}</span></div>
-  <div class="row"><span class="row-label">Other debts</span><span class="row-value">${fmt(debt)}</span></div>
-  <div class="row"><span class="row-label">Final expenses / funeral</span><span class="row-value">${fmt(funeral)}</span></div>
-</div>
-
-<div class="section">
-  <div class="section-title">Assets & Existing Coverage</div>
-  <div class="row"><span class="row-label">Savings & liquid assets</span><span class="row-value">${fmt(assets)}</span></div>
-  <div class="row"><span class="row-label">Existing life insurance</span><span class="row-value">${fmt(existing)}</span></div>
 </div>
 
 <div class="disclaimer">
-  <strong>Disclaimer:</strong> This analysis is for educational and discussion purposes only. Results are estimates based on standard industry rules of thumb and do not constitute financial, insurance, or legal advice. Actual coverage needs vary by individual circumstances, health, and underwriting. IBR Insurance and Rattan Amol Taggar accept no responsibility for decisions made based on this tool. Consult a licensed advisor before purchasing any insurance product.
+  <strong>Important:</strong> This analysis is for educational and discussion purposes only. Results are estimates based on standard industry rules of thumb and do not constitute financial, insurance, or legal advice. Actual coverage needs vary by individual circumstances, health, and underwriting. Always consult a licensed advisor before purchasing any policy.
 </div>
 
 <div class="sig-section">
-  <div class="sig-title">Acknowledgement &amp; Signatures</div>
+  <strong style="font-size:9.5pt;color:#0d1e35;letter-spacing:.06em;text-transform:uppercase">Acknowledgement &amp; Signatures</strong>
   <div class="sig-grid">
     <div class="sig-box">
       <div class="sig-line"></div>
-      <div class="sig-label">Client Signature</div>
+      <div class="sig-lbl">Client Signature</div>
       <div class="sig-name">Client Name: ___________________________</div>
-      <div style="font-size:8pt;color:#aaa;margin-top:6px">Date: _______________</div>
+      <div class="sig-date">Date: _______________</div>
     </div>
     <div class="sig-box">
       <div class="sig-line"></div>
-      <div class="sig-label">Advisor Signature</div>
+      <div class="sig-lbl">Advisor Signature</div>
       <div class="sig-name">Rattan Amol Taggar &nbsp;·&nbsp; HLLQP</div>
-      <div style="font-size:8pt;color:#aaa;margin-top:6px">Date: _______________</div>
+      <div class="sig-date">Date: _______________</div>
     </div>
   </div>
 </div>
 
 <div class="footer-bar">
-  <span>Rattan Amol Taggar &nbsp;·&nbsp; Life Insurance Advisor &nbsp;·&nbsp;  &nbsp;·&nbsp; ibrinsurance.ca</span>
+  <span>Rattan Amol Taggar &nbsp;·&nbsp; Independent Life Insurance Advisor &nbsp;·&nbsp; ibrinsurance.ca &nbsp;·&nbsp; 647-745-6850</span>
   <span>Generated ${today}</span>
 </div>
 
-</body>
-</html>`;
+</body></html>`;
 
-  const w = window.open('', '_blank', 'width=900,height=800');
-  if (!w) { alert('Please allow pop-ups to generate the compliance report.'); return; }
+  const w = window.open('', '_blank', 'width=960,height=820');
+  if (!w) { alert('Please allow pop-ups to generate the report.'); return; }
   w.document.write(html);
   w.document.close();
-  setTimeout(() => { w.focus(); w.print(); }, 600);
+  setTimeout(() => { w.focus(); w.print(); }, 700);
 }
 function activateNeedsTab() {
       document.querySelectorAll('.calc-tab').forEach(t => t.classList.remove('active'));
@@ -1485,7 +1589,7 @@ function naGo(step) {
     d.classList.toggle('done', i<step);
   });
   naStep = step;
-  window.scrollTo({top:0,behavior:'smooth'});
+  document.querySelector('.na-wizard').scrollIntoView({behavior:'smooth', block:'start'});
   if(step === NA_STEPS-1) { calcNeeds(); updateResultPanel(); }
 }
 
@@ -1500,14 +1604,19 @@ function updateResultPanel() {
   const income = g('n-income'), pct = g('n-pct'), yrs = g('n-yrs')||10, ret = g('n-ret')||6;
   const mortgage = g('n-mortgage'), debt = g('n-debt'), funeral = g('n-funeral');
   const emergency = g('n-emergency'), education = g('n-education');
-  const assets = g('n-assets'), existing = g('n-existing');
+  const assets      = g('n-assets');
+  const equity      = g('n-equity');
+  const otherAssets = g('n-other-assets');
+  const existing    = g('n-existing');
+  const groupCov    = g('n-group');
+  const totalAssets = assets + equity + otherAssets + existing + groupCov;
 
   const pvF = ret>0 ? (1-Math.pow(1+ret/100,-yrs))/(ret/100) : yrs;
   const incomeNeed = income * (pct/100) * pvF;
   const debts = mortgage + debt + funeral;
   const needs = emergency + education;
   const gross = incomeNeed + debts + needs;
-  const net = Math.max(0, gross - assets - existing);
+  const net = Math.max(0, gross - totalAssets);
 
   const el = id => document.getElementById(id);
   if(el('r-total')) el('r-total').textContent = fmt(net);
@@ -1516,7 +1625,7 @@ function updateResultPanel() {
   if(el('r-debts')) el('r-debts').textContent = fmt(debts);
   if(el('r-needs')) el('r-needs').textContent = fmt(needs);
   if(el('r-gross')) el('r-gross').textContent = fmt(gross);
-  if(el('r-assets')) el('r-assets').textContent = fmt(assets + existing);
+  if(el('r-assets')) el('r-assets').textContent = fmt(totalAssets);
   if(el('r-net')) el('r-net').textContent = fmt(net);
   
   // DI/CI
