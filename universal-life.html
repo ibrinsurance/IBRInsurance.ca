@@ -266,7 +266,7 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
     </li>
     <li><a href="#">Calculators <span class="arr">&#9662;</span></a>
       <div class="dropdown">
-        <a href="javascript:void(0)" onclick="openCalcModal()">&#128274; Estate Planning Calculator</a>
+        <a href="estate-calculator.html">&#128202; Estate Planning Calculator</a>
         <a href="calculators.html">&#129518; Investment Calculators</a>
         <a href="needs-analysis.html">&#128221; Needs Analysis</a>
       </div>
@@ -316,7 +316,7 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
   </div>
   <a href="quotes.html" class="mn-item">&#9889; Get Quotes</a>
   <a href="awards.html" class="mn-item">Awards</a>
-  <a href="javascript:void(0)" onclick="openCalcModal()" class="mn-item">&#128274; Estate Calculator</a>
+  <a href="estate-calculator.html" class="mn-item">&#128202; Estate Planning Calculator</a>
   <a href="calculators.html" class="mn-item">&#129518; Investment Calculators</a>
   <a href="needs-analysis.html" class="mn-item">&#128203; Needs Analysis</a>
   <a href="needs-analysis.html" class="mn-item">&#128221; Needs Analysis</a>
@@ -356,7 +356,7 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
   <div class="fg">
     <div class="fb">
       <a href="index.html" class="fl">Rattan <em>Amol Taggar</em></a>
-      <p>Life Insurance Advisor &middot; B.Eng &middot; Ford Motor Company Alumni &middot; Licensed in ON, BC, AB, MB, SK, NS, PEI, NB &middot; Independent advisor operating under iA Financial Group.</p>
+      <p>Life Insurance Advisor &middot; B.Eng &middot; Ford Motor Company Alumni &middot; Licensed in ON, BC, AB, MB, SK, NS, PEI, NB &middot; Independent advisor.</p>
     </div>
     <div class="fc"><h5>Insurance</h5><ul>
       <li><a href="super-visa.html">Super Visa Insurance</a></li>
@@ -424,7 +424,7 @@ footer{background:var(--navy3);padding:48px 56px 22px;border-top:1px solid rgba(
     <div style="font-family:'Fraunces',serif;font-size:1.5rem;font-weight:900;color:#fff;margin-bottom:6px">Advisor Access</div>
     <div style="font-size:12px;color:rgba(255,255,255,.42);margin-bottom:18px;line-height:1.6">Enter access code to unlock the estate planning calculator.</div>
     <div id="calcModalErr" style="color:#f5a0a0;font-size:11px;margin-bottom:8px;display:none">Incorrect code. Contact Rattan for access.</div>
-    <input type="password" id="calcPw" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" maxlength="10" style="width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:8px;color:#fff;font-size:20px;font-family:inherit;padding:11px 14px;letter-spacing:.32em;text-align:center;margin-bottom:10px;outline:none;transition:border .2s" onkeyup="if(event.key==='Enter')doCalcUnlock()">
+    <input type="password" id="calcPw" placeholder="&bull;&bull;&bull;&bull;" maxlength="10" style="width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:8px;color:#fff;font-size:20px;font-family:inherit;padding:11px 14px;letter-spacing:.32em;text-align:center;margin-bottom:10px;outline:none;transition:border .2s" onkeyup="if(event.key==='Enter')doCalcUnlock()">
     <button onclick="doCalcUnlock()" style="width:100%;background:#c9963a;border:none;border-radius:8px;color:#0d1e35;font-size:14px;font-weight:800;padding:12px;cursor:pointer;font-family:inherit;margin-bottom:8px">Unlock Calculator &rarr;</button>
     <button onclick="document.getElementById('calcModal').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,.32);font-size:11px;cursor:pointer;font-family:inherit">Cancel</button>
   </div>

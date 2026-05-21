@@ -61,12 +61,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 .ab{margin-top:8px;background:none;border:1px dashed var(--gold);border-radius:6px;color:var(--gold);font-size:12px;font-weight:600;padding:6px 14px;cursor:pointer}.ab:hover{background:var(--gp)}
 .et{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;display:inline-block;white-space:nowrap}
 .ok{background:var(--gbg);color:var(--g)}.wn{background:var(--abg);color:var(--a)}.dn{background:var(--rbg);color:var(--r)}
-.navbtns{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:24px;padding:12px 0}
+.navbtns{display:flex;justify-content:space-between;margin-top:20px;gap:12px;align-items:center}
 .bbk{background:#fff;border:1px solid var(--bdr);border-radius:7px;padding:10px 22px;font-size:13px;font-weight:600;cursor:pointer;color:var(--tm);transition:all .2s}.bbk:hover{border-color:var(--navy);color:var(--navy)}
 .bnx{background:var(--gold);border:none;border-radius:7px;padding:11px 28px;font-size:13px;font-weight:700;color:var(--navy);cursor:pointer;transition:all .2s;box-shadow:0 2px 10px rgba(201,150,58,.35)}.bnx:hover{background:var(--gl)}
 .tn{background:var(--bbg);border:1px solid #c5dcf5;border-radius:8px;padding:11px 14px;font-size:11px;color:var(--b);line-height:1.6;margin-bottom:14px}
 .res-wrap{max-width:780px;margin:0 auto}
-.slide-top{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:18px}
+.slide-top{display:flex;align-items:center;gap:10px;margin-bottom:18px}
 .s-prev,.s-next{background:#fff;border:1px solid var(--bdr);border-radius:7px;padding:9px 16px;font-size:12px;font-weight:600;cursor:pointer;color:var(--tm);transition:all .2s;white-space:nowrap}
 .s-next{background:var(--gold);border-color:var(--gold);color:var(--navy)}.s-prev:hover{border-color:var(--navy)}.s-next:hover{background:var(--gl)}
 .dots{display:flex;gap:5px;align-items:center;flex:1;justify-content:center;flex-wrap:wrap}
@@ -201,277 +201,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 .cda-sub{font-size:.78rem;color:rgba(255,255,255,.55);margin-top:5px;line-height:1.5}
 footer{background:var(--navy);color:rgba(255,255,255,.38);text-align:center;padding:20px;font-size:10px;line-height:1.8;border-top:1px solid rgba(201,150,58,.2)}
 footer a{color:var(--gl);text-decoration:none}
-@media print{
-  /* ── COLOR ADJUST ── */
-  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-
-  /* ── HIDE EVERYTHING first ── */
-  body>*{display:none!important}
-
-  /* ── SHOW only results panel ── */
-  .main{display:block!important}
-  .main>.panel#p4{display:block!important}
-
-  /* ── HIDE all UI chrome inside results panel ── */
-  nav,.nav,.nb,.nr,.hero,.navbtns,.shr,.ab,.del,.stepper,
-  .slide-top,.slide-bot-nav,.sctr,.gate,.tn,.cta-strip,
-  .nxs,.edu,.s-prev,.s-next,.s-prev-bot,button,
-  footer,.no-print,select,input,label,
-  details summary{display:none!important}
-
-  /* ── BODY ── */
-  body{background:#fff!important;font-size:11.5px;color:#111;margin:0;padding:0}
-  .main{padding:0!important;max-width:100%!important;margin:0!important}
-  .panel#p4{padding:0!important}
-
-  /* ── PAGE SETUP ── */
-  @page{size:A4;margin:16mm 14mm 14mm 14mm}
-
-  /* ── COVER PAGE: full page, then break ── */
-  .print-cover{
-    display:flex!important;
-    flex-direction:column;
-    justify-content:space-between;
-    min-height:calc(297mm - 32mm);
-    page-break-after:always;
-    break-after:page
-  }
-
-  /* ── SLIDES: each on its own page ── */
-  .slide{display:block!important;page-break-before:always;break-before:page}
-
-  /* ── CARDS ── */
-  .card{
-    display:block!important;
-    break-inside:avoid;
-    page-break-inside:avoid;
-    box-shadow:none!important;
-    border:1px solid #ddd!important;
-    margin-bottom:10px;
-    padding:14px!important
-  }
-  .ins,.shd,.sc,.ti-grid,.bh-grid{break-inside:avoid;page-break-inside:avoid}
-  .shd{break-after:avoid;page-break-after:avoid}
-
-  /* ── GRIDS ── */
-  .sc-grid{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:10px}
-  .sc{display:block!important;break-inside:avoid;border:1px solid #ddd!important;padding:12px!important;border-radius:6px}
-  .bh-grid{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:8px}
-  .ti-grid{display:grid!important;grid-template-columns:repeat(2,1fr)!important;gap:8px}
-  .ti{display:block!important;break-inside:avoid}
-
-  /* ── COLORS ── */
-  .bighero,.cda-box{background:#0d1e35!important;color:#fff!important}
-  .bh-val,.cda-val{color:#e8b96a!important}
-  .cta-strip,.gate{display:none!important}
-  .id{background:#fdf0ee!important;border-color:#b92d1f!important}
-  .ig{background:#edf7f1!important;border-color:#1a6b3a!important}
-  .iw{background:#fdf7ed!important;border-color:#c9963a!important}
-  .ib{background:#eef4fc!important;border-color:#185FA5!important}
-}<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Estate Planning Tool | Rattan Amol Taggar | 647-745-6850</title>
-<meta name="description" content="Free educational estate planning illustration tool. Understand what your family could inherit. By Rattan Amol Taggar, Life Insurance Advisor.">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<style>
-:root{--navy:#0d1e35;--gold:#c9963a;--gl:#e8b96a;--gp:#f7eed8;--cream:#f9f6f0;--t:#1a1a2e;--tm:#4a4a6a;--tl:#8a8aaa;--bdr:#e2d8c8;--r:#b92d1f;--rbg:#fdf0ee;--g:#1a6b3a;--gbg:#edf7f1;--b:#185FA5;--bbg:#eef4fc;--a:#7a5200;--abg:#fdf7ed;}
-*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
-body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--t);font-size:15px;line-height:1.6}
-.nav{background:var(--navy);display:flex;align-items:center;justify-content:space-between;padding:13px 28px;border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:300}
-.nb{color:#fff;font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:600}.nb span{color:var(--gold)}
-.nr{display:flex;align-items:center;gap:14px}
-.ntag{background:rgba(201,150,58,.15);border:1px solid rgba(201,150,58,.3);color:var(--gl);font-size:.65rem;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.08em;text-transform:uppercase}
-.nph{color:var(--gl);font-size:.85rem;font-weight:600;text-decoration:none}
-.hero{background:var(--navy);padding:52px 24px 44px;text-align:center;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 80%,rgba(201,150,58,.13) 0%,transparent 65%)}
-.hero::after{content:'';position:absolute;bottom:-1px;left:0;width:100%;height:48px;background:var(--cream);clip-path:ellipse(55% 100% at 50% 100%)}
-.he{font-size:.7rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;position:relative;z-index:1}
-.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(1.9rem,4vw,2.9rem);font-weight:300;color:#fff;line-height:1.2;margin-bottom:10px;position:relative;z-index:1}
-.hero h1 em{font-style:italic;color:var(--gl)}
-.hero p{color:rgba(255,255,255,.58);font-size:.95rem;max-width:520px;margin:0 auto 20px;position:relative;z-index:1;line-height:1.65}
-.edu{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.75);font-size:.72rem;padding:6px 16px;border-radius:20px;position:relative;z-index:1}
-.main{max-width:780px;margin:0 auto;padding:28px 20px 70px}
-.stepper{display:flex;border-radius:10px;overflow:hidden;border:1px solid var(--bdr);background:#fff;margin-bottom:22px}
-.step{flex:1;padding:10px 4px 8px;text-align:center;cursor:pointer;border-right:1px solid var(--bdr);transition:all .2s;user-select:none;display:flex;flex-direction:column;align-items:center;gap:3px}.step:last-child{border-right:none}
-.snum{width:22px;height:22px;border-radius:50%;background:var(--bdr);color:var(--tl);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .2s}
-.slbl{font-size:10px;font-weight:600;color:var(--tl);letter-spacing:.04em;text-transform:uppercase;line-height:1.3}
-.step.active .snum{background:var(--navy);color:var(--gl)}.step.active .slbl{color:var(--navy)}
-.step.done .snum{background:var(--g);color:#fff}.step.done .slbl{color:var(--g)}
-.panel{display:none}.panel.active{display:block}
-.card{background:#fff;border:1px solid var(--bdr);border-radius:10px;padding:20px 22px;margin-bottom:14px;box-shadow:0 2px 16px rgba(13,30,53,.06)}
-.ch{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--bdr)}
-.ci{width:34px;height:34px;border-radius:8px;background:var(--gp);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.ct{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--navy)}
-.cs{font-size:11px;color:var(--tl);margin-top:1px}
-.secl{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:16px 0 8px}
-.field{margin-bottom:12px}.field>label{display:block;font-size:12px;font-weight:600;color:var(--tm);margin-bottom:5px}
-.hint{font-weight:400;color:var(--tl);font-size:11px}
-input[type=number],input[type=text],input[type=email],input[type=tel],select{width:100%;padding:9px 11px;border:1px solid var(--bdr);border-radius:6px;font-size:13px;font-family:'DM Sans',sans-serif;background:#fff;color:var(--t);transition:border .2s;-moz-appearance:textfield}
-input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}
-input:focus,select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,150,58,.12)}
-.sw{display:flex;align-items:center;gap:10px}
-input[type=range]{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--bdr);outline:none}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--gold);cursor:pointer;box-shadow:0 1px 5px rgba(201,150,58,.5)}
-.sv{min-width:52px;text-align:right;font-weight:600;font-size:13px;color:var(--navy)}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.tw{display:flex;align-items:center;gap:12px;background:var(--gp);border:1px solid var(--bdr);border-radius:8px;padding:12px 16px;margin-bottom:14px}
-.tlw{flex:1}.tlm{font-size:13px;font-weight:700;color:var(--navy)}.tls{font-size:11px;color:var(--tl);margin-top:2px}
-.tg{position:relative;width:40px;height:22px;flex-shrink:0}.tg input{opacity:0;width:0;height:0}
-.tgs{position:absolute;cursor:pointer;inset:0;background:var(--bdr);border-radius:11px;transition:.3s}
-.tgs::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.3s}
-.tg input:checked+.tgs{background:var(--navy)}.tg input:checked+.tgs::before{transform:translateX(18px)}
-.at{width:100%;border-collapse:collapse;font-size:12px}
-.at th{font-size:10px;font-weight:700;color:var(--tl);letter-spacing:.06em;text-transform:uppercase;padding:0 5px 8px;text-align:left;white-space:nowrap}
-.at td{padding:3px 5px;vertical-align:middle}.at td input,.at td select{padding:6px 7px;font-size:12px}
-.del{background:none;border:none;cursor:pointer;color:var(--tl);font-size:16px;padding:2px 5px;line-height:1}.del:hover{color:var(--r)}
-.ab{margin-top:8px;background:none;border:1px dashed var(--gold);border-radius:6px;color:var(--gold);font-size:12px;font-weight:600;padding:6px 14px;cursor:pointer}.ab:hover{background:var(--gp)}
-.et{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;display:inline-block;white-space:nowrap}
-.ok{background:var(--gbg);color:var(--g)}.wn{background:var(--abg);color:var(--a)}.dn{background:var(--rbg);color:var(--r)}
-.navbtns{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:24px;padding:12px 0}
-.bbk{background:#fff;border:1px solid var(--bdr);border-radius:7px;padding:10px 22px;font-size:13px;font-weight:600;cursor:pointer;color:var(--tm);transition:all .2s}.bbk:hover{border-color:var(--navy);color:var(--navy)}
-.bnx{background:var(--gold);border:none;border-radius:7px;padding:11px 28px;font-size:13px;font-weight:700;color:var(--navy);cursor:pointer;transition:all .2s;box-shadow:0 2px 10px rgba(201,150,58,.35)}.bnx:hover{background:var(--gl)}
-.tn{background:var(--bbg);border:1px solid #c5dcf5;border-radius:8px;padding:11px 14px;font-size:11px;color:var(--b);line-height:1.6;margin-bottom:14px}
-.res-wrap{max-width:780px;margin:0 auto}
-.slide-top{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:18px}
-.s-prev,.s-next{background:#fff;border:1px solid var(--bdr);border-radius:7px;padding:9px 16px;font-size:12px;font-weight:600;cursor:pointer;color:var(--tm);transition:all .2s;white-space:nowrap}
-.s-next{background:var(--gold);border-color:var(--gold);color:var(--navy)}.s-prev:hover{border-color:var(--navy)}.s-next:hover{background:var(--gl)}
-.dots{display:flex;gap:5px;align-items:center;flex:1;justify-content:center;flex-wrap:wrap}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--bdr);cursor:pointer;border:none;padding:0;transition:all .2s}
-.dot.active{background:var(--navy);width:22px;border-radius:4px}.dot.done{background:var(--gold)}
-.sctr{text-align:center;font-size:11px;color:var(--tl);margin-bottom:14px}
-.slide{display:none}.slide.active{display:block;animation:fs .3s ease}
-@keyframes fs{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.shd{margin-bottom:22px}
-.stag{font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
-.stitle{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:300;color:var(--navy);line-height:1.2;margin-bottom:8px}
-.stitle strong{font-weight:700}
-.ssub{font-size:.92rem;color:var(--tm);line-height:1.65;max-width:560px}
-.bighero{background:var(--navy);border-radius:14px;padding:28px 24px;text-align:center;margin-bottom:16px;position:relative;overflow:hidden}
-.bighero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 120%,rgba(201,150,58,.2) 0%,transparent 65%)}
-.bh-label{font-size:.7rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:8px;position:relative;z-index:1}
-.bh-val{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,7vw,4.5rem);font-weight:700;color:#fff;line-height:1;position:relative;z-index:1}
-.bh-val.danger{color:#f5b0b0}
-.bh-sub{font-size:.82rem;color:rgba(255,255,255,.5);margin-top:10px;position:relative;z-index:1;line-height:1.5}
-.mg{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px}
-.mc{background:#fff;border:1px solid var(--bdr);border-radius:10px;padding:14px 14px 12px;position:relative;overflow:hidden}
-.mc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
-.mc.cn::before{background:var(--navy)}.mc.cg::before{background:var(--gold)}.mc.cd::before{background:var(--r)}.mc.cs::before{background:var(--g)}.mc.cb::before{background:var(--b)}
-.ml{font-size:10px;font-weight:700;color:var(--tl);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px}
-.mv{font-family:'Cormorant Garamond',serif;font-size:1.75rem;font-weight:700;line-height:1;color:var(--navy)}
-.mv.d{color:var(--r)}.mv.s{color:var(--g)}.mv.go{color:var(--gold)}
-.ms{font-size:10px;color:var(--tl);margin-top:5px;line-height:1.4}
-.ins{border-radius:10px;padding:13px 15px;margin-bottom:10px;border-left:4px solid;display:flex;gap:12px;align-items:flex-start}
-.ins-ic{font-size:19px;flex-shrink:0;line-height:1.2}
-.ins-t{font-weight:700;font-size:13px;margin-bottom:3px}.ins-x{font-size:12px;color:var(--tm);line-height:1.65}
-.id{background:var(--rbg);border-color:var(--r)}.id .ins-t{color:var(--r)}
-.iw{background:var(--abg);border-color:var(--gold)}.iw .ins-t{color:var(--a)}
-.ig{background:var(--gbg);border-color:var(--g)}.ig .ins-t{color:var(--g)}
-.ib{background:var(--bbg);border-color:var(--b)}.ib .ins-t{color:var(--b)}
-.score-wrap{display:flex;align-items:center;gap:24px;background:#fff;border:1px solid var(--bdr);border-radius:14px;padding:22px;margin-bottom:16px}
-.sring{position:relative;width:100px;height:100px;flex-shrink:0}.sring svg{width:100px;height:100px}
-.sring-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.snum-big{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:700;line-height:1}
-.sden{font-size:11px;color:var(--tl)}
-.score-body{flex:1}.score-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:700;color:var(--navy);margin-bottom:4px}
-.sgrade{font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:10px;display:inline-block;margin-bottom:10px}
-.sg-poor{background:var(--rbg);color:var(--r)}.sg-fair{background:var(--abg);color:var(--a)}.sg-good{background:var(--gbg);color:var(--g)}.sg-strong{background:#e6f4ff;color:var(--b)}
-.sfactors{display:flex;flex-direction:column;gap:6px}
-.sf{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--tm)}
-.sfbar{flex:1;height:5px;border-radius:3px;background:var(--bdr);overflow:hidden}
-.sffill{height:100%;border-radius:3px}.pos{color:var(--g)}.neg{color:var(--r)}
-.tmr{background:var(--navy);border-radius:14px;padding:24px;margin-bottom:16px;position:relative;overflow:hidden}
-.tmr::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 50%,rgba(201,150,58,.15) 0%,transparent 60%)}
-.tmr-title{font-size:13px;font-weight:700;color:var(--gl);margin-bottom:14px;position:relative;z-index:1}
-.tmr-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative;z-index:1}
-.ti{border-radius:8px;padding:12px 14px}
-.ti.bad{background:rgba(240,100,100,.12);border:1px solid rgba(226,75,74,.25)}.ti.good{background:rgba(100,180,100,.1);border:1px solid rgba(99,153,34,.25)}
-.ti-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
-.ti.bad .ti-lbl{color:#f09595}.ti.good .ti-lbl{color:#97C459}
-.ti-val{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:700}
-.ti.bad .ti-val{color:#f7c1c1}.ti.good .ti-val{color:#C0DD97}
-.ti-sub{font-size:10px;color:rgba(255,255,255,.4);margin-top:3px}
-.fsr{border-radius:14px;padding:22px 24px;margin-bottom:16px;display:flex;align-items:center;gap:18px}
-.fsr.low{background:var(--gbg);border:1px solid #b8e6c8}.fsr.mod{background:var(--abg);border:1px solid #f0c060}.fsr.high{background:var(--rbg);border:1px solid #f5b0b0}
-.fsr-ic{font-size:2.5rem;flex-shrink:0}.fsr-body{flex:1}
-.fsr-lbl{font-size:.65rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;margin-bottom:4px}
-.fsr.low .fsr-lbl{color:var(--g)}.fsr.mod .fsr-lbl{color:var(--a)}.fsr.high .fsr-lbl{color:var(--r)}
-.fsr-t{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:700;color:var(--navy);margin-bottom:5px}
-.fsr-x{font-size:12px;color:var(--tm);line-height:1.65}
-.liq-tbl{width:100%;border-collapse:collapse;font-size:13px}
-.liq-tbl th{font-size:10px;font-weight:700;color:var(--tl);text-transform:uppercase;letter-spacing:.06em;padding:0 10px 10px;text-align:left}
-.liq-tbl td{padding:9px 10px;border-bottom:1px solid var(--cream)}.liq-tbl tr:last-child td{border-bottom:none}
-.liq-divider td{border-top:2px solid var(--bdr)!important;font-weight:700;padding-top:12px}
-.casc{display:grid;grid-template-columns:1fr 1fr;gap:0}
-.casc-col{padding:18px}.casc-col:first-child{border-right:2px solid var(--bdr)}
-.casc-lbl{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
-.casc-lbl.bad{color:var(--r)}.casc-lbl.good{color:var(--g)}
-.cstep{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px;position:relative}
-.cstep::before{content:'';position:absolute;left:14px;top:30px;bottom:-14px;width:1px;background:var(--bdr)}.cstep:last-child::before{display:none}
-.cdot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px}
-.cdn{background:var(--bbg);color:var(--b)}.cdw{background:var(--abg);color:var(--a)}.cdd{background:var(--rbg);color:var(--r)}.cdg{background:var(--gbg);color:var(--g)}
-.cstep-body{flex:1}.cstep-t{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:2px}.cstep-x{font-size:11px;color:var(--tm);line-height:1.5}
-.cval{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;margin-top:3px}
-.cval.d{color:var(--r)}.cval.g{color:var(--g)}.cval.n{color:var(--navy)}
-.prob-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
-.pc{border-radius:10px;padding:16px}.pc.bypass{background:var(--gbg);border:1px solid #b8e6c8}.pc.through{background:var(--rbg);border:1px solid #f5b0b0}
-.pc-title{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
-.pc.bypass .pc-title{color:var(--g)}.pc.through .pc-title{color:var(--r)}
-.pi{display:flex;align-items:flex-start;gap:7px;font-size:12px;color:var(--t);padding:4px 0;border-bottom:1px solid rgba(0,0,0,.05);line-height:1.4}.pi:last-child{border-bottom:none}
-.pc.bypass .pi::before{content:'\2713';color:var(--g);font-weight:700;flex-shrink:0}.pc.through .pi::before{content:'\2717';color:var(--r);font-weight:700;flex-shrink:0}
-.chk-list{display:flex;flex-direction:column;gap:8px}
-.chk{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:9px;font-size:13px;line-height:1.55}
-.chk.win{background:var(--gbg);border:1px solid #b8e6c8}.chk.err{background:var(--rbg);border:1px solid #f5b0b0}.chk.wrn{background:var(--abg);border:1px solid #f0c060}
-.chk-ic{font-size:16px;flex-shrink:0;margin-top:1px}.chk-tx{flex:1;color:var(--t)}.chk-tx strong{font-weight:700}
-.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
-.sc{background:#fff;border:1px solid var(--bdr);border-radius:12px;padding:18px 16px;position:relative;overflow:hidden;transition:box-shadow .25s}.sc:hover{box-shadow:0 6px 24px rgba(13,30,53,.1)}
-.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
-.sc.term::before{background:#185FA5}.sc.perm::before{background:var(--navy)}.sc.seg::before{background:var(--gold)}
-.sc-badge{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:10px;display:inline-block;margin-bottom:10px}
-.sc.term .sc-badge{background:#E6F1FB;color:#185FA5}.sc.perm .sc-badge{background:#e8eef6;color:var(--navy)}.sc.seg .sc-badge{background:var(--gp);color:var(--a)}
-.sc-t{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:8px;line-height:1.3}
-.sc-est{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--tl);margin-bottom:3px}
-.sc-prem{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--g);margin-bottom:2px}
-.sc-sub{font-size:10px;color:var(--tl);margin-bottom:12px}
-.sc-pros{list-style:none}.sc-pros li{font-size:11px;color:var(--tm);padding:3px 0;border-bottom:1px solid var(--cream);display:flex;align-items:flex-start;gap:6px;line-height:1.4}
-.sc-pros li::before{content:'\2713';color:var(--g);font-weight:700;flex-shrink:0;margin-top:1px}.sc-pros li.con::before{content:'\2197';color:var(--a)}
-.sc-cta{margin-top:12px;display:block;text-align:center;background:var(--navy);color:var(--gl);font-size:11px;font-weight:700;padding:9px;border-radius:6px;text-decoration:none}.sc-cta:hover{background:#122040}
-.cta-strip{background:var(--navy);border-radius:12px;padding:22px 24px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:18px;position:relative;overflow:hidden}
-.cta-strip::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(201,150,58,.15) 0%,transparent 55%)}
-.cta-tx{position:relative;z-index:1}.cta-n{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:#fff;font-weight:300;margin-bottom:3px}
-.cta-n strong{font-weight:700;color:var(--gl)}.cta-d{font-size:11px;color:rgba(255,255,255,.55);line-height:1.6}
-.cta-ac{display:flex;flex-direction:column;gap:8px;align-items:flex-end;position:relative;z-index:1}
-.cta-ph{color:var(--gl);font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;text-decoration:none}
-.cta-bs{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.cbp{background:var(--gold);color:var(--navy);padding:9px 18px;border-radius:6px;font-size:12px;font-weight:700;text-decoration:none}
-.cbs{background:transparent;color:rgba(255,255,255,.7);padding:9px 14px;border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;border:1px solid rgba(255,255,255,.2)}
-.shr{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.shbtn{background:#fff;border:1px solid var(--bdr);border-radius:6px;padding:8px 14px;font-size:11px;font-weight:600;cursor:pointer;color:var(--tm);transition:all .2s}.shbtn:hover{border-color:var(--gold);color:var(--gold)}
-.gate{background:#fff;border:1px solid var(--bdr);border-radius:14px;padding:34px 28px;text-align:center;box-shadow:0 4px 24px rgba(13,30,53,.08)}
-.gate-title{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:600;color:var(--navy);margin-bottom:8px}
-.gate-sub{font-size:.9rem;color:var(--tm);margin-bottom:22px;line-height:1.65;max-width:400px;margin-left:auto;margin-right:auto}
-.gate-preview{background:var(--cream);border-radius:10px;padding:14px;margin-bottom:22px;filter:blur(4px);pointer-events:none;user-select:none;opacity:.65}
-.gate-form{display:flex;flex-direction:column;gap:10px;max-width:340px;margin:0 auto}
-.gate-btn{background:var(--gold);border:none;border-radius:7px;padding:13px;font-size:14px;font-weight:700;color:var(--navy);cursor:pointer;transition:all .2s}.gate-btn:hover{background:var(--gl)}
-.gate-skip{background:none;border:none;color:var(--tl);font-size:12px;cursor:pointer;margin-top:6px;text-decoration:underline}
-.discl{font-size:10px;color:var(--tl);margin-top:20px;line-height:1.7;border-top:1px solid var(--bdr);padding-top:12px}
-.mod-badge{display:inline-flex;align-items:center;gap:6px;background:var(--navy);color:var(--gl);font-size:.68rem;font-weight:700;padding:4px 11px;border-radius:20px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
-.mod-badge .mb-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.module-reveal{border:2px solid var(--gold);border-radius:12px;padding:2px;margin-bottom:14px;position:relative}
-.module-reveal::before{content:'ADAPTIVE MODULE';position:absolute;top:-10px;left:14px;background:var(--gold);color:var(--navy);font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.1em}
-.adapt-hidden{display:none}
-.cda-box{background:linear-gradient(135deg,var(--navy) 0%,#122040 100%);border-radius:12px;padding:20px 22px;color:#fff;margin-bottom:14px;position:relative;overflow:hidden}
-.cda-box::before{content:'';position:absolute;top:-20px;right:-20px;width:100px;height:100px;border-radius:50%;background:rgba(201,150,58,.15)}
-.cda-label{font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gl);margin-bottom:6px}
-.cda-val{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:#fff;line-height:1}
-.cda-sub{font-size:.78rem;color:rgba(255,255,255,.55);margin-top:5px;line-height:1.5}
-footer{background:var(--navy);color:rgba(255,255,255,.38);text-align:center;padding:20px;font-size:10px;line-height:1.8;border-top:1px solid rgba(201,150,58,.2)}
-footer a{color:var(--gl);text-decoration:none}
-
+@media print{.nav,.hero,.navbtns,.shr,.ab,.del,.stepper,.slide-top,.sctr,.gate,.s-prev,.s-next{display:none!important}.panel,.slide{display:block!important}body{background:#fff;font-size:13px}.main,.res-wrap{padding:0;max-width:100%;margin:0}.card{box-shadow:none;border:1px solid #ccc;break-inside:avoid;margin-bottom:10px}.bighero,.cda-box{background:#0d1e35!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#fff!important}.bh-val,.cda-val{color:#e8b96a!important}.ins{-webkit-print-color-adjust:exact;print-color-adjust:exact;break-inside:avoid}.id{background:#fdf0ee!important;border-color:#b92d1f!important}.ig{background:#edf7f1!important;border-color:#1a6b3a!important}.iw{background:#fdf7ed!important;border-color:#c9963a!important}.ib{background:#eef4fc!important;border-color:#185FA5!important}.cta-strip{background:#0d1e35!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.sc{break-inside:avoid;border:1px solid #ccc}.sc-grid{grid-template-columns:1fr 1fr 1fr}@page{margin:15mm;size:A4}.print-header{display:block!important;text-align:center;padding:0 0 14px;border-bottom:2px solid #c9963a;margin-bottom:16px}.print-footer{display:block!important;text-align:center;font-size:10px;color:#888;border-top:1px solid #ccc;padding-top:10px;margin-top:16px}}
+.print-header,.print-footer{display:none}
+@media(max-width:600px){.g2,.g3,.sc-grid,.casc,.prob-grid,.tmr-grid{grid-template-columns:1fr}.mg{grid-template-columns:1fr 1fr}.score-wrap{flex-direction:column;text-align:center}.slbl{display:none}.step{padding:10px 4px}.cta-strip{flex-direction:column}.cta-ac{align-items:flex-start}}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400&family=Bricolage+Grotesque:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -876,7 +608,6 @@ nav .dropdown a:hover{color:#e8b96a!important;background:rgba(201,150,58,.12)!im
     <table class="at"><thead><tr><th style="width:32%">Business / corporation name</th><th>Value ($)</th><th>Your cost ($)</th><th>Growth %/yr</th><th>LCGE eligible?</th><th></th></tr></thead>
     <tbody id="bizBody"></tbody></table>
     <button class="ab" onclick="addBiz()">+ Add business</button>
-    <div style="font-size:11px;color:var(--tl);margin-top:6px;padding:6px 10px;background:var(--cream);border-radius:6px">&#128188; Enter each owner's share value separately. For jointly-owned businesses with a spouse, split the value by ownership percentage.</div>
     <div style="font-size:11px;color:var(--tl);margin-top:8px;line-height:1.5">&#128161; Enter the combined value. If you have both an OpCo and HoldCo, add them as separate rows. The Corporate Module below handles structure details.</div>
   </div>
   <!-- ADAPTIVE: Corp module -->
@@ -950,7 +681,7 @@ nav .dropdown a:hover{color:#e8b96a!important;background:rgba(201,150,58,.12)!im
   <div class="card">
     <div class="ch"><div class="ci">&#9878;</div><div><div class="ct">Estate costs</div><div class="cs">Come out automatically before your family gets anything</div></div></div>
     <div class="g2">
-      <div class="field"><label>Funeral &amp; final expenses ($) <span class="hint">per person — doubled automatically for couples</span></label><input type="number" id="finalExp" value="15000"></div>
+      <div class="field"><label>Funeral &amp; final expenses ($)</label><input type="number" id="finalExp" value="15000"></div>
       <div class="field"><label>Legal &amp; executor fees <span class="hint">(% of estate)</span></label>
         <div class="sw"><input type="range" id="legalFee" min="0.5" max="4" step="0.25" value="1.5" oninput="sl('legalFee','lfLbl','%')"><span class="sv" id="lfLbl">1.5%</span></div>
       </div>
@@ -992,37 +723,6 @@ nav .dropdown a:hover{color:#e8b96a!important;background:rgba(201,150,58,.12)!im
 </div>
 <!-- STEP 5: RESULTS -->
 <div class="panel" id="p4">
-<!-- PRINT COVER PAGE -->
-<div class="print-cover" style="display:none">
-  <div style="display:flex;flex-direction:column;justify-content:space-between;height:100%;gap:30px">
-    <!-- Top: branding -->
-    <div>
-      <div style="font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:#c9963a;margin-bottom:12px">Estate Planning Illustration</div>
-      <div style="font-size:36px;font-weight:700;color:#0d1e35;line-height:1.1;margin-bottom:6px">Estate Planning<br>Report</div>
-      <div style="width:60px;height:3px;background:#c9963a;margin:16px 0 24px"></div>
-      <div style="font-size:13px;color:#555;line-height:1.7;max-width:420px">
-        Prepared as an educational illustration to help you understand the potential impact of taxes, costs, and estate structure on what your family ultimately receives.
-      </div>
-    </div>
-
-    <!-- Middle: client + advisor info -->
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;padding:24px 0;border-top:1px solid #e5e0d8;border-bottom:1px solid #e5e0d8">
-      <div>
-        <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#c9963a;margin-bottom:6px">Prepared for</div>
-        <div style="font-size:20px;font-weight:600;color:#0d1e35" id="cover-client-name">—</div>
-        <div style="font-size:11px;color:#888;margin-top:3px" id="cover-date-line"></div>
-      </div>
-      <div style="text-align:right">
-        <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#c9963a;margin-bottom:6px">Your Advisor</div>
-        <div style="font-size:15px;font-weight:700;color:#0d1e35">Rattan Amol Taggar</div>
-        <div style="font-size:11px;color:#666;margin-top:2px">Life Insurance Advisor</div>
-        <div style="font-size:11px;color:#888">647-745-6850 &middot; ibrinsurance.ca</div>
-        <div style="font-size:10px;color:#aaa;margin-top:2px">Licensed: ON &middot; AB &middot; BC &middot; MB &middot; SK &middot; NB &middot; PEI &middot; NS</div>
-      </div>
-    </div>
-
-    
-
   <div id="gateArea">
     <div class="gate">
       <div style="font-size:2.5rem;margin-bottom:12px">&#128202;</div>
@@ -1047,6 +747,8 @@ nav .dropdown a:hover{color:#e8b96a!important;background:rgba(201,150,58,.12)!im
     </div>
   </div>
   <div id="deckArea" style="display:none">
+    <div class="res-wrap">
+      <div class="print-header" style="display:none"><strong style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:#0d1e35">Estate Planning Report</strong><br><span style="font-size:11px;color:#666">Rattan Amol Taggar &middot; Life Insurance Advisor &middot; ibrinsurance.ca &middot; 647-745-6850 &middot; Licensed: ON AB BC MB SK NB PEI NS</span></div>
       <div class="sctr" id="slideCounter">Slide 1 of 12</div>
       <div class="slide-top">
         <button class="s-prev" onclick="prevSlide()" style="visibility:hidden">&#8592; Back</button>
@@ -1054,7 +756,7 @@ nav .dropdown a:hover{color:#e8b96a!important;background:rgba(201,150,58,.12)!im
         <button class="s-next" onclick="nextSlide()" id="nextBtn">Next &#8594;</button>
       </div>
       <div id="slidesWrap"></div>
-      <div class="navbtns" style="margin-top:22px;justify-content:center;gap:16px">
+      <div class="navbtns" style="margin-top:22px">
         <button class="bbk" onclick="goTo(3)">&#8592; Edit Inputs</button>
         <div class="shr">
           <button class="shbtn" onclick="window.print()">&#128424; Print / PDF</button>
@@ -1063,14 +765,14 @@ nav .dropdown a:hover{color:#e8b96a!important;background:rgba(201,150,58,.12)!im
           <button class="shbtn" onclick="doShare('cp')">&#128279; Copy link</button>
         </div>
       </div>
-      
+      <div class="print-footer" style="display:none">Rattan Amol Taggar &middot; Life Insurance Advisor &middot; ibrinsurance.ca &middot; 647-745-6850<br>Licensed: ON &middot; AB &middot; BC &middot; MB &middot; SK &middot; NB &middot; PEI &middot; NS &middot; Access to 25+ Canadian insurers<br><em>Educational illustration only &mdash; not financial, tax, or legal advice</em></div>
       <div class="discl"><strong>Disclaimer:</strong> Educational illustration for insurance planning discussions only. All figures are estimates based on your inputs &mdash; not financial, tax, or legal advice. Capital gains inclusion rate reflects confirmed 2026 Canadian law (50% &mdash; proposed 66.67% increase was cancelled March 21, 2025). All premium estimates are preliminary and illustrative only &mdash; subject to underwriting, carrier selection, and individual health. Growth rate capped at 25%/yr for modelling purposes. Rattan Amol Taggar is a licensed life insurance advisor (HLLQP), not a financial planner, tax advisor, or lawyer.</div>
     </div>
   </div>
 </div>
 </div>
-<div style="display:none"><footer class="no-print">
-  <p><strong style="color:rgba(255,255,255,.6)">Rattan Amol Taggar</strong> &middot; Life Insurance Advisor &middot; iA Financial Group &middot; ibrinsurance.ca &middot; Licensed: ON &middot; AB &middot; BC &middot; MB &middot; SK &middot; NB &middot; PEI &middot; NS &middot; <a href="tel:6477456850">647-745-6850</a></p>
+<div style="display:none"><footer>
+  <p><strong style="color:rgba(255,255,255,.6)">Rattan Amol Taggar</strong> &middot; Life Insurance Advisor &middot; ibrinsurance.ca &middot; Licensed: ON &middot; AB &middot; BC &middot; MB &middot; SK &middot; NB &middot; PEI &middot; NS &middot; <a href="tel:6477456850">647-745-6850</a></p>
   <p style="margin-top:5px;opacity:.7">Access to 25+ Canadian insurers &middot; iA CBP Award 2021&ndash;2025 &middot; iA Premier Expert 2026 &middot; 400+ Google Reviews</p>
 </footer></div>
 <script>
@@ -1085,11 +787,7 @@ function sl(id,lbl,sfx){const v=+document.getElementById(id).value;document.getE
 function goTo(n){
   document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===n));
   document.querySelectorAll('.step').forEach((s,i)=>{s.classList.remove('active','done');if(i===n)s.classList.add('active');else if(i<n)s.classList.add('done')});
-  if(n===4){
-    document.getElementById('gateArea').style.display='block';
-    document.getElementById('deckArea').style.display='none';
-    try{calcAll();buildDeck();}catch(e){}
-  }
+  if(n===4){document.getElementById('gateArea').style.display='block';document.getElementById('deckArea').style.display='none';}
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -1230,7 +928,7 @@ function calcAll(){
   const cg=+document.getElementById('cgRate').value;
   const probR=+document.getElementById('probateRate').value;
   const legF=+document.getElementById('legalFee').value/100;
-  const finE=(+document.getElementById('finalExp').value||0)*(hs?2:1);
+  const finE=+document.getElementById('finalExp').value||0;
   const re=parseRE(),rr1=parseRRSP(1),rr2=hs?parseRRSP(2):[],tf1=parseTFSA(1),tf2=hs?parseTFSA(2):[],nr=parseNR(),biz=parseBiz(),debts=parseDebts(),ins=parseIns();
   const corp=parseCorp();
   const reF=proj(re,h,false),rr1F=proj(rr1,h),rr2F=proj(rr2,h),tf1F=proj(tf1,h),tf2F=proj(tf2,h),nrF=proj(nr,h,false),bizF=proj(biz,h,false);
@@ -1430,22 +1128,13 @@ function buildDeck(){
   charts.forEach(c=>{try{c.destroy()}catch(e){}});charts=[];
   const D=calcAll();
   const slideHTML=buildSlides(D);
-  document.getElementById('slidesWrap').innerHTML=slideHTML.map((s,i)=>{
-    const isLast=i===slideHTML.length-1;
-    const bottomNav='<div class="slide-bot-nav" style="display:flex;justify-content:center;align-items:center;gap:16px;margin-top:24px;padding-top:16px;border-top:1px solid var(--bdr)">'+
-      '<button class="s-prev-bot" onclick="prevSlide()" style="visibility:'+(i===0?'hidden':'visible')+';background:#fff;border:1px solid var(--bdr);border-radius:7px;padding:9px 16px;font-size:12px;font-weight:600;cursor:pointer;color:var(--tm)">&#8592; Back</button>'+
-      '<span style="font-size:11px;color:var(--tl);min-width:80px;text-align:center">Slide '+(i+1)+' of '+slideHTML.length+'</span>'+
-      '<button onclick="'+(isLast?'goTo(0)':'nextSlide()')+'" style="background:var(--gold);border:1px solid var(--gold);border-radius:7px;padding:9px 16px;font-size:12px;font-weight:600;cursor:pointer;color:var(--navy)">'+(isLast?'Done &#10003;':'Next &#8594;')+'</button>'+
-      '</div>';
-    return '<div class="slide'+(i===0?' active':'')+'" id="sl'+i+'">'+s+bottomNav+'</div>';
-  }).join('');
+  document.getElementById('slidesWrap').innerHTML=slideHTML.map((s,i)=>'<div class="slide'+(i===0?' active':'')+'" id="sl'+i+'">'+s+'</div>').join('');
   totSlides=slideHTML.length;curSlide=0;
   buildDots();updateNav();updateCtr();
   setTimeout(()=>{drawGrowthChart(D);drawPieChart(D);},200);
 }
 
 function buildSlides(D){
-  updateCoverName();
   const sc=D.grade==='strong'?'#1a6b3a':D.grade==='good'?'#185FA5':D.grade==='fair'?'#BA7517':'#A32D2D';
   const circ=2*3.14159*44;
   const dashOff=circ*(1-D.score/100);
@@ -1811,8 +1500,7 @@ ${(()=>{
   ${sensLabels.map((lbl,i)=>{
     const pct=Math.round(sensEst[i]/sensEst[2]*90);
     const barColor=i===0?'#888':i===1?'#185FA5':'#1a6b3a';
-    const sv=sensEst[i]*1000;const sfmt=sv>=1e9?'$'+(sv/1e9).toFixed(2)+'B':sv>=1e6?'$'+(sv/1e6).toFixed(1)+'M':'$'+(sv/1000).toFixed(0)+'K';
-    return '<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span style="color:var(--tm)">'+lbl+'</span><strong style="color:var(--navy)">'+sfmt+'</strong></div><div style="background:var(--bdr);border-radius:4px;height:20px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:'+barColor+';border-radius:4px;transition:width .6s"></div></div></div>';
+    return '<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span style="color:var(--tm)">'+lbl+'</span><strong style="color:var(--navy)">$'+sensEst[i]+'K</strong></div><div style="background:var(--bdr);border-radius:4px;height:20px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:'+barColor+';border-radius:4px;transition:width .6s"></div></div></div>';
   }).join('')}
   <div class="ins ib" style="margin-top:4px"><div class="ins-ic">&#128161;</div><div><div class="ins-t">Why this matters for insurance planning</div><div class="ins-x">A higher-performing estate means a larger RRSP tax bill at death. A lower-performing estate may still have liquidity gaps. The right coverage adapts to the range, not just the middle estimate.</div></div></div>
 </div>
@@ -1874,7 +1562,8 @@ ${(()=>{
   <div class="sc term">
     <div class="sc-badge">Term Life</div>
     <div class="sc-t">Lowest cost, time-limited</div>
-    <div class="sc-est" style="color:var(--gold);font-weight:600;font-size:13px;margin:12px 0 4px">Pricing varies by age &amp; health</div>
+    <div class="sc-est">Illustrative estimate only</div>
+    <div class="sc-prem">${fD(D.pTerm)}<span style="font-size:13px;font-weight:400">/yr</span></div>
     <div class="sc-sub">Preliminary · subject to underwriting &amp; health</div>
     <ul class="sc-pros">
       <li>Lowest annual cost</li>
@@ -1888,7 +1577,8 @@ ${(()=>{
   <div class="sc perm">
     <div class="sc-badge">Permanent Life</div>
     <div class="sc-t">Guaranteed for life</div>
-    <div class="sc-est" style="color:var(--gold);font-weight:600;font-size:13px;margin:12px 0 4px">Pricing varies by age &amp; health</div>
+    <div class="sc-est">Illustrative estimate only</div>
+    <div class="sc-prem">${fD(D.pPerm)}<span style="font-size:13px;font-weight:400">/yr</span></div>
     <div class="sc-sub">Preliminary · subject to underwriting &amp; health</div>
     <ul class="sc-pros">
       <li>Coverage never expires</li>
@@ -1902,7 +1592,8 @@ ${(()=>{
   <div class="sc seg">
     <div class="sc-badge">Seg Funds</div>
     <div class="sc-t">Invest + protect together</div>
-    <div class="sc-est" style="color:var(--gold);font-weight:600;font-size:13px;margin:12px 0 4px">Pricing varies by age &amp; health</div>
+    <div class="sc-est">Illustrative deposit estimate</div>
+    <div class="sc-prem">${fD(D.pSeg)}<span style="font-size:13px;font-weight:400">/yr</span></div>
     <div class="sc-sub">Illustrative deposit only · not a premium</div>
     <ul class="sc-pros">
       <li>75–100% principal guarantee on deposits</li>
@@ -1941,9 +1632,7 @@ function goSlide(n){
   curSlide=n;
   document.querySelectorAll('.dot').forEach((d,i)=>{d.classList.toggle('active',i===n);d.classList.toggle('done',i<n)});
   updateNav();updateCtr();
-  // Scroll to top of slide area so top nav is always visible
-  const deck=document.getElementById('deckArea');
-  if(deck)window.scrollTo({top:deck.getBoundingClientRect().top+window.pageYOffset-10,behavior:'smooth'});
+  const deck=document.getElementById('deckArea');if(deck)deck.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function nextSlide(){if(curSlide<totSlides-1)goSlide(curSlide+1)}
 function prevSlide(){if(curSlide>0)goSlide(curSlide-1)}
@@ -1991,12 +1680,12 @@ function doShare(m){
 </script>
 </div>
 
-<footer class="no-print">
+<footer>
   <!-- Desktop footer: 4-column grid -->
   <div class="fg">
     <div class="fb">
       <a href="index.html" class="fl">Rattan <em>Amol Taggar</em></a>
-      <p>Life Insurance Advisor &middot; B.Eng &middot; Ford Motor Company Alumni &middot; Licensed in ON, BC, AB, MB, SK, NS, PEI, NB &middot; Independent advisor operating under iA Financial Group.</p>
+      <p>Life Insurance Advisor &middot; B.Eng &middot; Ford Motor Company Alumni &middot; Licensed in ON, BC, AB, MB, SK, NS, PEI, NB &middot; Independent advisor.</p>
     </div>
     <div class="fc"><h5>Insurance</h5><ul>
       <li><a href="super-visa.html">Super Visa Insurance</a></li>
@@ -2071,21 +1760,6 @@ document.addEventListener('DOMContentLoaded',function(){
     });
   });
 });
-
-// Set print date and cover page info
-window.addEventListener('load', function(){
-  var el = document.getElementById('print-date');
-  var dateStr = new Date().toLocaleDateString('en-CA', {year:'numeric',month:'long',day:'numeric'});
-  if(el) el.textContent = dateStr;
-  var coverDate = document.getElementById('cover-date-line');
-  if(coverDate) coverDate.textContent = 'Prepared: ' + dateStr;
-});
-// Update cover client name when compute runs
-function updateCoverName(){
-  var nameEl = document.getElementById('p1name');
-  var coverName = document.getElementById('cover-client-name');
-  if(nameEl && coverName) coverName.textContent = nameEl.value || 'Client';
-}
 </script>
 
 </body>
