@@ -1170,10 +1170,14 @@ function calcNeeds() {
 
   // DI: 70% of monthly income, max $10,000/mo
   const diMonthly = income>0 ? Math.min(Math.round(income*0.70/12),10000) : 0;
-  // CI: delegate to calcCI() which has the proper formula
-  if(typeof calcCI === 'function') calcCI();
+  // CI: use Step 3 inputs if entered, otherwise 2x income default
+  const ciHasInputs2 = (parseFloat(document.getElementById('ci-housing')?.value)||0) +
+                       (parseFloat(document.getElementById('ci-loans')?.value)||0) +
+                       (parseFloat(document.getElementById('ci-other')?.value)||0) > 0;
+  if(ciHasInputs2 && typeof calcCI === 'function') calcCI();
   const ciEl = document.getElementById('n-ci-amount');
-  const ciVal = ciEl ? (parseFloat(ciEl.textContent.replace(/[^0-9.]/g,''))||0) : 0;
+  const ciFromCI = ciEl ? (parseFloat(ciEl.textContent.replace(/[^0-9.]/g,''))||0) : 0;
+  const ciVal = ciHasInputs2 && ciFromCI > 0 ? ciFromCI : income * 2;
 
   // Update result panel elements
   sv('r-total',   fmt(net));
@@ -1185,10 +1189,9 @@ function calcNeeds() {
   sv('r-assets',  fmt(assets+existing));
   sv('r-net',     fmt(net));
   sv('r-di',      '$'+diMonthly.toLocaleString('en-CA')+'/mo');
-  // Update our result card CI display from what calcCI set
-  const ciAmtEl = document.getElementById('n-ci-amount');
-  const ciDisplay = ciAmtEl ? ciAmtEl.textContent : '—';
-  sv('n-ci-amount-display', (ciDisplay && ciDisplay !== '—' && ciDisplay !== '$0') ? ciDisplay : (ciVal > 0 ? fmt(ciVal) : '—'));
+  // Update CI display
+  sv('n-ci-amount-display', fmt(ciVal));
+  sv('n-ci-amount', fmt(ciVal));
 
 
   // Sync hidden elements for download report
@@ -1523,11 +1526,14 @@ function updateResultPanel() {
   // Sync hidden elements for downloadNeedsReport
   const rm = el('n-result-main'); if(rm) rm.textContent = fmt(net);
   const dim = el('n-di-amount'); if(dim) dim.textContent = '$'+diMonthly.toLocaleString('en-CA')+'/mo';
-  if(el('n-ci-amount-display') || el('n-ci-amount')) {
-    const ciVal = Math.round((mortgage + debt + emergency) * 0.5);
-    const ciEl = el('n-ci-amount-display'); if(ciEl) ciEl.textContent = fmt(ciVal);
-    const ciH = el('n-ci-amount'); if(ciH) ciH.textContent = fmt(ciVal);
-  }
+  // CI: use Step 3 inputs if entered, otherwise default to 2x annual income
+  if(typeof calcCI === 'function') calcCI();
+  const ciFromCalcCI = el('n-ci-amount')?.textContent;
+  const ciHasInputs = (parseFloat(el('ci-housing')?.value)||0) + (parseFloat(el('ci-loans')?.value)||0) + (parseFloat(el('ci-other')?.value)||0) > 0;
+  const ciDefault = fmt(income * 2);
+  const ciDisplay2 = ciHasInputs ? (ciFromCalcCI && ciFromCalcCI !== '—' ? ciFromCalcCI : ciDefault) : ciDefault;
+  const ciDisp = el('n-ci-amount-display'); if(ciDisp) ciDisp.textContent = ciDisplay2;
+  const ciHid = el('n-ci-amount'); if(ciHid) ciHid.textContent = ciDisplay2;
 }
 
 // Chip click helper
