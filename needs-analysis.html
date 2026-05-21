@@ -797,14 +797,14 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
       </div>
 
       <div class="na-field">
-        <div class="na-label"><span class="na-label-text">% Family Needs</span><span class="na-label-val" id="n-pct-lbl">70%</span></div>
+        <div class="na-label"><span class="na-label-text">% Family Needs</span><span class="na-label-val" id="n-pct-lbl">100%</span></div>
         <div class="na-chips" id="pct-chips">
           <button class="na-chip" data-val="50" onclick="naChip('n-pct',50,'pct-chips')">50%</button>
-          <button class="na-chip active" data-val="70" onclick="naChip('n-pct',70,'pct-chips')">70% <span style="font-size:10px;opacity:.6">(recommended)</span></button>
+          <button class="na-chip" data-val="70" onclick="naChip('n-pct',70,'pct-chips')">70%</button>
           <button class="na-chip" data-val="80" onclick="naChip('n-pct',80,'pct-chips')">80%</button>
-          <button class="na-chip" data-val="100" onclick="naChip('n-pct',100,'pct-chips')">100%</button>
+          <button class="na-chip active" data-val="100" onclick="naChip('n-pct',100,'pct-chips')">100%</button>
         </div>
-        <input type="hidden" id="n-pct" value="70">
+        <input type="hidden" id="n-pct" value="100">
       </div>
 
       <div class="na-field">
@@ -904,9 +904,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
         <div class="na-field">
           <div class="na-label"><span class="na-label-text">Recovery Period</span><span class="na-label-val" id="ci-months-lbl">12 mo</span></div>
           <div class="na-chips" id="ci-chips">
-            <button class="na-chip active" data-val="12" onclick="naChip('ci-months',12,'ci-chips')">12 months</button>
-            <button class="na-chip" data-val="18" onclick="naChip('ci-months',18,'ci-chips')">18 months</button>
-            <button class="na-chip" data-val="24" onclick="naChip('ci-months',24,'ci-chips')">24 months</button>
+            <button class="na-chip active" data-val="12" onclick="naChip('ci-months',12,'ci-chips');document.getElementById('ci-months-lbl').textContent='12 mo'">12 months</button>
+            <button class="na-chip" data-val="18" onclick="naChip('ci-months',18,'ci-chips');document.getElementById('ci-months-lbl').textContent='18 mo'">18 months</button>
+            <button class="na-chip" data-val="24" onclick="naChip('ci-months',24,'ci-chips');document.getElementById('ci-months-lbl').textContent='24 mo'">24 months</button>
           </div>
           <input type="hidden" id="ci-months" value="12">
         </div>
