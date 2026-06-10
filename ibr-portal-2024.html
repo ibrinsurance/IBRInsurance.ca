@@ -2498,26 +2498,16 @@ function renderAnalytics(){
     if(typeof Chart==='undefined')return;
     (window._pendingProdCharts||[]).forEach(function(cfg){
       var accent='#1a6b3a', grey='#94a3b8';
+      // YTD comm badge
+      var csBadge=document.getElementById(cfg.commId.replace('prodCommChart','prodCommStat'));
+      if(csBadge)csBadge.textContent='📊 '+cfg.curY2+' YTD (shown products): $'+(cfg.ytdComm||0).toLocaleString();
       var ce=document.getElementById(cfg.commId);
-      if(ce&&cfg.curComm.length>0){
-        try{
-          new Chart(ce.getContext('2d'),{type:'bar',data:{labels:cfg.labels,datasets:[
-            {label:'This month',data:cfg.curComm,backgroundColor:accent,borderRadius:4,barPercentage:.65},
-            {label:'Best ever',data:cfg.bestComm,backgroundColor:grey,borderRadius:4,barPercentage:.65}
-          ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:10}},tooltip:{callbacks:{label:function(ctx){return ctx.dataset.label+': $'+Math.round(ctx.parsed.y).toLocaleString();}}}},scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{callback:function(v){return v>=1000?'$'+(v/1000).toFixed(0)+'K':'$'+v;},font:{size:10}},grid:{color:'rgba(0,0,0,.04)'}}}}}); 
-        }catch(e){}
-      }
-      // YTD count badge
+        try{new Chart(ce.getContext('2d'),{type:'bar',data:{labels:cfg.labels,datasets:[{label:'This month',data:cfg.curComm,backgroundColor:accent,borderRadius:4,barPercentage:.65},{label:'Best ever',data:cfg.bestComm,backgroundColor:grey,borderRadius:4,barPercentage:.65}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:10}},tooltip:{callbacks:{title:function(i){return(cfg.fullLabels&&cfg.fullLabels[i[0].dataIndex])||'';},label:function(ctx){var v='$'+Math.round(ctx.parsed.y).toLocaleString();if(ctx.datasetIndex===1&&cfg.bestCommYears&&cfg.bestCommYears[ctx.dataIndex])v+=' (best: '+cfg.bestCommYears[ctx.dataIndex]+')';return ctx.dataset.label+': '+v;}}}},scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{callback:function(v){return v>=1000?'$'+(v/1000).toFixed(0)+'K':'$'+v;},font:{size:10}}}}}});}catch(e){}
       var ccBadge=document.getElementById(cfg.countId.replace('prodCountChart','prodCountStat'));
       if(ccBadge)ccBadge.textContent='📋 '+cfg.curY2+' total policies sold: '+(cfg.ytdCount||0);
       var cc=document.getElementById(cfg.countId);
       if(cc&&cfg.curCount&&cfg.curCount.length>0){
-        try{
-          new Chart(cc.getContext('2d'),{type:'bar',data:{labels:cfg.countLabels,datasets:[
-            {label:'This month',data:cfg.curCount,backgroundColor:accent,borderRadius:4,barPercentage:.65},
-            {label:'Best ever',data:cfg.bestCount,backgroundColor:grey,borderRadius:4,barPercentage:.65}
-          ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:10}},tooltip:{callbacks:{label:function(ctx){return ctx.dataset.label+': '+ctx.parsed.y+' policies';}}}},scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{stepSize:1,font:{size:10}},grid:{color:'rgba(0,0,0,.04)'}}}}});
-        }catch(e){}
+        try{new Chart(cc.getContext('2d'),{type:'bar',data:{labels:cfg.countLabels,datasets:[{label:'This month',data:cfg.curCount,backgroundColor:accent,borderRadius:4,barPercentage:.65},{label:'Best ever',data:cfg.bestCount,backgroundColor:grey,borderRadius:4,barPercentage:.65}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:10}},tooltip:{callbacks:{title:function(i){return(cfg.fullCountLabels&&cfg.fullCountLabels[i[0].dataIndex])||'';},label:function(ctx){var v=ctx.parsed.y+' policies';if(ctx.datasetIndex===1&&cfg.bestCountYears&&cfg.bestCountYears[ctx.dataIndex])v+=' (best: '+cfg.bestCountYears[ctx.dataIndex]+')';return ctx.dataset.label+': '+v;}}}},scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{stepSize:1,font:{size:10}}}}}});}catch(e){}
       }
     });
     window._pendingProdCharts=[];
