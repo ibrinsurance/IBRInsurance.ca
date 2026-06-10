@@ -1589,9 +1589,18 @@ function _anDailyView(D,MONTHS,f$){
 
     // Register charts to draw after HTML is injected
     window._pendingProdCharts = window._pendingProdCharts || [];
-    // YTD totals for stat badges
-    var ytdCommTotal=Object.keys(D.byYM[curY2]||{}).reduce(function(s,m){var bp=D.byYM[curY2][m].byProd||{};Object.keys(bp).forEach(function(p){if(pRows2Filtered.some(function(r){return r.p===p;}))s+=bp[p]||0;});return s;},0);
-    var ytdCountTotal=Object.keys(D.byYM[curY2]||{}).reduce(function(s,m){var bp=D.byYM[curY2][m].byProdCount||{};Object.keys(bp).forEach(function(p){s+=bp[p]||0;});return s;},0);
+    // YTD totals — ALL products
+    var ytdCommTotal=D.byYear[curY2]?D.byYear[curY2].comm:0;
+    var ytdCountTotal=D.byYear[curY2]?D.byYear[curY2].count:0;
+    // Best historical year for comm and count
+    var bestCommYear=0,bestCommYearVal=0,bestCountYear=0,bestCountYearVal=0;
+    D.allYears.forEach(function(y){
+      if(y>=curY2)return;
+      var yc=D.byYear[y]?D.byYear[y].comm:0;
+      var yn=D.byYear[y]?D.byYear[y].count:0;
+      if(yc>bestCommYearVal){bestCommYearVal=yc;bestCommYear=y;}
+      if(yn>bestCountYearVal){bestCountYearVal=yn;bestCountYear=y;}
+    });
     window._pendingProdCharts.push({
       commId: 'prodCommChart_'+curY2+'_'+curM2,
       countId: 'prodCountChart_'+curY2+'_'+curM2,
@@ -1607,7 +1616,11 @@ function _anDailyView(D,MONTHS,f$){
       bestCount: pRowsCount.map(function(r){return r.best;}),
       bestCountYears: pRowsCount.map(function(r){return r.bestYr||'';}),
       ytdComm: Math.round(ytdCommTotal),
-      ytdCount: ytdCountTotal
+      ytdCount: ytdCountTotal,
+      bestCommYear: bestCommYear,
+      bestCommYearVal: Math.round(bestCommYearVal),
+      bestCountYear: bestCountYear,
+      bestCountYearVal: bestCountYearVal
     });
   }
 
@@ -2500,11 +2513,11 @@ function renderAnalytics(){
       var accent='#1a6b3a', grey='#94a3b8';
       // YTD comm badge
       var csBadge=document.getElementById(cfg.commId.replace('prodCommChart','prodCommStat'));
-      if(csBadge)csBadge.textContent='📊 '+cfg.curY2+' YTD (shown products): $'+(cfg.ytdComm||0).toLocaleString();
+      if(csBadge){var bcv=cfg.bestCommYearVal||0;var bcy=cfg.bestCommYear||0;var cpct=bcv>0?Math.round((cfg.ytdComm||0)/bcv*100):0;csBadge.innerHTML='📊 <strong>'+cfg.curY2+' YTD: $'+(cfg.ytdComm||0).toLocaleString()+'</strong>'+(bcy?'&nbsp;&nbsp;|&nbsp;&nbsp;Best year: '+bcy+' ($'+bcv.toLocaleString()+')&nbsp;&nbsp;<span style="color:'+(cpct>=100?'var(--accent)':cpct>=80?'#f59e0b':'var(--red)')+'">'+cpct+'% of best</span>':'');}
       var ce=document.getElementById(cfg.commId);
         try{new Chart(ce.getContext('2d'),{type:'bar',data:{labels:cfg.labels,datasets:[{label:'This month',data:cfg.curComm,backgroundColor:accent,borderRadius:4,barPercentage:.65},{label:'Best ever',data:cfg.bestComm,backgroundColor:grey,borderRadius:4,barPercentage:.65}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:10}},tooltip:{callbacks:{title:function(i){return(cfg.fullLabels&&cfg.fullLabels[i[0].dataIndex])||'';},label:function(ctx){var v='$'+Math.round(ctx.parsed.y).toLocaleString();if(ctx.datasetIndex===1&&cfg.bestCommYears&&cfg.bestCommYears[ctx.dataIndex])v+=' (best: '+cfg.bestCommYears[ctx.dataIndex]+')';return ctx.dataset.label+': '+v;}}}},scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{callback:function(v){return v>=1000?'$'+(v/1000).toFixed(0)+'K':'$'+v;},font:{size:10}}}}}});}catch(e){}
       var ccBadge=document.getElementById(cfg.countId.replace('prodCountChart','prodCountStat'));
-      if(ccBadge)ccBadge.textContent='📋 '+cfg.curY2+' total policies sold: '+(cfg.ytdCount||0);
+      if(ccBadge){var bcn=cfg.bestCountYearVal||0;var bcy2=cfg.bestCountYear||0;var cpct2=bcn>0?Math.round((cfg.ytdCount||0)/bcn*100):0;ccBadge.innerHTML='📋 <strong>'+cfg.curY2+' policies sold: '+(cfg.ytdCount||0)+'</strong>'+(bcy2?'&nbsp;&nbsp;|&nbsp;&nbsp;Best year: '+bcy2+' ('+bcn+' policies)&nbsp;&nbsp;<span style="color:'+(cpct2>=100?'var(--accent)':cpct2>=80?'#f59e0b':'var(--red)')+'">'+cpct2+'% of best</span>':'');}
       var cc=document.getElementById(cfg.countId);
       if(cc&&cfg.curCount&&cfg.curCount.length>0){
         try{new Chart(cc.getContext('2d'),{type:'bar',data:{labels:cfg.countLabels,datasets:[{label:'This month',data:cfg.curCount,backgroundColor:accent,borderRadius:4,barPercentage:.65},{label:'Best ever',data:cfg.bestCount,backgroundColor:grey,borderRadius:4,barPercentage:.65}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:10}},tooltip:{callbacks:{title:function(i){return(cfg.fullCountLabels&&cfg.fullCountLabels[i[0].dataIndex])||'';},label:function(ctx){var v=ctx.parsed.y+' policies';if(ctx.datasetIndex===1&&cfg.bestCountYears&&cfg.bestCountYears[ctx.dataIndex])v+=' (best: '+cfg.bestCountYears[ctx.dataIndex]+')';return ctx.dataset.label+': '+v;}}}},scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{stepSize:1,font:{size:10}}}}}});}catch(e){}
