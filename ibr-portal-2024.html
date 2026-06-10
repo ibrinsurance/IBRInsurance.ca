@@ -332,6 +332,7 @@ select.preset{padding:5px 8px;border:1px solid var(--border);border-radius:var(-
   .fg { grid-template-columns: 1fr !important; }
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -2260,6 +2261,32 @@ function renderLeads(){
     html+='</div></div>';
   }
   el.innerHTML=html;
+  // Draw product charts after DOM update
+  setTimeout(function(){
+    if(typeof Chart==='undefined')return;
+    (window._pendingProdCharts||[]).forEach(function(cfg){
+      var accent='#1a6b3a', grey='#94a3b8';
+      var ce=document.getElementById(cfg.commId);
+      if(ce&&cfg.curComm.length>0){
+        try{
+          new Chart(ce.getContext('2d'),{type:'bar',data:{labels:cfg.labels,datasets:[
+            {label:'This month',data:cfg.curComm,backgroundColor:accent,borderRadius:4,barPercentage:.65},
+            {label:'Best ever',data:cfg.bestComm,backgroundColor:grey,borderRadius:4,barPercentage:.65}
+          ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:10}},tooltip:{callbacks:{label:function(ctx){return ctx.dataset.label+': $'+Math.round(ctx.parsed.y).toLocaleString();}}}},scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{callback:function(v){return v>=1000?'$'+(v/1000).toFixed(0)+'K':'$'+v;},font:{size:10}},grid:{color:'rgba(0,0,0,.04)'}}}}}); 
+        }catch(e){}
+      }
+      var cc=document.getElementById(cfg.countId);
+      if(cc&&cfg.curCount.length>0){
+        try{
+          new Chart(cc.getContext('2d'),{type:'bar',data:{labels:cfg.countLabels,datasets:[
+            {label:'This month',data:cfg.curCount,backgroundColor:accent,borderRadius:4,barPercentage:.65},
+            {label:'Best ever',data:cfg.bestCount,backgroundColor:grey,borderRadius:4,barPercentage:.65}
+          ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:10}},tooltip:{callbacks:{label:function(ctx){return ctx.dataset.label+': '+ctx.parsed.y+' policies';}}}},scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{stepSize:1,font:{size:10}},grid:{color:'rgba(0,0,0,.04)'}}}}});
+        }catch(e){}
+      }
+    });
+    window._pendingProdCharts=[];
+  },100);
 }
 
 function renderLeadCards(leadList){
@@ -2480,6 +2507,32 @@ function renderAnalytics(){
   else if(_anView==='report')html+=_anWeeklyReport(D,MONTHS,f$);
   else if(_anView==='households')html+=_anHouseholdsView(f$);
   el.innerHTML=html;
+  // Draw product charts after DOM update
+  setTimeout(function(){
+    if(typeof Chart==='undefined')return;
+    (window._pendingProdCharts||[]).forEach(function(cfg){
+      var accent='#1a6b3a', grey='#94a3b8';
+      var ce=document.getElementById(cfg.commId);
+      if(ce&&cfg.curComm.length>0){
+        try{
+          new Chart(ce.getContext('2d'),{type:'bar',data:{labels:cfg.labels,datasets:[
+            {label:'This month',data:cfg.curComm,backgroundColor:accent,borderRadius:4,barPercentage:.65},
+            {label:'Best ever',data:cfg.bestComm,backgroundColor:grey,borderRadius:4,barPercentage:.65}
+          ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:10}},tooltip:{callbacks:{label:function(ctx){return ctx.dataset.label+': $'+Math.round(ctx.parsed.y).toLocaleString();}}}},scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{callback:function(v){return v>=1000?'$'+(v/1000).toFixed(0)+'K':'$'+v;},font:{size:10}},grid:{color:'rgba(0,0,0,.04)'}}}}}); 
+        }catch(e){}
+      }
+      var cc=document.getElementById(cfg.countId);
+      if(cc&&cfg.curCount.length>0){
+        try{
+          new Chart(cc.getContext('2d'),{type:'bar',data:{labels:cfg.countLabels,datasets:[
+            {label:'This month',data:cfg.curCount,backgroundColor:accent,borderRadius:4,barPercentage:.65},
+            {label:'Best ever',data:cfg.bestCount,backgroundColor:grey,borderRadius:4,barPercentage:.65}
+          ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:10}},tooltip:{callbacks:{label:function(ctx){return ctx.dataset.label+': '+ctx.parsed.y+' policies';}}}},scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{stepSize:1,font:{size:10}},grid:{color:'rgba(0,0,0,.04)'}}}}});
+        }catch(e){}
+      }
+    });
+    window._pendingProdCharts=[];
+  },100);
 }
 
 function _anToggleYear(y){_anNoneYears=false;var i=_anYears.indexOf(y);if(i>=0){if(_anYears.length>1)_anYears.splice(i,1);}else _anYears.push(y);renderAnalytics();}
