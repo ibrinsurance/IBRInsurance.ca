@@ -1504,7 +1504,30 @@ function _anDailyView(D,MONTHS,f$){
   html+='</div>';
   html+='</div>';
   // Month progress
-    // ── PRODUCT VS BEST-EVER SECTION ────────────────────────────
+      // ── BUILD pRows2: product vs best-ever data ────────────────────
+  var curProd=D.byYM[curY2]&&D.byYM[curY2][curM2]?D.byYM[curY2][curM2].byProd:{};
+  var allProdNames=new Set(Object.keys(curProd||{}));
+  D.allYears.forEach(function(y){
+    if(y>=curY2)return;
+    var mdata=D.byYM[y]&&D.byYM[y][curM2]?D.byYM[y][curM2].byProd:{};
+    Object.keys(mdata).forEach(function(p){allProdNames.add(p);});
+  });
+  var pRows2=Array.from(allProdNames).filter(Boolean).map(function(p){
+    var cur=curProd[p]||0;
+    var bestVal=0,bestYr=0,totalHist=0,histMonths=0;
+    D.allYears.forEach(function(y){
+      if(y>=curY2)return;
+      var v=D.byYM[y]&&D.byYM[y][curM2]&&D.byYM[y][curM2].byProd[p]?D.byYM[y][curM2].byProd[p]:0;
+      if(v>0){totalHist+=v;histMonths++;}
+      if(v>bestVal){bestVal=v;bestYr=y;}
+    });
+    var avgHist=histMonths>0?totalHist/histMonths:0;
+    var isOutlier=histMonths>=2&&bestVal>avgHist*1.8;
+    return{p:p,cur:cur,best:bestVal,bestYr:bestYr,avg:avgHist,isOutlier:isOutlier,gap:cur-bestVal};
+  }).filter(function(r){return r.cur>0||r.best>0;})
+    .sort(function(a,b){return(b.cur+b.best)-(a.cur+a.best);});
+
+// ── PRODUCT VS BEST-EVER SECTION ────────────────────────────
   // Filter: min $400 commission (current OR best)
   var MIN_COMM = 400;
   var pRows2Filtered = pRows2.filter(function(r){ return r.cur>=MIN_COMM||r.best>=MIN_COMM; });
