@@ -1,4 +1,10 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>About Rattan Amol Taggar</title>
+<meta name="description" content="Engineer turned independent insurance advisor, serving Windsor, Ontario and clients across Canada.">
 <style>
 
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap');
@@ -276,6 +282,24 @@
   .result-bar-text{ font-size:0.72rem; color:#dcebe4; text-align:right; font-variant-numeric:tabular-nums; }
   .calc-disclaimer{ font-size:0.76rem; color:var(--ink-faint); line-height:1.7; margin-top:22px; padding:14px 16px; background:var(--surface); border-radius:6px; border-left:2px solid var(--line); }
 
+  .field-select{ width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:6px; font-size:0.92rem; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); outline:none; transition:border-color .15s ease; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2371827b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 13px center; padding-right:32px; }
+  .field-select:focus{ border-color:var(--emerald-bright); }
+  .field-checkbox{ display:flex; align-items:flex-start; gap:10px; padding:2px 0 0; cursor:pointer; }
+  .field-checkbox input{ width:18px; height:18px; margin-top:1px; accent-color:var(--accent); cursor:pointer; flex:none; }
+  .field-checkbox span{ font-size:0.86rem; color:var(--ink-dim); line-height:1.5; }
+  .calc-inputs.grid-2{ display:grid; grid-template-columns:1fr; gap:22px 20px; }
+  .calc-inputs.grid-2 .field{ margin-bottom:0; }
+  @media (min-width:640px){ .calc-inputs.grid-2{ grid-template-columns:1fr 1fr; } .calc-inputs.grid-2 .field.span-2{ grid-column:1 / -1; } }
+
+  .calc-lock{ max-width:480px; margin:0 auto; text-align:center; background:linear-gradient(160deg,var(--emerald-deep),var(--surface-2)); border:1px solid var(--line); border-radius:10px; padding:40px 32px; }
+  .calc-lock .lock-icon{ width:46px; height:46px; border-radius:50%; background:rgba(199,154,75,0.16); display:flex; align-items:center; justify-content:center; margin:0 auto 18px; color:var(--accent-2); }
+  .calc-lock h3{ font-family:'Fraunces',serif; font-weight:500; font-size:1.35rem; margin-bottom:10px; }
+  .calc-lock p{ color:var(--ink-dim); font-size:0.9rem; line-height:1.6; margin-bottom:24px; }
+  .lock-form{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .lock-form .field-input{ flex:1; min-width:160px; text-align:center; letter-spacing:0.1em; }
+  .lock-error{ color:#e5978a; font-size:0.82rem; margin-top:14px; display:none; }
+  .lock-error.show{ display:block; }
+
   @media(min-width:640px){ .svc-grid.four{ grid-template-columns:repeat(2,1fr); } }
   @media(min-width:980px){ .svc-grid.four{ grid-template-columns:repeat(4,1fr); } }
 
@@ -286,22 +310,24 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 
 </style>
+</head>
+<body>
 
 <header class="nav">
   <div class="wrap nav-row">
-    <a class="wordmark" href="https://claude.ai/code/artifact/4e793374-caf5-46f2-ac9d-94e7c867f452">
+    <a class="wordmark" href="index.html">
       <span class="name">Rattan Amol Taggar</span>
       <span class="role">Life Insurance Advisor</span>
     </a>
     <nav class="links">
-      <a href="https://claude.ai/code/artifact/4e793374-caf5-46f2-ac9d-94e7c867f452">Home</a>
-      <a href="https://claude.ai/code/artifact/1aa97c7a-1a99-4dc5-926d-500dccbd24e2" class="active">About</a>
-      <a href="https://claude.ai/code/artifact/2d215d3c-cbfd-4ac6-a2c6-faaace01509d">Insurance</a>
-      <a href="https://claude.ai/code/artifact/bb573586-5bdf-4d7d-af06-98b4447d248c">Investments</a>
-      <a href="https://claude.ai/code/artifact/430f61df-5efa-4461-a09e-2c13ba21b5e0">Estate</a>
-      <a href="https://claude.ai/code/artifact/ef5c82a0-487a-44e9-ac09-c07cfc9c265d">Calculators</a>
-      <a href="https://claude.ai/code/artifact/414fdf2d-d09d-4877-a203-d4ab4dd6d499">Awards</a>
-      <a href="https://claude.ai/code/artifact/50489e22-020d-461e-a4e3-de65b7bd41a9">Contact</a>
+      <a href="index.html">Home</a>
+      <a href="about.html" class="active">About</a>
+      <a href="insurance.html">Insurance</a>
+      <a href="investments.html">Investments</a>
+      <a href="estate.html">Estate</a>
+      <a href="calculators.html">Calculators</a>
+      <a href="awards.html">Awards</a>
+      <a href="contact.html">Contact</a>
       
     </nav>
     <div class="nav-cta">
@@ -313,14 +339,14 @@
     </button>
   </div>
   <div class="wrap menu-panel" id="menuPanel">
-    <a href="https://claude.ai/code/artifact/4e793374-caf5-46f2-ac9d-94e7c867f452">Home</a>
-    <a href="https://claude.ai/code/artifact/1aa97c7a-1a99-4dc5-926d-500dccbd24e2">About</a>
-    <a href="https://claude.ai/code/artifact/2d215d3c-cbfd-4ac6-a2c6-faaace01509d">Insurance</a>
-    <a href="https://claude.ai/code/artifact/bb573586-5bdf-4d7d-af06-98b4447d248c">Investments</a>
-    <a href="https://claude.ai/code/artifact/430f61df-5efa-4461-a09e-2c13ba21b5e0">Estate</a>
-    <a href="https://claude.ai/code/artifact/ef5c82a0-487a-44e9-ac09-c07cfc9c265d">Calculators</a>
-    <a href="https://claude.ai/code/artifact/414fdf2d-d09d-4877-a203-d4ab4dd6d499">Awards</a>
-    <a href="https://claude.ai/code/artifact/50489e22-020d-461e-a4e3-de65b7bd41a9">Contact</a>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="insurance.html">Insurance</a>
+    <a href="investments.html">Investments</a>
+    <a href="estate.html">Estate</a>
+    <a href="calculators.html">Calculators</a>
+    <a href="awards.html">Awards</a>
+    <a href="contact.html">Contact</a>
     
     <div class="menu-ctas">
       <a class="pill pill-line pill-sm" href="tel:+16477456850">Call</a>
@@ -454,19 +480,19 @@
       <div>
         <h4>Explore</h4>
         <ul>
-          <li><a href="https://claude.ai/code/artifact/2d215d3c-cbfd-4ac6-a2c6-faaace01509d">Insurance</a></li>
-          <li><a href="https://claude.ai/code/artifact/bb573586-5bdf-4d7d-af06-98b4447d248c">Investments</a></li>
-          <li><a href="https://claude.ai/code/artifact/430f61df-5efa-4461-a09e-2c13ba21b5e0">Estate Planning</a></li>
-          <li><a href="https://claude.ai/code/artifact/ef5c82a0-487a-44e9-ac09-c07cfc9c265d">Calculators</a></li>
-          <li><a href="https://claude.ai/code/artifact/414fdf2d-d09d-4877-a203-d4ab4dd6d499">Awards &amp; Reviews</a></li>
-          <li><a href="https://claude.ai/code/artifact/1aa97c7a-1a99-4dc5-926d-500dccbd24e2">About Rattan</a></li>
+          <li><a href="insurance.html">Insurance</a></li>
+          <li><a href="investments.html">Investments</a></li>
+          <li><a href="estate.html">Estate Planning</a></li>
+          <li><a href="calculators.html">Calculators</a></li>
+          <li><a href="awards.html">Awards &amp; Reviews</a></li>
+          <li><a href="about.html">About Rattan</a></li>
         </ul>
       </div>
       <div>
         <h4>Site</h4>
         <ul>
-          <li><a href="https://claude.ai/code/artifact/4e793374-caf5-46f2-ac9d-94e7c867f452">Home</a></li>
-          <li><a href="https://claude.ai/code/artifact/50489e22-020d-461e-a4e3-de65b7bd41a9">Contact</a></li>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="contact.html">Contact</a></li>
         </ul>
       </div>
       <div>
@@ -507,3 +533,5 @@
   })();
 </script>
 
+</body>
+</html>

@@ -1,4 +1,10 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Estate Planning</title>
+<meta name="description" content="How life insurance solves RRSP tax exposure, probate costs and business succession for Canadian estates, plus a free estate tax calculator.">
 <style>
 
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap');
@@ -276,6 +282,24 @@
   .result-bar-text{ font-size:0.72rem; color:#dcebe4; text-align:right; font-variant-numeric:tabular-nums; }
   .calc-disclaimer{ font-size:0.76rem; color:var(--ink-faint); line-height:1.7; margin-top:22px; padding:14px 16px; background:var(--surface); border-radius:6px; border-left:2px solid var(--line); }
 
+  .field-select{ width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:6px; font-size:0.92rem; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); outline:none; transition:border-color .15s ease; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2371827b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 13px center; padding-right:32px; }
+  .field-select:focus{ border-color:var(--emerald-bright); }
+  .field-checkbox{ display:flex; align-items:flex-start; gap:10px; padding:2px 0 0; cursor:pointer; }
+  .field-checkbox input{ width:18px; height:18px; margin-top:1px; accent-color:var(--accent); cursor:pointer; flex:none; }
+  .field-checkbox span{ font-size:0.86rem; color:var(--ink-dim); line-height:1.5; }
+  .calc-inputs.grid-2{ display:grid; grid-template-columns:1fr; gap:22px 20px; }
+  .calc-inputs.grid-2 .field{ margin-bottom:0; }
+  @media (min-width:640px){ .calc-inputs.grid-2{ grid-template-columns:1fr 1fr; } .calc-inputs.grid-2 .field.span-2{ grid-column:1 / -1; } }
+
+  .calc-lock{ max-width:480px; margin:0 auto; text-align:center; background:linear-gradient(160deg,var(--emerald-deep),var(--surface-2)); border:1px solid var(--line); border-radius:10px; padding:40px 32px; }
+  .calc-lock .lock-icon{ width:46px; height:46px; border-radius:50%; background:rgba(199,154,75,0.16); display:flex; align-items:center; justify-content:center; margin:0 auto 18px; color:var(--accent-2); }
+  .calc-lock h3{ font-family:'Fraunces',serif; font-weight:500; font-size:1.35rem; margin-bottom:10px; }
+  .calc-lock p{ color:var(--ink-dim); font-size:0.9rem; line-height:1.6; margin-bottom:24px; }
+  .lock-form{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .lock-form .field-input{ flex:1; min-width:160px; text-align:center; letter-spacing:0.1em; }
+  .lock-error{ color:#e5978a; font-size:0.82rem; margin-top:14px; display:none; }
+  .lock-error.show{ display:block; }
+
   @media(min-width:640px){ .svc-grid.four{ grid-template-columns:repeat(2,1fr); } }
   @media(min-width:980px){ .svc-grid.four{ grid-template-columns:repeat(4,1fr); } }
 
@@ -286,22 +310,24 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 
 </style>
+</head>
+<body>
 
 <header class="nav">
   <div class="wrap nav-row">
-    <a class="wordmark" href="https://claude.ai/code/artifact/4e793374-caf5-46f2-ac9d-94e7c867f452">
+    <a class="wordmark" href="index.html">
       <span class="name">Rattan Amol Taggar</span>
       <span class="role">Life Insurance Advisor</span>
     </a>
     <nav class="links">
-      <a href="https://claude.ai/code/artifact/4e793374-caf5-46f2-ac9d-94e7c867f452">Home</a>
-      <a href="https://claude.ai/code/artifact/1aa97c7a-1a99-4dc5-926d-500dccbd24e2">About</a>
-      <a href="https://claude.ai/code/artifact/2d215d3c-cbfd-4ac6-a2c6-faaace01509d">Insurance</a>
-      <a href="https://claude.ai/code/artifact/bb573586-5bdf-4d7d-af06-98b4447d248c">Investments</a>
-      <a href="https://claude.ai/code/artifact/430f61df-5efa-4461-a09e-2c13ba21b5e0" class="active">Estate</a>
-      <a href="https://claude.ai/code/artifact/ef5c82a0-487a-44e9-ac09-c07cfc9c265d">Calculators</a>
-      <a href="https://claude.ai/code/artifact/414fdf2d-d09d-4877-a203-d4ab4dd6d499">Awards</a>
-      <a href="https://claude.ai/code/artifact/50489e22-020d-461e-a4e3-de65b7bd41a9">Contact</a>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="insurance.html">Insurance</a>
+      <a href="investments.html">Investments</a>
+      <a href="estate.html" class="active">Estate</a>
+      <a href="calculators.html">Calculators</a>
+      <a href="awards.html">Awards</a>
+      <a href="contact.html">Contact</a>
       
     </nav>
     <div class="nav-cta">
@@ -313,14 +339,14 @@
     </button>
   </div>
   <div class="wrap menu-panel" id="menuPanel">
-    <a href="https://claude.ai/code/artifact/4e793374-caf5-46f2-ac9d-94e7c867f452">Home</a>
-    <a href="https://claude.ai/code/artifact/1aa97c7a-1a99-4dc5-926d-500dccbd24e2">About</a>
-    <a href="https://claude.ai/code/artifact/2d215d3c-cbfd-4ac6-a2c6-faaace01509d">Insurance</a>
-    <a href="https://claude.ai/code/artifact/bb573586-5bdf-4d7d-af06-98b4447d248c">Investments</a>
-    <a href="https://claude.ai/code/artifact/430f61df-5efa-4461-a09e-2c13ba21b5e0">Estate</a>
-    <a href="https://claude.ai/code/artifact/ef5c82a0-487a-44e9-ac09-c07cfc9c265d">Calculators</a>
-    <a href="https://claude.ai/code/artifact/414fdf2d-d09d-4877-a203-d4ab4dd6d499">Awards</a>
-    <a href="https://claude.ai/code/artifact/50489e22-020d-461e-a4e3-de65b7bd41a9">Contact</a>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="insurance.html">Insurance</a>
+    <a href="investments.html">Investments</a>
+    <a href="estate.html">Estate</a>
+    <a href="calculators.html">Calculators</a>
+    <a href="awards.html">Awards</a>
+    <a href="contact.html">Contact</a>
     
     <div class="menu-ctas">
       <a class="pill pill-line pill-sm" href="tel:+16477456850">Call</a>
@@ -484,6 +510,207 @@
     </script>
   </section>
 
+  <section id="estate-calculator-detailed">
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow">For A Deeper Conversation</span>
+        <h2>Detailed Estate Analysis</h2>
+        <p>A fuller picture &mdash; by province, asset type and what actually passes through probate &mdash; for when the quick estimate above isn't enough.</p>
+      </div>
+      <div class="calc-lock" id="detLockCard">
+        <div class="lock-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        </div>
+        <h3>Advisor Access Required</h3>
+        <p>This detailed breakdown is normally walked through together on a call. If Rattan has given you an access code, enter it below to unlock it.</p>
+        <div class="lock-form">
+          <input class="field-input" id="detCode" type="password" inputmode="numeric" placeholder="Access code" onkeydown="if(event.key==='Enter'){tryUnlockDetailed();}">
+          <button class="pill pill-solid" type="button" onclick="tryUnlockDetailed()">Unlock</button>
+        </div>
+        <div class="lock-error" id="detLockError">That code isn't right &mdash; double-check with Rattan and try again.</div>
+      </div>
+      <div class="calc-grid" id="detCalcGrid" style="display:none;">
+        <div class="calc-inputs grid-2">
+          <div class="field span-2">
+            <div class="field-label">Province</div>
+            <select class="field-select" id="det-province" onchange="calcDetailed()">
+              <option value="ON" selected>Ontario</option>
+              <option value="BC">British Columbia</option>
+              <option value="AB">Alberta</option>
+              <option value="QC">Quebec</option>
+              <option value="OTHER">Other Province</option>
+            </select>
+          </div>
+          <div class="field span-2">
+            <label class="field-checkbox">
+              <input type="checkbox" id="det-rollover" onchange="calcDetailed()">
+              <span>There's a surviving spouse inheriting the RRSP/RRIF and investments &mdash; assets roll over tax-free at death.</span>
+            </label>
+          </div>
+          <div class="field">
+            <div class="field-label">RRSP / RRIF Balance <span class="field-val" id="det-rrsp-val">$600,000</span></div>
+            <div class="field-wrap"><span class="field-prefix">$</span><input class="field-input has-prefix" id="det-rrsp" type="number" value="600000" min="0" oninput="document.getElementById('det-rrsp-r').value=this.value;calcDetailed()"></div>
+            <input class="field-range" id="det-rrsp-r" type="range" min="0" max="2000000" step="10000" value="600000" oninput="document.getElementById('det-rrsp').value=this.value;calcDetailed()">
+          </div>
+          <div class="field">
+            <div class="field-label">TFSA Balance <span class="field-val" id="det-tfsa-val">$100,000</span></div>
+            <div class="field-wrap"><span class="field-prefix">$</span><input class="field-input has-prefix" id="det-tfsa" type="number" value="100000" min="0" oninput="document.getElementById('det-tfsa-r').value=this.value;calcDetailed()"></div>
+            <input class="field-range" id="det-tfsa-r" type="range" min="0" max="500000" step="5000" value="100000" oninput="document.getElementById('det-tfsa').value=this.value;calcDetailed()">
+          </div>
+          <div class="field">
+            <div class="field-label">Non-Registered Investments <span class="field-val" id="det-nrval-val">$300,000</span></div>
+            <div class="field-wrap"><span class="field-prefix">$</span><input class="field-input has-prefix" id="det-nrval" type="number" value="300000" min="0" oninput="document.getElementById('det-nrval-r').value=this.value;calcDetailed()"></div>
+            <input class="field-range" id="det-nrval-r" type="range" min="0" max="2000000" step="10000" value="300000" oninput="document.getElementById('det-nrval').value=this.value;calcDetailed()">
+            <div class="field-note">Current market value.</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Original Cost (ACB) <span class="field-val" id="det-nracb-val">$200,000</span></div>
+            <div class="field-wrap"><span class="field-prefix">$</span><input class="field-input has-prefix" id="det-nracb" type="number" value="200000" min="0" oninput="document.getElementById('det-nracb-r').value=this.value;calcDetailed()"></div>
+            <input class="field-range" id="det-nracb-r" type="range" min="0" max="2000000" step="10000" value="200000" oninput="document.getElementById('det-nracb').value=this.value;calcDetailed()">
+            <div class="field-note">What you paid &mdash; used to work out the capital gain.</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Real Estate &amp; Other Assets <span class="field-val" id="det-other-val">$400,000</span></div>
+            <div class="field-wrap"><span class="field-prefix">$</span><input class="field-input has-prefix" id="det-other" type="number" value="400000" min="0" oninput="document.getElementById('det-other-r').value=this.value;calcDetailed()"></div>
+            <input class="field-range" id="det-other-r" type="range" min="0" max="3000000" step="10000" value="400000" oninput="document.getElementById('det-other').value=this.value;calcDetailed()">
+            <div class="field-note">Home equity, secondary property, business interests, vehicles.</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Debts &amp; Final Expenses <span class="field-val" id="det-debts-val">$50,000</span></div>
+            <div class="field-wrap"><span class="field-prefix">$</span><input class="field-input has-prefix" id="det-debts" type="number" value="50000" min="0" oninput="document.getElementById('det-debts-r').value=this.value;calcDetailed()"></div>
+            <input class="field-range" id="det-debts-r" type="range" min="0" max="1000000" step="5000" value="50000" oninput="document.getElementById('det-debts').value=this.value;calcDetailed()">
+            <div class="field-note">Mortgage, loans, funeral and legal/executor costs.</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Marginal Tax Rate At Death <span class="field-val" id="det-rate-val">45%</span></div>
+            <div class="field-wrap"><input class="field-input has-suffix" id="det-rate" type="number" value="45" min="20" max="54" step="1" oninput="document.getElementById('det-rate-r').value=this.value;calcDetailed()"><span class="field-suffix">%</span></div>
+            <input class="field-range" id="det-rate-r" type="range" min="20" max="54" step="1" value="45" oninput="document.getElementById('det-rate').value=this.value;calcDetailed()">
+          </div>
+          <div class="field span-2">
+            <div class="field-label">Passing Outside Probate <span class="field-val" id="det-pct-val">40%</span></div>
+            <input class="field-range" id="det-pct" type="range" min="0" max="100" step="5" value="40" oninput="calcDetailed()">
+            <div class="field-note">Share of the estate with named beneficiaries or held jointly &mdash; it skips probate entirely.</div>
+          </div>
+          <div class="field span-2">
+            <div class="field-label">Existing Life Insurance <span class="field-val" id="det-existing-val">$0</span></div>
+            <div class="field-wrap"><span class="field-prefix">$</span><input class="field-input has-prefix" id="det-existing" type="number" value="0" min="0" oninput="document.getElementById('det-existing-r').value=this.value;calcDetailed()"></div>
+            <input class="field-range" id="det-existing-r" type="range" min="0" max="2000000" step="10000" value="0" oninput="document.getElementById('det-existing').value=this.value;calcDetailed()">
+          </div>
+        </div>
+        <div class="calc-result">
+          <div class="result-eyebrow">Detailed Outcome</div>
+          <div class="result-row">
+            <div class="result-label">Gross Estate Value</div>
+            <div class="result-val" id="det-gross">$1,400,000</div>
+          </div>
+          <div class="result-row">
+            <div class="result-label">Tax On RRSP/RRIF &amp; Capital Gains</div>
+            <div class="result-val" id="det-tax">$292,500</div>
+            <div class="result-note" id="det-tax-note">Assumes no spousal rollover.</div>
+          </div>
+          <div class="result-row">
+            <div class="result-label">Estimated Probate Fees <span id="det-prov-label">(Ontario)</span></div>
+            <div class="result-val" id="det-probate">$11,100</div>
+          </div>
+          <div class="result-row">
+            <div class="result-label">Net To Heirs <span id="det-eff">(75% of gross estate)</span></div>
+            <div class="result-val accent" id="det-net">$1,046,400</div>
+          </div>
+          <div class="result-row">
+            <div class="result-label">Coverage Gap To Close With Insurance</div>
+            <div class="result-val accent" id="det-gap">$353,600</div>
+            <div class="result-note">Tax, probate and debts, less any insurance already in place.</div>
+          </div>
+          <div class="result-bars" id="det-bars">
+            <div class="result-bar-row"><div class="result-bar-name"><span class="dot" style="background:var(--accent-2);"></span>Tax</div><div class="result-bar-track"><div class="result-bar-fill" id="det-bar-tax" style="width:83%;background:var(--accent-2);"></div></div><div class="result-bar-text" id="det-bar-tax-text">83%</div></div>
+            <div class="result-bar-row"><div class="result-bar-name"><span class="dot" style="background:#7fb8a3;"></span>Probate</div><div class="result-bar-track"><div class="result-bar-fill" id="det-bar-probate" style="width:3%;background:#7fb8a3;"></div></div><div class="result-bar-text" id="det-bar-probate-text">3%</div></div>
+            <div class="result-bar-row"><div class="result-bar-name"><span class="dot" style="background:#dcebe4;"></span>Debts</div><div class="result-bar-track"><div class="result-bar-fill" id="det-bar-debts" style="width:14%;background:#dcebe4;"></div></div><div class="result-bar-text" id="det-bar-debts-text">14%</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="calc-disclaimer" id="detDisclaimer" style="display:none;">This detailed estimate uses simplified, illustrative provincial probate rates and does not account for the principal residence exemption, trusts, incorporated business structures or your complete financial picture. It is not tax or legal advice &mdash; treat it as a starting point for our conversation, not a final number.</div>
+    </div>
+    <script>
+      var PROVINCE_RATES = {
+        ON: { rate:0.015, flat:0, exempt:50000, label:'Ontario' },
+        BC: { rate:0.014, flat:0, exempt:25000, label:'British Columbia' },
+        AB: { rate:0, flat:525, exempt:0, label:'Alberta' },
+        QC: { rate:0, flat:110, exempt:0, label:'Quebec' },
+        OTHER: { rate:0.006, flat:0, exempt:25000, label:'Other Province' }
+      };
+      function tryUnlockDetailed(){
+        var code = document.getElementById('detCode').value.trim();
+        if(code === '1957'){
+          document.getElementById('detLockCard').style.display='none';
+          document.getElementById('detCalcGrid').style.display='';
+          document.getElementById('detDisclaimer').style.display='';
+          calcDetailed();
+        } else {
+          document.getElementById('detLockError').classList.add('show');
+        }
+      }
+      function fmtD(n){ return '$'+Math.round(n).toLocaleString('en-US'); }
+      function calcDetailed(){
+        var prov = document.getElementById('det-province').value;
+        var rollover = document.getElementById('det-rollover').checked;
+        var rrsp = parseFloat(document.getElementById('det-rrsp').value)||0;
+        var tfsa = parseFloat(document.getElementById('det-tfsa').value)||0;
+        var nrVal = parseFloat(document.getElementById('det-nrval').value)||0;
+        var nrAcb = parseFloat(document.getElementById('det-nracb').value)||0;
+        var other = parseFloat(document.getElementById('det-other').value)||0;
+        var debts = parseFloat(document.getElementById('det-debts').value)||0;
+        var pct = parseFloat(document.getElementById('det-pct').value)||0;
+        var rate = parseFloat(document.getElementById('det-rate').value)||0;
+        var existing = parseFloat(document.getElementById('det-existing').value)||0;
+
+        var rrspTax = rollover ? 0 : rrsp*(rate/100);
+        var gain = Math.max(0, nrVal-nrAcb);
+        var capGainsTax = rollover ? 0 : gain*0.5*(rate/100);
+        var incomeTax = rrspTax+capGainsTax;
+
+        var gross = rrsp+tfsa+nrVal+other;
+        var r = PROVINCE_RATES[prov];
+        var probateBase = Math.max(0, gross*(1-pct/100)-debts);
+        var probate = r.flat + Math.max(0, probateBase-r.exempt)*r.rate;
+
+        var totalShrinkage = incomeTax+probate+debts;
+        var net = Math.max(0, gross-totalShrinkage);
+        var efficiency = gross>0 ? Math.round(net/gross*100) : 0;
+        var gap = Math.max(0, totalShrinkage-existing);
+
+        document.getElementById('det-rrsp-val').textContent = fmtD(rrsp);
+        document.getElementById('det-tfsa-val').textContent = fmtD(tfsa);
+        document.getElementById('det-nrval-val').textContent = fmtD(nrVal);
+        document.getElementById('det-nracb-val').textContent = fmtD(nrAcb);
+        document.getElementById('det-other-val').textContent = fmtD(other);
+        document.getElementById('det-debts-val').textContent = fmtD(debts);
+        document.getElementById('det-rate-val').textContent = rate+'%';
+        document.getElementById('det-pct-val').textContent = pct+'%';
+        document.getElementById('det-existing-val').textContent = fmtD(existing);
+
+        document.getElementById('det-gross').textContent = fmtD(gross);
+        document.getElementById('det-tax').textContent = fmtD(incomeTax);
+        document.getElementById('det-tax-note').textContent = rollover ? 'Deferred by the spousal rollover \u2014 not owed until the second death.' : 'RRSP/RRIF income tax plus capital gains on non-registered investments.';
+        document.getElementById('det-probate').textContent = fmtD(probate);
+        document.getElementById('det-prov-label').textContent = '('+r.label+')';
+        document.getElementById('det-net').textContent = fmtD(net);
+        document.getElementById('det-eff').textContent = '('+efficiency+'% of gross estate)';
+        document.getElementById('det-gap').textContent = fmtD(gap);
+
+        var barTotal = incomeTax+probate+debts;
+        var taxPct = barTotal>0 ? Math.round(incomeTax/barTotal*100) : 0;
+        var probatePct = barTotal>0 ? Math.round(probate/barTotal*100) : 0;
+        var debtsPct = Math.max(0, 100-taxPct-probatePct);
+        document.getElementById('det-bar-tax').style.width = taxPct+'%';
+        document.getElementById('det-bar-tax-text').textContent = taxPct+'%';
+        document.getElementById('det-bar-probate').style.width = probatePct+'%';
+        document.getElementById('det-bar-probate-text').textContent = probatePct+'%';
+        document.getElementById('det-bar-debts').style.width = debtsPct+'%';
+        document.getElementById('det-bar-debts-text').textContent = debtsPct+'%';
+      }
+    </script>
+  </section>
+
   <section id="contact">
     <div class="wrap">
       <div class="final-cta">
@@ -526,19 +753,19 @@
       <div>
         <h4>Explore</h4>
         <ul>
-          <li><a href="https://claude.ai/code/artifact/2d215d3c-cbfd-4ac6-a2c6-faaace01509d">Insurance</a></li>
-          <li><a href="https://claude.ai/code/artifact/bb573586-5bdf-4d7d-af06-98b4447d248c">Investments</a></li>
-          <li><a href="https://claude.ai/code/artifact/430f61df-5efa-4461-a09e-2c13ba21b5e0">Estate Planning</a></li>
-          <li><a href="https://claude.ai/code/artifact/ef5c82a0-487a-44e9-ac09-c07cfc9c265d">Calculators</a></li>
-          <li><a href="https://claude.ai/code/artifact/414fdf2d-d09d-4877-a203-d4ab4dd6d499">Awards &amp; Reviews</a></li>
-          <li><a href="https://claude.ai/code/artifact/1aa97c7a-1a99-4dc5-926d-500dccbd24e2">About Rattan</a></li>
+          <li><a href="insurance.html">Insurance</a></li>
+          <li><a href="investments.html">Investments</a></li>
+          <li><a href="estate.html">Estate Planning</a></li>
+          <li><a href="calculators.html">Calculators</a></li>
+          <li><a href="awards.html">Awards &amp; Reviews</a></li>
+          <li><a href="about.html">About Rattan</a></li>
         </ul>
       </div>
       <div>
         <h4>Site</h4>
         <ul>
-          <li><a href="https://claude.ai/code/artifact/4e793374-caf5-46f2-ac9d-94e7c867f452">Home</a></li>
-          <li><a href="https://claude.ai/code/artifact/50489e22-020d-461e-a4e3-de65b7bd41a9">Contact</a></li>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="contact.html">Contact</a></li>
         </ul>
       </div>
       <div>
@@ -579,3 +806,5 @@
   })();
 </script>
 
+</body>
+</html>
