@@ -233,10 +233,11 @@
   .final-cta .hero-mini-trust{ color:#bcd0c7; }
 
   footer{ background:var(--surface-2); color:var(--ink-dim); padding-block:56px 32px; border-top:1px solid var(--line-soft); }
-  .foot-grid{ display:grid; gap:36px; }
-  @media (min-width:760px){ .foot-grid{ grid-template-columns:1.3fr 1fr 1fr 1fr; } }
-  .foot-grid h4{ font-family:'Inter',sans-serif; font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent); margin-bottom:14px; font-weight:600; }
-  .foot-grid ul li{ margin-bottom:10px; }
+  .foot-grid{ display:grid; grid-template-columns:1fr 1fr; gap:28px 20px; }
+  .foot-brand{ grid-column:1 / -1; }
+  @media (min-width:760px){ .foot-grid{ grid-template-columns:1.3fr 1fr 1fr 1fr; gap:36px; } .foot-brand{ grid-column:auto; } }
+  .foot-grid h4{ font-family:'Inter',sans-serif; font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent); margin-bottom:12px; font-weight:600; }
+  .foot-grid ul li{ margin-bottom:8px; }
   .foot-grid ul li a{ font-size:0.9rem; color:var(--ink-dim); }
   .foot-grid ul li a:hover{ color:var(--ink); }
   .foot-brand .wordmark .name{ color:var(--ink); }
