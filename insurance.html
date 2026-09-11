@@ -51,11 +51,11 @@
   .wordmark .role{ font-size:0.64rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-faint); margin-top:3px; white-space:nowrap; }
   @media (max-width:520px){ .wordmark .role{ white-space:normal; } }
 
-  nav.links{ display:none; gap:15px; }
-  nav.links a{ font-size:0.82rem; font-weight:500; color:var(--ink-dim); transition:color .15s ease; padding-block:4px; white-space:nowrap; }
+  nav.links{ display:none; gap:11px; }
+  nav.links a{ font-size:0.78rem; font-weight:500; color:var(--ink-dim); transition:color .15s ease; padding-block:4px; white-space:nowrap; }
   nav.links a:hover, nav.links a:focus-visible{ color:var(--accent-2); }
   nav.links a.active{ color:var(--accent-2); border-bottom:1px solid var(--accent); }
-  @media (min-width:1180px){ nav.links{ display:flex; } }
+  @media (min-width:1440px){ nav.links{ display:flex; } }
 
   .nav-cta{ display:none; align-items:center; gap:10px; }
   @media (min-width:760px){ .nav-cta{ display:flex; } }
@@ -76,12 +76,12 @@
     display:inline-flex; width:40px; height:40px; align-items:center; justify-content:center;
     border:1px solid var(--line); border-radius:10px; background:transparent; color:var(--ink);
   }
-  @media (min-width:1180px){ .menu-btn{ display:none; } }
+  @media (min-width:1440px){ .menu-btn{ display:none; } }
   .menu-panel{ display:none; flex-direction:column; gap:2px; margin-top:14px; padding-top:14px; border-top:1px solid var(--line-soft); }
   .menu-panel.open{ display:flex; }
   .menu-panel a{ color:var(--ink-dim); padding:10px 4px; font-size:0.95rem; font-weight:500; border-bottom:1px solid var(--line-soft); }
   .menu-panel .menu-ctas{ display:flex; gap:10px; margin-top:12px; border:none; padding:0; }
-  @media (min-width:1180px){ .menu-panel{ display:none !important; } }
+  @media (min-width:1440px){ .menu-panel{ display:none !important; } }
 
   .page-hero{ padding-block:48px 40px; }
   @media (min-width:760px){ .page-hero{ padding-block:64px 48px; } }
@@ -282,11 +282,20 @@
   .result-bar-text{ font-size:0.72rem; color:#dcebe4; text-align:right; font-variant-numeric:tabular-nums; }
   .calc-disclaimer{ font-size:0.76rem; color:var(--ink-faint); line-height:1.7; margin-top:22px; padding:14px 16px; background:var(--surface); border-radius:6px; border-left:2px solid var(--line); }
 
+  .chart-wrap{ margin-top:28px; background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:24px 22px; }
+  .chart-label{ font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:16px; }
+  .chart-canvas-wrap{ position:relative; height:240px; }
+  @media (min-width:640px){ .chart-canvas-wrap{ height:280px; } }
+
   .field-select{ width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:6px; font-size:0.92rem; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); outline:none; transition:border-color .15s ease; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2371827b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 13px center; padding-right:32px; }
   .field-select:focus{ border-color:var(--emerald-bright); }
   .field-checkbox{ display:flex; align-items:flex-start; gap:10px; padding:2px 0 0; cursor:pointer; }
   .field-checkbox input{ width:18px; height:18px; margin-top:1px; accent-color:var(--accent); cursor:pointer; flex:none; }
   .field-checkbox span{ font-size:0.86rem; color:var(--ink-dim); line-height:1.5; }
+  .field-subrate{ display:flex; align-items:center; gap:8px; margin-top:10px; }
+  .field-subrate label{ font-size:0.68rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.05em; white-space:nowrap; }
+  .field-subrate span{ font-size:0.82rem; color:var(--ink-faint); }
+  .field-subrate .field-input{ width:64px; padding:7px 8px; text-align:center; font-size:0.85rem; }
   .calc-inputs.grid-2{ display:grid; grid-template-columns:1fr; gap:22px 20px; }
   .calc-inputs.grid-2 .field{ margin-bottom:0; }
   @media (min-width:640px){ .calc-inputs.grid-2{ grid-template-columns:1fr 1fr; } .calc-inputs.grid-2 .field.span-2{ grid-column:1 / -1; } }
@@ -321,13 +330,14 @@
     </a>
     <nav class="links">
       <a href="index.html">Home</a>
-      <a href="about.html">About</a>
-      <a href="insurance.html" class="active">Insurance</a>
-      <a href="investments.html">Investments</a>
-      <a href="estate.html">Estate</a>
-      <a href="calculators.html">Calculators</a>
-      <a href="awards.html">Awards</a>
-      <a href="contact.html">Contact</a>
+      <a href="about.html">My Story</a>
+      <a href="insurance.html" class="active">Get Covered</a>
+      <a href="investments.html">Grow Savings</a>
+      <a href="estate.html">Protect Legacy</a>
+      <a href="calculators.html">Run Numbers</a>
+      <a href="awards.html">See Reviews</a>
+      <a href="book.html">Book a Call</a>
+      <a href="contact.html">Get In Touch</a>
       
     </nav>
     <div class="nav-cta">
@@ -340,13 +350,14 @@
   </div>
   <div class="wrap menu-panel" id="menuPanel">
     <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="insurance.html">Insurance</a>
-    <a href="investments.html">Investments</a>
-    <a href="estate.html">Estate</a>
-    <a href="calculators.html">Calculators</a>
-    <a href="awards.html">Awards</a>
-    <a href="contact.html">Contact</a>
+    <a href="about.html">My Story</a>
+    <a href="insurance.html">Get Covered</a>
+    <a href="investments.html">Grow Savings</a>
+    <a href="estate.html">Protect Legacy</a>
+    <a href="calculators.html">Run Numbers</a>
+    <a href="awards.html">See Reviews</a>
+    <a href="book.html">Book a Call</a>
+    <a href="contact.html">Get In Touch</a>
     
     <div class="menu-ctas">
       <a class="pill pill-line pill-sm" href="tel:+16477456850">Call</a>
@@ -522,6 +533,7 @@
         <h4>Site</h4>
         <ul>
           <li><a href="index.html">Home</a></li>
+          <li><a href="book.html">Book a Call</a></li>
           <li><a href="contact.html">Contact</a></li>
         </ul>
       </div>

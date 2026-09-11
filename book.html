@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Free Financial Calculators</title>
-<meta name="description" content="Investment growth, goal planning and withdrawal calculators for Canadian investors, from an insurance-licensed advisor.">
+<title>Book a Call</title>
+<meta name="description" content="Book a free, no-obligation call with independent life and health insurance advisor Rattan Amol Taggar.">
 <style>
 
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap');
@@ -334,9 +334,9 @@
       <a href="insurance.html">Get Covered</a>
       <a href="investments.html">Grow Savings</a>
       <a href="estate.html">Protect Legacy</a>
-      <a href="calculators.html" class="active">Run Numbers</a>
+      <a href="calculators.html">Run Numbers</a>
       <a href="awards.html">See Reviews</a>
-      <a href="book.html">Book a Call</a>
+      <a href="book.html" class="active">Book a Call</a>
       <a href="contact.html">Get In Touch</a>
       
     </nav>
@@ -369,373 +369,63 @@
 <main id="top">
   <section class="page-hero">
     <div class="wrap">
-      <span class="eyebrow">Free Calculators</span>
-      <h1>Model it before you commit to it.</h1>
-      <p class="lede">Three quick tools for the numbers that come up most &mdash; growing an investment, hitting a savings goal, and drawing down a portfolio in retirement. For illustration only; not a guarantee of returns.</p>
+      <div class="section-head center">
+        <span class="eyebrow">Book a Call</span>
+        <h1>Let's talk through your options &mdash; no pressure, no pitch.</h1>
+        <p class="lede">Pick a time that works for you. We'll spend 20&ndash;45 minutes on your actual situation, and you'll leave with a clear next step, whether or not that involves me.</p>
+      </div>
+      <div class="hero-ctas" style="justify-content:center;">
+        <a class="pill pill-solid" href="https://calendly.com/rattan_taggar/45min" target="_blank" rel="noopener">Pick a Time Below &darr;</a>
+        <a class="pill pill-line" href="https://wa.me/16477456850?text=Hi%20Rattan%2C%20I%27d%20like%20to%20book%20a%20call." target="_blank" rel="noopener">Message Me On WhatsApp Instead</a>
+      </div>
     </div>
   </section>
 
-  <section id="calc" class="tight">
+  <section id="what-to-expect" class="tight">
     <div class="wrap">
-      <div class="calc-tabs">
-        <button class="calc-tab active" id="tab-growth" onclick="switchCalcTab('growth')">Investment Growth</button>
-        <button class="calc-tab" id="tab-goal" onclick="switchCalcTab('goal')">Goal Planner</button>
-        <button class="calc-tab" id="tab-withdraw" onclick="switchCalcTab('withdraw')">Withdrawal (SWP)</button>
+      <div class="section-head center">
+        <span class="eyebrow">What To Expect</span>
+        <h2>Three things I promise before you even book.</h2>
       </div>
-
-      <div class="calc-panel active" id="panel-growth">
-        <div class="section-head">
-          <h2 style="font-size:1.4rem;">Investment Growth Calculator</h2>
-          <p>Combine a lump sum with monthly contributions, or use either on its own &mdash; set the other to $0.</p>
-        </div>
-        <div class="calc-grid">
-          <div class="calc-inputs">
-            <div class="field">
-              <div class="field-label">Starting Lump Sum <span class="field-val" id="growth-lump-val">$0</span></div>
-              <div class="field-wrap"><span class="field-prefix">$</span><input class="field-input has-prefix" id="growth-lump" type="number" value="0" min="0" oninput="document.getElementById('growth-lump-r').value=this.value;calcGrowth()"></div>
-              <input class="field-range" id="growth-lump-r" type="range" min="0" max="500000" step="1000" value="0" oninput="document.getElementById('growth-lump').value=this.value;calcGrowth()">
-            </div>
-            <div class="field">
-              <div class="field-label">Monthly Investment <span class="field-val" id="growth-monthly-val">$500</span></div>
-              <div class="field-wrap"><span class="field-prefix">$</span><input class="field-input has-prefix" id="growth-monthly" type="number" value="500" min="0" oninput="document.getElementById('growth-monthly-r').value=this.value;calcGrowth()"></div>
-              <input class="field-range" id="growth-monthly-r" type="range" min="0" max="10000" step="50" value="500" oninput="document.getElementById('growth-monthly').value=this.value;calcGrowth()">
-            </div>
-            <div class="field">
-              <div class="field-label">Annual Return Rate <span class="field-val" id="growth-rate-val">7%</span></div>
-              <div class="field-wrap"><input class="field-input has-suffix" id="growth-rate" type="number" value="7" min="0" max="30" step="0.5" oninput="document.getElementById('growth-rate-r').value=this.value;calcGrowth()"><span class="field-suffix">%</span></div>
-              <input class="field-range" id="growth-rate-r" type="range" min="0" max="15" step="0.5" value="7" oninput="document.getElementById('growth-rate').value=this.value;calcGrowth()">
-            </div>
-            <div class="field">
-              <div class="field-label">Time Period <span class="field-val" id="growth-years-val">20 yrs</span></div>
-              <div class="field-wrap"><input class="field-input has-suffix" id="growth-years" type="number" value="20" min="1" max="50" oninput="document.getElementById('growth-years-r').value=this.value;calcGrowth()"><span class="field-suffix">yrs</span></div>
-              <input class="field-range" id="growth-years-r" type="range" min="1" max="50" step="1" value="20" oninput="document.getElementById('growth-years').value=this.value;calcGrowth()">
-            </div>
-          </div>
-          <div class="calc-result">
-            <div class="result-eyebrow">Projected Outcome</div>
-            <div class="result-row">
-              <div class="result-label">Total Value</div>
-              <div class="result-val" id="growth-total">$0</div>
-            </div>
-            <div class="result-row">
-              <div class="result-label">Total Invested</div>
-              <div class="result-val accent" id="growth-invested">$0</div>
-            </div>
-            <div class="result-row">
-              <div class="result-label">Gains From Compounding</div>
-              <div class="result-val" id="growth-gain">$0</div>
-              <div class="result-note" id="growth-gain-pct">0% return on total invested</div>
-            </div>
-            <div class="result-bars">
-              <div class="result-bar-row"><div class="result-bar-name"><span class="dot" style="background:var(--accent);"></span>Invested</div><div class="result-bar-track"><div class="result-bar-fill" style="background:var(--accent);" id="growth-bar-inv"></div></div><div class="result-bar-text" id="growth-bar-inv-t">0%</div></div>
-              <div class="result-bar-row"><div class="result-bar-name"><span class="dot" style="background:var(--emerald-bright);"></span>Growth</div><div class="result-bar-track"><div class="result-bar-fill" style="background:var(--emerald-bright);" id="growth-bar-gain"></div></div><div class="result-bar-text" id="growth-bar-gain-t">0%</div></div>
-            </div>
-          </div>
-        </div>
-        <div class="chart-wrap">
-          <div class="chart-label">Portfolio Growth Over Time</div>
-          <div class="chart-canvas-wrap"><canvas id="chart-growth"></canvas></div>
-        </div>
+      <div class="steps" style="grid-template-columns:repeat(3,1fr);">
+        <div class="step"><div class="step-num">01</div><h3>No Obligation</h3><p>You're not signing anything on this call. It's a conversation, not a close.</p></div>
+        <div class="step"><div class="step-num">02</div><h3>Real Numbers</h3><p>I'll pull actual quotes across 25+ insurers, not ballpark guesses.</p></div>
+        <div class="step"><div class="step-num">03</div><h3>You Decide</h3><p>If it's not a fit, I'll tell you &mdash; even if that means no sale for me.</p></div>
       </div>
-
-      <div class="calc-panel" id="panel-goal">
-        <div class="section-head">
-          <h2 style="font-size:1.4rem;">Goal Planner</h2>
-          <p>How much do you need to invest monthly to reach a specific target?</p>
-        </div>
-        <div class="calc-grid">
-          <div class="calc-inputs">
-            <div class="field">
-              <div class="field-label">Target Amount <span class="field-val" id="goal-target-val">$500,000</span></div>
-              <div class="field-wrap"><span class="field-prefix">$</span><input class="field-input has-prefix" id="goal-target" type="number" value="500000" min="0" oninput="document.getElementById('goal-target-r').value=this.value;calcGoal()"></div>
-              <input class="field-range" id="goal-target-r" type="range" min="10000" max="3000000" step="10000" value="500000" oninput="document.getElementById('goal-target').value=this.value;calcGoal()">
-            </div>
-            <div class="field">
-              <div class="field-label">Current Savings <span class="field-val" id="goal-current-val">$0</span></div>
-              <div class="field-wrap"><span class="field-prefix">$</span><input class="field-input has-prefix" id="goal-current" type="number" value="0" min="0" oninput="document.getElementById('goal-current-r').value=this.value;calcGoal()"></div>
-              <input class="field-range" id="goal-current-r" type="range" min="0" max="1000000" step="5000" value="0" oninput="document.getElementById('goal-current').value=this.value;calcGoal()">
-            </div>
-            <div class="field">
-              <div class="field-label">Annual Return Rate <span class="field-val" id="goal-rate-val">7%</span></div>
-              <div class="field-wrap"><input class="field-input has-suffix" id="goal-rate" type="number" value="7" min="0" max="30" step="0.5" oninput="document.getElementById('goal-rate-r').value=this.value;calcGoal()"><span class="field-suffix">%</span></div>
-              <input class="field-range" id="goal-rate-r" type="range" min="0" max="15" step="0.5" value="7" oninput="document.getElementById('goal-rate').value=this.value;calcGoal()">
-            </div>
-            <div class="field">
-              <div class="field-label">Time Period <span class="field-val" id="goal-years-val">15 yrs</span></div>
-              <div class="field-wrap"><input class="field-input has-suffix" id="goal-years" type="number" value="15" min="1" max="50" oninput="document.getElementById('goal-years-r').value=this.value;calcGoal()"><span class="field-suffix">yrs</span></div>
-              <input class="field-range" id="goal-years-r" type="range" min="1" max="50" step="1" value="15" oninput="document.getElementById('goal-years').value=this.value;calcGoal()">
-            </div>
-          </div>
-          <div class="calc-result">
-            <div class="result-eyebrow">What It Takes</div>
-            <div class="result-row">
-              <div class="result-label">Required Monthly Investment</div>
-              <div class="result-val" id="goal-monthly">$0</div>
-              <div class="result-note" id="goal-monthly-note"></div>
-            </div>
-            <div class="result-row">
-              <div class="result-label">Total You'll Contribute</div>
-              <div class="result-val accent" id="goal-contrib">$0</div>
-            </div>
-            <div class="result-row">
-              <div class="result-label">Growth From Compounding</div>
-              <div class="result-val" id="goal-growth">$0</div>
-            </div>
-          </div>
-        </div>
-        <div class="chart-wrap">
-          <div class="chart-label">Projected Balance vs. Target</div>
-          <div class="chart-canvas-wrap"><canvas id="chart-goal"></canvas></div>
-        </div>
-      </div>
-
-      <div class="calc-panel" id="panel-withdraw">
-        <div class="section-head">
-          <h2 style="font-size:1.4rem;">Withdrawal Planner (SWP)</h2>
-          <p>How long will a portfolio last if you draw a fixed amount from it every month?</p>
-        </div>
-        <div class="calc-grid">
-          <div class="calc-inputs">
-            <div class="field">
-              <div class="field-label">Starting Portfolio <span class="field-val" id="with-portfolio-val">$500,000</span></div>
-              <div class="field-wrap"><span class="field-prefix">$</span><input class="field-input has-prefix" id="with-portfolio" type="number" value="500000" min="0" oninput="document.getElementById('with-portfolio-r').value=this.value;calcWithdraw()"></div>
-              <input class="field-range" id="with-portfolio-r" type="range" min="10000" max="3000000" step="10000" value="500000" oninput="document.getElementById('with-portfolio').value=this.value;calcWithdraw()">
-            </div>
-            <div class="field">
-              <div class="field-label">Monthly Withdrawal <span class="field-val" id="with-monthly-val">$2,000</span></div>
-              <div class="field-wrap"><span class="field-prefix">$</span><input class="field-input has-prefix" id="with-monthly" type="number" value="2000" min="0" oninput="document.getElementById('with-monthly-r').value=this.value;calcWithdraw()"></div>
-              <input class="field-range" id="with-monthly-r" type="range" min="100" max="20000" step="100" value="2000" oninput="document.getElementById('with-monthly').value=this.value;calcWithdraw()">
-            </div>
-            <div class="field">
-              <div class="field-label">Annual Return Rate <span class="field-val" id="with-rate-val">5%</span></div>
-              <div class="field-wrap"><input class="field-input has-suffix" id="with-rate" type="number" value="5" min="0" max="15" step="0.5" oninput="document.getElementById('with-rate-r').value=this.value;calcWithdraw()"><span class="field-suffix">%</span></div>
-              <input class="field-range" id="with-rate-r" type="range" min="0" max="12" step="0.5" value="5" oninput="document.getElementById('with-rate').value=this.value;calcWithdraw()">
-            </div>
-          </div>
-          <div class="calc-result">
-            <div class="result-eyebrow">How Long It Lasts</div>
-            <div class="result-row">
-              <div class="result-label">Portfolio Lasts</div>
-              <div class="result-val" id="with-duration">0 years</div>
-            </div>
-            <div class="result-row">
-              <div class="result-label">Total Withdrawn</div>
-              <div class="result-val accent" id="with-total">$0</div>
-              <div class="result-note" id="with-note"></div>
-            </div>
-          </div>
-        </div>
-        <div class="chart-wrap">
-          <div class="chart-label">Portfolio Balance Over Time</div>
-          <div class="chart-canvas-wrap"><canvas id="chart-withdraw"></canvas></div>
-        </div>
-      </div>
-
-      <div class="calc-disclaimer">For illustrative purposes only. Returns are not guaranteed, and actual market performance will vary. These tools do not constitute financial, tax or legal advice, and don't account for fees, inflation, or your full financial picture &mdash; I'll work through your real numbers on a call.</div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
-    <script>
-      var CH = {};
-      function fmtAxis(n){
-        var sign = n<0 ? '-' : '';
-        n = Math.abs(n);
-        if(n>=1000000) return sign+'$'+(n/1000000).toFixed(1)+'M';
-        if(n>=1000) return sign+'$'+Math.round(n/1000)+'K';
-        return sign+'$'+Math.round(n);
-      }
-      function yearPoints(years){
-        var n = Math.max(1, Math.min(years, 15));
-        var pts = [];
-        for(var k=0;k<=n;k++){
-          var y = Math.round(years*k/n);
-          if(pts.indexOf(y)===-1) pts.push(y);
-        }
-        if(pts[pts.length-1] !== years) pts.push(years);
-        return pts;
-      }
-      function upsertChart(id, labels, datasets){
-        var canvas = document.getElementById(id);
-        if(!canvas || typeof Chart==='undefined') return;
-        if(CH[id]){
-          CH[id].data.labels = labels;
-          CH[id].data.datasets.forEach(function(ds,idx){ if(datasets[idx]) ds.data = datasets[idx].data; });
-          CH[id].update('none');
-          return;
-        }
-        CH[id] = new Chart(canvas.getContext('2d'), {
-          type:'line',
-          data:{ labels:labels, datasets:datasets },
-          options:{
-            responsive:true, maintainAspectRatio:false,
-            interaction:{ mode:'index', intersect:false },
-            plugins:{
-              legend:{ display:datasets.length>1, position:'bottom', labels:{ color:'#aebbb3', usePointStyle:true, boxWidth:8, padding:16, font:{ size:11, family:'Inter' } } },
-              tooltip:{ backgroundColor:'#0a1512', borderColor:'#25423b', borderWidth:1, padding:10, titleColor:'#f3efe1', bodyColor:'#aebbb3', callbacks:{ label:function(ctx){ return ' '+ctx.dataset.label+': '+fmtAxis(ctx.parsed.y); } } }
-            },
-            scales:{
-              x:{ grid:{ color:'rgba(255,255,255,0.06)' }, ticks:{ color:'#71827b', font:{ size:10, family:'Inter' }, maxTicksLimit:8 } },
-              y:{ grid:{ color:'rgba(255,255,255,0.06)' }, ticks:{ color:'#71827b', font:{ size:10, family:'Inter' }, callback:function(v){ return fmtAxis(v); } } }
-            }
-          }
-        });
-      }
-      function switchCalcTab(name){
-        document.querySelectorAll('.calc-tab').forEach(function(b){b.classList.remove('active');});
-        document.querySelectorAll('.calc-panel').forEach(function(p){p.classList.remove('active');});
-        document.getElementById('tab-'+name).classList.add('active');
-        document.getElementById('panel-'+name).classList.add('active');
-        var chart = CH['chart-'+name];
-        if(chart) setTimeout(function(){ chart.resize(); }, 0);
-      }
-      function fmtD(n){ return '$'+Math.round(n).toLocaleString('en-US'); }
-      function calcGrowth(){
-        var lump = parseFloat(document.getElementById('growth-lump').value)||0;
-        var monthly = parseFloat(document.getElementById('growth-monthly').value)||0;
-        var rate = parseFloat(document.getElementById('growth-rate').value)||0;
-        var years = parseFloat(document.getElementById('growth-years').value)||0;
-        var months = years*12;
-        var i = rate/100/12;
-        var fvLump = lump*Math.pow(1+i, months);
-        var fvMonthly = i>0 ? monthly*((Math.pow(1+i,months)-1)/i) : monthly*months;
-        var total = fvLump+fvMonthly;
-        var invested = lump+monthly*months;
-        var gain = total-invested;
-        document.getElementById('growth-lump-val').textContent = fmtD(lump);
-        document.getElementById('growth-monthly-val').textContent = fmtD(monthly);
-        document.getElementById('growth-rate-val').textContent = rate+'%';
-        document.getElementById('growth-years-val').textContent = years+' yrs';
-        document.getElementById('growth-total').textContent = fmtD(total);
-        document.getElementById('growth-invested').textContent = fmtD(invested);
-        document.getElementById('growth-gain').textContent = fmtD(gain);
-        var gainPct = invested>0 ? (gain/invested*100) : 0;
-        document.getElementById('growth-gain-pct').textContent = gainPct.toFixed(0)+'% return on total invested';
-        var investedShare = total>0 ? Math.max(0,Math.min(100,invested/total*100)) : 0;
-        var gainShare = 100-investedShare;
-        document.getElementById('growth-bar-inv').style.width = investedShare+'%';
-        document.getElementById('growth-bar-inv-t').textContent = investedShare.toFixed(0)+'%';
-        document.getElementById('growth-bar-gain').style.width = gainShare+'%';
-        document.getElementById('growth-bar-gain-t').textContent = gainShare.toFixed(0)+'%';
-        var chartLabels=[], chartTotal=[], chartInvested=[];
-        yearPoints(years).forEach(function(y){
-          var m = y*12;
-          var fvL2 = lump*Math.pow(1+i, m);
-          var fvM2 = i>0 ? monthly*((Math.pow(1+i,m)-1)/i) : monthly*m;
-          chartLabels.push('Yr '+y);
-          chartTotal.push(fvL2+fvM2);
-          chartInvested.push(lump+monthly*m);
-        });
-        upsertChart('chart-growth', chartLabels, [
-          { label:'Total Value', data:chartTotal, borderColor:'#c79a4b', backgroundColor:'rgba(199,154,75,0.14)', fill:true, tension:0.3, pointRadius:0, borderWidth:2 },
-          { label:'Total Invested', data:chartInvested, borderColor:'#4c9c81', backgroundColor:'transparent', fill:false, tension:0.3, pointRadius:0, borderWidth:2, borderDash:[4,3] }
-        ]);
-      }
-      function calcGoal(){
-        var target = parseFloat(document.getElementById('goal-target').value)||0;
-        var current = parseFloat(document.getElementById('goal-current').value)||0;
-        var rate = parseFloat(document.getElementById('goal-rate').value)||0;
-        var years = parseFloat(document.getElementById('goal-years').value)||0;
-        var months = years*12;
-        var i = rate/100/12;
-        var fvCurrent = current*Math.pow(1+i, months);
-        var remaining = target-fvCurrent;
-        var monthlyReq = 0, note='';
-        if(remaining<=0){
-          note = "Your current savings alone are projected to reach this goal.";
-        } else {
-          monthlyReq = i>0 ? remaining*i/(Math.pow(1+i,months)-1) : remaining/months;
-        }
-        var contrib = current+monthlyReq*months;
-        var growth = target-contrib;
-        document.getElementById('goal-target-val').textContent = fmtD(target);
-        document.getElementById('goal-current-val').textContent = fmtD(current);
-        document.getElementById('goal-rate-val').textContent = rate+'%';
-        document.getElementById('goal-years-val').textContent = years+' yrs';
-        document.getElementById('goal-monthly').textContent = fmtD(monthlyReq);
-        document.getElementById('goal-monthly-note').textContent = note;
-        document.getElementById('goal-contrib').textContent = fmtD(contrib);
-        document.getElementById('goal-growth').textContent = fmtD(Math.max(0,growth));
-        var gLabels=[], gBalance=[], gTarget=[];
-        yearPoints(years).forEach(function(y){
-          var m = y*12;
-          var fvC = current*Math.pow(1+i, m);
-          var fvM = i>0 ? monthlyReq*((Math.pow(1+i,m)-1)/i) : monthlyReq*m;
-          gLabels.push('Yr '+y);
-          gBalance.push(fvC+fvM);
-          gTarget.push(target);
-        });
-        upsertChart('chart-goal', gLabels, [
-          { label:'Projected Balance', data:gBalance, borderColor:'#c79a4b', backgroundColor:'rgba(199,154,75,0.14)', fill:true, tension:0.3, pointRadius:0, borderWidth:2 },
-          { label:'Target', data:gTarget, borderColor:'#aebbb3', backgroundColor:'transparent', fill:false, tension:0, pointRadius:0, borderWidth:1.5, borderDash:[5,4] }
-        ]);
-      }
-      function calcWithdraw(){
-        var portfolio = parseFloat(document.getElementById('with-portfolio').value)||0;
-        var monthly = parseFloat(document.getElementById('with-monthly').value)||0;
-        var rate = parseFloat(document.getElementById('with-rate').value)||0;
-        var i = rate/100/12;
-        var balance = portfolio, months=0, withdrawn=0, capped=false;
-        var wLabels=['Yr 0'], wBalance=[balance];
-        while(months<600){
-          if(balance<=0) break;
-          balance = balance*(1+i) - monthly;
-          withdrawn += monthly;
-          months++;
-          if(months%12===0){
-            wLabels.push('Yr '+(months/12));
-            wBalance.push(Math.max(0,balance));
-          }
-        }
-        if(months>=600 && balance>0){ capped=true; }
-        document.getElementById('with-portfolio-val').textContent = fmtD(portfolio);
-        document.getElementById('with-monthly-val').textContent = fmtD(monthly);
-        document.getElementById('with-rate-val').textContent = rate+'%';
-        if(capped){
-          document.getElementById('with-duration').textContent = '50+ years';
-          document.getElementById('with-note').textContent = 'Your withdrawals are below what the portfolio grows, so it keeps going.';
-        } else {
-          var yrs = Math.floor(months/12), rem = months%12;
-          document.getElementById('with-duration').textContent = yrs+' yrs'+(rem?' '+rem+' mo':'');
-          document.getElementById('with-note').textContent = 'Approximate &mdash; assumes a steady rate of return every month.';
-        }
-        document.getElementById('with-total').textContent = fmtD(withdrawn);
-        upsertChart('chart-withdraw', wLabels, [
-          { label:'Portfolio Balance', data:wBalance, borderColor:'#c79a4b', backgroundColor:'rgba(199,154,75,0.14)', fill:true, tension:0.25, pointRadius:0, borderWidth:2 }
-        ]);
-      }
-      calcGrowth(); calcGoal(); calcWithdraw();
-    </script>
   </section>
 
-  <section id="contact" class="tight">
+  <section id="scheduler">
     <div class="wrap">
-      <div class="final-cta">
-        <div class="final-cta-grid">
-          <div>
-            <span class="eyebrow" style="color:var(--accent-2);">Get In Touch</span>
-            <h2 style="margin-top:14px;">Want to run your actual numbers?</h2>
-            <p>These tools are a starting point. On a call, I'll factor in your real accounts, timeline and goals.</p>
-            <div class="hero-ctas">
-              <a class="pill pill-solid" href="http://insurancebyrattan.ca/" target="_blank" rel="noopener">Get a Live Quote</a>
-              <a class="pill pill-line" href="https://calendly.com/rattan_taggar/45min" target="_blank" rel="noopener">Book a Call</a>
-              <a class="pill pill-line" href="https://wa.me/16477456850?text=Hi%20Rattan%2C%20I%27d%20like%20a%20free%20insurance%20quote." target="_blank" rel="noopener">WhatsApp</a>
-            </div>
-          </div>
-          <div class="consult-card">
-            <h3>Free, no-obligation consultation</h3>
-            <p>We'll review:</p>
-            <ul class="consult-list">
-              <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l6 6L20 6"/></svg></span>Your current savings setup</li>
-              <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l6 6L20 6"/></svg></span>Your goals &amp; timeline</li>
-              <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l6 6L20 6"/></svg></span>Your available contribution room</li>
-              <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l6 6L20 6"/></svg></span>Your risk comfort</li>
-              <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l6 6L20 6"/></svg></span>Available options across 25+ insurers</li>
-            </ul>
-          </div>
-        </div>
+      <div class="section-head center">
+        <span class="eyebrow">Choose Your Time</span>
+        <h2>Booking takes about 30 seconds.</h2>
+      </div>
+      <div style="background:var(--surface); border:1px solid var(--line); border-radius:8px; overflow:hidden;">
+        <div class="calendly-inline-widget" data-url="https://calendly.com/rattan_taggar/45min?background_color=132622&text_color=f3efe1&primary_color=c79a4b" style="min-width:280px;height:750px;"></div>
+      </div>
+      <p style="text-align:center;margin-top:20px;color:var(--ink-faint);font-size:0.85rem;">Trouble loading the calendar? <a href="https://calendly.com/rattan_taggar/45min" target="_blank" rel="noopener" style="color:var(--accent-2);text-decoration:underline;">Open it directly &rarr;</a></p>
+    </div>
+  </section>
+
+  <section id="before-you-book" class="tight">
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow">Before You Book</span>
+        <h2>Answers to what people usually ask first.</h2>
+      </div>
+      <div class="fact-grid">
+        <div class="fact-card"><h3>Do I need to know what I want already?</h3><p>No. Most people start with "I don't know what I need" &mdash; that's exactly what the call is for.</p></div>
+        <div class="fact-card"><h3>Is this actually free?</h3><p>Yes. I'm paid by the insurer if you decide to move forward, never by you directly.</p></div>
+        <div class="fact-card"><h3>What if I already have coverage?</h3><p>I'll review what you have and tell you honestly if it's already suitable &mdash; I won't manufacture a reason to switch.</p></div>
+        <div class="fact-card"><h3>Do you only sell one company's products?</h3><p>No. I'm independent and compare 25+ Canadian insurers to find what actually fits.</p></div>
+        <div class="fact-card"><h3>What should I bring to the call?</h3><p>Nothing required &mdash; just be ready to talk about your family, income and any coverage you already have.</p></div>
+        <div class="fact-card"><h3>Can we talk in Punjabi or Hindi?</h3><p>Yes &mdash; whatever's most comfortable for you.</p></div>
       </div>
     </div>
   </section>
 </main>
+<script src="https://assets.calendly.com/assets/external/widget.js" async></script>
 
 
 <footer>
