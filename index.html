@@ -397,10 +397,10 @@
       </div>
     </div>
     <div class="wrap stat-strip">
-      <div class="stat"><div class="num"><span class="mini-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>425+</div><div class="label">Google Reviews</div></div>
-      <div class="stat"><div class="num">3,500+</div><div class="label">Families Served</div></div>
-      <div class="stat"><div class="num">25+</div><div class="label">Canadian Insurers</div></div>
-      <div class="stat"><div class="num">8</div><div class="label">Provinces Licensed</div></div>
+      <div class="stat"><div class="num"><span class="mini-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="count" data-target="425" data-suffix="+">0</span></div><div class="label">Google Reviews</div></div>
+      <div class="stat"><div class="num"><span class="count" data-target="400" data-prefix="$" data-suffix="M+">0</span></div><div class="label">In Coverage Protected</div></div>
+      <div class="stat"><div class="num"><span class="count" data-target="2000" data-suffix="+">0</span></div><div class="label">Families Served</div></div>
+      <div class="stat"><div class="num"><span class="count" data-target="25" data-suffix="+">0</span></div><div class="label">Canadian Insurers</div></div>
     </div>
   </section>
 
@@ -466,10 +466,10 @@
         <h2><span class="yrs-exp">7</span>+ years of consistency, plus 425+ reviews.</h2>
       </div>
       <div class="stat-strip" style="margin-top:0;">
-        <div class="stat"><div class="num">5</div><div class="label">Consecutive CBP Years</div></div>
-        <div class="stat"><div class="num">2026</div><div class="label">iA Premier Expert Level</div></div>
-        <div class="stat"><div class="num">425+</div><div class="label">Five-Star Reviews</div></div>
-        <div class="stat"><div class="num">8</div><div class="label">Provinces Licensed</div></div>
+        <div class="stat"><div class="num"><span class="count" data-target="5" data-suffix="">0</span></div><div class="label">Consecutive CBP Years</div></div>
+        <div class="stat"><div class="num"><span class="count" data-target="2026" data-suffix="" data-nogroup>0</span></div><div class="label">iA Premier Expert Level</div></div>
+        <div class="stat"><div class="num"><span class="count" data-target="425" data-suffix="+">0</span></div><div class="label">Five-Star Reviews</div></div>
+        <div class="stat"><div class="num"><span class="count" data-target="8" data-suffix="">0</span></div><div class="label">Provinces Licensed</div></div>
       </div>
       <p style="text-align:center;margin-top:24px;"><a class="pill pill-line" href="awards.html">See awards &amp; reviews &rarr;</a></p>
     </div>
@@ -595,6 +595,52 @@
     var years = now.getFullYear() - start.getFullYear();
     if(now.getMonth() < start.getMonth() || (now.getMonth() === start.getMonth() && now.getDate() < start.getDate())){ years--; }
     document.querySelectorAll('.yrs-exp').forEach(function(el){ el.textContent = years; });
+  })();
+  (function(){
+    var counters = document.querySelectorAll('.count[data-target]');
+    if(!counters.length) return;
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function fmt(el, n){
+      return el.hasAttribute('data-nogroup') ? String(n) : n.toLocaleString('en-US');
+    }
+    function finalText(el){
+      var target = parseFloat(el.getAttribute('data-target'))||0;
+      var prefix = el.getAttribute('data-prefix')||'';
+      var suffix = el.getAttribute('data-suffix')||'';
+      return prefix + fmt(el, target) + suffix;
+    }
+    if(reduceMotion || !('IntersectionObserver' in window)){
+      counters.forEach(function(el){ el.textContent = finalText(el); });
+      return;
+    }
+    function animate(el){
+      var target = parseFloat(el.getAttribute('data-target'))||0;
+      var prefix = el.getAttribute('data-prefix')||'';
+      var suffix = el.getAttribute('data-suffix')||'';
+      var duration = 1600;
+      var start = null;
+      function step(ts){
+        if(!start) start = ts;
+        var progress = Math.min((ts-start)/duration, 1);
+        var eased = 1 - Math.pow(1-progress, 3);
+        var value = Math.floor(eased*target);
+        el.textContent = prefix + fmt(el, value) + suffix;
+        if(progress < 1){ requestAnimationFrame(step); }
+        else { el.textContent = finalText(el); }
+      }
+      requestAnimationFrame(step);
+    }
+    var seen = new WeakSet();
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting && !seen.has(entry.target)){
+          seen.add(entry.target);
+          animate(entry.target);
+          obs.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.4});
+    counters.forEach(function(el){ obs.observe(el); });
   })();
 </script>
 
