@@ -46,8 +46,8 @@
     border-bottom:1px solid var(--line-soft); padding-block:16px;
   }
   .nav-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; }
-  .wordmark{ display:flex; flex-direction:column; line-height:1.2; }
-  .wordmark .name{ font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:1.12rem; color:var(--ink); }
+  .wordmark{ display:flex; flex-direction:column; line-height:1.2; flex:none; }
+  .wordmark .name{ font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:1.12rem; color:var(--ink); white-space:nowrap; }
   .wordmark .role{ font-size:0.64rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-faint); margin-top:3px; white-space:nowrap; }
   @media (max-width:520px){ .wordmark .role{ white-space:normal; } }
 
@@ -326,7 +326,7 @@
   <div class="wrap nav-row">
     <a class="wordmark" href="index.html">
       <span class="name">Rattan Amol Taggar</span>
-      <span class="role">Life Insurance Advisor</span>
+      <span class="role">Wealth &amp; Legacy Advisor</span>
     </a>
     <nav class="links">
       <a href="index.html">Home</a>
@@ -375,7 +375,7 @@
         <p class="lede">I spent years as an engineer at Ford before I became an insurance advisor &mdash; and that background still shapes how I work: understand the problem fully, then explain the solution plainly.</p>
         <div class="hero-ctas">
           <a class="pill pill-solid" href="http://insurancebyrattan.ca/" target="_blank" rel="noopener">Get a Live Quote</a>
-          <a class="pill pill-line" href="https://calendly.com/rattan_taggar/45min" target="_blank" rel="noopener">Book a Call</a>
+          <a class="pill pill-line" href="book.html">Book a Call</a>
               <a class="pill pill-line" href="https://wa.me/16477456850?text=Hi%20Rattan%2C%20I%27d%20like%20a%20free%20insurance%20quote." target="_blank" rel="noopener">WhatsApp</a>
         </div>
       </div>
@@ -398,6 +398,7 @@
         <p>What pulled me into insurance was simpler than a career plan. I kept watching people in my own community &mdash; new immigrants, young families, small business owners &mdash; get sold policies they didn't understand, from advisors they only heard from once. I wanted to build something different: a practice where clients actually understand their coverage, and where I'm still the one they call five years later.</p>
         <p>That's the version of this business I've built. <strong>Independent</strong>, so I'm not limited to one company's shelf. <strong>Explained plainly</strong>, so you're deciding with full information, not a sales pitch. And <strong>long-term</strong>, because a policy is only useful if it's still the right fit when your life changes.</p>
         <div class="story-facts">
+          <span class="fact-chip"><span class="dot"></span><span class="yrs-exp">7</span>+ years in insurance &amp; financial services</span>
           <span class="fact-chip"><span class="dot"></span>Engineering background &mdash; Ford</span>
           <span class="fact-chip"><span class="dot"></span>3,500+ families served</span>
           <span class="fact-chip"><span class="dot"></span>25+ Canadian insurers compared</span>
@@ -458,7 +459,7 @@
             <p>No pressure. No obligation. Just a conversation with an advisor who will explain your options and help you make an informed decision.</p>
             <div class="hero-ctas">
               <a class="pill pill-solid" href="http://insurancebyrattan.ca/" target="_blank" rel="noopener">Get a Live Quote</a>
-              <a class="pill pill-line" href="https://calendly.com/rattan_taggar/45min" target="_blank" rel="noopener">Book a Call</a>
+              <a class="pill pill-line" href="book.html">Book a Call</a>
               <a class="pill pill-line" href="https://wa.me/16477456850?text=Hi%20Rattan%2C%20I%27d%20like%20a%20free%20insurance%20quote." target="_blank" rel="noopener">WhatsApp</a>
             </div>
             <p class="hero-mini-trust">Or reach me directly &mdash; <a href="tel:+16477456850">647-745-6850</a> / <a href="https://wa.me/16477456850" target="_blank" rel="noopener">WhatsApp</a></p>
@@ -542,6 +543,13 @@
         btn.setAttribute('aria-expanded','false');
       });
     });
+  })();
+  (function(){
+    var start = new Date(2019, 1, 1);
+    var now = new Date();
+    var years = now.getFullYear() - start.getFullYear();
+    if(now.getMonth() < start.getMonth() || (now.getMonth() === start.getMonth() && now.getDate() < start.getDate())){ years--; }
+    document.querySelectorAll('.yrs-exp').forEach(function(el){ el.textContent = years; });
   })();
 </script>
 

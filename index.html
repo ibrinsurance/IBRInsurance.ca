@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rattan Amol Taggar</title>
-<meta name="description" content="Independent life and health insurance advisor in Windsor, Ontario.">
+<meta name="description" content="Independent wealth, protection and legacy advisor in Windsor, Ontario &mdash; life insurance, investments and estate strategy under one roof.">
 <style>
 
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap');
@@ -46,8 +46,8 @@
     border-bottom:1px solid var(--line-soft); padding-block:16px;
   }
   .nav-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; }
-  .wordmark{ display:flex; flex-direction:column; line-height:1.2; }
-  .wordmark .name{ font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:1.12rem; color:var(--ink); }
+  .wordmark{ display:flex; flex-direction:column; line-height:1.2; flex:none; }
+  .wordmark .name{ font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:1.12rem; color:var(--ink); white-space:nowrap; }
   .wordmark .role{ font-size:0.64rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-faint); margin-top:3px; white-space:nowrap; }
   @media (max-width:520px){ .wordmark .role{ white-space:normal; } }
 
@@ -326,7 +326,7 @@
   <div class="wrap nav-row">
     <a class="wordmark" href="index.html">
       <span class="name">Rattan Amol Taggar</span>
-      <span class="role">Life Insurance Advisor</span>
+      <span class="role">Wealth &amp; Legacy Advisor</span>
     </a>
     <nav class="links">
       <a href="index.html" class="active">Home</a>
@@ -370,11 +370,11 @@
   <section class="page-hero">
     <div class="wrap page-hero-grid">
       <div>
-        <h1 style="max-width:16ch;">Life insurance <em>explained simply.</em> Coverage built around your family.</h1>
-        <p class="lede">I compare 25+ Canadian insurers to help you find suitable coverage, pricing and structure &mdash; and you deal directly with me, not a call centre.</p>
+        <h1 style="max-width:18ch;">Wealth, protected. Legacy, <em>secured.</em></h1>
+        <p class="lede">I help Canadian families build wealth, protect what they've earned, and structure a legacy that lasts &mdash; comparing solutions across 25+ insurers, so you always deal directly with me, not a call centre.</p>
         <div class="hero-ctas">
           <a class="pill pill-solid" href="http://insurancebyrattan.ca/" target="_blank" rel="noopener">Get a Live Quote</a>
-          <a class="pill pill-line" href="https://calendly.com/rattan_taggar/45min" target="_blank" rel="noopener">Book a Call</a>
+          <a class="pill pill-line" href="book.html">Book a Call</a>
               <a class="pill pill-line" href="https://wa.me/16477456850?text=Hi%20Rattan%2C%20I%27d%20like%20a%20free%20insurance%20quote." target="_blank" rel="noopener">WhatsApp</a>
         </div>
         <p class="hero-mini-trust"><strong>25+ insurers</strong> &nbsp;&middot;&nbsp; <strong>8 provinces</strong> &nbsp;&middot;&nbsp; <strong>425+ five-star reviews</strong></p>
@@ -456,7 +456,7 @@
     <div class="wrap">
       <div class="section-head center">
         <span class="eyebrow">Recognition</span>
-        <h2>Five years of consistency, plus 425+ reviews.</h2>
+        <h2><span class="yrs-exp">7</span>+ years of consistency, plus 425+ reviews.</h2>
       </div>
       <div class="stat-strip" style="margin-top:0;">
         <div class="stat"><div class="num">5</div><div class="label">Consecutive CBP Years</div></div>
@@ -497,7 +497,7 @@
             <p>No pressure. No obligation. Just a conversation with an advisor who will explain your options and help you make an informed decision.</p>
             <div class="hero-ctas">
               <a class="pill pill-solid" href="http://insurancebyrattan.ca/" target="_blank" rel="noopener">Get a Live Quote</a>
-              <a class="pill pill-line" href="https://calendly.com/rattan_taggar/45min" target="_blank" rel="noopener">Book a Call</a>
+              <a class="pill pill-line" href="book.html">Book a Call</a>
               <a class="pill pill-line" href="https://wa.me/16477456850?text=Hi%20Rattan%2C%20I%27d%20like%20a%20free%20insurance%20quote." target="_blank" rel="noopener">WhatsApp</a>
             </div>
             <p class="hero-mini-trust">Or reach me directly &mdash; <a href="tel:+16477456850">647-745-6850</a> / <a href="https://wa.me/16477456850" target="_blank" rel="noopener">WhatsApp</a></p>
@@ -581,6 +581,13 @@
         btn.setAttribute('aria-expanded','false');
       });
     });
+  })();
+  (function(){
+    var start = new Date(2019, 1, 1);
+    var now = new Date();
+    var years = now.getFullYear() - start.getFullYear();
+    if(now.getMonth() < start.getMonth() || (now.getMonth() === start.getMonth() && now.getDate() < start.getDate())){ years--; }
+    document.querySelectorAll('.yrs-exp').forEach(function(el){ el.textContent = years; });
   })();
 </script>
 

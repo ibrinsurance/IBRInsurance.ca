@@ -46,8 +46,8 @@
     border-bottom:1px solid var(--line-soft); padding-block:16px;
   }
   .nav-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; }
-  .wordmark{ display:flex; flex-direction:column; line-height:1.2; }
-  .wordmark .name{ font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:1.12rem; color:var(--ink); }
+  .wordmark{ display:flex; flex-direction:column; line-height:1.2; flex:none; }
+  .wordmark .name{ font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:1.12rem; color:var(--ink); white-space:nowrap; }
   .wordmark .role{ font-size:0.64rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-faint); margin-top:3px; white-space:nowrap; }
   @media (max-width:520px){ .wordmark .role{ white-space:normal; } }
 
@@ -326,7 +326,7 @@
   <div class="wrap nav-row">
     <a class="wordmark" href="index.html">
       <span class="name">Rattan Amol Taggar</span>
-      <span class="role">Life Insurance Advisor</span>
+      <span class="role">Wealth &amp; Legacy Advisor</span>
     </a>
     <nav class="links">
       <a href="index.html">Home</a>
@@ -374,7 +374,7 @@
       <p class="lede">Six places most conversations start. Every quote compares options across 25+ Canadian insurers, and I'll tell you plainly if a product isn't the right fit.</p>
       <div class="hero-ctas">
         <a class="pill pill-solid" href="http://insurancebyrattan.ca/" target="_blank" rel="noopener">Get a Live Quote</a>
-        <a class="pill pill-line" href="https://calendly.com/rattan_taggar/45min" target="_blank" rel="noopener">Book a Call</a>
+        <a class="pill pill-line" href="book.html">Book a Call</a>
               <a class="pill pill-line" href="https://wa.me/16477456850?text=Hi%20Rattan%2C%20I%27d%20like%20a%20free%20insurance%20quote." target="_blank" rel="noopener">WhatsApp</a>
       </div>
     </div>
@@ -488,7 +488,7 @@
             <p>No pressure. No obligation. Just a conversation with an advisor who will explain your options and help you make an informed decision.</p>
             <div class="hero-ctas">
               <a class="pill pill-solid" href="http://insurancebyrattan.ca/" target="_blank" rel="noopener">Get a Live Quote</a>
-              <a class="pill pill-line" href="https://calendly.com/rattan_taggar/45min" target="_blank" rel="noopener">Book a Call</a>
+              <a class="pill pill-line" href="book.html">Book a Call</a>
               <a class="pill pill-line" href="https://wa.me/16477456850?text=Hi%20Rattan%2C%20I%27d%20like%20a%20free%20insurance%20quote." target="_blank" rel="noopener">WhatsApp</a>
             </div>
             <p class="hero-mini-trust">Or reach me directly &mdash; <a href="tel:+16477456850">647-745-6850</a> / <a href="https://wa.me/16477456850" target="_blank" rel="noopener">WhatsApp</a></p>
@@ -572,6 +572,13 @@
         btn.setAttribute('aria-expanded','false');
       });
     });
+  })();
+  (function(){
+    var start = new Date(2019, 1, 1);
+    var now = new Date();
+    var years = now.getFullYear() - start.getFullYear();
+    if(now.getMonth() < start.getMonth() || (now.getMonth() === start.getMonth() && now.getDate() < start.getDate())){ years--; }
+    document.querySelectorAll('.yrs-exp').forEach(function(el){ el.textContent = years; });
   })();
 </script>
 

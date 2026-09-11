@@ -46,8 +46,8 @@
     border-bottom:1px solid var(--line-soft); padding-block:16px;
   }
   .nav-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; }
-  .wordmark{ display:flex; flex-direction:column; line-height:1.2; }
-  .wordmark .name{ font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:1.12rem; color:var(--ink); }
+  .wordmark{ display:flex; flex-direction:column; line-height:1.2; flex:none; }
+  .wordmark .name{ font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:1.12rem; color:var(--ink); white-space:nowrap; }
   .wordmark .role{ font-size:0.64rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-faint); margin-top:3px; white-space:nowrap; }
   @media (max-width:520px){ .wordmark .role{ white-space:normal; } }
 
@@ -326,7 +326,7 @@
   <div class="wrap nav-row">
     <a class="wordmark" href="index.html">
       <span class="name">Rattan Amol Taggar</span>
-      <span class="role">Life Insurance Advisor</span>
+      <span class="role">Wealth &amp; Legacy Advisor</span>
     </a>
     <nav class="links">
       <a href="index.html">Home</a>
@@ -533,7 +533,7 @@
 
       <div class="calc-disclaimer">For illustrative purposes only. Returns are not guaranteed, and actual market performance will vary. These tools do not constitute financial, tax or legal advice, and don't account for fees, inflation, or your full financial picture &mdash; I'll work through your real numbers on a call.</div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js" onerror="document.querySelectorAll('.chart-canvas-wrap').forEach(function(w){w.innerHTML='<p style=\'color:var(--ink-faint);font-size:0.85rem;text-align:center;padding-top:100px;\'>Chart couldn\'t load &mdash; try refreshing the page, or check if an ad blocker is active on this site.</p>';});"></script>
     <script>
       var CH = {};
       function fmtAxis(n){
@@ -625,7 +625,7 @@
           chartInvested.push(lump+monthly*m);
         });
         upsertChart('chart-growth', chartLabels, [
-          { label:'Total Value', data:chartTotal, borderColor:'#c79a4b', backgroundColor:'rgba(199,154,75,0.14)', fill:true, tension:0.3, pointRadius:0, borderWidth:2 },
+          { label:'Total Value', data:chartTotal, borderColor:'#c79a4b', backgroundColor:'rgba(199,154,75,0.26)', fill:true, tension:0.3, pointRadius:0, borderWidth:2.5 },
           { label:'Total Invested', data:chartInvested, borderColor:'#4c9c81', backgroundColor:'transparent', fill:false, tension:0.3, pointRadius:0, borderWidth:2, borderDash:[4,3] }
         ]);
       }
@@ -664,7 +664,7 @@
           gTarget.push(target);
         });
         upsertChart('chart-goal', gLabels, [
-          { label:'Projected Balance', data:gBalance, borderColor:'#c79a4b', backgroundColor:'rgba(199,154,75,0.14)', fill:true, tension:0.3, pointRadius:0, borderWidth:2 },
+          { label:'Projected Balance', data:gBalance, borderColor:'#c79a4b', backgroundColor:'rgba(199,154,75,0.26)', fill:true, tension:0.3, pointRadius:0, borderWidth:2.5 },
           { label:'Target', data:gTarget, borderColor:'#aebbb3', backgroundColor:'transparent', fill:false, tension:0, pointRadius:0, borderWidth:1.5, borderDash:[5,4] }
         ]);
       }
@@ -699,7 +699,7 @@
         }
         document.getElementById('with-total').textContent = fmtD(withdrawn);
         upsertChart('chart-withdraw', wLabels, [
-          { label:'Portfolio Balance', data:wBalance, borderColor:'#c79a4b', backgroundColor:'rgba(199,154,75,0.14)', fill:true, tension:0.25, pointRadius:0, borderWidth:2 }
+          { label:'Portfolio Balance', data:wBalance, borderColor:'#c79a4b', backgroundColor:'rgba(199,154,75,0.26)', fill:true, tension:0.25, pointRadius:0, borderWidth:2.5 }
         ]);
       }
       calcGrowth(); calcGoal(); calcWithdraw();
@@ -716,7 +716,7 @@
             <p>These tools are a starting point. On a call, I'll factor in your real accounts, timeline and goals.</p>
             <div class="hero-ctas">
               <a class="pill pill-solid" href="http://insurancebyrattan.ca/" target="_blank" rel="noopener">Get a Live Quote</a>
-              <a class="pill pill-line" href="https://calendly.com/rattan_taggar/45min" target="_blank" rel="noopener">Book a Call</a>
+              <a class="pill pill-line" href="book.html">Book a Call</a>
               <a class="pill pill-line" href="https://wa.me/16477456850?text=Hi%20Rattan%2C%20I%27d%20like%20a%20free%20insurance%20quote." target="_blank" rel="noopener">WhatsApp</a>
             </div>
           </div>
@@ -799,6 +799,13 @@
         btn.setAttribute('aria-expanded','false');
       });
     });
+  })();
+  (function(){
+    var start = new Date(2019, 1, 1);
+    var now = new Date();
+    var years = now.getFullYear() - start.getFullYear();
+    if(now.getMonth() < start.getMonth() || (now.getMonth() === start.getMonth() && now.getDate() < start.getDate())){ years--; }
+    document.querySelectorAll('.yrs-exp').forEach(function(el){ el.textContent = years; });
   })();
 </script>
 
