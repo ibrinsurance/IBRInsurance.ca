@@ -45,16 +45,20 @@
     background:rgba(12,25,23,0.9); backdrop-filter:blur(10px);
     border-bottom:1px solid var(--line-soft); padding-block:16px;
   }
-  .nav-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .nav-row{ display:flex; align-items:center; justify-content:space-between; gap:14px; max-width:1360px; margin-inline:auto; }
   .wordmark{ display:flex; flex-direction:column; line-height:1.2; flex:none; }
   .wordmark .name{ font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:1.12rem; color:var(--ink); white-space:nowrap; }
   .wordmark .role{ font-size:0.64rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-faint); margin-top:3px; white-space:nowrap; }
   @media (max-width:520px){ .wordmark .role{ white-space:normal; } }
 
-  nav.links{ display:none; gap:11px; }
-  nav.links a{ font-size:0.78rem; font-weight:500; color:var(--ink-dim); transition:color .15s ease; padding-block:4px; white-space:nowrap; }
-  nav.links a:hover, nav.links a:focus-visible{ color:var(--accent-2); }
-  nav.links a.active{ color:var(--accent-2); border-bottom:1px solid var(--accent); }
+  nav.links{ display:none; gap:3px; }
+  nav.links a{
+    font-size:0.76rem; font-weight:500; color:var(--ink-dim); white-space:nowrap;
+    padding:8px 10px; border-radius:8px; background:rgba(243,239,225,0.035);
+    transition:background .15s ease, color .15s ease;
+  }
+  nav.links a:hover, nav.links a:focus-visible{ background:rgba(199,154,75,0.13); color:var(--accent-2); }
+  nav.links a.active{ background:rgba(199,154,75,0.15); color:var(--accent-2); }
   @media (min-width:1440px){ nav.links{ display:flex; } }
 
   .nav-cta{ display:none; align-items:center; gap:10px; }
@@ -326,7 +330,6 @@
   <div class="wrap nav-row">
     <a class="wordmark" href="index.html">
       <span class="name">Rattan Amol Taggar</span>
-      <span class="role">Wealth &amp; Legacy Advisor</span>
     </a>
     <nav class="links">
       <a href="index.html">Home</a>
@@ -500,10 +503,23 @@
             <div class="field-note">What you paid &mdash; used to work out the capital gain. Cost base doesn't grow.</div>
           </div>
           <div class="field">
-            <div class="field-label">Real Estate &amp; Other Assets (Today) <span class="field-val" id="det-other-val">$400,000</span></div>
-            <div class="field-wrap"><span class="field-prefix">$</span><input class="field-input has-prefix" id="det-other" type="number" value="400000" min="0" oninput="document.getElementById('det-other-r').value=this.value;calcDetailed()"></div>
-            <input class="field-range" id="det-other-r" type="range" min="0" max="3000000" step="10000" value="400000" oninput="document.getElementById('det-other').value=this.value;calcDetailed()">
-            <div class="field-subrate"><label for="det-other-growth">Growth / yr</label><input class="field-input" id="det-other-growth" type="number" value="3" min="0" max="15" step="0.5" oninput="calcDetailed()"><span>%</span></div>
+            <div class="field-label">Principal Residence (Today) <span class="field-val" id="det-home-val">$400,000</span></div>
+            <div class="field-wrap"><span class="field-prefix">$</span><input class="field-input has-prefix" id="det-home" type="number" value="400000" min="0" oninput="document.getElementById('det-home-r').value=this.value;calcDetailed()"></div>
+            <input class="field-range" id="det-home-r" type="range" min="0" max="3000000" step="10000" value="400000" oninput="document.getElementById('det-home').value=this.value;calcDetailed()">
+            <div class="field-subrate"><label for="det-home-growth">Growth / yr</label><input class="field-input" id="det-home-growth" type="number" value="3" min="0" max="15" step="0.5" oninput="calcDetailed()"><span>%</span></div>
+            <div class="field-note">Your home &mdash; exempt from capital gains tax under the principal residence exemption.</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Investment Property &amp; Other Assets (Today) <span class="field-val" id="det-invprop-val">$0</span></div>
+            <div class="field-wrap"><span class="field-prefix">$</span><input class="field-input has-prefix" id="det-invprop" type="number" value="0" min="0" oninput="document.getElementById('det-invprop-r').value=this.value;calcDetailed()"></div>
+            <input class="field-range" id="det-invprop-r" type="range" min="0" max="3000000" step="10000" value="0" oninput="document.getElementById('det-invprop').value=this.value;calcDetailed()">
+            <div class="field-subrate"><label for="det-invprop-growth">Growth / yr</label><input class="field-input" id="det-invprop-growth" type="number" value="3" min="0" max="15" step="0.5" oninput="calcDetailed()"><span>%</span></div>
+          </div>
+          <div class="field">
+            <div class="field-label">Investment Property Cost Base (ACB) <span class="field-val" id="det-invprop-acb-val">$0</span></div>
+            <div class="field-wrap"><span class="field-prefix">$</span><input class="field-input has-prefix" id="det-invprop-acb" type="number" value="0" min="0" oninput="document.getElementById('det-invprop-acb-r').value=this.value;calcDetailed()"></div>
+            <input class="field-range" id="det-invprop-acb-r" type="range" min="0" max="3000000" step="10000" value="0" oninput="document.getElementById('det-invprop-acb').value=this.value;calcDetailed()">
+            <div class="field-note">Rental property, cottage or land you paid for &mdash; taxed as a capital gain on growth above this amount.</div>
           </div>
           <div class="field">
             <div class="field-label">Debts &amp; Final Expenses <span class="field-val" id="det-debts-val">$50,000</span></div>
@@ -559,7 +575,7 @@
           </div>
         </div>
       </div>
-      <div class="calc-disclaimer">This estimate projects today's balances forward using the growth rates you enter, then applies simplified, illustrative provincial probate rates. It does not account for the principal residence exemption, trusts, incorporated business structures or your complete financial picture. It is not tax or legal advice &mdash; treat it as a starting point for our conversation, not a final number.</div>
+      <div class="calc-disclaimer">This estimate projects today's balances forward using the growth rates you enter, then applies simplified, illustrative provincial probate rates. It treats your principal residence as fully exempt from capital gains tax and applies capital gains tax to investment property and non-registered investments above their cost base. It does not account for trusts, incorporated business structures, multiple properties, or your complete financial picture. It is not tax or legal advice &mdash; treat it as a starting point for our conversation, not a final number.</div>
     </div>
     <script>
       var PROVINCE_RATES = {
@@ -584,8 +600,11 @@
         var nrValToday = parseFloat(document.getElementById('det-nrval').value)||0;
         var nrGrowth = parseFloat(document.getElementById('det-nrval-growth').value)||0;
         var nrAcb = parseFloat(document.getElementById('det-nracb').value)||0;
-        var otherToday = parseFloat(document.getElementById('det-other').value)||0;
-        var otherGrowth = parseFloat(document.getElementById('det-other-growth').value)||0;
+        var homeToday = parseFloat(document.getElementById('det-home').value)||0;
+        var homeGrowth = parseFloat(document.getElementById('det-home-growth').value)||0;
+        var invPropToday = parseFloat(document.getElementById('det-invprop').value)||0;
+        var invPropGrowth = parseFloat(document.getElementById('det-invprop-growth').value)||0;
+        var invPropAcb = parseFloat(document.getElementById('det-invprop-acb').value)||0;
         var debts = parseFloat(document.getElementById('det-debts').value)||0;
         var pct = parseFloat(document.getElementById('det-pct').value)||0;
         var rate = parseFloat(document.getElementById('det-rate').value)||0;
@@ -594,14 +613,16 @@
         var rrsp = rrspToday*Math.pow(1+rrspGrowth/100, years);
         var tfsa = tfsaToday*Math.pow(1+tfsaGrowth/100, years);
         var nrVal = nrValToday*Math.pow(1+nrGrowth/100, years);
-        var other = otherToday*Math.pow(1+otherGrowth/100, years);
+        var home = homeToday*Math.pow(1+homeGrowth/100, years);
+        var invProp = invPropToday*Math.pow(1+invPropGrowth/100, years);
 
         var rrspTax = rollover ? 0 : rrsp*(rate/100);
-        var gain = Math.max(0, nrVal-nrAcb);
-        var capGainsTax = rollover ? 0 : gain*0.5*(rate/100);
+        var nrGain = Math.max(0, nrVal-nrAcb);
+        var invPropGain = Math.max(0, invProp-invPropAcb);
+        var capGainsTax = rollover ? 0 : (nrGain+invPropGain)*0.5*(rate/100);
         var incomeTax = rrspTax+capGainsTax;
 
-        var gross = rrsp+tfsa+nrVal+other;
+        var gross = rrsp+tfsa+nrVal+home+invProp;
         var r = PROVINCE_RATES[prov];
         var probateBase = Math.max(0, gross*(1-pct/100)-debts);
         var probate = r.flat + Math.max(0, probateBase-r.exempt)*r.rate;
@@ -617,7 +638,9 @@
         document.getElementById('det-tfsa-val').textContent = fmtD(tfsaToday);
         document.getElementById('det-nrval-val').textContent = fmtD(nrValToday);
         document.getElementById('det-nracb-val').textContent = fmtD(nrAcb);
-        document.getElementById('det-other-val').textContent = fmtD(otherToday);
+        document.getElementById('det-home-val').textContent = fmtD(homeToday);
+        document.getElementById('det-invprop-val').textContent = fmtD(invPropToday);
+        document.getElementById('det-invprop-acb-val').textContent = fmtD(invPropAcb);
         document.getElementById('det-debts-val').textContent = fmtD(debts);
         document.getElementById('det-rate-val').textContent = rate+'%';
         document.getElementById('det-pct-val').textContent = pct+'%';
@@ -685,7 +708,7 @@
     <div class="foot-grid">
       <div class="foot-brand">
         <span class="wordmark"><span class="name">Rattan Amol Taggar</span></span>
-        <p>Personal advice, multiple insurers. IBR Insurance Services Inc. &middot; Windsor, Ontario.</p>
+        <p>Personal advice, multiple insurers. Windsor, Ontario.</p>
       </div>
       <div>
         <h4>Explore</h4>
