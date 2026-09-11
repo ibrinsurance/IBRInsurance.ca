@@ -18,7 +18,9 @@
   }
 
   *{box-sizing:border-box;}
-  html{background:var(--bg);}
+  html{background:var(--bg); scroll-behavior:smooth;}
+  section[id]{ scroll-margin-top:90px; }
+  @media (prefers-reduced-motion:reduce){ html{ scroll-behavior:auto; } }
   body{
     margin:0; background:var(--bg); color:var(--ink);
     font-family:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;
@@ -380,7 +382,7 @@
         <p class="lede">Pick a time that works for you. We'll spend 20&ndash;45 minutes on your actual situation, and you'll leave with a clear next step, whether or not that involves me.</p>
       </div>
       <div class="hero-ctas" style="justify-content:center;">
-        <a class="pill pill-solid" href="https://calendly.com/rattan_taggar/45min" target="_blank" rel="noopener">Pick a Time Below &darr;</a>
+        <a class="pill pill-solid" href="#scheduler">Pick a Time Below &darr;</a>
         <a class="pill pill-line" href="https://wa.me/16477456850?text=Hi%20Rattan%2C%20I%27d%20like%20to%20book%20a%20call." target="_blank" rel="noopener">Message Me On WhatsApp Instead</a>
       </div>
     </div>
