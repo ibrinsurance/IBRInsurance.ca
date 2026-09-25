@@ -2573,20 +2573,68 @@ function _anMonthlyView(D,displayYears,showMonths,MONTHS,YC,f$,curY){
 }
 
 function _anProductsView(D,displayYears,showMonths,YC,f$){
+  // Build both comm and count data per product
   var prodData={};
-  displayYears.forEach(function(y){showMonths.forEach(function(m){var md=D.byYM[y]&&D.byYM[y][m]?D.byYM[y][m].byProd:{};Object.entries(md).forEach(function(e){if(!prodData[e[0]])prodData[e[0]]={total:0,byYear:{}};prodData[e[0]].total+=e[1];prodData[e[0]].byYear[y]=(prodData[e[0]].byYear[y]||0)+e[1];});});});
-  var prods=Object.entries(prodData).sort(function(a,b){return b[1].total-a[1].total;});var maxP=prods.length?prods[0][1].total:1;
-  var html='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px"><div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Commission by product (selected years/months)</div>';
-  prods.forEach(function(e){
-    var pct=Math.round(e[1].total/maxP*100);
-    html+='<div style="margin-bottom:10px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:3px"><span style="font-size:12px;color:var(--text);width:130px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+e[0]+'">'+e[0]+'</span><div style="flex:1;background:var(--bg);border-radius:3px;height:16px;overflow:hidden;position:relative">';
-    var offset=0;displayYears.forEach(function(y){var yv=e[1].byYear[y]||0;var ypct=Math.round(yv/maxP*100);if(ypct>0){html+='<div title="'+y+': '+f$(yv)+'" style="position:absolute;left:'+offset+'%;width:'+ypct+'%;height:100%;background:'+(YC[y]||'#64748b')+';opacity:.85"></div>';offset+=ypct;}});
-    html+='</div><span style="font-size:12px;font-weight:500;color:var(--text);width:72px;text-align:right;flex-shrink:0">'+f$(e[1].total)+'</span></div>';
-    html+='<div style="display:flex;gap:10px;padding-left:138px;flex-wrap:wrap">';
-    displayYears.forEach(function(y){var yv=e[1].byYear[y]||0;if(!yv)return;html+='<span style="font-size:10px;color:'+(YC[y]||'#64748b')+'">'+y+': '+f$(yv)+'</span>';});
-    html+='</div></div>';
+  displayYears.forEach(function(y){
+    showMonths.forEach(function(m){
+      var md=D.byYM[y]&&D.byYM[y][m]?D.byYM[y][m].byProd:{};
+      var mc=D.byYM[y]&&D.byYM[y][m]?D.byYM[y][m].byProdCount:{};
+      Object.keys(md).forEach(function(p){
+        if(!prodData[p])prodData[p]={totalComm:0,totalCount:0,byYear:{}};
+        prodData[p].totalComm+=md[p]||0;
+        prodData[p].totalCount+=(mc&&mc[p])||0;
+        if(!prodData[p].byYear[y])prodData[p].byYear[y]={comm:0,count:0};
+        prodData[p].byYear[y].comm+=(md[p]||0);
+        prodData[p].byYear[y].count+=(mc&&mc[p])||0;
+      });
+    });
   });
-  html+='</div>';return html;
+
+  var viewMode=window._prodViewMode||'comm';
+  var prods=Object.entries(prodData).sort(function(a,b){
+    return viewMode==='comm'?b[1].totalComm-a[1].totalComm:b[1].totalCount-a[1].totalCount;
+  });
+  var maxVal=prods.length>0?(viewMode==='comm'?prods[0][1].totalComm:prods[0][1].totalCount):1;
+
+  var html='';
+  html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px">';
+  html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">';
+  html+='<div>';
+  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">By product</div>';
+  html+='<div style="font-size:10px;color:var(--text3);margin-top:1px">'+prods.length+' products &middot; '+displayYears.join(', ')+'</div>';
+  html+='</div>';
+  // Toggle buttons
+  html+='<div style="display:flex;gap:6px">';
+  html+='<button onclick="_setProdView(&apos;comm&apos;)" style="font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);cursor:pointer;background:'+(viewMode==="comm"?'var(--accent)':'var(--surface)')+';color:'+(viewMode==="comm"?'#fff':'var(--text2)')+'">\$ Commission</button>';
+  html+='<button onclick="_setProdView(&apos;count&apos;)" style="font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);cursor:pointer;background:'+(viewMode==="count"?'var(--accent)':'var(--surface)')+';color:'+(viewMode==="count"?'#fff':'var(--text2)')+'">&#35; Policies</button>';
+  html+='</div>';
+  html+='</div>';
+
+  prods.forEach(function(e){
+    var p=e[0],d=e[1];
+    var val=viewMode==='comm'?d.totalComm:d.totalCount;
+    var pct=maxVal>0?Math.round(val/maxVal*100):0;
+    html+='<div style="margin-bottom:12px">';
+    html+='<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">';
+    html+='<span style="font-weight:500">'+p+'</span>';
+    html+='<span style="font-weight:600;color:var(--accent)">'+(viewMode==='comm'?f$(val):val+' policies')+'</span>';
+    html+='</div>';
+    // Bar
+    html+='<div style="background:var(--bg);border-radius:4px;height:8px;overflow:hidden;margin-bottom:4px">';
+    html+='<div style="width:'+pct+'%;height:100%;background:var(--accent);border-radius:4px;transition:width .3s"></div>';
+    html+='</div>';
+    // Year breakdown
+    html+='<div style="display:flex;gap:8px;flex-wrap:wrap">';
+    displayYears.forEach(function(y){
+      var yd=d.byYear[y];if(!yd)return;
+      var yv=viewMode==='comm'?yd.comm:yd.count;if(!yv)return;
+      html+='<span style="font-size:10px;color:var(--text3);background:var(--bg);padding:1px 6px;border-radius:10px">'+y+': '+(viewMode==='comm'?f$(yv):yv)+'</span>';
+    });
+    html+='</div>';
+    html+='</div>';
+  });
+  html+='</div>';
+  return html;
 }
 
 function _anSourcesView(D,f$){
@@ -3774,6 +3822,8 @@ function cloneSale(id){
   },100);
 }
 
+
+function _setProdView(m){window._prodViewMode=m;renderAnalytics();}
 </script>
 
 
