@@ -2538,7 +2538,7 @@ function renderAnalytics(){
       var cfg2=window._pendingProdViewChart;
       var el2=document.getElementById(cfg2.id);
       if(el2&&typeof Chart!=='undefined'){
-        try{new Chart(el2.getContext('2d'),{type:'bar',data:{labels:cfg2.labels,datasets:cfg2.datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:11},boxWidth:12,padding:16}},tooltip:{callbacks:{label:function(ctx){return ctx.dataset.label+': '+(cfg2.mode==='comm'?'$'+Math.round(ctx.parsed.y).toLocaleString():ctx.parsed.y+' policies');}}}},scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{callback:function(v){return cfg2.mode==='comm'?(v>=1000?'$'+(v/1000).toFixed(0)+'K':'$'+v):v;},font:{size:10}},grid:{color:'rgba(0,0,0,.04)'}}}}});}catch(e){}
+        try{new Chart(el2.getContext('2d'),{type:'bar',data:{labels:cfg2.labels,datasets:cfg2.datasets},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:11},boxWidth:12,padding:16}},tooltip:{callbacks:{label:function(ctx){return ctx.dataset.label+': '+(cfg2.mode==='comm'?'$'+Math.round(ctx.parsed.x).toLocaleString():ctx.parsed.x+' policies');}}}},scales:{y:{ticks:{font:{size:11}},grid:{display:false}},x:{ticks:{callback:function(v){return cfg2.mode==='comm'?(v>=1000?'$'+(v/1000).toFixed(0)+'K':'$'+v):v;},font:{size:10}},grid:{color:'rgba(0,0,0,.04)'}}}}});}catch(e){}
       }
       window._pendingProdViewChart=null;
     }
@@ -2595,8 +2595,11 @@ function _anMonthlyView(D,displayYears,showMonths,MONTHS,YC,f$,curY){
 
 function _anProductsView(D,displayYears,showMonths,YC,f$){
   var viewMode=window._prodViewMode||'comm';
+  var palette=['#1a6b3a','#185FA5','#c9963a','#7c3aed','#dc2626','#0891b2'];
+  var yearColors={};
+  displayYears.forEach(function(y,i){yearColors[y]=palette[i%palette.length];});
 
-  // Build data: prodData[product][year] = {comm, count}
+  // Build data per product per year
   var prodData={};
   displayYears.forEach(function(y){
     showMonths.forEach(function(m){
@@ -2611,58 +2614,47 @@ function _anProductsView(D,displayYears,showMonths,YC,f$){
     });
   });
 
-  // Sort products by total of selected metric descending
+  // Sort by total descending
   var prods=Object.keys(prodData).filter(Boolean).sort(function(a,b){
     var ta=displayYears.reduce(function(s,y){return s+(prodData[a][y]?(viewMode==='comm'?prodData[a][y].comm:prodData[a][y].count):0);},0);
     var tb=displayYears.reduce(function(s,y){return s+(prodData[b][y]?(viewMode==='comm'?prodData[b][y].comm:prodData[b][y].count):0);},0);
     return tb-ta;
   });
 
-  // Year colours — cycle through a palette
-  var palette=['#1a6b3a','#185FA5','#c9963a','#7c3aed','#dc2626','#0891b2','#65a30d','#db2777'];
-  var yearColors={};
-  displayYears.forEach(function(y,i){yearColors[y]=palette[i%palette.length];});
-
-  // Build datasets (one per year)
+  // One dataset per year
   var datasets=displayYears.map(function(y){
     return {
       label:String(y),
       data:prods.map(function(p){return prodData[p][y]?(viewMode==='comm'?Math.round(prodData[p][y].comm):prodData[p][y].count):0;}),
       backgroundColor:yearColors[y],
       borderRadius:3,
-      barPercentage:.85,
-      categoryPercentage:.7
+      barPercentage:.8,
+      categoryPercentage:.75
     };
   });
 
-  var chartHeight=Math.max(260, prods.length*36+60);
-  var chartId='prodViewChart_'+viewMode+'_'+displayYears.join('_')+'_'+showMonths.join('');
+  // Height: enough rows for each product × years
+  var chartHeight=Math.max(220, prods.length*(displayYears.length*18+10)+60);
+  var chartId='prodViewChart_'+viewMode+'_'+displayYears.join('_');
 
   var html='';
   html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px">';
-  // Header + toggle
   html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">';
   html+='<div>';
   html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">By product — '+(viewMode==='comm'?'Commission $':'Policies sold')+'</div>';
   html+='<div style="font-size:10px;color:var(--text3);margin-top:1px">'+prods.length+' products &middot; '+displayYears.join(', ')+'</div>';
   html+='</div>';
   html+='<div style="display:flex;gap:6px">';
-  html+='<button onclick="_setProdView(&apos;comm&apos;)" style="font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);cursor:pointer;font-family:inherit;background:'+(viewMode==='comm'?'var(--accent)':'var(--surface)')+';color:'+(viewMode==='comm'?'#fff':'var(--text2)')+'">\$ Commission</button>';
+  html+='<button onclick="_setProdView(&apos;comm&apos;)" style="font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);cursor:pointer;font-family:inherit;background:'+(viewMode==='comm'?'var(--accent)':'var(--surface)')+';color:'+(viewMode==='comm'?'#fff':'var(--text2)')+'">$ Commission</button>';
   html+='<button onclick="_setProdView(&apos;count&apos;)" style="font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);cursor:pointer;font-family:inherit;background:'+(viewMode==='count'?'var(--accent)':'var(--surface)')+';color:'+(viewMode==='count'?'#fff':'var(--text2)')+'">&#35; Policies</button>';
   html+='</div>';
   html+='</div>';
-  // Chart canvas
   html+='<div style="position:relative;height:'+chartHeight+'px"><canvas id="'+chartId+'"></canvas></div>';
   html+='</div>';
 
-  // Register chart for drawing after innerHTML
   window._pendingProdViewChart={
-    id:chartId,
-    labels:prods,
-    datasets:datasets,
-    mode:viewMode
+    id:chartId,labels:prods,datasets:datasets,mode:viewMode
   };
-
   return html;
 }
 
