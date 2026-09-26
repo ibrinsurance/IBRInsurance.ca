@@ -1675,7 +1675,7 @@ function _anReferralView(D,f$){
   // Parse referral sources from the src field
   var refData={};
   clients.forEach(function(c){
-    var src=(c.src||'Unknown').trim();
+    var src=_normSrc(c.src);
     var cm_str=(c.cm||'').toString().replace(/[$,\s]/g,'').replace(/[^0-9.-]/g,'');
     var comm=parseFloat(cm_str)||0;
     var d=new Date(c.ds);
@@ -1698,6 +1698,9 @@ function _anReferralView(D,f$){
   var html='';
 
   // Hero stats
+  html+='<div style="display:flex;justify-content:flex-end;margin-bottom:8px">';
+  html+='<button onclick="_toggleSrcGroup()" style="font-size:11px;padding:4px 12px;border-radius:20px;border:1px solid var(--border);cursor:pointer;font-family:inherit;background:var(--surface);color:var(--text2)">'+(window._srcGroupRef?'&#128204; References: grouped &mdash; click to split':'&#128204; References: split &mdash; click to group')+'</button>';
+  html+='</div>';
   html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">';
   html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px"><div style="font-size:20px;font-weight:700">'+Object.keys(refData).length+'</div><div style="font-size:11px;color:var(--text3)">Unique referral sources</div></div>';
   html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px"><div style="font-size:20px;font-weight:700;color:var(--accent)">'+f$(topByLTV[0]?topByLTV[0][1].avgLTV:0)+'</div><div style="font-size:11px;color:var(--text3)">Best avg LTV source: '+(topByLTV[0]?topByLTV[0][0]:'')+'</div></div>';
@@ -2437,6 +2440,16 @@ function _buildAnalyticsData(){
   return data;
 }
 
+
+// Source normalisation — groups "Reference - xxx" → "Reference" when toggled
+window._srcGroupRef = window._srcGroupRef !== false; // default: grouped
+function _normSrc(raw){
+  var s=(raw||'Unknown').trim();
+  if(window._srcGroupRef && /^reference/i.test(s)) return 'Reference';
+  return s||'Unknown';
+}
+function _toggleSrcGroup(){window._srcGroupRef=!window._srcGroupRef;renderAnalytics();}
+
 function renderAnalytics(){
   var el=document.getElementById('list');
   if(!sheetConnected||clients.length===0){el.innerHTML='<div class="empty">Sign in and wait for data to load first</div>';return;}
@@ -2660,13 +2673,18 @@ function _anProductsView(D,displayYears,showMonths,YC,f$){
 
 function _anSourcesView(D,f$){
   var srcData={};
-  clients.forEach(function(c){var src=(c.src||'Unknown').trim()||'Unknown';var pr=(c.pr||'').trim()||'Unknown';var comm=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;if(!srcData[src])srcData[src]={comm:0,count:0,byProduct:{},clients:new Set()};srcData[src].comm+=comm;srcData[src].count++;srcData[src].clients.add(c.cn);if(!srcData[src].byProduct[pr])srcData[src].byProduct[pr]={comm:0,count:0};srcData[src].byProduct[pr].comm+=comm;srcData[src].byProduct[pr].count++;});
+  clients.forEach(function(c){var src=_normSrc(c.src);var pr=(c.pr||'').trim()||'Unknown';var comm=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;if(!srcData[src])srcData[src]={comm:0,count:0,byProduct:{},clients:new Set()};srcData[src].comm+=comm;srcData[src].count++;srcData[src].clients.add(c.cn);if(!srcData[src].byProduct[pr])srcData[src].byProduct[pr]={comm:0,count:0};srcData[src].byProduct[pr].comm+=comm;srcData[src].byProduct[pr].count++;});
   Object.values(srcData).forEach(function(s){s.uniqueClients=s.clients.size;delete s.clients;});
   var sorted=Object.entries(srcData).sort(function(a,b){return b[1].comm-a[1].comm;});var maxC=sorted.length?sorted[0][1].comm:1;
   var html='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px"><div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Commission by lead source (click to expand)</div>';
   sorted.forEach(function(entry,i){
     var src=entry[0];var d=entry[1];var pct=Math.round(d.comm/maxC*100);var expKey='src'+i;var expanded=_anExpHH[expKey];
-    html+='<div style="border-bottom:1px solid var(--border);padding:10px 0"><div data-hhk="'+expKey+'" onclick="_anClickHH(this)" style="cursor:pointer"><div style="display:flex;align-items:center;gap:10px;margin-bottom:5px"><span style="font-size:13px;font-weight:600;color:var(--text);flex:1">'+src+'</span><span style="font-size:11px;color:var(--text3)">'+d.count+' policies &middot; '+d.uniqueClients+' clients &middot; avg '+f$(d.count>0?d.comm/d.count:0)+'</span><span style="font-size:14px;font-weight:700;color:var(--accent)">'+f$(d.comm)+'</span><span style="color:var(--text3)">'+(expanded?'\u25be':'\u25b8')+'</span></div>';
+    var html='';
+  // Reference grouping toggle
+  html+='<div style="display:flex;justify-content:flex-end;margin-bottom:10px">';
+  html+='<button onclick="_toggleSrcGroup()" style="font-size:11px;padding:4px 12px;border-radius:20px;border:1px solid var(--border);cursor:pointer;font-family:inherit;background:var(--surface);color:var(--text2)">'+(window._srcGroupRef?'&#128204; References: grouped &mdash; click to split':'&#128204; References: split &mdash; click to group')+'</button>';
+  html+='</div>';
+  html+='<div style="border-bottom:1px solid var(--border);padding:10px 0"><div data-hhk="'+expKey+'" onclick="_anClickHH(this)" style="cursor:pointer"><div style="display:flex;align-items:center;gap:10px;margin-bottom:5px"><span style="font-size:13px;font-weight:600;color:var(--text);flex:1">'+src+'</span><span style="font-size:11px;color:var(--text3)">'+d.count+' policies &middot; '+d.uniqueClients+' clients &middot; avg '+f$(d.count>0?d.comm/d.count:0)+'</span><span style="font-size:14px;font-weight:700;color:var(--accent)">'+f$(d.comm)+'</span><span style="color:var(--text3)">'+(expanded?'\u25be':'\u25b8')+'</span></div>';
     html+='<div style="background:var(--bg);border-radius:3px;height:6px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:var(--accent);border-radius:3px"></div></div></div>';
     if(expanded){var prodEntries=Object.entries(d.byProduct).sort(function(a,b){return b[1].comm-a[1].comm;});var maxProd=prodEntries.length?prodEntries[0][1].comm:1;html+='<div style="padding:10px 0 4px 12px;border-top:1px solid var(--border);margin-top:6px;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:5px">';prodEntries.forEach(function(pe){var ppct=Math.round(pe[1].comm/maxProd*100);html+='<div style="background:var(--bg);border-radius:5px;padding:7px 8px"><div style="font-size:11px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:3px" title="'+pe[0]+'">'+pe[0]+'</div><div style="background:var(--surface);border-radius:2px;height:4px;overflow:hidden;margin-bottom:3px"><div style="width:'+ppct+'%;height:100%;background:var(--blue);border-radius:2px"></div></div><div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3)"><span>'+pe[1].count+'</span><span style="color:var(--text);font-weight:500">'+f$(pe[1].comm)+'</span></div></div>';});html+='</div>';}
     html+='</div>';
