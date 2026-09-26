@@ -2533,6 +2533,27 @@ function renderAnalytics(){
       }
     });
     window._pendingProdCharts=[];
+    // Draw by-product grouped bar chart
+    if(window._pendingProdViewChart){
+      var cfg2=window._pendingProdViewChart;
+      var el2=document.getElementById(cfg2.id);
+      if(el2&&typeof Chart!=='undefined'){
+        try{new Chart(el2.getContext('2d'),{type:'bar',data:{labels:cfg2.labels,datasets:cfg2.datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:11},boxWidth:12,padding:16}},tooltip:{callbacks:{label:function(ctx){return ctx.dataset.label+': '+(cfg2.mode==='comm'?'$'+Math.round(ctx.parsed.y).toLocaleString():ctx.parsed.y+' policies');}}}},scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{callback:function(v){return cfg2.mode==='comm'?(v>=1000?'$'+(v/1000).toFixed(0)+'K':'$'+v):v;},font:{size:10}},grid:{color:'rgba(0,0,0,.04)'}}}}});}catch(e){}
+      }
+      window._pendingProdViewChart=null;
+    }
+    // Velocity chart
+    if(window._pendingVelChart){
+      var vc=window._pendingVelChart;
+      var ve=document.getElementById(vc.id);
+      if(ve&&typeof Chart!=='undefined'){
+        var isComm=vc.mode==='comm';
+        var vdata=isComm?vc.comms:vc.counts;
+        var vcolors=vdata.map(function(v,i){return i===vdata.length-1?'#f59e0b':'#1a6b3a';});
+        try{new Chart(ve.getContext('2d'),{type:'bar',data:{labels:vc.labels,datasets:[{label:isComm?'Commission':'Policies sold',data:vdata,backgroundColor:vcolors,borderRadius:4,barPercentage:.7}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return isComm?'$'+Math.round(ctx.parsed.y).toLocaleString():ctx.parsed.y+' policies';}}}},scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{callback:function(v){return isComm?(v>=1000?'$'+(v/1000).toFixed(0)+'K':'$'+v):v;},font:{size:10}},grid:{color:'rgba(0,0,0,.04)'}}}}});}catch(e){}
+      }
+      window._pendingVelChart=null;
+    }
   },100);
 }
 
@@ -2573,67 +2594,75 @@ function _anMonthlyView(D,displayYears,showMonths,MONTHS,YC,f$,curY){
 }
 
 function _anProductsView(D,displayYears,showMonths,YC,f$){
-  // Build both comm and count data per product
+  var viewMode=window._prodViewMode||'comm';
+
+  // Build data: prodData[product][year] = {comm, count}
   var prodData={};
   displayYears.forEach(function(y){
     showMonths.forEach(function(m){
       var md=D.byYM[y]&&D.byYM[y][m]?D.byYM[y][m].byProd:{};
       var mc=D.byYM[y]&&D.byYM[y][m]?D.byYM[y][m].byProdCount:{};
       Object.keys(md).forEach(function(p){
-        if(!prodData[p])prodData[p]={totalComm:0,totalCount:0,byYear:{}};
-        prodData[p].totalComm+=md[p]||0;
-        prodData[p].totalCount+=(mc&&mc[p])||0;
-        if(!prodData[p].byYear[y])prodData[p].byYear[y]={comm:0,count:0};
-        prodData[p].byYear[y].comm+=(md[p]||0);
-        prodData[p].byYear[y].count+=(mc&&mc[p])||0;
+        if(!prodData[p])prodData[p]={};
+        if(!prodData[p][y])prodData[p][y]={comm:0,count:0};
+        prodData[p][y].comm+=(md[p]||0);
+        prodData[p][y].count+=(mc&&mc[p])||0;
       });
     });
   });
 
-  var viewMode=window._prodViewMode||'comm';
-  var prods=Object.entries(prodData).sort(function(a,b){
-    return viewMode==='comm'?b[1].totalComm-a[1].totalComm:b[1].totalCount-a[1].totalCount;
+  // Sort products by total of selected metric descending
+  var prods=Object.keys(prodData).filter(Boolean).sort(function(a,b){
+    var ta=displayYears.reduce(function(s,y){return s+(prodData[a][y]?(viewMode==='comm'?prodData[a][y].comm:prodData[a][y].count):0);},0);
+    var tb=displayYears.reduce(function(s,y){return s+(prodData[b][y]?(viewMode==='comm'?prodData[b][y].comm:prodData[b][y].count):0);},0);
+    return tb-ta;
   });
-  var maxVal=prods.length>0?(viewMode==='comm'?prods[0][1].totalComm:prods[0][1].totalCount):1;
+
+  // Year colours — cycle through a palette
+  var palette=['#1a6b3a','#185FA5','#c9963a','#7c3aed','#dc2626','#0891b2','#65a30d','#db2777'];
+  var yearColors={};
+  displayYears.forEach(function(y,i){yearColors[y]=palette[i%palette.length];});
+
+  // Build datasets (one per year)
+  var datasets=displayYears.map(function(y){
+    return {
+      label:String(y),
+      data:prods.map(function(p){return prodData[p][y]?(viewMode==='comm'?Math.round(prodData[p][y].comm):prodData[p][y].count):0;}),
+      backgroundColor:yearColors[y],
+      borderRadius:3,
+      barPercentage:.85,
+      categoryPercentage:.7
+    };
+  });
+
+  var chartHeight=Math.max(260, prods.length*36+60);
+  var chartId='prodViewChart_'+viewMode+'_'+displayYears.join('_')+'_'+showMonths.join('');
 
   var html='';
   html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px">';
+  // Header + toggle
   html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">';
   html+='<div>';
-  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">By product</div>';
+  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">By product — '+(viewMode==='comm'?'Commission $':'Policies sold')+'</div>';
   html+='<div style="font-size:10px;color:var(--text3);margin-top:1px">'+prods.length+' products &middot; '+displayYears.join(', ')+'</div>';
   html+='</div>';
-  // Toggle buttons
   html+='<div style="display:flex;gap:6px">';
-  html+='<button onclick="_setProdView(&apos;comm&apos;)" style="font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);cursor:pointer;background:'+(viewMode==="comm"?'var(--accent)':'var(--surface)')+';color:'+(viewMode==="comm"?'#fff':'var(--text2)')+'">\$ Commission</button>';
-  html+='<button onclick="_setProdView(&apos;count&apos;)" style="font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);cursor:pointer;background:'+(viewMode==="count"?'var(--accent)':'var(--surface)')+';color:'+(viewMode==="count"?'#fff':'var(--text2)')+'">&#35; Policies</button>';
+  html+='<button onclick="_setProdView(&apos;comm&apos;)" style="font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);cursor:pointer;font-family:inherit;background:'+(viewMode==='comm'?'var(--accent)':'var(--surface)')+';color:'+(viewMode==='comm'?'#fff':'var(--text2)')+'">\$ Commission</button>';
+  html+='<button onclick="_setProdView(&apos;count&apos;)" style="font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);cursor:pointer;font-family:inherit;background:'+(viewMode==='count'?'var(--accent)':'var(--surface)')+';color:'+(viewMode==='count'?'#fff':'var(--text2)')+'">&#35; Policies</button>';
   html+='</div>';
+  html+='</div>';
+  // Chart canvas
+  html+='<div style="position:relative;height:'+chartHeight+'px"><canvas id="'+chartId+'"></canvas></div>';
   html+='</div>';
 
-  prods.forEach(function(e){
-    var p=e[0],d=e[1];
-    var val=viewMode==='comm'?d.totalComm:d.totalCount;
-    var pct=maxVal>0?Math.round(val/maxVal*100):0;
-    html+='<div style="margin-bottom:12px">';
-    html+='<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">';
-    html+='<span style="font-weight:500">'+p+'</span>';
-    html+='<span style="font-weight:600;color:var(--accent)">'+(viewMode==='comm'?f$(val):val+' policies')+'</span>';
-    html+='</div>';
-    // Bar
-    html+='<div style="background:var(--bg);border-radius:4px;height:8px;overflow:hidden;margin-bottom:4px">';
-    html+='<div style="width:'+pct+'%;height:100%;background:var(--accent);border-radius:4px;transition:width .3s"></div>';
-    html+='</div>';
-    // Year breakdown
-    html+='<div style="display:flex;gap:8px;flex-wrap:wrap">';
-    displayYears.forEach(function(y){
-      var yd=d.byYear[y];if(!yd)return;
-      var yv=viewMode==='comm'?yd.comm:yd.count;if(!yv)return;
-      html+='<span style="font-size:10px;color:var(--text3);background:var(--bg);padding:1px 6px;border-radius:10px">'+y+': '+(viewMode==='comm'?f$(yv):yv)+'</span>';
-    });
-    html+='</div>';
-    html+='</div>';
-  });
-  html+='</div>';
+  // Register chart for drawing after innerHTML
+  window._pendingProdViewChart={
+    id:chartId,
+    labels:prods,
+    datasets:datasets,
+    mode:viewMode
+  };
+
   return html;
 }
 
@@ -2709,11 +2738,21 @@ function _anPortfolioView(D,MONTHS,f$){
   html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">';
   // Sales velocity chart
   html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px">';
-  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Sales velocity (last 12 months)</div>';
-  var maxVel=Math.max.apply(null,l12.map(function(k){return mkCnt[k]||0;}))||1;
-  html+='<div style="display:flex;gap:3px;align-items:flex-end;height:80px;margin-bottom:4px">';
-  l12.forEach(function(k){if(!k||k==='NaN-NaN'||k.indexOf('-')<0)return;var pts=k.split('-');var mIdx=parseInt(pts[1])-1;var mon=(['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'])[mIdx];if(!mon)return;var v=mkCnt[k]||0;var h2=Math.max(2,Math.round(v/maxVel*80));var isCM=(parseInt(pts[0])===curY2&&parseInt(pts[1])===tod2.getMonth()+1);html+='<div style="display:flex;flex-direction:column;align-items:center;flex:1"><div title="'+mon+' '+pts[0]+': '+v+' policies" style="width:100%;background:'+(isCM?'var(--accent)':'var(--blue)')+';border-radius:2px 2px 0 0;height:'+h2+'px"></div><div style="font-size:8px;color:var(--text3);margin-top:2px">'+mon.charAt(0)+'</div></div>';});
-  html+='</div></div>';
+  // Build velocity chart data
+  var velLabels=[],velCounts=[],velComms=[];
+  var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  // Also track commission per month
+  var mkComm={};
+  clients.forEach(function(c){if(!c.ds)return;var _dp=c.ds.toString().split('-');var y=parseInt(_dp[0]);var m=parseInt(_dp[1]);if(y<2022)return;var k=y+'-'+String(m).padStart(2,'0');var cm=parseFloat((c.cm||'').toString().replace(/[^0-9.-]/g,''))||0;mkComm[k]=(mkComm[k]||0)+cm;});
+  l12.forEach(function(k){if(!k||k.indexOf('-')<0)return;var pts=k.split('-');var mIdx=parseInt(pts[1])-1;var mon=MONTHS[mIdx];if(!mon)return;velLabels.push(mon+' '+pts[0].slice(2));velCounts.push(mkCnt[k]||0);velComms.push(Math.round(mkComm[k]||0));});
+  html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Sales velocity — last 12 months</div>';
+  html+='<div style="display:flex;gap:6px;margin-bottom:10px">';
+  html+='<button onclick="window._velMode=\'count\';renderAnalytics()" style="font-size:10px;padding:3px 10px;border-radius:20px;border:1px solid var(--border);cursor:pointer;font-family:inherit;background:'+(( window._velMode||'count')==='count'?'var(--accent)':'var(--surface)')+';color:'+((window._velMode||'count')==='count'?'#fff':'var(--text2)')+'">&#35; Policies</button>';
+  html+='<button onclick="window._velMode=\'comm\';renderAnalytics()" style="font-size:10px;padding:3px 10px;border-radius:20px;border:1px solid var(--border);cursor:pointer;font-family:inherit;background:'+(( window._velMode||'count')==='comm'?'var(--accent)':'var(--surface)')+';color:'+((window._velMode||'count')==='comm'?'#fff':'var(--text2)')+'">$ Commission</button>';
+  html+='</div>';
+  var velChartId='velChart_'+l12.join('').replace(/-/g,'');
+  html+='<div style="position:relative;height:200px;margin-bottom:6px"><canvas id="'+velChartId+'"></canvas></div></div>';
+  window._pendingVelChart={id:velChartId,labels:velLabels,counts:velCounts,comms:velComms,mode:window._velMode||'count'};
   // Client loyalty
   html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px">';
   html+='<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Client loyalty distribution</div>';
