@@ -578,6 +578,7 @@
               <div class="result-label" id="retire-gap-label">Your Gap</div>
               <div class="result-val" id="retire-gap">$0</div>
               <div class="result-note" id="retire-gap-note"></div>
+              <div class="result-note" id="retire-altage-note" style="margin-top:6px;"></div>
             </div>
             <div class="result-bars">
               <div class="result-bar-row"><div class="result-bar-name"><span class="dot" style="background:var(--emerald-bright);"></span>Funded</div><div class="result-bar-track"><div class="result-bar-fill" style="background:var(--emerald-bright);" id="retire-bar-fill"></div></div><div class="result-bar-text" id="retire-bar-text">0%</div></div>
@@ -1034,6 +1035,23 @@
         document.getElementById('det-bar-debts-text').textContent = debtsPct+'%';
       }
     
+      function retireProjectedAt(age, retireAge2, portfolio, monthly, rate){
+        var yrs = Math.max(0, retireAge2-age);
+        var m = yrs*12;
+        var ii = rate/100/12;
+        var fvL = portfolio*Math.pow(1+ii, m);
+        var fvM = ii>0 ? monthly*((Math.pow(1+ii,m)-1)/ii) : monthly*m;
+        return fvL+fvM;
+      }
+      function retireNeededAt(age, retireAge2, planAge, spend, inflation, rate2){
+        var yrs = Math.max(0, retireAge2-age);
+        var futureMonthly = spend*Math.pow(1+inflation/100, yrs);
+        var futureAnnual = futureMonthly*12;
+        var payoutYrs = Math.max(1, planAge-retireAge2);
+        var r = rate2/100, g = inflation/100;
+        if(Math.abs(r-g) < 0.0001) return futureAnnual*payoutYrs/(1+r);
+        return futureAnnual*(1-Math.pow((1+g)/(1+r), payoutYrs))/(r-g);
+      }
       function calcRetire(){
         var age = parseFloat(document.getElementById('retire-age').value)||0;
         var retireAge = parseFloat(document.getElementById('retire-retireage').value)||0;
@@ -1087,14 +1105,29 @@
         var gapLabelEl = document.getElementById('retire-gap-label');
         var gapEl = document.getElementById('retire-gap');
         var gapNoteEl = document.getElementById('retire-gap-note');
+        var altAgeEl = document.getElementById('retire-altage-note');
         if(gap>0){
           gapLabelEl.textContent = 'Your Gap';
           gapEl.textContent = fmtD(gap);
           gapNoteEl.textContent = extraNeeded>0 ? ('Close it by investing about '+fmtD(extraNeeded)+'/mo more than you are now.') : 'Keep going — you’re close.';
+
+          var altAge = null;
+          for(var a=retireAge+1; a<planAge; a++){
+            var pA = retireProjectedAt(age, a, portfolio, monthly, rate);
+            var nA = retireNeededAt(age, a, planAge, spend, inflation, rate2);
+            if(pA>=nA){ altAge = a; break; }
+          }
+          if(altAge){
+            altAgeEl.textContent = 'Or, keep investing '+fmtD(monthly)+'/mo as you are now and retire at age '+altAge+' instead of '+retireAge+'.';
+          } else {
+            altAgeEl.textContent = 'Even working until age '+(planAge-1)+' doesn’t fully close this gap at '+fmtD(monthly)+'/mo — worth a call to look at other options.';
+          }
+          altAgeEl.style.display = '';
         } else {
           gapLabelEl.textContent = 'Projected Surplus';
           gapEl.textContent = fmtD(-gap);
           gapNoteEl.textContent = 'You’re projected to be ahead of what you’ll need — nice work.';
+          altAgeEl.style.display = 'none';
         }
 
         document.getElementById('retire-bar-fill').style.width = fundedPct+'%';
