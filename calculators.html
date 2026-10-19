@@ -499,20 +499,92 @@
     <div class="wrap">
       <span class="eyebrow">Free Calculators</span>
       <h1>Model it before you commit to it.</h1>
-      <p class="lede">Four quick tools for the numbers that come up most &mdash; growing an investment, hitting a savings goal, drawing down a portfolio in retirement, and estimating estate tax &amp; probate exposure. For illustration only; not a guarantee of returns.</p>
+      <p class="lede">Five quick tools for the numbers that come up most &mdash; checking whether you're on pace to retire, growing an investment, hitting a savings goal, drawing down a portfolio in retirement, and estimating estate tax &amp; probate exposure. For illustration only; not a guarantee of returns.</p>
     </div>
   </section>
 
   <section id="calc" class="tight">
     <div class="wrap">
       <div class="calc-tabs">
-        <button class="calc-tab active" id="tab-growth" onclick="switchCalcTab('growth')">Investment Growth (SIP)</button>
+        <button class="calc-tab active" id="tab-retire" onclick="switchCalcTab('retire')">Retirement Readiness</button>
+        <button class="calc-tab" id="tab-growth" onclick="switchCalcTab('growth')">Investment Growth (SIP)</button>
         <button class="calc-tab" id="tab-goal" onclick="switchCalcTab('goal')">Goal Planner</button>
         <button class="calc-tab" id="tab-withdraw" onclick="switchCalcTab('withdraw')">Withdrawal (SWP)</button>
         <button class="calc-tab" id="tab-estate" onclick="switchCalcTab('estate')">Estate &amp; Probate</button>
       </div>
 
-      <div class="calc-panel active" id="panel-growth">
+      <div class="calc-panel active" id="panel-retire">
+        <div class="section-head">
+          <h2 style="font-size:1.4rem;">Retirement Readiness Calculator</h2>
+          <p>Move the sliders and see whether your current pace gets you to the retirement you actually want.</p>
+        </div>
+        <div class="calc-grid">
+          <div class="calc-inputs">
+            <div class="field">
+              <div class="field-label">Your Age Today <span class="field-val" id="retire-age-val">30</span></div>
+              <div class="field-wrap"><input class="field-input" id="retire-age" type="number" value="30" min="18" max="75" oninput="document.getElementById('retire-age-r').value=this.value;calcRetire()"></div>
+              <input class="field-range" id="retire-age-r" type="range" min="18" max="75" step="1" value="30" oninput="document.getElementById('retire-age').value=this.value;calcRetire()">
+            </div>
+            <div class="field">
+              <div class="field-label">Age You Want To Retire <span class="field-val" id="retire-retireage-val">65</span></div>
+              <div class="field-wrap"><input class="field-input" id="retire-retireage" type="number" value="65" min="40" max="80" oninput="document.getElementById('retire-retireage-r').value=this.value;calcRetire()"></div>
+              <input class="field-range" id="retire-retireage-r" type="range" min="40" max="80" step="1" value="65" oninput="document.getElementById('retire-retireage').value=this.value;calcRetire()">
+            </div>
+            <div class="field">
+              <div class="field-label">Current Investment Portfolio <span class="field-val" id="retire-portfolio-val">$25,000</span></div>
+              <div class="field-wrap"><span class="field-prefix">$</span><input class="field-input has-prefix" id="retire-portfolio" type="number" value="25000" min="0" oninput="document.getElementById('retire-portfolio-r').value=this.value;calcRetire()"></div>
+              <input class="field-range" id="retire-portfolio-r" type="range" min="0" max="2000000" step="5000" value="25000" oninput="document.getElementById('retire-portfolio').value=this.value;calcRetire()">
+              <div class="field-note">TFSA, RRSP and non-registered investments combined &mdash; not including your home.</div>
+            </div>
+            <div class="field">
+              <div class="field-label">You Invest Per Month <span class="field-val" id="retire-monthly-val">$600</span></div>
+              <div class="field-wrap"><span class="field-prefix">$</span><input class="field-input has-prefix" id="retire-monthly" type="number" value="600" min="0" oninput="document.getElementById('retire-monthly-r').value=this.value;calcRetire()"></div>
+              <input class="field-range" id="retire-monthly-r" type="range" min="0" max="10000" step="50" value="600" oninput="document.getElementById('retire-monthly').value=this.value;calcRetire()">
+            </div>
+            <div class="field">
+              <div class="field-label">Monthly Lifestyle In Retirement <span class="field-val" id="retire-spend-val">$4,500/mo</span></div>
+              <div class="field-wrap"><span class="field-prefix">$</span><input class="field-input has-prefix" id="retire-spend" type="number" value="4500" min="0" oninput="document.getElementById('retire-spend-r').value=this.value;calcRetire()"></div>
+              <input class="field-range" id="retire-spend-r" type="range" min="0" max="15000" step="100" value="4500" oninput="document.getElementById('retire-spend').value=this.value;calcRetire()">
+              <div class="field-note">In today's dollars &mdash; what it costs to live the way you want to live, per month.</div>
+            </div>
+            <div class="field">
+              <div class="field-label">Assumptions</div>
+              <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:6px;">
+                <div class="field-subrate"><label for="retire-rate">Return</label><input class="field-input" id="retire-rate" type="number" value="7" min="0" max="15" step="0.5" oninput="calcRetire()"><span>%/yr</span></div>
+                <div class="field-subrate"><label for="retire-inflation">Inflation</label><input class="field-input" id="retire-inflation" type="number" value="3" min="0" max="8" step="0.25" oninput="calcRetire()"><span>%/yr</span></div>
+                <div class="field-subrate"><label for="retire-wd">Withdraw</label><input class="field-input" id="retire-wd" type="number" value="4" min="2" max="8" step="0.25" oninput="calcRetire()"><span>%/yr</span></div>
+              </div>
+              <div class="field-note">Defaults: 7% average annual return, 3% inflation, and a 4% safe withdrawal rate in retirement &mdash; adjust any of these to match your own plan.</div>
+            </div>
+          </div>
+          <div class="calc-result">
+            <div class="result-eyebrow">Retirement Outlook <span id="retire-years">35 years to grow this</span></div>
+            <div class="result-row">
+              <div class="result-label">You're Projected To Have</div>
+              <div class="result-val" id="retire-projected">$0</div>
+            </div>
+            <div class="result-row">
+              <div class="result-label">You'll Actually Need</div>
+              <div class="result-val accent" id="retire-need">$0</div>
+              <div class="result-note" id="retire-need-note"></div>
+            </div>
+            <div class="result-row">
+              <div class="result-label" id="retire-gap-label">Your Gap</div>
+              <div class="result-val" id="retire-gap">$0</div>
+              <div class="result-note" id="retire-gap-note"></div>
+            </div>
+            <div class="result-bars">
+              <div class="result-bar-row"><div class="result-bar-name"><span class="dot" style="background:var(--emerald-bright);"></span>Funded</div><div class="result-bar-track"><div class="result-bar-fill" style="background:var(--emerald-bright);" id="retire-bar-fill"></div></div><div class="result-bar-text" id="retire-bar-text">0%</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-label">Projected Portfolio vs. What You'll Need</div>
+          <div class="chart-canvas-wrap"><canvas id="chart-retire"></canvas></div>
+        </div>
+      </div>
+
+      <div class="calc-panel" id="panel-growth">
         <div class="section-head">
           <h2 style="font-size:1.4rem;">Investment Growth Calculator (SIP)</h2>
           <p>Combine a lump sum with monthly contributions, or use either on its own &mdash; set the other to $0.</p>
@@ -956,6 +1028,75 @@
         document.getElementById('det-bar-debts-text').textContent = debtsPct+'%';
       }
     
+      function calcRetire(){
+        var age = parseFloat(document.getElementById('retire-age').value)||0;
+        var retireAge = parseFloat(document.getElementById('retire-retireage').value)||0;
+        var portfolio = parseFloat(document.getElementById('retire-portfolio').value)||0;
+        var monthly = parseFloat(document.getElementById('retire-monthly').value)||0;
+        var spend = parseFloat(document.getElementById('retire-spend').value)||0;
+        var rate = parseFloat(document.getElementById('retire-rate').value)||0;
+        var inflation = parseFloat(document.getElementById('retire-inflation').value)||0;
+        var wd = parseFloat(document.getElementById('retire-wd').value)||0;
+        var years = Math.max(0, retireAge-age);
+        var months = years*12;
+        var i = rate/100/12;
+
+        var fvLump = portfolio*Math.pow(1+i, months);
+        var fvMonthly = i>0 ? monthly*((Math.pow(1+i,months)-1)/i) : monthly*months;
+        var projected = fvLump+fvMonthly;
+
+        var futureMonthlySpend = spend*Math.pow(1+inflation/100, years);
+        var futureAnnualSpend = futureMonthlySpend*12;
+        var need = wd>0 ? futureAnnualSpend/(wd/100) : 0;
+
+        var gap = need-projected;
+        var fundedPct = need>0 ? Math.max(0,Math.min(100, projected/need*100)) : 100;
+
+        var remaining = Math.max(0, need-fvLump);
+        var monthlyReq = i>0 ? remaining*i/(Math.pow(1+i,months)-1) : (months>0?remaining/months:0);
+        var extraNeeded = Math.max(0, monthlyReq-monthly);
+
+        document.getElementById('retire-age-val').textContent = age;
+        document.getElementById('retire-retireage-val').textContent = retireAge;
+        document.getElementById('retire-portfolio-val').textContent = fmtD(portfolio);
+        document.getElementById('retire-monthly-val').textContent = fmtD(monthly);
+        document.getElementById('retire-spend-val').textContent = fmtD(spend)+'/mo';
+
+        document.getElementById('retire-years').textContent = '('+years+(years===1?' year':' years')+' to grow this)';
+        document.getElementById('retire-projected').textContent = fmtD(projected);
+        document.getElementById('retire-need').textContent = fmtD(need);
+        document.getElementById('retire-need-note').textContent = 'Covers '+fmtD(futureMonthlySpend)+'/mo at age '+retireAge+' (today’s '+fmtD(spend)+'/mo, inflated '+inflation+'%/yr), using a '+wd+'% withdrawal rate.';
+
+        var gapLabelEl = document.getElementById('retire-gap-label');
+        var gapEl = document.getElementById('retire-gap');
+        var gapNoteEl = document.getElementById('retire-gap-note');
+        if(gap>0){
+          gapLabelEl.textContent = 'Your Gap';
+          gapEl.textContent = fmtD(gap);
+          gapNoteEl.textContent = extraNeeded>0 ? ('Close it by investing about '+fmtD(extraNeeded)+'/mo more than you are now.') : 'Keep going — you’re close.';
+        } else {
+          gapLabelEl.textContent = 'Projected Surplus';
+          gapEl.textContent = fmtD(-gap);
+          gapNoteEl.textContent = 'You’re projected to be ahead of what you’ll need — nice work.';
+        }
+
+        document.getElementById('retire-bar-fill').style.width = fundedPct+'%';
+        document.getElementById('retire-bar-text').textContent = Math.round(fundedPct)+'% Funded';
+
+        var rLabels=[], rProjected=[], rNeed=[];
+        yearPoints(years).forEach(function(y){
+          var m = y*12;
+          var fvL2 = portfolio*Math.pow(1+i, m);
+          var fvM2 = i>0 ? monthly*((Math.pow(1+i,m)-1)/i) : monthly*m;
+          rLabels.push('Yr '+y);
+          rProjected.push(fvL2+fvM2);
+          rNeed.push(need);
+        });
+        upsertChart('chart-retire', rLabels, [
+          { label:'Projected Portfolio', data:rProjected, borderColor:'#c79a4b', backgroundColor:'rgba(199,154,75,0.26)', fill:true, tension:0.3, pointRadius:0, borderWidth:2.5 },
+          { label:'What You’ll Need', data:rNeed, borderColor:'#aebbb3', backgroundColor:'transparent', fill:false, tension:0, pointRadius:0, borderWidth:1.5, borderDash:[5,4] }
+        ]);
+      }
       function calcGrowth(){
         var lump = parseFloat(document.getElementById('growth-lump').value)||0;
         var monthly = parseFloat(document.getElementById('growth-monthly').value)||0;
@@ -1070,7 +1211,7 @@
           { label:'Portfolio Balance', data:wBalance, borderColor:'#c79a4b', backgroundColor:'rgba(199,154,75,0.26)', fill:true, tension:0.25, pointRadius:0, borderWidth:2.5 }
         ]);
       }
-      calcGrowth(); calcGoal(); calcWithdraw(); calcDetailed();
+      calcRetire(); calcGrowth(); calcGoal(); calcWithdraw(); calcDetailed();
       if(location.hash === '#estate'){
         switchCalcTab('estate');
         var estateSection = document.getElementById('calc');
