@@ -556,10 +556,11 @@
             <div class="field">
               <div class="field-label">Assumptions</div>
               <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:6px;">
-                <div class="field-subrate"><label for="retire-rate">Return</label><input class="field-input" id="retire-rate" type="number" value="7" min="0" max="15" step="0.5" oninput="calcRetire()"><span>%/yr</span></div>
+                <div class="field-subrate"><label for="retire-rate">Return (Working Years)</label><input class="field-input" id="retire-rate" type="number" value="7" min="0" max="15" step="0.5" oninput="calcRetire()"><span>%/yr</span></div>
+                <div class="field-subrate"><label for="retire-rate2">Return (Retirement)</label><input class="field-input" id="retire-rate2" type="number" value="4.5" min="0" max="15" step="0.5" oninput="calcRetire()"><span>%/yr</span></div>
                 <div class="field-subrate"><label for="retire-inflation">Inflation</label><input class="field-input" id="retire-inflation" type="number" value="3" min="0" max="8" step="0.25" oninput="calcRetire()"><span>%/yr</span></div>
               </div>
-              <div class="field-note">Defaults: 7% average annual return and 3% inflation &mdash; adjust either to match your own plan.</div>
+              <div class="field-note">Defaults: 7% growth while you're still investing, shifting to a safer 4.5% once you retire (at the age you set above), with 3% inflation throughout &mdash; adjust any of these to match your own plan.</div>
             </div>
           </div>
           <div class="calc-result">
@@ -1041,6 +1042,7 @@
         var monthly = parseFloat(document.getElementById('retire-monthly').value)||0;
         var spend = parseFloat(document.getElementById('retire-spend').value)||0;
         var rate = parseFloat(document.getElementById('retire-rate').value)||0;
+        var rate2 = parseFloat(document.getElementById('retire-rate2').value)||0;
         var inflation = parseFloat(document.getElementById('retire-inflation').value)||0;
         var years = Math.max(0, retireAge-age);
         var months = years*12;
@@ -1054,7 +1056,7 @@
         var futureAnnualSpend = futureMonthlySpend*12;
 
         var payoutYears = Math.max(1, planAge-retireAge);
-        var r = rate/100, g = inflation/100;
+        var r = rate2/100, g = inflation/100;
         var need;
         if(Math.abs(r-g) < 0.0001){
           need = futureAnnualSpend*payoutYears/(1+r);
@@ -1080,7 +1082,7 @@
         document.getElementById('retire-years').textContent = '('+years+(years===1?' year':' years')+' to grow, then income to age '+planAge+')';
         document.getElementById('retire-projected').textContent = fmtD(projected);
         document.getElementById('retire-need').textContent = fmtD(need);
-        document.getElementById('retire-need-note').textContent = 'Covers '+fmtD(futureMonthlySpend)+'/mo starting at age '+retireAge+' (today’s '+fmtD(spend)+'/mo, inflated '+inflation+'%/yr), growing with inflation until age '+planAge+' — about a '+impliedRate.toFixed(1)+'% initial withdrawal rate.';
+        document.getElementById('retire-need-note').textContent = 'Covers '+fmtD(futureMonthlySpend)+'/mo starting at age '+retireAge+' (today’s '+fmtD(spend)+'/mo, inflated '+inflation+'%/yr), growing with inflation until age '+planAge+', assuming a '+rate2+'% return once retired — about a '+impliedRate.toFixed(1)+'% initial withdrawal rate.';
 
         var gapLabelEl = document.getElementById('retire-gap-label');
         var gapEl = document.getElementById('retire-gap');
