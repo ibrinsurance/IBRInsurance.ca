@@ -466,6 +466,7 @@
       <a href="estate.html">Estate Planning</a>
       <a href="calculators.html" class="active">Run Numbers</a>
       <a href="awards.html">See Reviews</a>
+      <a href="blog.html">Blog</a>
       <a href="book.html">Book a Call</a>
       
     </nav>
@@ -485,6 +486,7 @@
     <a href="estate.html">Estate Planning</a>
     <a href="calculators.html">Run Numbers</a>
     <a href="awards.html">See Reviews</a>
+    <a href="blog.html">Blog</a>
     
     <a class="pill pill-solid menu-book" href="book.html">Book a Call</a>
     <div class="menu-ctas">
@@ -557,11 +559,10 @@
               <div class="field-label">Assumptions</div>
               <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:6px;">
                 <div class="field-subrate"><label for="retire-rate">Return (Working Years)</label><input class="field-input" id="retire-rate" type="number" value="7" min="0" max="15" step="0.5" oninput="calcRetire()"><span>%/yr</span></div>
-                <div class="field-subrate"><label for="retire-rate2">Return (Safer Portion)</label><input class="field-input" id="retire-rate2" type="number" value="4.5" min="0" max="15" step="0.5" oninput="calcRetire()"><span>%/yr</span></div>
-                <div class="field-subrate"><label for="retire-growthpct">Still In Growth Assets</label><input class="field-input" id="retire-growthpct" type="number" value="0" min="0" max="100" step="5" oninput="calcRetire()"><span>%</span></div>
+                <div class="field-subrate"><label for="retire-rate2">Return (Retirement)</label><input class="field-input" id="retire-rate2" type="number" value="4.5" min="0" max="15" step="0.5" oninput="calcRetire()"><span>%/yr</span></div>
                 <div class="field-subrate"><label for="retire-inflation">Inflation</label><input class="field-input" id="retire-inflation" type="number" value="3" min="0" max="8" step="0.25" oninput="calcRetire()"><span>%/yr</span></div>
               </div>
-              <div class="field-note" id="retire-assumptions-note">Defaults: 7% growth while you're still investing, shifting entirely to a safer 4.5% once you retire (at the age you set above), with 3% inflation throughout. Want to stay partly invested for growth through retirement too? Raise &ldquo;Still In Growth Assets&rdquo; above 0% &mdash; that share keeps earning the working-years rate, the rest earns the safer rate, blended together.</div>
+              <div class="field-note">Defaults: 7% growth while you're still investing, shifting to a safer 4.5% once you retire (at the age you set above), with 3% inflation throughout &mdash; adjust any of these to match your own plan.</div>
             </div>
           </div>
           <div class="calc-result">
@@ -1062,9 +1063,7 @@
         var spend = parseFloat(document.getElementById('retire-spend').value)||0;
         var rate = parseFloat(document.getElementById('retire-rate').value)||0;
         var rate2 = parseFloat(document.getElementById('retire-rate2').value)||0;
-        var growthPct = parseFloat(document.getElementById('retire-growthpct').value)||0;
         var inflation = parseFloat(document.getElementById('retire-inflation').value)||0;
-        var blendedRate = (growthPct/100)*rate + (1-growthPct/100)*rate2;
         var years = Math.max(0, retireAge-age);
         var months = years*12;
         var i = rate/100/12;
@@ -1077,7 +1076,7 @@
         var futureAnnualSpend = futureMonthlySpend*12;
 
         var payoutYears = Math.max(1, planAge-retireAge);
-        var r = blendedRate/100, g = inflation/100;
+        var r = rate2/100, g = inflation/100;
         var need;
         if(Math.abs(r-g) < 0.0001){
           need = futureAnnualSpend*payoutYears/(1+r);
@@ -1103,8 +1102,7 @@
         document.getElementById('retire-years').textContent = '('+years+(years===1?' year':' years')+' to grow, then income to age '+planAge+')';
         document.getElementById('retire-projected').textContent = fmtD(projected);
         document.getElementById('retire-need').textContent = fmtD(need);
-        var retireRateDesc = growthPct>0 ? (growthPct+'% at '+rate+'% and '+(100-growthPct)+'% at '+rate2+'%, a blended '+blendedRate.toFixed(1)+'%') : (rate2+'%');
-        document.getElementById('retire-need-note').textContent = 'Covers '+fmtD(futureMonthlySpend)+'/mo starting at age '+retireAge+' (today’s '+fmtD(spend)+'/mo, inflated '+inflation+'%/yr), growing with inflation until age '+planAge+', assuming a '+retireRateDesc+' return once retired — about a '+impliedRate.toFixed(1)+'% initial withdrawal rate.';
+        document.getElementById('retire-need-note').textContent = 'Covers '+fmtD(futureMonthlySpend)+'/mo starting at age '+retireAge+' (today’s '+fmtD(spend)+'/mo, inflated '+inflation+'%/yr), growing with inflation until age '+planAge+', assuming a '+rate2+'% return once retired — about a '+impliedRate.toFixed(1)+'% initial withdrawal rate.';
 
         var gapLabelEl = document.getElementById('retire-gap-label');
         var gapEl = document.getElementById('retire-gap');
@@ -1118,7 +1116,7 @@
           var altAge = null;
           for(var a=retireAge+1; a<planAge; a++){
             var pA = retireProjectedAt(age, a, portfolio, monthly, rate);
-            var nA = retireNeededAt(age, a, planAge, spend, inflation, blendedRate);
+            var nA = retireNeededAt(age, a, planAge, spend, inflation, rate2);
             if(pA>=nA){ altAge = a; break; }
           }
           if(altAge){
@@ -1320,6 +1318,7 @@
           <li><a href="investments.html">Investments</a></li>
           <li><a href="estate.html">Estate Planning</a></li>
           <li><a href="calculators.html">Calculators</a></li>
+          <li><a href="blog.html">Blog</a></li>
           <li><a href="awards.html">Awards &amp; Reviews</a></li>
           <li><a href="about.html">About Rattan</a></li>
         </ul>
