@@ -240,7 +240,7 @@
 
   .toc-box{ background:var(--surface-2); border:1px solid var(--line-soft); border-radius:10px; padding:20px 22px; margin-top:28px; }
   .toc-box .toc-label{ font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:12px; }
-  .toc-box ol{ display:flex; flex-direction:column; gap:7px; counter-reset:toc; padding-left:0; }
+  .toc-box ol{ display:flex; flex-direction:column; gap:7px; counter-reset:toc; padding-left:0; list-style:none; margin:0; }
   .toc-box ol li{ counter-increment:toc; font-size:0.9rem; }
   .toc-box ol li a{ color:var(--ink-dim); transition:color .15s ease; }
   .toc-box ol li a:before{ content:counter(toc) '. '; color:var(--accent); font-weight:600; }
@@ -378,6 +378,22 @@
         "@type": "Answer",
         "text": "Offering benefits is a common competitive differentiator for small businesses trying to attract and keep employees, particularly against larger companies that offer benefits as standard \u2014 though the specific impact varies by industry and local labour market."
       }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I adjust cost-sharing so employees pay part of the premium?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes \u2014 many small business plans split premiums between employer and employee (for example, 50\u201380% employer-paid) rather than the business covering the full cost. This is one of the main levers for fitting a group plan to a specific budget."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Should group life and disability be part of my plan?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It's worth including if the budget allows \u2014 group life and AD&D add modest cost, and disability coverage protects both employees and the business against the financial impact of a long absence. Business owners should also check whether they're personally covered by the group plan's disability provisions, since that isn't always automatic."
+      }
     }
   ]
 }
@@ -441,7 +457,7 @@
       <div class="post-meta-row">
         <span>By Rattan Amol Taggar</span><span class="dot"></span>
         <span>Updated Oct 20, 2026</span><span class="dot"></span>
-        <span>9 min read</span>
+        <span>11 min read</span>
       </div>
     </div>
   </section>
@@ -466,6 +482,8 @@
           <li><a href="#cost">What it actually costs</a></li>
           <li><a href="#tax">Tax treatment</a></li>
           <li><a href="#hsa">The Health Spending Account alternative</a></li>
+          <li><a href="#plan-design">Building a plan design that fits your budget</a></li>
+          <li><a href="#life-disability">Don't forget life and disability</a></li>
           <li><a href="#faq">FAQ</a></li>
         </ol>
       </div>
@@ -497,6 +515,22 @@
 
         <h2 id="hsa">The Health Spending Account alternative</h2>
         <p>For a business that's very small, seasonal, has highly variable staffing, or just isn't ready for a full group plan's structure, a <strong>Health Spending Account (HSA)</strong> is worth considering. Instead of a fixed insurance plan, the business sets aside a defined dollar amount per employee (or owner) that can be used to reimburse eligible health and dental expenses &mdash; with the same general tax advantages (deductible for the business, tax-free to the employee) but far more flexibility on cost and what's covered. It's commonly used by incorporated sole proprietors and very small teams as a lower-commitment starting point, sometimes alongside or instead of a traditional group plan.</p>
+
+        <h2 id="plan-design">Building a plan design that fits your budget</h2>
+        <p>A group plan isn't all-or-nothing &mdash; the components, dollar maximums, and cost-sharing structure are all adjustable, which is how two businesses of the same size can end up with very different monthly costs. Common levers include:</p>
+        <ul class="prose-list">
+          <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l6 6L20 6"/></svg></span><span><strong>Cost-sharing with employees:</strong> many small business plans split premiums (for example, employer pays 50&ndash;80%, employee covers the rest), rather than the business covering 100%.</span></li>
+          <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l6 6L20 6"/></svg></span><span><strong>Annual maximums on drugs, dental, and paramedical services</strong> (physio, massage, chiropractic) can be tuned up or down to balance coverage against cost.</span></li>
+          <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l6 6L20 6"/></svg></span><span><strong>Starting with core health and dental only</strong>, then layering in life, disability, or an EAP (Employee Assistance Program) in future years, is a common way to phase in a plan without a large jump in cost at once.</span></li>
+        </ul>
+
+        <div class="inline-cta">
+          <p><strong>Not sure what plan design fits your budget?</strong> We'll model a few options against your actual headcount.</p>
+          <a class="pill pill-solid pill-sm" href="book.html">Book a Call</a>
+        </div>
+
+        <h2 id="life-disability">Don't forget life and disability</h2>
+        <p>Health and dental get most of the attention, but a well-rounded group plan typically also includes a modest amount of group life and AD&amp;D (accidental death &amp; dismemberment) coverage, and ideally short- or long-term disability. Disability coverage matters more than most owners realize &mdash; a disabled employee with no income replacement is both a personal hardship for them and an operational problem for the business. See our guide to <a href="disability-insurance-self-employed.html" style="color:var(--accent-2); text-decoration:underline;">disability insurance for the self-employed</a> for how this applies to owners specifically, who often aren't automatically covered by their own group plan the same way employees are.</p>
       </article>
 
       <section class="post-faq" id="faq">
@@ -523,6 +557,14 @@
         <details class="faq-item">
           <summary>Do group benefits actually help with hiring and retention?<span class="plus">+</span></summary>
           <div class="faq-a">Offering benefits is a common competitive differentiator for small businesses trying to attract and keep employees, particularly against larger companies that offer benefits as standard — though the specific impact varies by industry and local labour market.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Can I adjust cost-sharing so employees pay part of the premium?<span class="plus">+</span></summary>
+          <div class="faq-a">Yes — many small business plans split premiums between employer and employee (for example, 50–80% employer-paid) rather than the business covering the full cost. This is one of the main levers for fitting a group plan to a specific budget.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Should group life and disability be part of my plan?<span class="plus">+</span></summary>
+          <div class="faq-a">It's worth including if the budget allows — group life and AD&D add modest cost, and disability coverage protects both employees and the business against the financial impact of a long absence. Business owners should also check whether they're personally covered by the group plan's disability provisions, since that isn't always automatic.</div>
         </details>
       </section>
 

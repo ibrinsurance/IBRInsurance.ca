@@ -240,7 +240,7 @@
 
   .toc-box{ background:var(--surface-2); border:1px solid var(--line-soft); border-radius:10px; padding:20px 22px; margin-top:28px; }
   .toc-box .toc-label{ font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:12px; }
-  .toc-box ol{ display:flex; flex-direction:column; gap:7px; counter-reset:toc; padding-left:0; }
+  .toc-box ol{ display:flex; flex-direction:column; gap:7px; counter-reset:toc; padding-left:0; list-style:none; margin:0; }
   .toc-box ol li{ counter-increment:toc; font-size:0.9rem; }
   .toc-box ol li a{ color:var(--ink-dim); transition:color .15s ease; }
   .toc-box ol li a:before{ content:counter(toc) '. '; color:var(--accent); font-weight:600; }
@@ -378,6 +378,22 @@
         "@type": "Answer",
         "text": "They cover different risks and aren't substitutes for each other \u2014 life insurance protects against death, while critical illness and disability insurance protect against the far more statistically likely events of serious illness or being unable to work."
       }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my workplace group coverage enough on its own?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Often not entirely. Group critical illness coverage is commonly capped at $10,000\u2013$25,000, well below typical personal policy amounts, and group disability coverage ends the day you leave the job. Group coverage is a solid starting layer, but most people need a personal policy alongside it for full protection."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is return of premium critical illness insurance worth it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It depends on your priorities. Return-of-premium riders refund some or all premiums if you never claim by a set date, but they cost meaningfully more each month than coverage without the rider. It's a deliberate trade-off between guaranteed value back and lower ongoing cost, not a free upgrade."
+      }
     }
   ]
 }
@@ -441,7 +457,7 @@
       <div class="post-meta-row">
         <span>By Rattan Amol Taggar</span><span class="dot"></span>
         <span>Updated Oct 20, 2026</span><span class="dot"></span>
-        <span>9 min read</span>
+        <span>11 min read</span>
       </div>
     </div>
   </section>
@@ -466,6 +482,8 @@
           <li><a href="#real-claims">What the real claims data shows</a></li>
           <li><a href="#disability">How disability insurance works</a></li>
           <li><a href="#together">How the two work together with life insurance</a></li>
+          <li><a href="#group-vs-personal">Group coverage vs. personal coverage</a></li>
+          <li><a href="#return-of-premium">Return of premium: is it worth the extra cost?</a></li>
           <li><a href="#faq">FAQ</a></li>
         </ol>
       </div>
@@ -506,6 +524,24 @@
           <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l6 6L20 6"/></svg></span><span><strong>Critical illness insurance</strong> gives you a lump sum, tax-free, the moment you're diagnosed with a covered condition &mdash; cash flow precisely when treatment costs and reduced capacity to work collide.</span></li>
         </ul>
         <p>Most comprehensive protection plans layer all three, sized to the household's actual debts, dependents, and income &mdash; the same way we approach sizing a <a href="life-insurance-basics.html" style="color:var(--accent-2); text-decoration:underline;">life insurance</a> policy with the DIME method.</p>
+
+        <h2 id="group-vs-personal">Group coverage vs. personal coverage</h2>
+        <p>Many Canadians assume the critical illness and disability coverage in their workplace benefits plan is enough, without ever checking the actual terms. It's worth looking closely, because group coverage usually falls short in ways that aren't obvious until a claim is needed:</p>
+        <ul class="prose-list">
+          <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l6 6L20 6"/></svg></span><span><strong>Group disability coverage ends when you leave the job</strong> &mdash; it isn't portable, so your protection disappears exactly when you might be between employers, self-employed, or on contract.</span></li>
+          <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l6 6L20 6"/></svg></span><span><strong>Group critical illness coverage is often capped low</strong> &mdash; frequently $10,000&ndash;$25,000 &mdash; far below what a personal policy (commonly $50,000&ndash;$100,000+) provides.</span></li>
+          <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l6 6L20 6"/></svg></span><span><strong>Group definitions are set by the employer's plan</strong>, not by you &mdash; a personal policy lets you choose "own occupation" disability wording, which pays out in more situations than a generic group definition.</span></li>
+        </ul>
+        <p>Group coverage is a genuinely good starting layer &mdash; it's just rarely the whole answer on its own, especially for anyone self-employed or running a small business. See our guide to <a href="disability-insurance-self-employed.html" style="color:var(--accent-2); text-decoration:underline;">disability insurance for the self-employed</a> if that's your situation.</p>
+
+        <div class="inline-cta">
+          <p><strong>Not sure what your group plan actually covers?</strong> We can check the fine print with you.</p>
+          <a class="pill pill-solid pill-sm" href="book.html">Book a Call</a>
+        </div>
+
+        <h2 id="return-of-premium">Return of premium: is it worth the extra cost?</h2>
+        <p>Some critical illness policies offer a <strong>return of premium</strong> rider &mdash; if you never make a claim by a set date (often 15, 20, or 25 years, or at a set age), some or all of the premiums you've paid are refunded. It sounds like a free upgrade, but it isn't: return-of-premium policies typically cost significantly more each month than coverage without the rider, since the insurer is pricing in the eventual refund.</p>
+        <p>Whether it's worth it depends on how you think about the trade-off: paying more for the certainty of getting money back either way, versus paying less for coverage alone and investing the difference yourself. There's no universally right answer, but it's a decision worth making deliberately rather than defaulting into the version a quote happens to lead with.</p>
       </article>
 
       <section class="post-faq" id="faq">
@@ -532,6 +568,14 @@
         <details class="faq-item">
           <summary>Do I need both life insurance and critical illness/disability insurance?<span class="plus">+</span></summary>
           <div class="faq-a">They cover different risks and aren't substitutes for each other — life insurance protects against death, while critical illness and disability insurance protect against the far more statistically likely events of serious illness or being unable to work.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Is my workplace group coverage enough on its own?<span class="plus">+</span></summary>
+          <div class="faq-a">Often not entirely. Group critical illness coverage is commonly capped at $10,000–$25,000, well below typical personal policy amounts, and group disability coverage ends the day you leave the job. Group coverage is a solid starting layer, but most people need a personal policy alongside it for full protection.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Is return of premium critical illness insurance worth it?<span class="plus">+</span></summary>
+          <div class="faq-a">It depends on your priorities. Return-of-premium riders refund some or all premiums if you never claim by a set date, but they cost meaningfully more each month than coverage without the rider. It's a deliberate trade-off between guaranteed value back and lower ongoing cost, not a free upgrade.</div>
         </details>
       </section>
 

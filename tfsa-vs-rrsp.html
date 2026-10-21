@@ -240,7 +240,7 @@
 
   .toc-box{ background:var(--surface-2); border:1px solid var(--line-soft); border-radius:10px; padding:20px 22px; margin-top:28px; }
   .toc-box .toc-label{ font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:12px; }
-  .toc-box ol{ display:flex; flex-direction:column; gap:7px; counter-reset:toc; padding-left:0; }
+  .toc-box ol{ display:flex; flex-direction:column; gap:7px; counter-reset:toc; padding-left:0; list-style:none; margin:0; }
   .toc-box ol li{ counter-increment:toc; font-size:0.9rem; }
   .toc-box ol li a{ color:var(--ink-dim); transition:color .15s ease; }
   .toc-box ol li a:before{ content:counter(toc) '. '; color:var(--accent); font-weight:600; }
@@ -378,6 +378,22 @@
         "@type": "Answer",
         "text": "Generally the TFSA first, while income and marginal tax rate are lower, shifting more toward the RRSP as income (and the tax rate on each extra dollar) rises. This is a general tendency, not a fixed rule for every situation."
       }
+    },
+    {
+      "@type": "Question",
+      "name": "If I withdraw from my TFSA, do I lose that contribution room forever?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No, but it doesn't come back immediately \u2014 withdrawn amounts are added back to your contribution room only on January 1 of the following year. Re-depositing the same amount sooner can trigger an over-contribution penalty if you're otherwise maxed out."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I contribute to both a TFSA and RRSP in the same year?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes \u2014 they're entirely separate accounts with separate contribution room, and there's no rule against funding both in the same year, as long as each stays within its own limit."
+      }
     }
   ]
 }
@@ -441,7 +457,7 @@
       <div class="post-meta-row">
         <span>By Rattan Amol Taggar</span><span class="dot"></span>
         <span>Updated Oct 20, 2026</span><span class="dot"></span>
-        <span>8 min read</span>
+        <span>10 min read</span>
       </div>
     </div>
   </section>
@@ -465,6 +481,8 @@
           <li><a href="#the-rule">The simple rule for deciding</a></li>
           <li><a href="#worked-example">A worked example</a></li>
           <li><a href="#hbp-fhsa">Using either one for a first home</a></li>
+          <li><a href="#withdrawal-room">How TFSA withdrawal room comes back</a></li>
+          <li><a href="#which-first">Which to prioritize first</a></li>
           <li><a href="#faq">FAQ</a></li>
         </ol>
       </div>
@@ -510,6 +528,16 @@
 
         <h2 id="hbp-fhsa">Using either one for a first home</h2>
         <p>The RRSP's Home Buyers' Plan (HBP) lets a first-time buyer withdraw up to $60,000 tax-free from an RRSP toward a home, repayable to the RRSP over 15 years (unpaid amounts get added back to taxable income). It's a useful lever, but it's not the most efficient tool purpose-built for this goal anymore &mdash; that's now the <a href="fhsa-first-home-savings.html" style="color:var(--accent-2); text-decoration:underline;">FHSA</a>, which has no repayment requirement at all and can even be combined with the HBP for the same purchase.</p>
+      
+        <h2 id="withdrawal-room">How TFSA withdrawal room actually comes back</h2>
+        <p>Money withdrawn from a TFSA is added back to your contribution room &mdash; but not until <strong>January 1 of the following year</strong>, not immediately. Withdraw $10,000 in June to cover an expense, and that room doesn't reappear until the next calendar year, so re-depositing the same amount before then can trigger an over-contribution and a penalty tax if you've otherwise maxed out your room. This timing gap catches people who treat a TFSA like a simple chequing account.</p>
+
+        <h2 id="which-first">Which to prioritize when you can't max both</h2>
+        <p>Most people can't fully fund both every year, so the practical rule is usually: contribute enough to your RRSP to capture any employer matching (if offered), then prioritize whichever account fits your current tax bracket and goals &mdash; RRSP when your income (and tax rate) is relatively high, TFSA when it's lower or when you value flexibility. Neither choice is permanent; both accounts can be built up over years as your income changes.</p>
+        <div class="inline-cta">
+          <p><strong>Trying to decide where your next dollar should go?</strong> We can map it against your actual income and goals.</p>
+          <a class="pill pill-solid pill-sm" href="book.html">Book a Call</a>
+        </div>
       </article>
 
       <section class="post-faq" id="faq">
@@ -537,7 +565,15 @@
           <summary>Which one should a 25-year-old just starting their career prioritize?<span class="plus">+</span></summary>
           <div class="faq-a">Generally the TFSA first, while income and marginal tax rate are lower, shifting more toward the RRSP as income (and the tax rate on each extra dollar) rises. This is a general tendency, not a fixed rule for every situation.</div>
         </details>
-      </section>
+              <details class="faq-item">
+          <summary>If I withdraw from my TFSA, do I lose that contribution room forever?<span class="plus">+</span></summary>
+          <div class="faq-a">No, but it doesn't come back immediately — withdrawn amounts are added back to your contribution room only on January 1 of the following year. Re-depositing the same amount sooner can trigger an over-contribution penalty if you're otherwise maxed out.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Can I contribute to both a TFSA and RRSP in the same year?<span class="plus">+</span></summary>
+          <div class="faq-a">Yes — they're entirely separate accounts with separate contribution room, and there's no rule against funding both in the same year, as long as each stays within its own limit.</div>
+        </details>
+</section>
 
       <div class="source-list">
         <div class="toc-label">Sources</div>

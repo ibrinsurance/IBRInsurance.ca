@@ -240,7 +240,7 @@
 
   .toc-box{ background:var(--surface-2); border:1px solid var(--line-soft); border-radius:10px; padding:20px 22px; margin-top:28px; }
   .toc-box .toc-label{ font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:12px; }
-  .toc-box ol{ display:flex; flex-direction:column; gap:7px; counter-reset:toc; padding-left:0; }
+  .toc-box ol{ display:flex; flex-direction:column; gap:7px; counter-reset:toc; padding-left:0; list-style:none; margin:0; }
   .toc-box ol li{ counter-increment:toc; font-size:0.9rem; }
   .toc-box ol li a{ color:var(--ink-dim); transition:color .15s ease; }
   .toc-box ol li a:before{ content:counter(toc) '. '; color:var(--accent); font-weight:600; }
@@ -378,6 +378,22 @@
         "@type": "Answer",
         "text": "Yes \u2014 $200,000 over a lifetime, with no annual contribution cap. Grants and bonds stop being added the year the beneficiary turns 49."
       }
+    },
+    {
+      "@type": "Question",
+      "name": "Can RRSP or RRIF money roll into an RDSP tax-free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Under certain conditions, yes \u2014 proceeds from a deceased parent or grandparent's RRSP or RRIF can roll into the RDSP of a financially dependent child or grandchild with a disability, deferring tax, up to the RDSP's lifetime limit."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Who is allowed to open an RDSP?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The beneficiary themselves if they're an adult able to manage their own affairs, a legal guardian or representative, or a parent while the beneficiary is a minor. Not all financial institutions offer RDSPs, so it's worth checking availability first."
+      }
     }
   ]
 }
@@ -441,7 +457,7 @@
       <div class="post-meta-row">
         <span>By Rattan Amol Taggar</span><span class="dot"></span>
         <span>Updated Oct 20, 2026</span><span class="dot"></span>
-        <span>9 min read</span>
+        <span>11 min read</span>
       </div>
     </div>
   </section>
@@ -466,6 +482,8 @@
           <li><a href="#bond">The Canada Disability Savings Bond</a></li>
           <li><a href="#worked-example">A worked example</a></li>
           <li><a href="#withdrawals">The 10-year rule on withdrawals</a></li>
+          <li><a href="#rrsp-rollover">Rolling RRSP/RRIF proceeds into an RDSP</a></li>
+          <li><a href="#who-opens">Who can open and manage an RDSP</a></li>
           <li><a href="#faq">FAQ</a></li>
         </ol>
       </div>
@@ -510,6 +528,16 @@
 
         <h2 id="withdrawals">The 10-year rule on withdrawals</h2>
         <p>Grants and bonds come with a holdback: if money is withdrawn, or the plan is closed, deregistered, or the beneficiary loses DTC eligibility before age 60, grants and bonds paid in the <strong>preceding 10 years</strong> may need to be repaid. For a straightforward withdrawal (not a plan closure), the rule is proportional &mdash; for every $1 withdrawn, $3 of grants and bonds from the preceding 10 years must be repaid, up to the total holdback amount. This makes the RDSP best suited to long-term, patient savings rather than a short-term account &mdash; the rules reward leaving the money in place.</p>
+      
+        <h2 id="rrsp-rollover">Rolling RRSP or RRIF proceeds into an RDSP</h2>
+        <p>A lesser-known rule can soften the RRSP tax trap we cover in our <a href="estate-planning-probate-ontario.html" style="color:var(--accent-2); text-decoration:underline;">estate planning &amp; probate guide</a>: when a parent or grandparent dies, the proceeds of their RRSP or RRIF can, under certain conditions, roll into the RDSP of a financially dependent child or grandchild with a disability &mdash; tax-deferred, up to the RDSP's lifetime limit. This doesn't generate new grants or bonds (the rollover isn't a "contribution" for matching purposes), but it can meaningfully reduce the terminal tax bill an estate would otherwise owe on that RRSP or RRIF.</p>
+        <div class="inline-cta">
+          <p><strong>Settling an estate with a disabled beneficiary involved?</strong> This rollover is easy to miss if nobody flags it in time.</p>
+          <a class="pill pill-solid pill-sm" href="book.html">Book a Call</a>
+        </div>
+
+        <h2 id="who-opens">Who can open and manage an RDSP</h2>
+        <p>An RDSP can be opened by the beneficiary themselves (if they're an adult who can legally manage their own affairs), a legal guardian or representative, or a parent while the beneficiary is a minor. Not every bank or credit union offers RDSPs &mdash; it's a specific registered product only some institutions administer &mdash; so it's worth confirming availability before assuming your existing bank can open one.</p>
       </article>
 
       <section class="post-faq" id="faq">
@@ -537,7 +565,15 @@
           <summary>Is there a lifetime contribution limit?<span class="plus">+</span></summary>
           <div class="faq-a">Yes — $200,000 over a lifetime, with no annual contribution cap. Grants and bonds stop being added the year the beneficiary turns 49.</div>
         </details>
-      </section>
+              <details class="faq-item">
+          <summary>Can RRSP or RRIF money roll into an RDSP tax-free?<span class="plus">+</span></summary>
+          <div class="faq-a">Under certain conditions, yes — proceeds from a deceased parent or grandparent's RRSP or RRIF can roll into the RDSP of a financially dependent child or grandchild with a disability, deferring tax, up to the RDSP's lifetime limit.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Who is allowed to open an RDSP?<span class="plus">+</span></summary>
+          <div class="faq-a">The beneficiary themselves if they're an adult able to manage their own affairs, a legal guardian or representative, or a parent while the beneficiary is a minor. Not all financial institutions offer RDSPs, so it's worth checking availability first.</div>
+        </details>
+</section>
 
       <div class="source-list">
         <div class="toc-label">Sources</div>

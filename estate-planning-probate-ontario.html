@@ -240,7 +240,7 @@
 
   .toc-box{ background:var(--surface-2); border:1px solid var(--line-soft); border-radius:10px; padding:20px 22px; margin-top:28px; }
   .toc-box .toc-label{ font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:12px; }
-  .toc-box ol{ display:flex; flex-direction:column; gap:7px; counter-reset:toc; padding-left:0; }
+  .toc-box ol{ display:flex; flex-direction:column; gap:7px; counter-reset:toc; padding-left:0; list-style:none; margin:0; }
   .toc-box ol li{ counter-increment:toc; font-size:0.9rem; }
   .toc-box ol li a{ color:var(--ink-dim); transition:color .15s ease; }
   .toc-box ol li a:before{ content:counter(toc) '. '; color:var(--accent); font-weight:600; }
@@ -386,6 +386,22 @@
         "@type": "Answer",
         "text": "Use the free Estate & Probate Calculator on this site \u2014 it projects taxes, probate fees, and life insurance needs by province, asset type, and expected growth."
       }
+    },
+    {
+      "@type": "Question",
+      "name": "Does divorce automatically remove my ex-spouse as beneficiary?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not automatically, and not the way it can with a will \u2014 a life insurance or RRSP beneficiary designation stays in place until you actively change it. It's worth checking every policy and registered account after any divorce or separation."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is adding my child as a joint owner a safe way to avoid probate?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not necessarily. Courts have found joint accounts can still be considered part of the original owner's estate depending on intent, and the arrangement can expose the asset to the joint owner's creditors or a divorce. An insurance or trust-based strategy often achieves the same goal with fewer side effects."
+      }
     }
   ]
 }
@@ -449,7 +465,7 @@
       <div class="post-meta-row">
         <span>By Rattan Amol Taggar</span><span class="dot"></span>
         <span>Updated Oct 20, 2026</span><span class="dot"></span>
-        <span>9 min read</span>
+        <span>11 min read</span>
       </div>
     </div>
   </section>
@@ -474,6 +490,8 @@
           <li><a href="#avoid-probate">What avoids probate &mdash; and what doesn't</a></li>
           <li><a href="#insurance-role">Why life insurance sits at the centre of the plan</a></li>
           <li><a href="#business">For incorporated business owners</a></li>
+          <li><a href="#beneficiary-designations">Outdated beneficiary designations</a></li>
+          <li><a href="#joint-ownership-risks">The hidden risk of joint ownership</a></li>
           <li><a href="#faq">FAQ</a></li>
         </ol>
       </div>
@@ -520,6 +538,22 @@
 
         <h2 id="business">For incorporated business owners</h2>
         <p>Estate challenges are amplified when a corporation is involved. Corporate-owned permanent life insurance can fund a buy-sell agreement, pay out through the Capital Dividend Account (CDA) tax-free to shareholders, and help address capital gains exposure on shares at death. This is a short list, not a full explanation &mdash; if this applies to you, it's worth a direct conversation rather than a DIY approach.</p>
+
+        <h2 id="beneficiary-designations">The outdated beneficiary designation nobody caught</h2>
+        <p>A life insurance policy or RRSP only bypasses probate correctly if the beneficiary designation on file is actually the one you intend today. We regularly see policies where an ex-spouse, a sibling who passed away years earlier, or an old business partner is still listed &mdash; because nobody thought to update it after a divorce, a remarriage, or a death in the family. In Ontario, a marriage breakdown doesn't automatically revoke a beneficiary designation on a life insurance policy the way it can with a will, so this is a gap that persists silently until a claim is filed and the wrong person is paid.</p>
+        <ul class="prose-list">
+          <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l6 6L20 6"/></svg></span><span><strong>After a divorce or separation</strong> &mdash; check every policy and registered account, not just the will.</span></li>
+          <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l6 6L20 6"/></svg></span><span><strong>After a remarriage or new child</strong> &mdash; confirm the designation reflects who you actually want covered now.</span></li>
+          <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l6 6L20 6"/></svg></span><span><strong>Every few years regardless</strong> &mdash; a five-minute check with your advisor costs nothing and closes a gap that can otherwise sit unnoticed for decades.</span></li>
+        </ul>
+
+        <h2 id="joint-ownership-risks">The hidden risk of using joint ownership to "avoid probate"</h2>
+        <p>Adding an adult child as joint owner on a house or bank account is one of the most common probate workarounds &mdash; and one of the most commonly misunderstood. Depending on the intent behind it, Canadian courts have found that a joint account can be considered to still legally belong to the original owner's estate, triggering exactly the probate exposure the arrangement was meant to avoid, along with potential disputes among siblings who weren't added. It can also expose the asset to the joint owner's creditors, matrimonial claims, or a divorce &mdash; risks that have nothing to do with your own estate plan. A properly structured insurance-based or trust-based strategy usually achieves the same probate-avoidance goal without these side effects.</p>
+
+        <div class="inline-cta">
+          <p><strong>Already relying on joint ownership to avoid probate?</strong> It's worth a second look before it causes a problem.</p>
+          <a class="pill pill-solid pill-sm" href="book.html">Book a Call</a>
+        </div>
       </article>
 
       <section class="post-faq" id="faq">
@@ -550,6 +584,14 @@
         <details class="faq-item">
           <summary>How do I estimate my own probate exposure?<span class="plus">+</span></summary>
           <div class="faq-a">Use the free Estate &amp; Probate Calculator on this site — it projects taxes, probate fees, and life insurance needs by province, asset type, and expected growth.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does divorce automatically remove my ex-spouse as beneficiary?<span class="plus">+</span></summary>
+          <div class="faq-a">Not automatically, and not the way it can with a will — a life insurance or RRSP beneficiary designation stays in place until you actively change it. It's worth checking every policy and registered account after any divorce or separation.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Is adding my child as a joint owner a safe way to avoid probate?<span class="plus">+</span></summary>
+          <div class="faq-a">Not necessarily. Courts have found joint accounts can still be considered part of the original owner's estate depending on intent, and the arrangement can expose the asset to the joint owner's creditors or a divorce. An insurance or trust-based strategy often achieves the same goal with fewer side effects.</div>
         </details>
       </section>
 

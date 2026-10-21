@@ -240,7 +240,7 @@
 
   .toc-box{ background:var(--surface-2); border:1px solid var(--line-soft); border-radius:10px; padding:20px 22px; margin-top:28px; }
   .toc-box .toc-label{ font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:12px; }
-  .toc-box ol{ display:flex; flex-direction:column; gap:7px; counter-reset:toc; padding-left:0; }
+  .toc-box ol{ display:flex; flex-direction:column; gap:7px; counter-reset:toc; padding-left:0; list-style:none; margin:0; }
   .toc-box ol li{ counter-increment:toc; font-size:0.9rem; }
   .toc-box ol li a{ color:var(--ink-dim); transition:color .15s ease; }
   .toc-box ol li a:before{ content:counter(toc) '. '; color:var(--accent); font-weight:600; }
@@ -378,6 +378,22 @@
         "@type": "Answer",
         "text": "Yes \u2014 inflation compounds both before and during retirement, which is why a flat, un-inflated withdrawal assumption usually understates what's actually needed in later retirement years."
       }
+    },
+    {
+      "@type": "Question",
+      "name": "Should I delay taking CPP until age 70?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It depends on your health, other income, and whether you need the cash flow sooner. Deferring increases your eventual monthly payment by roughly 0.7% per month (up to age 70), but there's no universally correct answer \u2014 it's worth modeling both scenarios against your own numbers."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is sequence of returns risk?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It's the risk that a market downturn in the first few years of retirement, while you're withdrawing income, forces you to sell more shares at depressed prices \u2014 permanently shrinking the portfolio compared to the same downturn happening later. It's a key reason to hold some stable, guaranteed income sources near retirement."
+      }
     }
   ]
 }
@@ -441,7 +457,7 @@
       <div class="post-meta-row">
         <span>By Rattan Amol Taggar</span><span class="dot"></span>
         <span>Updated Oct 20, 2026</span><span class="dot"></span>
-        <span>9 min read</span>
+        <span>11 min read</span>
       </div>
     </div>
   </section>
@@ -467,6 +483,8 @@
           <li><a href="#inflation">Why inflation matters twice</a></li>
           <li><a href="#gap">What to do if there's a gap</a></li>
           <li><a href="#calculator">Run your own numbers</a></li>
+          <li><a href="#sequence-risk">Sequence of returns risk</a></li>
+          <li><a href="#cpp-oas-timing">CPP &amp; OAS timing</a></li>
           <li><a href="#faq">FAQ</a></li>
         </ol>
       </div>
@@ -515,6 +533,20 @@
 
         <h2 id="calculator">Run your own numbers</h2>
         <p>This site's free <strong>Retirement Readiness Calculator</strong> builds in every input above: your current age, the age you want to retire, how long you want your money to last, your current portfolio, how much you invest monthly, and your planned monthly retirement spending. It shows your projected portfolio, what you'll actually need, any gap, and &mdash; if there is a gap &mdash; the retirement age at which your plan would work while keeping your current monthly investment amount exactly the same.</p>
+      
+        <h2 id="sequence-risk">Sequence of returns risk: why the first few years matter most</h2>
+        <p>Two retirees with the identical average rate of return over 20 years can end up with dramatically different outcomes depending purely on the <em>order</em> those returns happen in. A market downturn in the first few years of retirement, while you're drawing income out, forces you to sell more shares at depressed prices to generate the same income &mdash; permanently shrinking the portfolio's ability to recover, compared to the same downturn hitting later once the portfolio has had years to grow. This is called sequence of returns risk, and it's one of the most underappreciated risks in retirement planning.</p>
+        <div class="callout">
+          <h4>Why this matters for your asset mix</h4>
+          <p>It's a core reason many advisors recommend shifting a portion of a portfolio to more stable, guaranteed sources of income in the years immediately before and after retirement &mdash; reducing how much you're forced to sell during a downturn in those critical early years.</p>
+        </div>
+
+        <h2 id="cpp-oas-timing">CPP and OAS timing: the deferral decision</h2>
+        <p>Both CPP and OAS can be deferred past age 65, increasing the eventual monthly payment &mdash; CPP by roughly 0.7% per month deferred (up to age 70), OAS by roughly 0.6% per month deferred (also up to age 70). Deferring effectively trades smaller payments starting sooner for larger payments starting later, and the "right" choice depends heavily on your health, other income sources, and whether you need the cash flow immediately. There's no universally correct answer, but it's a decision worth running the numbers on rather than defaulting to the earliest start date out of habit.</p>
+        <div class="inline-cta">
+          <p><strong>Not sure whether to defer CPP or OAS?</strong> We can model both scenarios against your actual numbers.</p>
+          <a class="pill pill-solid pill-sm" href="book.html">Book a Call</a>
+        </div>
       </article>
 
       <section class="post-faq" id="faq">
@@ -542,7 +574,15 @@
           <summary>Does inflation really make that much difference?<span class="plus">+</span></summary>
           <div class="faq-a">Yes — inflation compounds both before and during retirement, which is why a flat, un-inflated withdrawal assumption usually understates what's actually needed in later retirement years.</div>
         </details>
-      </section>
+              <details class="faq-item">
+          <summary>Should I delay taking CPP until age 70?<span class="plus">+</span></summary>
+          <div class="faq-a">It depends on your health, other income, and whether you need the cash flow sooner. Deferring increases your eventual monthly payment by roughly 0.7% per month (up to age 70), but there's no universally correct answer — it's worth modeling both scenarios against your own numbers.</div>
+        </details>
+        <details class="faq-item">
+          <summary>What is sequence of returns risk?<span class="plus">+</span></summary>
+          <div class="faq-a">It's the risk that a market downturn in the first few years of retirement, while you're withdrawing income, forces you to sell more shares at depressed prices — permanently shrinking the portfolio compared to the same downturn happening later. It's a key reason to hold some stable, guaranteed income sources near retirement.</div>
+        </details>
+</section>
 
       <div class="disclaimer-box">This article is educational and general in nature, and not personalized financial advice. The calculator referenced provides illustrative projections based on the assumptions you enter, not a guarantee of future results — speak with a licensed advisor to build a full plan.</div>
 
